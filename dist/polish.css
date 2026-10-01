@@ -29,3 +29,22 @@ button{border-radius:4px}button:disabled{opacity:.4}
 @media(max-width:700px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 @media(pointer:coarse){.joystick{display:flex;align-items:center;justify-content:center}}
+
+/* Focused combat HUD: health, wave and essence; secondary actions on demand. */
+.topbar{height:0;padding:0;background:none;pointer-events:none}
+.topbar .brand,.wave-seal,.hero-hud-name,.left-hud .soul-label,.left-hud .soul-meter{display:none}
+.header-actions{position:fixed;right:12px;top:12px;pointer-events:auto;align-items:flex-start}
+.header-actions .icon-btn,.hud-menu summary{min-height:44px;padding:10px;font-size:12px}
+.hud-menu{position:relative}.hud-menu summary{list-style:none;cursor:pointer;border:1px solid #a58e6255;border-radius:5px;background:#142023ee;color:#ded8c7;display:flex;align-items:center;box-sizing:border-box}.hud-menu summary::-webkit-details-marker{display:none}
+.hud-menu-panel{position:absolute;right:0;top:50px;display:grid;gap:6px;min-width:170px;background:#111a1df5;padding:10px;border:1px solid #a58e6255;border-radius:6px;z-index:30}.header-actions #inventoryBtn{display:block}.hud-menu-panel button{width:100%}
+.left-hud{top:12px;left:12px;width:240px;max-width:none;padding:8px 10px;background:#111a1dcc;display:grid;grid-template-columns:1fr 1fr;column-gap:12px;border:0}
+.left-hud .hud-label{margin:0;grid-row:1;display:block;font-size:12px}.left-hud .hud-label b{display:block;font-size:12px;margin-top:2px}.left-hud .meter{grid-row:2;margin-top:4px;height:4px}.left-hud .monument-label{grid-column:2;margin:0}.left-hud .meter.monument{grid-column:2}
+.right-hud{top:64px;right:12px;gap:6px;flex-direction:row}.resource{padding:5px 8px;min-width:0;gap:0;border:0;background:#111a1dbb}.resource .shard,.resource .tower-icon{display:none}.resource div{display:flex;align-items:center;gap:6px}.resource small{font-size:12px}.resource b{font-size:14px}
+.objective{top:12px;left:50%;right:auto;bottom:auto;transform:translateX(-50%);width:180px;padding:6px 10px;border:0;background:#111a1dbb}.objective>span{font-size:14px;letter-spacing:0}.objective small{font-size:12px;margin-top:3px}.wave-meter{height:2px;margin-top:4px}.objective button{min-height:44px;margin-top:5px}
+.boss-hud{top:119px;left:50%;right:auto;transform:translateX(-50%);width:180px;padding:5px}.boss-hud>div:first-child{font-size:12px}
+.controls{left:auto;right:12px;bottom:12px;transform:none;display:flex;flex-wrap:wrap;justify-content:flex-end;width:360px;gap:5px}.controls .action-btn{min-height:44px;padding:8px 10px}.controls kbd{display:none}.controls span{font-size:12px}.controls .hidden{display:none!important}
+.arsenal{left:auto;right:12px;bottom:112px;transform:none;width:auto;max-width:none;gap:5px}.arsenal button{min-width:92px;min-height:44px;padding:7px;justify-content:center}.arsenal button span,.arsenal button b{font-size:12px}
+.joystick{left:16px;bottom:16px;width:88px;height:88px}.hero-subtitle{bottom:170px}
+@media(min-width:701px){.controls{width:auto;max-width:calc(100vw - 140px)}.arsenal{bottom:66px}.hero-subtitle{bottom:120px}}
+@media(max-width:700px){.left-hud{width:190px}.objective{top:76px;left:12px;right:auto;transform:none;width:170px}.right-hud{top:68px;flex-direction:column;align-items:flex-end}.boss-hud{top:183px;left:12px;right:auto;transform:none;width:170px}.controls{width:220px}.arsenal{bottom:112px}.hero-subtitle{bottom:169px}.hud-menu-panel{z-index:30}}
+@media(max-width:700px){#app:has(#upgradeBtn:not(.hidden)) .arsenal{bottom:164px}}
