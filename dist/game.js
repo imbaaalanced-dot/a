@@ -79,7 +79,7 @@
     {name:'DIE SCHLUCHT DER RISSEN',note:'Unter dem Basalt schlägt ein fremdes Licht.',until:7},
     {name:'DIE VERGLASTE KRONE',note:'Der Aschenkönig hat deine Spur aufgenommen.',until:Infinity}
   ];
-  function clearInput(){keys={};touch={x:0,y:0};if(pointerId!==null&&stick.hasPointerCapture?.(pointerId))stick.releasePointerCapture(pointerId);pointerId=null;$('joystick').firstElementChild.style.transform='translate(0,0)';}
+  function clearInput(){keys={};touch={x:0,y:0};if(pointerId!==null&&stick.hasPointerCapture?.(pointerId)){try{stick.releasePointerCapture(pointerId);}catch{}}pointerId=null;activeTouchId=null;$('joystick').firstElementChild.style.transform='translate(0,0)';}
   function focusModal(el){clearInput();document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=true);el.querySelector('button')?.focus();}
   function focusGame(){document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=false);canvas.focus({preventScroll:true});}
   function pauseGame(){if(state!=='playing')return;state='paused';clearInput();saga.stopVoice();$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));updateUI();}
@@ -323,12 +323,37 @@
   });
   addEventListener('keyup',e=>keys[e.code]=false);
   canvas.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;mouse=screenToWorld(e.clientX,e.clientY);const d=dist(mouse,game.hero);if(d>5)facing={x:(mouse.x-game.hero.x)/d,y:(mouse.y-game.hero.y)/d};});
-  const stick=$('joystick');let pointerId=null;
-  function moveStick(e){if(e.pointerId!==pointerId)return;const r=stick.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,len=Math.hypot(dx,dy),scale=Math.min(1,38/(len||1));touch={x:dx*scale/38,y:dy*scale/38};stick.firstElementChild.style.transform=`translate(${dx*scale}px,${dy*scale}px)`;}
-  stick.addEventListener('pointerdown',e=>{if(state!=='playing'||pointerId!==null)return;pointerId=e.pointerId;stick.setPointerCapture(pointerId);moveStick(e);});
-  stick.addEventListener('pointermove',moveStick);
-  function releaseStick(e){if(e.pointerId!==pointerId)return;pointerId=null;touch={x:0,y:0};stick.firstElementChild.style.transform='translate(0,0)';}
-  for(const event of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(event,releaseStick);
+  const stick=$('joystick');let pointerId=null,activeTouchId=null;
+  function setStick(clientX,clientY){
+    const r=stick.getBoundingClientRect(),radius=Math.max(28,Math.min(r.width,r.height)*.34);
+    const dx=clientX-r.left-r.width/2,dy=clientY-r.top-r.height/2,len=Math.hypot(dx,dy),scale=Math.min(1,radius/(len||1));
+    touch={x:dx*scale/radius,y:dy*scale/radius};
+    stick.firstElementChild.style.transform=`translate(${dx*scale}px,${dy*scale}px)`;
+  }
+  function resetStick(){pointerId=null;activeTouchId=null;touch={x:0,y:0};stick.firstElementChild.style.transform='translate(0,0)';}
+  function moveStick(e){if(e.pointerId!==pointerId)return;e.preventDefault();setStick(e.clientX,e.clientY);}
+  if('PointerEvent' in window){
+    stick.addEventListener('pointerdown',e=>{
+      if(state!=='playing'||pointerId!==null)return;
+      e.preventDefault();pointerId=e.pointerId;
+      try{stick.setPointerCapture(pointerId);}catch{}
+      setStick(e.clientX,e.clientY);
+    });
+    stick.addEventListener('pointermove',moveStick);
+    const releaseStick=e=>{if(e.pointerId!==pointerId)return;e.preventDefault();resetStick();};
+    for(const event of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(event,releaseStick);
+  }else{
+    stick.addEventListener('touchstart',e=>{
+      if(state!=='playing'||activeTouchId!==null)return;
+      const t=e.changedTouches[0];if(!t)return;e.preventDefault();activeTouchId=t.identifier;setStick(t.clientX,t.clientY);
+    },{passive:false});
+    stick.addEventListener('touchmove',e=>{
+      const t=[...e.changedTouches].find(x=>x.identifier===activeTouchId);if(!t)return;e.preventDefault();setStick(t.clientX,t.clientY);
+    },{passive:false});
+    const releaseTouch=e=>{if(![...e.changedTouches].some(x=>x.identifier===activeTouchId))return;e.preventDefault();resetStick();};
+    stick.addEventListener('touchend',releaseTouch,{passive:false});
+    stick.addEventListener('touchcancel',releaseTouch,{passive:false});
+  }
   $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>startGame(2);$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
   document.querySelectorAll('.arsenal button').forEach(b=>b.onclick=()=>{if(state==='playing'){selectTower(b.dataset.tower);canvas.focus();}});
   $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;
