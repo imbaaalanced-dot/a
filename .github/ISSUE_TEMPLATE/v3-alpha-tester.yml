@@ -1,0 +1,71 @@
+name: v3 Alpha Tester Report
+description: Report a gameplay, touch, performance or visual problem in the v3 tester build.
+title: "[v3 alpha] "
+labels: ["tester"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Touch / controls
+        - Performance / FPS
+        - Towers / building
+        - Enemies / waves
+        - Level / pathfinding
+        - UI / HUD
+        - Graphics / assets
+        - Audio
+        - Save / settings
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: "Example: Redmi Note / Pixel / Windows PC"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / WebView
+      placeholder: "Chrome 140, Android WebView, Firefox..."
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Level and wave
+      placeholder: "Level 2, wave 7"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start Level 2
+        2. Walk to build slot
+        3. Select Rift
+        4. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: input
+    id: fps
+    attributes:
+      label: Approximate FPS / performance note
+      placeholder: "Optional: around 30 FPS during wave 8"
