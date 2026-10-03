@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -96,6 +96,17 @@ check('Guardian armor reduces damage and mage slow reduces movement',()=>{
   const e={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:60,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
   t.game.enemies=[e];t.shoot({x:200,y:300,kind:'mage',level:1},e,1,500,'#69bfff',{slow:.58,slowDuration:1.6});for(let i=0;i<15;i++)t.update(.02);assert.ok(e.slow>0);assert.ok(e.slowFactor<=.58);
 });
+check('Slowed targets amplify cannon splash and Rift chain count',()=>{
+  const target={slow:1};const cannon=t.projectileSynergy({kind:'cannon',splash:64},target),rift=t.projectileSynergy({kind:'rift',chain:2},target),plain=t.projectileSynergy({kind:'cannon',splash:64},{slow:0});
+  assert.ok(cannon.splash>plain.splash);assert.ok(cannon.splashFactor>plain.splashFactor);assert.equal(rift.chain,3);
+});
+check('Placement preview reports selected tower range and role only near a free pad',()=>{
+  const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.selectTower('mage');const preview=t.placementPreview();
+  assert.equal(preview.x,slot.x);assert.equal(preview.range,282);assert.equal(preview.role,'KONTROLLE');t.game.hero.x=50;t.game.hero.y=50;assert.equal(t.placementPreview(),null);
+});
+check('Offscreen boss creates a threat indicator',()=>{
+  t.game.enemies=[{x:3000,y:3000,type:'boss',dead:false,hp:100,maxHp:100,r:34}];t.game.intermission=5;const indicators=t.threatIndicators();assert.ok(indicators.some(x=>x.kind==='boss'&&x.label==='BOSS'));
+});
 check('Rift chain damages multiple clustered enemies',()=>{
   const make=x=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
   const a=make(300),b=make(340),c=make(370);t.game.enemies=[a,b,c];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100);
@@ -161,6 +172,6 @@ check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-for(const id of ['graphicsBtn','zoomBtn'])assert.ok(html.includes(`id="${id}"`));
+for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
