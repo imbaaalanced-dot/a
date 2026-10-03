@@ -100,6 +100,13 @@ check('Rift chain damages multiple clustered enemies',()=>{
   const make=x=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
   const a=make(300),b=make(340),c=make(370);t.game.enemies=[a,b,c];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100);
 });
+check('Mage slow primes cannon bonus damage and an extra rift chain jump',()=>{
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  const make=(x,slow=0)=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow,slowFactor:slow?.58:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
+  const slowed=make(300,1);t.game.enemies=[slowed];t.shoot({x:200,y:300,kind:'cannon',level:1},slowed,10,500,'#d7a16c',{splash:64});for(let i=0;i<15;i++)t.update(.02);assert.ok(Math.abs(slowed.hp-87.5)<1e-8);
+  const a=make(300,1),b=make(330),c=make(360),d=make(390);t.game.enemies=[a,b,c,d];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100&&d.hp<100);
+  sandbox.Math.random=oldRandom;
+});
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
   assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
   element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
