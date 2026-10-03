@@ -43,6 +43,8 @@
   towerArt.shrine.src = 'assets/tower-warden-shrine-v1.png';
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
+  function portraitLayout(){return H>W;}
+  function zoomForMode(){return zoomMode==='wide'?(portraitLayout() ? .48 : .56):(portraitLayout() ? .56 : .64);}
   atlas.onload = () => {
     const cut = (name,x,y,w,h,threshold=44) => {
       const c=document.createElement('canvas');c.width=w;c.height=h;
@@ -131,9 +133,9 @@
     game.waveTotal=waveSize(game.wave);
     saga.reset(game.hero);updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
   }
-  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom;camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y-vh*.5,0,WORLD_H-vh);}
+  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom,focusY=portraitLayout() ? .43 : .5;camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y-vh*focusY,0,WORLD_H-vh);}
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/zoom+camera.y};}
-  function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
+  function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
   function menuStatus(){
@@ -460,8 +462,8 @@
   function graphicsLabel(){$('graphicsBtn').textContent=`GRAFIK: ${graphicsMode.toUpperCase()}`;}
   function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';try{localStorage.setItem('denkmal-graphics',graphicsMode);}catch{}graphicsLabel();resize(false);}
   function zoomLabel(){$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
-  function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomMode==='wide' ? .56 : .64;try{localStorage.setItem('denkmal-zoom',zoomMode);}catch{}zoomLabel();updateCamera();}
-  try{audioOn=localStorage.getItem('denkmal-sound')!=='off';const gm=localStorage.getItem('denkmal-graphics');if(['auto','low','high'].includes(gm))graphicsMode=gm;const zm=localStorage.getItem('denkmal-zoom');if(['wide','standard'].includes(zm)){zoomMode=zm;zoom=zm==='wide' ? .56 : .64;}telemetryOn=localStorage.getItem('denkmal-telemetry')==='on';}catch{}
+  function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();try{localStorage.setItem('denkmal-zoom',zoomMode);}catch{}zoomLabel();updateCamera();}
+  try{audioOn=localStorage.getItem('denkmal-sound')!=='off';const gm=localStorage.getItem('denkmal-graphics');if(['auto','low','high'].includes(gm))graphicsMode=gm;const zm=localStorage.getItem('denkmal-zoom');if(['wide','standard'].includes(zm))zoomMode=zm;telemetryOn=localStorage.getItem('denkmal-telemetry')==='on';}catch{}
   function telemetryLabel(){$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
   function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;try{localStorage.setItem('denkmal-telemetry',telemetryOn?'on':'off');}catch{}telemetryLabel();}
   function soundLabel(){$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
