@@ -51,3 +51,15 @@ button{border-radius:4px}button:disabled{opacity:.4}
 
 /* v3 alpha.2: contextual construction UI */
 .arsenal.hidden{display:none!important}
+
+/* v3 alpha.3: four-role arsenal + compact tester settings */
+.hud-menu-panel{max-height:min(70dvh,440px);overflow:auto}
+.hud-menu-panel #graphicsBtn,.hud-menu-panel #zoomBtn{width:100%}
+.arsenal{flex-wrap:wrap;justify-content:flex-end}
+.arsenal button{min-width:82px}
+@media(max-width:700px){
+  .arsenal{right:12px;left:auto;transform:none;width:188px;display:grid;grid-template-columns:1fr 1fr;bottom:118px}
+  .arsenal button{min-width:0;width:100%;padding:6px}
+  .arsenal button span,.arsenal button b{font-size:11px}
+  #app:has(#upgradeBtn:not(.hidden)) .arsenal{bottom:166px}
+}
