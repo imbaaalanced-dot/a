@@ -100,3 +100,152 @@ button{border-radius:4px}button:disabled{opacity:.4}
 .fps-overlay.hidden{display:none}
 @media(pointer:coarse){.fps-overlay{bottom:calc(var(--hud-safe-bottom) + 112px);left:calc(var(--hud-safe-left) + 4px)}}
 @media(max-width:700px){.fps-overlay{font-size:10px;padding:5px 6px}.hud-menu-panel{max-height:calc(100dvh - 70px);overflow:auto}}
+
+
+/* v3.0.0-alpha.6 — portrait-first mobile combat layout */
+@media (orientation:portrait){
+  html,body,#app{width:100%;height:100%;min-height:100dvh;overflow:hidden}
+  #game{width:100vw;height:100dvh}
+
+  .left-hud{
+    top:var(--hud-safe-top);
+    left:var(--hud-safe-left);
+    width:calc(100vw - var(--hud-safe-left) - var(--hud-safe-right) - 104px);
+    max-width:none;
+    min-width:190px;
+    padding:7px 9px;
+    grid-template-columns:1fr 1fr;
+    column-gap:10px;
+    background:#0d1619d8;
+  }
+  .left-hud .hud-label,.left-hud .hud-label b{font-size:10px}
+  .left-hud .meter{height:4px}
+  .header-actions{top:var(--hud-safe-top);right:var(--hud-safe-right)}
+  .header-actions #pauseBtn{display:none}
+  .hud-menu summary{min-height:42px;padding:8px 10px}
+  .hud-menu-panel{top:46px;min-width:156px;max-height:62dvh}
+
+  .objective{
+    top:calc(var(--hud-safe-top) + 58px);
+    left:var(--hud-safe-left);
+    right:auto;
+    transform:none;
+    width:170px;
+    padding:6px 9px;
+    background:#0d1619d3;
+  }
+  .objective>span{font-size:12px}
+  .objective small{font-size:10px}
+  .objective #storyText{display:none}
+  .objective button{min-height:38px;font-size:11px}
+
+  .right-hud{
+    top:calc(var(--hud-safe-top) + 58px);
+    right:var(--hud-safe-right);
+    flex-direction:row;
+    gap:4px;
+  }
+  .resource{padding:5px 6px;background:#0d1619d3}
+  .resource small{font-size:9px}
+  .resource b{font-size:12px}
+
+  .boss-hud{
+    top:calc(var(--hud-safe-top) + 112px);
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:min(250px,70vw);
+    padding:5px 7px;
+  }
+
+  .joystick{
+    display:flex;
+    left:calc(var(--hud-safe-left) + 4px);
+    bottom:calc(var(--hud-safe-bottom) + 8px);
+    width:104px;
+    height:104px;
+    touch-action:none;
+  }
+
+  .controls{
+    left:auto;
+    right:var(--hud-safe-right);
+    bottom:calc(var(--hud-safe-bottom) + 6px);
+    transform:none;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:min(190px,48vw);
+    gap:6px;
+  }
+  .controls .action-btn{
+    min-height:50px;
+    padding:7px 5px;
+    justify-content:center;
+    background:#111c20ee;
+  }
+  .controls .action-btn span{font-size:11px;line-height:1.12}
+
+  .arsenal{
+    left:auto;
+    right:var(--hud-safe-right);
+    bottom:calc(var(--hud-safe-bottom) + 118px);
+    transform:none;
+    width:min(210px,54vw);
+    max-width:none;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;
+    overflow:visible;
+  }
+  .arsenal button{
+    width:100%;
+    min-width:0;
+    min-height:46px;
+    padding:5px 6px;
+    justify-content:center;
+  }
+  .arsenal button span,.arsenal button b{font-size:10px}
+  #app:has(#upgradeBtn:not(.hidden)) .arsenal{bottom:calc(var(--hud-safe-bottom) + 118px)}
+
+  .hero-subtitle{
+    left:var(--hud-safe-left);
+    right:var(--hud-safe-right);
+    bottom:calc(var(--hud-safe-bottom) + 178px);
+    width:auto;
+    max-width:none;
+    padding:7px 10px;
+  }
+  .toast{top:31%;max-width:80vw;padding:8px 12px}
+  .fps-overlay{
+    left:calc(var(--hud-safe-left) + 4px);
+    bottom:calc(var(--hud-safe-bottom) + 122px);
+  }
+
+  .kael-intro{display:flex;flex-direction:column;min-height:100dvh}
+  .kael-intro-art{order:-1;height:min(28dvh,220px);min-height:150px;flex:0 0 auto}
+  .kael-intro-art>img{width:100%;height:100%;object-fit:contain}
+  .kael-intro-copy{padding:16px 18px 24px;overflow:auto}
+  .kael-intro h1{font-size:clamp(36px,11vw,50px);margin:8px 0}
+  .kael-intro h1 span{font-size:12px}
+  .kael-intro-copy>p:not(.eyebrow){font-size:14px;line-height:1.4;margin-bottom:8px}
+  .quick-tutorial{grid-template-columns:1fr;padding:8px;margin:8px 0}
+  .quick-tutorial span{font-size:12px}
+  .hero-start-hints{font-size:11px;gap:5px}
+
+  .story-screen,.character-screen,.inventory-screen,.perk-screen,.pause-screen,.gameover{padding:14px}
+  .story-copy{padding:18px}
+  .story-copy h2,.character-header h2,.inventory-card h2,.perk-screen h2{font-size:clamp(24px,8vw,34px)}
+  .inventory-grid{grid-template-columns:1fr}
+  .character-header{gap:8px;align-items:flex-start}
+  .character-header .icon-btn{min-width:0}
+  .gear-grid,.perk-grid{grid-template-columns:1fr}
+}
+@media (orientation:portrait) and (max-width:380px){
+  .left-hud{min-width:0;width:calc(100vw - 96px)}
+  .objective{width:150px}
+  .right-hud{top:calc(var(--hud-safe-top) + 56px)}
+  .resource{padding:4px 5px}
+  .controls{width:46vw}
+  .joystick{width:96px;height:96px}
+  .arsenal{width:52vw}
+}

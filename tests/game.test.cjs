@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -111,6 +111,11 @@ check('Rift chain damages multiple clustered enemies',()=>{
   const make=x=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
   const a=make(300),b=make(340),c=make(370);t.game.enemies=[a,b,c];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100);
 });
+check('Portrait resize switches to a wider gameplay camera without pausing',()=>{
+  sandbox.innerWidth=390;sandbox.innerHeight=844;t.resize(false);assert.equal(t.portraitLayout(),true);assert.equal(t.zoom,.48);assert.equal(t.state,'playing');
+  const center=t.screenToWorld(195,844*.43);assert.ok(Math.abs(center.y-t.game.hero.y)<1e-8);
+  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.resize(false);assert.equal(t.portraitLayout(),false);assert.equal(t.zoom,.56);
+});
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
   assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
   element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
@@ -170,6 +175,10 @@ check('Towers choose the enemy closest to the monument within range',()=>{const 
 check('Cannon splash hits a nearby group while bow stays single-target',()=>{t.launchWave();const h=t.game.hero;h.fireCd=100;const m=t.game.monument;t.game.towers=[{x:m.x+220,y:m.y+100,kind:'cannon',level:1,damage:34,fireRate:1.15,fireCd:-1,range:275}];const e={x:m.x+220,y:m.y+170,hp:1000,maxHp:1000,r:12,speed:0,damage:0,attackCd:5,hit:0,type:'wraith'},other={...e,x:e.x+30};t.game.enemies=[e,other];for(let i=0;i<12;i++)t.update(.02);assert.ok(e.hp<1000);assert.ok(other.hp<1000);assert.ok(e.hp<other.hp);});
 check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const m=t.game.monument,slot=sandbox.DenkmalLevels.levels[1].slots[0];assert.notEqual(t.placementError({x:m.x+200,y:m.y}),'');assert.equal(t.placementError(slot),'');for(const p of sandbox.DenkmalLevels.levels[1].slots)for(const path of sandbox.DenkmalLevels.levels[1].paths)assert.ok(sandbox.DenkmalLevels.pathDistance(p,path)>=64);});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
+assert.ok(html.includes('viewport-fit=cover'));
+assert.ok(polish.includes('@media (orientation:portrait)'));
+assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay'])assert.ok(html.includes(`id="${id}"`));
