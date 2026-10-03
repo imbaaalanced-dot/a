@@ -63,3 +63,15 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .arsenal button span,.arsenal button b{font-size:11px}
   #app:has(#upgradeBtn:not(.hidden)) .arsenal{bottom:166px}
 }
+
+/* v3.1 alpha.1: tactical targeting, wave preview and tester telemetry */
+.wave-preview{display:block;margin-top:5px;max-width:100%;font-size:10px;line-height:1.35;letter-spacing:.03em;color:#d6c69e}
+.perf-hud{position:fixed;left:12px;bottom:116px;z-index:40;padding:6px 9px;border:1px solid #9e8a6255;border-radius:4px;background:#0b1214dd;color:#d9cfb7;font:600 11px/1.2 monospace;pointer-events:none}
+.perf-hud.hidden{display:none!important}
+#targetBtn{border-color:#8d7fb366}
+#targetBtn:not(.hidden){display:flex}
+@media(max-width:700px){
+  .wave-preview{font-size:9px}
+  .perf-hud{left:12px;bottom:118px;font-size:10px}
+  .controls:has(#targetBtn:not(.hidden)){width:220px}
+}
