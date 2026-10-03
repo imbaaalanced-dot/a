@@ -2,7 +2,7 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["main", "release/v3.0.0-alpha.*"]
+    branches: ["main", "release/v3.*"]
   pull_request:
     branches: ["main"]
 
