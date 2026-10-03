@@ -16,12 +16,12 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,mainMenu,draw,drawTower,screenToWorld,towerTarget,launchWave,startGame,update,spawnEnemy,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
-check('Start resources and clean restart',()=>{assert.equal(t.game.essence,60);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);});
-check('Valid tower, no overlapping or off-map placement',()=>{t.game.hero.x=250;t.game.hero.y=350;t.facing={x:1,y:0};t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,35);t.game.essence=100;t.buildTower();assert.equal(t.game.towers.length,1);t.game.hero.x=3060;t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,100);});
+check('Start resources and clean restart',()=>{assert.equal(t.game.essence,70);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);});
+check('Valid tower, no overlapping or off-map placement',()=>{t.game.hero.x=250;t.game.hero.y=350;t.facing={x:1,y:0};t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,45);t.game.essence=100;t.buildTower();assert.equal(t.game.towers.length,1);t.game.hero.x=3060;t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,100);});
 check('Pause freezes simulation and clears held movement',()=>{listeners.keydown({code:'KeyD'});t.pauseGame();const x=t.game.hero.x;t.update(10);assert.equal(t.game.elapsed,0);assert.equal(t.game.hero.x,x);t.resumeGame();t.update(.01);assert.equal(t.game.hero.x,x);});
 check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.hero.x;listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);assert.ok(t.game.hero.x>x);listeners.keyup({code:'ArrowRight'});t.dodge();const x2=t.game.hero.x;t.update(.02);assert.ok(t.game.hero.x>x2);const cd=t.game.hero.dodgeCd;t.dodge();assert.equal(t.game.hero.dodgeCd,cd);});
 check('Lost focus pauses',()=>{listeners.blur();assert.equal(t.state,'paused');});
@@ -29,8 +29,15 @@ check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.end
 check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x:0,y:0,hp:1};t.game.enemies=[e];t.game.hero.soul=0;t.hurtEnemy(e,5);t.hurtEnemy(e,5);assert.equal(t.game.kills,1);assert.equal(t.game.hero.soul,8);assert.equal(t.nearest({x:0,y:0},100),null);});
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});
-check('Arsenal exposes only bow/cannon while disabled towers remain in code',()=>{t.game.hero.x=250;t.game.hero.y=350;t.facing={x:1,y:0};t.game.essence=200;t.selectTower('mage');assert.equal(t.game.selectedTower,'bow');t.selectTower('cannon');t.buildTower();assert.equal(t.game.towers[0].kind,'cannon');t.upgradeTower();t.upgradeTower();assert.equal(t.game.towers[0].level,3);assert.equal(t.game.essence,80);t.upgradeTower();t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.essence,152);});
-check('One boss each fifth wave and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,95);assert.equal(t.game.loot.length,9);});
+check('Arsenal exposes four production tower roles while experimental towers stay disabled',()=>{
+  t.game.hero.x=250;t.game.hero.y=350;t.facing={x:1,y:0};t.game.essence=300;
+  for(const kind of ['bow','cannon','mage','rift']){t.selectTower(kind);assert.equal(t.game.selectedTower,kind);}
+  t.selectTower('ballista');assert.equal(t.game.selectedTower,'rift');
+  t.selectTower('cannon');t.buildTower();assert.equal(t.game.towers[0].kind,'cannon');
+  t.upgradeTower();t.upgradeTower();assert.equal(t.game.towers[0].level,3);t.upgradeTower();
+  t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.towers.length,0);
+});
+check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
 check('Resize preserves world positions and pauses',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize();assert.equal(t.state,'paused');assert.equal(t.game.towers[0].x,200);});
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Equipment modifiers never stack or reset earned base upgrades',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++){saga.equip('weapon','echo');saga.equip('weapon','ember');}assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);saga.equip('armor','ash');assert.equal(saga.stats(h).speed,246);saga.closeCharacter();t.dodge();assert.ok(Math.abs(h.dodgeCd-.84)<.0001);});
@@ -52,7 +59,7 @@ check('Wave 5 unlocks level 2 once and returns to main menu',()=>{
   t.game.wave=5;t.endWave();assert.equal(t.state,'levelcomplete');
   assert.equal(sandbox.DenkmalLevels.unlocked,true);t.endWave();assert.equal(t.state,'levelcomplete');
   t.mainMenu();assert.equal(t.state,'start');assert.equal(element('level2Btn').disabled,false);
-  t.startGame(2);assert.equal(t.game.level,2);assert.equal(t.game.wave,6);assert.equal(t.game.essence,120);assert.equal(t.game.maxTowers,6);
+  t.startGame(2);assert.equal(t.game.level,2);assert.equal(t.game.wave,6);assert.equal(t.game.essence,130);assert.equal(t.game.maxTowers,6);
 });
 check('Maze follows corners without being attracted to hero',()=>{
   t.startGame(2);t.launchWave();t.spawnEnemy();const e=t.game.enemies[0];
@@ -74,6 +81,28 @@ check('Level 2 build HUD appears only at a valid free slot',()=>{
   t.game.hero.x=250;t.game.hero.y=250;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),false);
   const slot=sandbox.DenkmalLevels.levels[2].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),true);
   t.buildTower();assert.equal(t.buildContextActive(),false);
+});
+check('First eight waves use explicit vertical-slice sizes',()=>{
+  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[7,9,11,14,16,18,21,24]);
+});
+check('Wave 7 exposes all six normal enemy roles',()=>{
+  t.game.wave=7;t.game.waveSpawned=0;t.game.enemies=[];
+  for(let i=0;i<6;i++)t.spawnEnemy();
+  assert.equal(new Set(t.game.enemies.map(e=>e.type)).size,6);
+  for(const kind of ['wraith','runner','brute','archer','guardian','sapper'])assert.ok(t.game.enemies.some(e=>e.type===kind),kind);
+});
+check('Guardian armor reduces damage and mage slow reduces movement',()=>{
+  const armored={x:0,y:0,hp:100,maxHp:100,r:12,type:'guardian',armor:.32,hit:0};t.game.enemies=[armored];t.hurtEnemy(armored,10);assert.ok(armored.hp>90);
+  const e={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:60,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
+  t.game.enemies=[e];t.shoot({x:200,y:300,kind:'mage',level:1},e,1,500,'#69bfff',{slow:.58,slowDuration:1.6});for(let i=0;i<15;i++)t.update(.02);assert.ok(e.slow>0);assert.ok(e.slowFactor<=.58);
+});
+check('Rift chain damages multiple clustered enemies',()=>{
+  const make=x=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
+  const a=make(300),b=make(340),c=make(370);t.game.enemies=[a,b,c];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100);
+});
+check('Graphics and camera settings cycle without pausing gameplay',()=>{
+  assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
+  element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
 });
 // Persistence must survive a fresh script context; blocked storage must not stop play.
 const saved=new Map();
@@ -132,4 +161,6 @@ check('Roads and monument remain clear of towers',()=>{const m=t.game.monument;a
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
+for(const id of ['graphicsBtn','zoomBtn'])assert.ok(html.includes(`id="${id}"`));
+for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
