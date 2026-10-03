@@ -2,6 +2,10 @@
 (() => {
   'use strict';
   const MAX_PARTICLES = 240;
+  const SPRITE_W=176,SPRITE_H=146;
+  const spriteRows={cannon:0,rift:1,mage:2,bow:3};
+  const projectileAtlas=typeof Image!=='undefined'?new Image():null;
+  if(projectileAtlas)projectileAtlas.src='assets/projectile-fx-v3.svg';
   let audio, master, voices = 0;
   const lastSound = new Map();
   function unlock() {
@@ -44,10 +48,25 @@
     const heavy = bullet.kind === 'cannon' || bullet.kind === 'mortar';
     emit(game,bullet.x,bullet.y,bullet.color,heavy?10:4,false,reduced);
     if (heavy) emit(game,bullet.x,bullet.y,'#81776b',impact?9:5,true,reduced);
+    if(impact&&spriteRows[bullet.kind]!==undefined&&game.particles.length<MAX_PARTICLES){
+      const life=reduced?.16:.28;
+      game.particles.push({x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:22,color:bullet.color,spriteFx:true,kind:bullet.kind});
+    }
     sound(bullet.kind,impact,enabled);
+  }
+  function drawSprite(ctx,kind,frame,x,y,angle=0,scale=1,alpha=1){
+    const row=spriteRows[kind];
+    if(row===undefined||!projectileAtlas?.complete||!projectileAtlas.naturalWidth)return false;
+    const f=Math.max(0,Math.min(6,frame|0));
+    ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.globalAlpha*=alpha;
+    const w=70*scale,h=58*scale;
+    ctx.drawImage(projectileAtlas,f*SPRITE_W,row*SPRITE_H,SPRITE_W,SPRITE_H,-w/2,-h/2,w,h);
+    ctx.restore();return true;
   }
   function draw(ctx,b,reduced) {
     const kind=b.kind||'magic', level=b.level||1, arrow=kind==='bow'||kind==='ballista',heavy=kind==='cannon'||kind==='mortar';
+    const travelFrame=1+(Math.floor(Math.max(0,1.1-(b.life??1.1))*12)%3);
+    if(drawSprite(ctx,kind,travelFrame,b.x,b.y,Math.atan2(b.vy,b.vx),.8+level*.08,1))return;
     ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx));
     ctx.strokeStyle=b.color;ctx.fillStyle=b.color;ctx.lineWidth=1+level*.45;
     if (!reduced) { ctx.globalAlpha=.45;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(-12-level*5,0);ctx.stroke();ctx.globalAlpha=1; }
@@ -61,5 +80,11 @@
     }
     ctx.restore();
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,unlock,mute,burst,draw};
+  function drawParticle(ctx,p){
+    if(!p?.spriteFx)return false;
+    const progress=1-Math.max(0,p.life)/Math.max(.001,p.max);
+    const frame=4+Math.min(2,Math.floor(progress*3));
+    return drawSprite(ctx,p.kind,frame,p.x,p.y,0,1.05,Math.max(0,p.life/p.max));
+  }
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,unlock,mute,burst,draw,drawParticle};
 })();
