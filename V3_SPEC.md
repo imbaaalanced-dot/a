@@ -4,12 +4,13 @@ Target: v3.0.0 closed tester alpha.
 
 ## Architecture
 - Static browser game under `dist/`; no runtime package dependencies.
-- `game.js`: simulation, towers, spawning, input, rendering orchestration.
+- `game.js`: simulation, tower/enemy roles, spawning, input, rendering orchestration and local settings.
 - `levels.js`: gates, paths, maze routing, build slots, level unlock persistence.
-- `hero-saga.js`: Marcel progression, story, equipment, voice hooks.
+- `hero-saga.js`: Marcel progression, story, equipment and voice hooks.
 - `combat-fx.js`: bounded combat particles/audio feedback.
 - `tests/*.cjs`: headless regression checks with mocked DOM/canvas.
-- GitHub Pages publishes `dist/` from `main`.
+- GitHub Actions gates gameplay + combat FX before tester publication.
+- `gh-pages` remains the tester publication branch while repository Pages settings are branch-based.
 
 ## v3 alpha task breakdown
 
@@ -17,21 +18,31 @@ Target: v3.0.0 closed tester alpha.
 - [x] Four deterministic spawn gates.
 - [x] Level 2 maze routing and build-slot validation.
 - [x] Touch joystick pointer capture/reset hardening.
-- [x] Camera zoom 0.60 and compact combat HUD.
-- [x] Rendering caches and offscreen culling.
-- [x] Contextual Level 2 construction HUD.
+- [x] Wide camera and compact contextual combat HUD.
+- [x] Rendering caches, offscreen culling and bounded particles.
 - [x] CI gate for gameplay + combat-FX regression tests.
 - [ ] Real Android device touch test.
 - [ ] Sustained-wave FPS capture on a mid-range Android device.
 
 ### P1 — vertical slice completeness
-- [ ] Four production tower roles exposed in the arsenal.
-- [ ] Six distinct enemy roles.
-- [ ] Eight-wave balancing pass plus one boss encounter.
-- [ ] Finalized v3 map art and spawn-gate readability.
-- [ ] Mobile settings for graphics/audio/zoom validated end-to-end.
+- [x] Four production tower roles: bow, cannon, mage slow, rift chain.
+- [x] Six normal enemy roles: wraith, runner, brute, archer, guardian, sapper.
+- [x] Explicit balancing for waves 1–8 plus one boss encounter on wave 5.
+- [x] Spawn-gate labels, numbering and active-gate telegraphing.
+- [x] Persistent audio, graphics and camera settings for mobile/desktop.
+- [x] Contextual build HUD on valid construction positions.
 
 ### P2 — tester packaging
 - [x] Versioned closed-alpha release notes.
-- [ ] Publish alpha.2 to Pages after CI passes.
-- [ ] Tester issue template with device/browser/level/wave/repro fields.
+- [x] Tester issue template with device/browser/level/wave/reproduction fields.
+- [x] CI regression workflow.
+- [ ] Publish alpha.3 to tester branch after CI passes.
+- [ ] Record real-device Android results in a tester issue.
+
+## v3.0 acceptance gate
+The build is considered ready to leave alpha only after:
+1. CI is green.
+2. Android touch is confirmed on at least one real device.
+3. A wave 1–8 run completes without progression blockers.
+4. Level 2 build slots, upgrade and sell flow are verified.
+5. Sustained combat does not show unacceptable FPS degradation on the target Android device.
