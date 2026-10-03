@@ -1,0 +1,25 @@
+name: Test Denkmal TD
+
+on:
+  push:
+    branches: ["main", "release/v3.0.0-alpha.*"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Gameplay regression suite
+        run: node tests/game.test.cjs
+      - name: Combat FX regression suite
+        run: node tests/combat-fx.test.cjs
