@@ -3,11 +3,11 @@
 Prioritized follow-ups beyond the current vertical slice.
 
 ## V3.1 — gameplay depth
-- Tower targeting modes: first, strongest, nearest, boss.
-- Tower synergies: mage slow amplifies cannon splash; rift chains gain bonus jumps on slowed enemies.
+- [x] Tower targeting modes: first, strongest, nearest, boss.
+- [x] Tower synergies: mage slow amplifies cannon splash; rift chains gain bonus jumps on slowed enemies.
 - Enemy resistances shown explicitly instead of hidden multipliers.
 - Mini-boss modifiers every four waves after the authored wave-8 slice.
-- Wave preview during build pause with the upcoming enemy composition.
+- [x] Wave preview during build pause with the upcoming enemy composition.
 
 ## V3.2 — feel and readability
 - Edge-of-screen threat arrows for active gates and bosses.
@@ -26,5 +26,12 @@ Prioritized follow-ups beyond the current vertical slice.
 - Split `game.js` into simulation, rendering, input, UI and content-data modules.
 - Deterministic seeded RNG for reproducible tester runs.
 - Browser smoke test with Playwright in addition to headless VM tests.
-- Lightweight frame-time telemetry overlay enabled only in tester builds.
+- [x] Lightweight FPS/entity/particle telemetry overlay for tester builds.
 - Asset manifest/preload screen so missing or oversized images are reported before a run starts.
+
+
+## Next autonomous slice — v3.1 alpha.2
+- Run summary with damage contribution by hero and tower role.
+- Edge threat indicators for active gates and offscreen boss pressure.
+- Deterministic seeded tester runs for reproducible balancing.
+- Start splitting content data out of `game.js` without changing gameplay behavior.
