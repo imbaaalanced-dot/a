@@ -93,3 +93,10 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .arsenal{left:auto;transform:none;width:min(330px,62vw)}
   .arsenal button{min-width:80px}
 }
+
+
+/* v3.0.0-alpha.5 — combat readability + tester telemetry */
+.fps-overlay{position:fixed;left:var(--hud-safe-left);bottom:calc(var(--hud-safe-bottom) + 116px);z-index:8;padding:6px 8px;border:1px solid #8da29b44;border-radius:4px;background:#0b1316dc;color:#b9cbc5;font:600 11px/1.2 monospace;letter-spacing:.02em;pointer-events:none}
+.fps-overlay.hidden{display:none}
+@media(pointer:coarse){.fps-overlay{bottom:calc(var(--hud-safe-bottom) + 112px);left:calc(var(--hud-safe-left) + 4px)}}
+@media(max-width:700px){.fps-overlay{font-size:10px;padding:5px 6px}.hud-menu-panel{max-height:calc(100dvh - 70px);overflow:auto}}
