@@ -63,3 +63,33 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .arsenal button span,.arsenal button b{font-size:11px}
   #app:has(#upgradeBtn:not(.hidden)) .arsenal{bottom:166px}
 }
+
+
+/* v3.0.0-alpha.4 — fixed build-pad interaction + tighter combat HUD */
+:root{--hud-safe-top:max(10px,env(safe-area-inset-top));--hud-safe-right:max(10px,env(safe-area-inset-right));--hud-safe-bottom:max(10px,env(safe-area-inset-bottom));--hud-safe-left:max(10px,env(safe-area-inset-left))}
+.header-actions{top:var(--hud-safe-top);right:var(--hud-safe-right)}
+.left-hud{top:var(--hud-safe-top);left:var(--hud-safe-left)}
+.right-hud{right:var(--hud-safe-right)}
+.controls{right:var(--hud-safe-right);bottom:var(--hud-safe-bottom)}
+.joystick{left:calc(var(--hud-safe-left) + 4px);bottom:calc(var(--hud-safe-bottom) + 4px)}
+.arsenal{right:var(--hud-safe-right)}
+.arsenal.hidden,.controls .hidden{display:none!important}
+.arsenal button{transition:border-color .12s ease,background .12s ease,transform .12s ease}
+.arsenal button.selected{transform:translateY(-2px)}
+@media(pointer:coarse){
+  .controls{width:min(330px,56vw);grid-template-columns:repeat(2,minmax(0,1fr))}
+  .controls .action-btn{min-height:48px}
+  .arsenal{bottom:calc(var(--hud-safe-bottom) + 112px);max-width:min(440px,68vw);overflow-x:auto;scrollbar-width:none}
+  .arsenal::-webkit-scrollbar{display:none}
+}
+@media(max-width:700px){
+  .left-hud{width:176px;padding:7px 9px}
+  .left-hud .hud-label,.left-hud .hud-label b{font-size:11px}
+  .right-hud{top:calc(var(--hud-safe-top) + 50px)}
+  .objective{top:calc(var(--hud-safe-top) + 64px);left:var(--hud-safe-left);width:176px}
+  .objective #storyText{display:none}
+  .boss-hud{top:calc(var(--hud-safe-top) + 128px);width:176px}
+  .controls{width:min(216px,54vw)}
+  .arsenal{left:auto;transform:none;width:min(330px,62vw)}
+  .arsenal button{min-width:80px}
+}
