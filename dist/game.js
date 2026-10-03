@@ -44,7 +44,7 @@
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
   function portraitLayout(){return H>W;}
-  function zoomForMode(){return zoomMode==='wide'?(portraitLayout()?.48:.56):(portraitLayout()?.56:.64);}
+  function zoomForMode(){return zoomMode==='wide'?(portraitLayout() ? .48 : .56):(portraitLayout() ? .56 : .64);}
   atlas.onload = () => {
     const cut = (name,x,y,w,h,threshold=44) => {
       const c=document.createElement('canvas');c.width=w;c.height=h;
@@ -133,7 +133,7 @@
     game.waveTotal=waveSize(game.wave);
     saga.reset(game.hero);updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
   }
-  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom,focusY=portraitLayout()?.43:.5;camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y-vh*focusY,0,WORLD_H-vh);}
+  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom,focusY=portraitLayout() ? .43 : .5;camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y-vh*focusY,0,WORLD_H-vh);}
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/zoom+camera.y};}
   function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
