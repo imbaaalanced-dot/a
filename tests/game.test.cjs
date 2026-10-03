@@ -15,7 +15,7 @@ const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{getItem:()=> 'off',setItem(){}},Math,console};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,mainMenu,draw,drawTower,screenToWorld,towerTarget,launchWave,startGame,update,spawnEnemy,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,mainMenu,draw,drawTower,screenToWorld,towerTarget,launchWave,startGame,update,spawnEnemy,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -67,6 +67,12 @@ check('Maze permits only empty road-side slots and refunds on sale',()=>{
   assert.equal(t.game.towers.length,1);assert.equal(t.game.towers[0].x,slot.x);
   t.buildTower();assert.equal(t.game.towers.length,1);t.sellTower();assert.equal(t.game.towers.length,0);
   for(const p of sandbox.DenkmalLevels.levels[2].slots)assert.ok(sandbox.DenkmalLevels.pathDistance(p,sandbox.DenkmalLevels.levels[2].paths[0])>=70);
+});
+check('Level 2 build HUD appears only at a valid free slot',()=>{
+  sandbox.DenkmalLevels.unlock();t.startGame(2);
+  t.game.hero.x=250;t.game.hero.y=250;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),false);
+  const slot=sandbox.DenkmalLevels.levels[2].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),true);
+  t.buildTower();assert.equal(t.buildContextActive(),false);
 });
 // Persistence must survive a fresh script context; blocked storage must not stop play.
 const saved=new Map();
