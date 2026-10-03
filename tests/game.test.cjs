@@ -92,7 +92,7 @@ check('Wave 7 exposes all six normal enemy roles',()=>{
   for(const kind of ['wraith','runner','brute','archer','guardian','sapper'])assert.ok(t.game.enemies.some(e=>e.type===kind),kind);
 });
 check('Guardian armor reduces damage and mage slow reduces movement',()=>{
-  const armored={x:0,y:0,hp:100,maxHp:100,r:12,type:'guardian',armor:.32,hit:0};t.game.enemies=[armored];t.hurtEnemy(armored,10);assert.ok(armored.hp>90);
+  const armored={x:0,y:0,hp:100,maxHp:100,r:12,type:'guardian',armor:.32,hit:0};t.game.enemies=[armored];const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;t.hurtEnemy(armored,10);sandbox.Math.random=oldRandom;assert.ok(Math.abs(armored.hp-93.2)<1e-9);
   const e={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:60,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
   t.game.enemies=[e];t.shoot({x:200,y:300,kind:'mage',level:1},e,1,500,'#69bfff',{slow:.58,slowDuration:1.6});for(let i=0;i<15;i++)t.update(.02);assert.ok(e.slow>0);assert.ok(e.slowFactor<=.58);
 });
