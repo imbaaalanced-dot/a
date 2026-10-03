@@ -30,7 +30,7 @@ check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});
 check('Arsenal exposes four production tower roles while experimental towers stay disabled',()=>{
-  t.game.hero.x=250;t.game.hero.y=350;t.facing={x:1,y:0};t.game.essence=300;
+  const slot=sandbox.DenkmalLevels.levels[1].slots[1];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.game.essence=300;
   for(const kind of ['bow','cannon','mage','rift']){t.selectTower(kind);assert.equal(t.game.selectedTower,kind);}
   t.selectTower('ballista');assert.equal(t.game.selectedTower,'rift');
   t.selectTower('cannon');t.buildTower();assert.equal(t.game.towers[0].kind,'cannon');
@@ -38,7 +38,7 @@ check('Arsenal exposes four production tower roles while experimental towers sta
   t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.towers.length,0);
 });
 check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
-check('Resize preserves world positions and pauses',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize();assert.equal(t.state,'paused');assert.equal(t.game.towers[0].x,200);});
+check('Resize preserves world positions without interrupting play',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize(false);assert.equal(t.state,'playing');assert.equal(t.game.towers[0].x,200);});
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Equipment modifiers never stack or reset earned base upgrades',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++){saga.equip('weapon','echo');saga.equip('weapon','ember');}assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);saga.equip('armor','ash');assert.equal(saga.stats(h).speed,246);saga.closeCharacter();t.dodge();assert.ok(Math.abs(h.dodgeCd-.84)<.0001);});
 check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.game.hero;saga.damage(20);assert.equal(h.hp,85);t.game.wave=3;saga.openCharacter();saga.equip('armor','ash');saga.equip('armor','oath');assert.equal(h.hp,85);saga.closeCharacter();});
