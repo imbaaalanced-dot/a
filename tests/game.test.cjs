@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -137,8 +137,35 @@ check('Mobile joystick applies a deadzone, analog response and radius clamp',()=
   const mid=t.joystickVector(20,0,40);assert.ok(mid.x>0&&mid.x<1);assert.equal(mid.y,0);
   const full=t.joystickVector(80,0,40);assert.equal(full.x,1);assert.equal(full.knobX,40);
 });
-check('First enemy of a wave triggers the compact wave banner',()=>{
-  t.game.intermission=0;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();assert.equal(element('waveBanner').textContent,'WELLE 1');assert.equal(element('waveBanner').classList.contains('show'),true);
+check('First enemy of a wave triggers the profiled wave banner',()=>{
+  t.game.intermission=0;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();assert.equal(element('waveBanner').textContent,'WELLE 1 · ERSTE GLUT');assert.equal(element('waveBanner').classList.contains('show'),true);
+});
+check('Alpha.3 wave profiles modify selected enemy roles without changing wave sizes',()=>{
+  assert.equal(t.wavePlan(2).name,'HETZJAGD');assert.equal(t.wavePlan(7).name,'SABOTAGE');
+  const runner=t.applyWavePlan('runner',t.enemySpecs.runner,2),brute=t.applyWavePlan('brute',t.enemySpecs.brute,3),guardian=t.applyWavePlan('guardian',t.enemySpecs.guardian,6);
+  assert.equal(runner.speed,1.14);assert.equal(brute.hp,1.12);assert.equal(guardian.armor,.06);
+  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[7,9,11,14,16,18,21,24]);
+});
+check('Runner enrages and Guardian breaks shield below health thresholds',()=>{
+  const runner={x:300,y:300,type:'runner',hp:44,maxHp:100,speed:100,damage:10,enraged:false,dead:false,hitKick:0};
+  t.updateEnemyPressure(runner);assert.equal(runner.enraged,true);assert.equal(runner.speed,128);assert.ok(runner.damage>10);
+  const guardian={x:300,y:300,type:'guardian',hp:49,maxHp:100,speed:40,damage:10,armor:.38,shieldBroken:false,dead:false,hitKick:0};
+  t.updateEnemyPressure(guardian);assert.equal(guardian.shieldBroken,true);assert.ok(Math.abs(guardian.armor-.18)<1e-9);assert.ok(guardian.speed>40);
+});
+check('Belagerer escalates through three combat phases',()=>{
+  const boss={x:300,y:300,type:'boss',hp:650,maxHp:1000,speed:30,damage:40,attackCooldown:.82,armor:0,phase:1,dead:false,hitKick:0};
+  t.updateEnemyPressure(boss);assert.equal(boss.phase,2);assert.equal(t.bossPhaseLabel(boss.phase),'II');const phase2Speed=boss.speed;
+  boss.hp=320;t.updateEnemyPressure(boss);assert.equal(boss.phase,3);assert.equal(t.bossPhaseLabel(boss.phase),'III');assert.ok(boss.speed>phase2Speed);assert.ok(boss.armor>=.12);assert.match(element('waveBanner').textContent,/PHASE III/);
+});
+check('Sapper detonates once at the monument instead of repeating melee attacks',()=>{
+  const m=t.game.monument,h=t.game.hero;h.fireCd=100;h.x=m.x+500;h.y=m.y+500;
+  const sapper={x:m.x+50,y:m.y,type:'sapper',hp:100,maxHp:100,r:14,speed:0,damage:32,attackCd:0,attackCooldown:1.05,attackRange:0,armor:0,focusMonument:true,gateIndex:0,waypoint:1,slow:0,slowFactor:1,hit:0,hitKick:0,dead:false};
+  const before=m.hp;t.game.enemies=[sapper];t.game.waveKilled=0;t.update(.02);assert.ok(m.hp<before);assert.equal(t.game.enemies.length,0);assert.equal(t.game.waveKilled,1);
+});
+check('Archer backs away when Marcel closes inside minimum range',()=>{
+  const m=t.game.monument,h=t.game.hero;h.x=m.x+320;h.y=m.y;h.fireCd=100;
+  const archer={x:h.x+40,y:h.y,type:'archer',hp:100,maxHp:100,r:12,speed:46,damage:0,attackCd:99,attackCooldown:1.25,attackRange:170,armor:0,focusMonument:false,gateIndex:0,waypoint:1,slow:0,slowFactor:1,hit:0,hitKick:0,dead:false};
+  const before=Math.hypot(archer.x-h.x,archer.y-h.y);t.game.enemies=[archer];t.update(.1);const after=Math.hypot(archer.x-h.x,archer.y-h.y);assert.ok(after>before);
 });
 // Persistence must survive a fresh script context; blocked storage must not stop play.
 const saved=new Map();
@@ -198,7 +225,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
 assert.ok(polish.includes('@media (orientation:portrait)'));
-assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));
+assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));assert.ok(polish.includes('v3.1.0-alpha.3 — combat variety + boss escalation'));
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
