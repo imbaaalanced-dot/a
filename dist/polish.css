@@ -249,3 +249,13 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .joystick{width:96px;height:96px}
   .arsenal{width:52vw}
 }
+
+
+/* v3.1.0-alpha.1 — tactical targeting and wave intelligence */
+.wave-preview{display:block;margin-top:5px;max-width:100%;font-size:10px;line-height:1.35;letter-spacing:.03em;color:#d6c69e}
+#targetBtn{border-color:#8d7fb366}
+#targetBtn:not(.hidden){display:flex}
+@media(max-width:700px){
+  .wave-preview{font-size:9px}
+  .controls:has(#targetBtn:not(.hidden)){width:220px}
+}

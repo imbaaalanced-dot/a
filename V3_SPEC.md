@@ -46,3 +46,12 @@ The build is considered ready to leave alpha only after:
 3. A wave 1–8 run completes without progression blockers.
 4. Level 2 build slots, upgrade and sell flow are verified.
 5. Sustained combat does not show unacceptable FPS degradation on the target Android device.
+
+
+## v3.1 tactical layer
+- [x] Per-tower target priorities: first / strongest / nearest / boss.
+- [x] Upcoming-wave composition preview during build pause.
+- [x] Mage slow → Cannon +25% impact/splash damage synergy.
+- [x] Mage slow → Rift extra-chain synergy.
+- [x] Existing Alpha-7 tester telemetry retained.
+- [x] CI trigger generalized to all v3 release branches.
