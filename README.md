@@ -1,4 +1,4 @@
-# Denkmal TD · v3.0.0-alpha.7
+# Denkmal TD · v3.1.0-alpha.1
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
@@ -12,7 +12,10 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 - Off-Screen-Bedrohungspfeile und optionale FPS-/Gegner-/FX-Telemetrie für Tester.
 - Portrait-first Android-Layout mit Safe-Area-Unterstützung, angepasstem Kamera-Zoom, Touch-Joystick und kompaktem 2×2-Arsenal.
 - Neue Projektil- und Treffer-Sprites für Bogen, Kanone, Magie und Rift. Der bisherige prozedurale Renderer bleibt als Fallback erhalten.
-- Browser-Cache-Busting für `game.js` und `combat-fx.js`, damit wiederkehrende Tester den aktuellen Alpha-7-Code erhalten.
+- Einheitliches Browser-Cache-Busting für den v3.1-Testbuild.
+- Taktische Zielprioritäten pro Turm: ERSTER, STÄRKSTER, NÄCHSTER oder BOSS.
+- Gegner-Vorschau während der Baupause.
+- Mage-Slow verstärkt Kanonen-Impact/Splash um 25 % und gibt der Riftlanze einen zusätzlichen Kettensprung.
 
 ## Spielen
 
