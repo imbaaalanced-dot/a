@@ -259,3 +259,42 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .wave-preview{font-size:9px}
   .controls:has(#targetBtn:not(.hidden)){width:220px}
 }
+
+
+/* v3.1.0-alpha.2 — mobile combat polish */
+.wave-banner{
+  position:fixed;left:50%;top:26%;z-index:18;transform:translate(-50%,-8px) scale(.96);
+  opacity:0;pointer-events:none;padding:9px 18px;border-block:1px solid #d0b47766;
+  background:linear-gradient(90deg,transparent,#10191ddf 18%,#10191df2 50%,#10191ddf 82%,transparent);
+  color:#f1dfb4;font:800 clamp(16px,3vw,24px)/1.1 sans-serif;letter-spacing:.12em;text-align:center;
+  text-shadow:0 2px 12px #000;white-space:nowrap
+}
+.wave-banner.show{animation:wave-banner-pulse 1.25s ease both}
+@keyframes wave-banner-pulse{
+  0%{opacity:0;transform:translate(-50%,-12px) scale(.94)}
+  18%,68%{opacity:1;transform:translate(-50%,0) scale(1)}
+  100%{opacity:0;transform:translate(-50%,8px) scale(1.02)}
+}
+.joystick{transition:border-color .1s ease,background .1s ease,transform .1s ease}
+.joystick>span{transition:transform .035s linear}
+.joystick.active{border-color:#e1c37aaa;background:#1b2a2dcc;transform:scale(1.035)}
+@media(pointer:coarse){
+  .joystick{width:108px;height:108px}
+  .controls{width:min(210px,48vw);max-width:none;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .controls:has(#buildBtn:not(.hidden)),
+  .controls:has(#upgradeBtn:not(.hidden)),
+  .controls:has(#sellBtn:not(.hidden)),
+  .controls:has(#targetBtn:not(.hidden)){width:min(300px,56vw)}
+  .controls .action-btn{min-height:52px;padding:8px 6px}
+  .arsenal{max-width:min(360px,62vw)}
+}
+@media (orientation:portrait){
+  .wave-banner{top:29%;font-size:16px;padding:8px 14px}
+  .joystick{width:106px;height:106px}
+  .controls{width:min(196px,48vw)}
+  .controls:has(#buildBtn:not(.hidden)),
+  .controls:has(#upgradeBtn:not(.hidden)),
+  .controls:has(#sellBtn:not(.hidden)),
+  .controls:has(#targetBtn:not(.hidden)){width:min(220px,54vw)}
+}
+@media (prefers-reduced-motion:reduce){.wave-banner.show{animation:none;opacity:1}.joystick{transition:none}.joystick>span{transition:none}}
