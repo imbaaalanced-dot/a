@@ -1,4 +1,4 @@
-# Denkmal TD · v3.1.0-alpha.2
+# Denkmal TD · v3.1.0-alpha.3
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
@@ -19,6 +19,11 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 - Alpha-2 Mobile-Polish: Joystick-Deadzone mit analoger Response, weitere Kamera und leichter Bewegungs-Vorlauf.
 - Kompaktere Touch-Aktionsflächen, die nur bei Bau-/Turmkontext breiter werden.
 - Kurzer Wellen-Banner beim ersten Spawn einer neuen Welle.
+- Alpha-3 Kampfprofile pro Welle: HETZJAGD, BRECHERSTURM, PFEILREGEN, SCHILDWALL, SABOTAGE und RISSSTURM.
+- Runner geraten unter 45 % LP in Raserei; Wächter verlieren unter 50 % LP einen Teil ihrer Panzerung und werden schneller.
+- Schützen weichen Marcel auf sehr kurze Distanz aus; Sappeure detonieren einmalig am Monument.
+- Der Belagerer eskaliert bei 66 % und 33 % LP in Phase II und III mit mehr Tempo, Schaden, Angriffstakt und Panzerung.
+- Trefferreaktionen und Boss-Phasen werden visuell stärker hervorgehoben.
 
 ## Spielen
 
