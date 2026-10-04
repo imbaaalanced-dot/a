@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -122,14 +122,23 @@ check('Rift chain damages multiple clustered enemies',()=>{
   const make=x=>({x,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
   const a=make(300),b=make(340),c=make(370);t.game.enemies=[a,b,c];t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:2});for(let i=0;i<15;i++)t.update(.02);assert.ok(a.hp<100&&b.hp<100&&c.hp<100);
 });
-check('Portrait resize switches to a wider gameplay camera without pausing',()=>{
-  sandbox.innerWidth=390;sandbox.innerHeight=844;t.resize(false);assert.equal(t.portraitLayout(),true);assert.equal(t.zoom,.48);assert.equal(t.state,'playing');
+check('Alpha.2 camera widens the view and adds movement lead without pausing',()=>{
+  sandbox.innerWidth=390;sandbox.innerHeight=844;t.resize(false);assert.equal(t.portraitLayout(),true);assert.equal(t.zoom,.46);assert.equal(t.state,'playing');
   const center=t.screenToWorld(195,844*.43);assert.ok(Math.abs(center.y-t.game.hero.y)<1e-8);
-  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.resize(false);assert.equal(t.portraitLayout(),false);assert.equal(t.zoom,.56);
+  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.resize(false);assert.equal(t.portraitLayout(),false);assert.equal(t.zoom,.52);
+  listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);listeners.keyup({code:'ArrowRight'});assert.ok(t.cameraLead().x>0);
 });
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
   assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
   element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
+});
+check('Mobile joystick applies a deadzone, analog response and radius clamp',()=>{
+  const dead=t.joystickVector(2,2,40);assert.equal(dead.x,0);assert.equal(dead.y,0);
+  const mid=t.joystickVector(20,0,40);assert.ok(mid.x>0&&mid.x<1);assert.equal(mid.y,0);
+  const full=t.joystickVector(80,0,40);assert.equal(full.x,1);assert.equal(full.knobX,40);
+});
+check('First enemy of a wave triggers the compact wave banner',()=>{
+  t.game.intermission=0;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();assert.equal(element('waveBanner').textContent,'WELLE 1');assert.equal(element('waveBanner').classList.contains('show'),true);
 });
 // Persistence must survive a fresh script context; blocked storage must not stop play.
 const saved=new Map();
@@ -189,9 +198,9 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
 assert.ok(polish.includes('@media (orientation:portrait)'));
-assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));
+assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn'])assert.ok(html.includes(`id="${id}"`));
+for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));

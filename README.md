@@ -1,4 +1,4 @@
-# Denkmal TD · v3.1.0-alpha.1
+# Denkmal TD · v3.1.0-alpha.2
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
@@ -16,6 +16,9 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 - Taktische Zielprioritäten pro Turm: ERSTER, STÄRKSTER, NÄCHSTER oder BOSS.
 - Gegner-Vorschau während der Baupause.
 - Mage-Slow verstärkt Kanonen-Impact/Splash um 25 % und gibt der Riftlanze einen zusätzlichen Kettensprung.
+- Alpha-2 Mobile-Polish: Joystick-Deadzone mit analoger Response, weitere Kamera und leichter Bewegungs-Vorlauf.
+- Kompaktere Touch-Aktionsflächen, die nur bei Bau-/Turmkontext breiter werden.
+- Kurzer Wellen-Banner beim ersten Spawn einer neuen Welle.
 
 ## Spielen
 

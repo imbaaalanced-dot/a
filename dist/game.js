@@ -44,7 +44,10 @@
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
   function portraitLayout(){return H>W;}
-  function zoomForMode(){return zoomMode==='wide'?(portraitLayout() ? .48 : .56):(portraitLayout() ? .56 : .64);}
+  function zoomForMode(){
+    if(zoomMode==='wide')return portraitLayout()?.46:(mobileRender?.50:.52);
+    return portraitLayout()?.54:(mobileRender?.58:.62);
+  }
   atlas.onload = () => {
     const cut = (name,x,y,w,h,threshold=44) => {
       const c=document.createElement('canvas');c.width=w;c.height=h;
@@ -65,7 +68,7 @@
   function setHidden(el,hidden){const key='h'+hidden;if(uiCache.get(el)!==key){el.classList.toggle('hidden',hidden);uiCache.set(el,key);}}
   function setDisabled(el,disabled){disabled=!!disabled;if(el.disabled!==disabled)el.disabled=disabled;}
   let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,toastTimer=0;
-  let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, hudClock=0,camera={x:0,y:0};
+  let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, moveIntent={x:0,y:0}, hudClock=0,camera={x:0,y:0};
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
@@ -134,7 +137,7 @@
 
   let game;
   function reset(level=1){
-    clearInput();time=0;shake=0;facing={x:1,y:0};
+    clearInput();time=0;shake=0;facing={x:1,y:0};moveIntent={x:0,y:0};
     game={level,wave:level===2?6:1,elapsed:0,essence:level===2?130:70,selectedTower:'bow',kills:0,waveSpawned:0,waveKilled:0,waveTotal:waveSize(level===2?6:1),spawnTimer:1.2,intermission:5,
       hero:{x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
       monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
@@ -142,7 +145,11 @@
     game.waveTotal=waveSize(game.wave);
     saga.reset(game.hero);updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
   }
-  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom,focusY=portraitLayout() ? .43 : .5;camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y-vh*focusY,0,WORLD_H-vh);}
+  function cameraLead(){
+    const amount=mobileRender?68:88;
+    return {x:moveIntent.x*amount,y:moveIntent.y*amount*.68};
+  }
+  function updateCamera(){if(!game)return;const vw=W/zoom,vh=H/zoom,focusY=portraitLayout()?.43:.5,lead=cameraLead();camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x+lead.x-vw*.5,0,WORLD_W-vw);camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y-vh*focusY,0,WORLD_H-vh);}
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/zoom+camera.y};}
   function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
@@ -184,6 +191,10 @@
     $('levelComplete').classList.remove('hidden');focusModal($('levelComplete'));updateUI();
   }
   function showToast(t){ui.toast.textContent=t;ui.toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>ui.toast.classList.remove('show'),1500)}
+  function showWaveBanner(label){
+    const el=$('waveBanner');if(!el)return;setText(el,label);el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+    clearTimeout(showWaveBanner.timer);showWaveBanner.timer=setTimeout(()=>el.classList.remove('show'),1250);
+  }
   function spawnEnemy(){
     const level=campaign.levels[game.level],gateIndex=game.waveSpawned%level.gates.length;
     const {x,y}=level.gates[gateIndex],type=enemyTypeForSpawn(game.wave,game.waveSpawned),base=enemySpecs[type];
@@ -191,6 +202,7 @@
     const enemy={x,y,gateIndex,waypoint:1,type,hit:0,slow:0,slowFactor:1,
       r:base.r,hp:base.hp*hpScale,maxHp:base.hp*hpScale,speed:base.speed*speedScale,damage:base.damage*damageScale,
       attackCd:0,attackRange:base.attackRange||0,attackCooldown:base.attackCooldown||.85,armor:base.armor||0,focusMonument:!!base.focusMonument};
+    if(game.waveSpawned===0)showWaveBanner(type==='boss'?`BOSSWELLE ${game.wave}`:`WELLE ${game.wave}`);
     game.enemies.push(enemy);game.waveSpawned++;
     if(type==='boss'){showToast('BOSSWELLE · DER BELAGERER');tone(62,.7,.07);shake=12}
   }
@@ -263,7 +275,7 @@
   function update(dt){
     if(state!=='playing')return;if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);time+=dt;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
     h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
-    let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed;if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}h.x=clamp(h.x+dx*sp*dt,26,WORLD_W-26);h.y=clamp(h.y+dy*sp*dt,26,WORLD_H-26);updateCamera();saga.update(dt,len>0||h.dodge>0,facing);
+    let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed;if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx/motion,y:dy/motion}:{x:0,y:0};h.x=clamp(h.x+dx*sp*dt,26,WORLD_W-26);h.y=clamp(h.y+dy*sp*dt,26,WORLD_H-26);updateCamera();saga.update(dt,len>0||h.dodge>0,facing);
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage,560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack();h.fireCd=heroStats.rate}
     if(game.intermission>0)game.intermission=Math.max(0,game.intermission-dt);
@@ -450,13 +462,17 @@
   addEventListener('keyup',e=>keys[e.code]=false);
   canvas.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;mouse=screenToWorld(e.clientX,e.clientY);const d=dist(mouse,game.hero);if(d>5)facing={x:(mouse.x-game.hero.x)/d,y:(mouse.y-game.hero.y)/d};});
   const stick=$('joystick');let pointerId=null,activeTouchId=null;
-  function setStick(clientX,clientY){
-    const r=stick.getBoundingClientRect(),radius=Math.max(28,Math.min(r.width,r.height)*.34);
-    const dx=clientX-r.left-r.width/2,dy=clientY-r.top-r.height/2,len=Math.hypot(dx,dy),scale=Math.min(1,radius/(len||1));
-    touch={x:dx*scale/radius,y:dy*scale/radius};
-    stick.firstElementChild.style.transform=`translate(${dx*scale}px,${dy*scale}px)`;
+  function joystickVector(dx,dy,radius){
+    const len=Math.hypot(dx,dy),dead=radius*.14;if(len<=dead)return {x:0,y:0,knobX:0,knobY:0};
+    const limited=Math.min(len,radius),nx=dx/(len||1),ny=dy/(len||1),magnitude=clamp((limited-dead)/(radius-dead),0,1),response=Math.pow(magnitude,.82);
+    return {x:nx*response,y:ny*response,knobX:nx*limited,knobY:ny*limited};
   }
-  function resetStick(){pointerId=null;activeTouchId=null;touch={x:0,y:0};stick.firstElementChild.style.transform='translate(0,0)';}
+  function setStick(clientX,clientY){
+    const r=stick.getBoundingClientRect(),radius=Math.max(30,Math.min(r.width,r.height)*.36);
+    const v=joystickVector(clientX-r.left-r.width/2,clientY-r.top-r.height/2,radius);
+    touch={x:v.x,y:v.y};stick.classList.add('active');stick.firstElementChild.style.transform=`translate(${v.knobX}px,${v.knobY}px)`;
+  }
+  function resetStick(){pointerId=null;activeTouchId=null;touch={x:0,y:0};stick.classList.remove('active');stick.firstElementChild.style.transform='translate(0,0)';}
   function moveStick(e){if(e.pointerId!==pointerId)return;e.preventDefault();setStick(e.clientX,e.clientY);}
   if('PointerEvent' in window){
     stick.addEventListener('pointerdown',e=>{
