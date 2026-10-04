@@ -298,3 +298,11 @@ button{border-radius:4px}button:disabled{opacity:.4}
   .controls:has(#targetBtn:not(.hidden)){width:min(220px,54vw)}
 }
 @media (prefers-reduced-motion:reduce){.wave-banner.show{animation:none;opacity:1}.joystick{transition:none}.joystick>span{transition:none}}
+
+
+/* v3.1.0-alpha.3 — combat variety + boss escalation */
+.boss-hud{transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.boss-hud.phase-2{border-color:#d7985f88;box-shadow:0 0 18px #d7985f22;background:#1b1d1de8}
+.boss-hud.phase-3{border-color:#ee6655aa;box-shadow:0 0 24px #ee665533;background:#21191ae8}
+.boss-hud.phase-3 .boss-meter i{filter:saturate(1.35) brightness(1.12)}
+@media (prefers-reduced-motion:reduce){.boss-hud{transition:none}}
