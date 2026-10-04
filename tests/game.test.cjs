@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,placementPreview,threatIndicators,portraitLayout,zoomForMode,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -96,9 +96,20 @@ check('Guardian armor reduces damage and mage slow reduces movement',()=>{
   const e={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:60,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
   t.game.enemies=[e];t.shoot({x:200,y:300,kind:'mage',level:1},e,1,500,'#69bfff',{slow:.58,slowDuration:1.6});for(let i=0;i<15;i++)t.update(.02);assert.ok(e.slow>0);assert.ok(e.slowFactor<=.58);
 });
-check('Slowed targets amplify cannon splash and Rift chain count',()=>{
+check('Slowed targets amplify cannon impact/splash damage and Rift chain count',()=>{
   const target={slow:1};const cannon=t.projectileSynergy({kind:'cannon',splash:64},target),rift=t.projectileSynergy({kind:'rift',chain:2},target),plain=t.projectileSynergy({kind:'cannon',splash:64},{slow:0});
-  assert.ok(cannon.splash>plain.splash);assert.ok(cannon.splashFactor>plain.splashFactor);assert.equal(rift.chain,3);
+  assert.equal(cannon.impact,1.25);assert.equal(cannon.splash,64);assert.ok(cannon.splashFactor>plain.splashFactor);assert.equal(rift.chain,3);
+});
+check('Wave preview summarizes the authored enemy composition',()=>{
+  assert.equal(t.wavePreview(1),'7× GEIST');
+  const w7=t.waveComposition(7);assert.equal(Object.values(w7).reduce((a,b)=>a+b,0),21);assert.equal(Object.keys(w7).length,6);
+  t.game.intermission=5;t.update(.01);assert.match(element('wavePreview').textContent,/VORSCHAU/);
+});
+check('Tower target priority cycles first strongest nearest boss',()=>{
+  const m=t.game.monument,tower={x:m.x+300,y:m.y,range:500,targetMode:'first'};
+  const first={x:m.x+40,y:m.y,hp:20,maxHp:20,type:'wraith',gateIndex:0,waypoint:1},strong={x:m.x+180,y:m.y,hp:120,maxHp:120,type:'brute',gateIndex:0,waypoint:1},near={x:tower.x-20,y:tower.y+10,hp:30,maxHp:30,type:'runner',gateIndex:0,waypoint:1},boss={x:m.x+220,y:m.y,hp:200,maxHp:200,type:'boss',gateIndex:0,waypoint:1};
+  t.game.enemies=[first,strong,near,boss];assert.equal(t.towerTarget(tower),first);tower.targetMode='strongest';assert.equal(t.towerTarget(tower),boss);tower.targetMode='nearest';assert.equal(t.towerTarget(tower),near);tower.targetMode='boss';assert.equal(t.towerTarget(tower),boss);
+  t.game.towers=[tower];t.game.hero.x=tower.x;t.game.hero.y=tower.y;tower.targetMode='first';t.cycleTargetMode();assert.equal(tower.targetMode,'strongest');t.cycleTargetMode();assert.equal(tower.targetMode,'nearest');
 });
 check('Placement preview reports selected tower range and role only near a free pad',()=>{
   const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.selectTower('mage');const preview=t.placementPreview();
@@ -181,6 +192,6 @@ assert.ok(polish.includes('@media (orientation:portrait)'));
 assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay'])assert.ok(html.includes(`id="${id}"`));
+for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
