@@ -100,6 +100,37 @@ check('Slowed targets amplify cannon impact/splash damage and Rift chain count',
   const target={slow:1};const cannon=t.projectileSynergy({kind:'cannon',splash:64},target),rift=t.projectileSynergy({kind:'rift',chain:2},target),plain=t.projectileSynergy({kind:'cannon',splash:64},{slow:0});
   assert.equal(cannon.impact,1.25);assert.equal(cannon.splash,64);assert.ok(cannon.splashFactor>plain.splashFactor);assert.equal(rift.chain,3);
 });
+check('Synergy expires with slow and does not amplify unrelated projectiles',()=>{
+  for(const slow of [0,-1,undefined]){
+    const cannon=t.projectileSynergy({kind:'cannon',splash:64},{slow});
+    assert.equal(cannon.impact,1);assert.equal(cannon.splashFactor,.58);
+    assert.equal(t.projectileSynergy({kind:'rift',chain:2},{slow}).chain,2);
+  }
+  const bow=t.projectileSynergy({kind:'bow'},{slow:1});
+  assert.equal(bow.impact,1);assert.equal(bow.splash,0);assert.equal(bow.chain,0);
+  assert.equal(t.projectileSynergy({kind:'cannon',splash:64},{slow:1}).splashFactor,.725);
+});
+check('All target modes exclude dead and out-of-range enemies; boss falls back to first',()=>{
+  const m=t.game.monument,tower={x:m.x+200,y:m.y,range:200};
+  const first={x:m.x+50,y:m.y,hp:10},near={x:m.x+180,y:m.y,hp:50};
+  const dead={x:tower.x,y:tower.y,hp:999,type:'boss',dead:true},outside={x:m.x-20,y:m.y,hp:999,type:'boss'};
+  t.game.enemies=[dead,outside,near,first];
+  for(const [mode,want] of [['first',first],['strongest',near],['nearest',near],['boss',first]]){tower.targetMode=mode;assert.equal(t.towerTarget(tower),want);}
+  t.game.enemies=[dead,outside];for(const mode of ['first','strongest','nearest','boss']){tower.targetMode=mode;assert.equal(t.towerTarget(tower),null);}
+});
+check('Placement guards reject unsafe authored slots without spending essence',()=>{
+  const level=sandbox.DenkmalLevels.levels[1],slots=level.slots,paths=level.paths,m=t.game.monument;
+  try{
+    // Exercise each safety guard even if future level content accidentally marks an unsafe slot.
+    level.paths=[];
+    for(const p of [level.gates[0],{x:27,y:500},{x:3045,y:500},{x:500,y:27},{x:500,y:3045},{x:m.x+100,y:m.y}]){
+      level.slots=[p];assert.notEqual(t.placementError(p),'');
+    }
+    level.slots=slots;level.paths=paths;
+    const p=slots[0];assert.equal(t.placementError(p),'');t.game.towers=[{...p}];assert.notEqual(t.placementError(p),'');
+    t.game.hero.x=p.x-58;t.game.hero.y=p.y;t.facing={x:1,y:0};const essence=t.game.essence;t.buildTower();assert.equal(t.game.essence,essence);assert.equal(t.game.towers.length,1);
+  }finally{level.slots=slots;level.paths=paths;}
+});
 check('Wave preview summarizes the authored enemy composition',()=>{
   assert.equal(t.wavePreview(1),'7× GEIST');
   const w7=t.waveComposition(7);assert.equal(Object.values(w7).reduce((a,b)=>a+b,0),21);assert.equal(Object.keys(w7).length,6);
@@ -125,7 +156,7 @@ check('Rift chain damages multiple clustered enemies',()=>{
 check('Alpha.2 camera widens the view and adds movement lead without pausing',()=>{
   sandbox.innerWidth=390;sandbox.innerHeight=844;t.resize(false);assert.equal(t.portraitLayout(),true);assert.equal(t.zoom,.46);assert.equal(t.state,'playing');
   const center=t.screenToWorld(195,844*.43);assert.ok(Math.abs(center.y-t.game.hero.y)<1e-8);
-  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.resize(false);assert.equal(t.portraitLayout(),false);assert.equal(t.zoom,.52);
+  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.resize(false);assert.equal(t.portraitLayout(),false);assert.equal(t.zoom,process.env.TEST_MOBILE==='1'?.50:.52);
   listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);listeners.keyup({code:'ArrowRight'});assert.ok(t.cameraLead().x>0);
 });
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
@@ -160,7 +191,9 @@ check('Belagerer escalates through three combat phases',()=>{
 check('Sapper detonates once at the monument instead of repeating melee attacks',()=>{
   const m=t.game.monument,h=t.game.hero;h.fireCd=100;h.x=m.x+500;h.y=m.y+500;
   const sapper={x:m.x+50,y:m.y,type:'sapper',hp:100,maxHp:100,r:14,speed:0,damage:32,attackCd:0,attackCooldown:1.05,attackRange:0,armor:0,focusMonument:true,gateIndex:0,waypoint:1,slow:0,slowFactor:1,hit:0,hitKick:0,dead:false};
-  const before=m.hp;t.game.enemies=[sapper];t.game.waveKilled=0;t.update(.02);assert.ok(m.hp<before);assert.equal(t.game.enemies.length,0);assert.equal(t.game.waveKilled,1);
+  const before=m.hp,essence=t.game.essence;t.game.enemies=[sapper];t.game.waveKilled=0;t.game.spawnTimer=100;t.update(.02);
+  assert.ok(Math.abs(m.hp-(before-52.8))<1e-9);assert.equal(t.game.enemies.length,0);assert.equal(t.game.waveKilled,1);assert.equal(t.game.essence,essence+4);
+  const after=m.hp;t.update(.02);t.hurtEnemy(sapper,999);assert.equal(m.hp,after);assert.equal(t.game.waveKilled,1);assert.equal(t.game.essence,essence+4);
 });
 check('Archer backs away when Marcel closes inside minimum range',()=>{
   const m=t.game.monument,h=t.game.hero;h.x=m.x+320;h.y=m.y;h.fireCd=100;
