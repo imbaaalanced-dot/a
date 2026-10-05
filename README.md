@@ -1,4 +1,4 @@
-# Denkmal TD · v3.1.0-alpha.3
+# Denkmal TD · v3.2.0-alpha.1
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
@@ -24,6 +24,9 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 - Schützen weichen Marcel auf sehr kurze Distanz aus; Sappeure detonieren einmalig am Monument.
 - Der Belagerer eskaliert bei 66 % und 33 % LP in Phase II und III mit mehr Tempo, Schaden, Angriffstakt und Panzerung.
 - Trefferreaktionen und Boss-Phasen werden visuell stärker hervorgehoben.
+- Alpha v3.2: Schadenszahlen mit automatischer Dichtebegrenzung auf mobilen Geräten.
+- Gegnerpanzerung wird mit einem Schildindikator neben dem HP-Balken sichtbar.
+- Ab Welle 12 erscheint alle vier Wellen ein rotierender Mini-Boss-Modifikator.
 
 ## Spielen
 
@@ -37,6 +40,7 @@ Der GitHub-Actions-Workflow führt vor Veröffentlichung beide Regression-Suites
 
 - `node tests/game.test.cjs`
 - `node tests/combat-fx.test.cjs`
+- `node tests/v3.1-features.test.cjs`
 
 Der Pages-Workflow veröffentlicht nur nach erfolgreicher Prüfung den Inhalt von `dist/` auf `gh-pages`.
 

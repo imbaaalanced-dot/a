@@ -3,15 +3,15 @@
 Prioritized follow-ups beyond the current vertical slice.
 
 ## V3.1 — gameplay depth
-- Tower targeting modes: first, strongest, nearest, boss.
+- [x] Tower targeting modes: first, strongest, nearest, boss.
 - [x] Tower synergies: mage slow amplifies cannon splash; rift chains gain bonus jumps on slowed enemies.
-- Enemy resistances shown explicitly instead of hidden multipliers.
-- Mini-boss modifiers every four waves after the authored wave-8 slice.
-- Wave preview during build pause with the upcoming enemy composition.
+- [x] Enemy resistances shown explicitly instead of hidden multipliers. *(Alpha v3.2: Schild-Icon neben HP-Balken)*
+- [x] Mini-boss modifiers every four waves after the authored wave-8 slice.
+- [x] Wave preview during build pause with the upcoming enemy composition.
 
 ## V3.2 — feel and readability
 - [x] Edge-of-screen threat arrows for active gates and bosses.
-- Damage numbers with automatic density reduction on mobile.
+- [x] Damage numbers with automatic density reduction on mobile.
 - Stronger hit-stop/camera impulse only for boss and heavy cannon impacts.
 - Distinct silhouettes and final production sprites for runner, guardian and sapper.
 - [x] Per-tower placement ghost showing range and role icon before construction.

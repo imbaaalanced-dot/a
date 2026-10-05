@@ -25,3 +25,5 @@ jobs:
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
         run: node tests/combat-fx.test.cjs
+      - name: v3.1 + v3.2 feature regression suite
+        run: node tests/v3.1-features.test.cjs

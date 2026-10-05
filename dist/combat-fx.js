@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const MAX_PARTICLES = 240;
+  const MAX_DAMAGE_TEXTS = 24, MAX_DAMAGE_TEXTS_REDUCED = 8;
   const SPRITE_W=176,SPRITE_H=146;
   const spriteRows={cannon:0,rift:1,mage:2,bow:3};
   const projectileAtlas=typeof Image!=='undefined'?new Image():null;
@@ -54,6 +55,22 @@
     }
     sound(bullet.kind,impact,enabled);
   }
+  function damage(game,x,y,amount,{crit=false,reduced=false}={}) {
+    if(!game)return null;
+    const list=game.damageTexts||(game.damageTexts=[]),cap=reduced?MAX_DAMAGE_TEXTS_REDUCED:MAX_DAMAGE_TEXTS;
+    const value=Math.max(0,Math.round(Number(amount)||0));if(!value)return null;
+    if(list.length>=cap){const target=list[list.length-1];target.amount+=value;target.crit=target.crit||crit;target.life=Math.max(target.life,.55);return target;}
+    const item={x,y,amount:value,crit:!!crit,life:.72,maxLife:.72,vy:crit?-34:-25};list.push(item);return item;
+  }
+  function updateDamage(game,dt){
+    const list=game?.damageTexts;if(!list)return;
+    for(const d of list){d.y+=d.vy*dt;d.vy*=Math.pow(.9,dt*60);d.life-=dt;}
+    game.damageTexts=list.filter(d=>d.life>0);
+  }
+  function drawDamage(ctx,game){
+    for(const d of game?.damageTexts||[]){const t=Math.max(0,d.life/d.maxLife);ctx.save();ctx.globalAlpha=Math.min(1,t*1.4);ctx.textAlign='center';ctx.font=d.crit?'800 18px sans-serif':'700 13px sans-serif';ctx.lineWidth=3;ctx.strokeStyle='#111a1dcc';ctx.fillStyle=d.crit?'#fff1a6':'#f3dfb1';ctx.strokeText(String(d.amount),d.x,d.y);ctx.fillText(String(d.amount),d.x,d.y);ctx.restore();}
+  }
+  const getContext=()=>audio,getMaster=()=>master;
   function drawSprite(ctx,kind,frame,x,y,angle=0,scale=1,alpha=1){
     const row=spriteRows[kind];
     if(row===undefined||!projectileAtlas?.complete||!projectileAtlas.naturalWidth)return false;
@@ -86,5 +103,5 @@
     const frame=4+Math.min(2,Math.floor(progress*3));
     return drawSprite(ctx,p.kind,frame,p.x,p.y,0,1.05,Math.max(0,p.life/p.max));
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,unlock,mute,burst,draw,drawParticle};
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,damage,updateDamage,drawDamage,draw,drawParticle,getContext,getMaster};
 })();
