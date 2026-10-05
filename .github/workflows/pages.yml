@@ -26,6 +26,11 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Verify hero image decoding
+        run: |
+          python -m pip install Pillow
+          python tests/assets.test.py
+
       - name: Verify gameplay before publish
         run: |
           node tests/game.test.cjs

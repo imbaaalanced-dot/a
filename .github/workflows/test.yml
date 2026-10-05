@@ -27,3 +27,8 @@ jobs:
         run: node tests/combat-fx.test.cjs
       - name: v3.1 + v3.2 feature regression suite
         run: node tests/v3.1-features.test.cjs
+
+      - name: Verify hero image decoding
+        run: |
+          python -m pip install Pillow
+          python tests/assets.test.py
