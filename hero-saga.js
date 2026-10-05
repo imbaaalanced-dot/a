@@ -196,7 +196,7 @@
     const relicColor=h.equipment.relic==='bell'?'#f5c572':'#79dfff';
     ctx.strokeStyle=relicColor;ctx.globalAlpha=.4;ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(0,12,27,11,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
     if(h.equipment.armor==='oath'){ctx.strokeStyle='#dfc79155';ctx.beginPath();ctx.arc(0,-20,34,-.8,.8);ctx.stroke();}
-    const bob=reduced?0:moving?Math.sin(walkTime*18)*1.6:Math.sin(animationTime*2.4)*.7;
+    const bob=reduced?0:moving?0:Math.sin(animationTime*2.4)*.35;
     ctx.translate(0,bob);if(!reduced&&h.dodge>0)ctx.rotate((h.faceX||0)*.14);
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
