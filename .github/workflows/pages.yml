@@ -31,6 +31,7 @@ jobs:
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
+          node tests/v3.1-features.test.cjs
 
       - name: Mirror dist to gh-pages
         shell: bash
