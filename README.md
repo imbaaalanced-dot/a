@@ -1,8 +1,10 @@
-# Denkmal TD · v3.2.0-alpha.1
+# Denkmal TD · v3.5.0-alpha.1
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
 ## Aktueller Alpha-Stand
+
+v3.5.0-alpha.1 konsolidiert die bisher getrennten v3-Patches auf einem gemeinsamen Tester-Stand.
 
 - Vier feste Spawn-Tore in Level 1 und das freischaltbare Labyrinth als Level 2.
 - Steuerbarer Held Marcel mit automatischem Runenstab, Ausweichen, Seelenruf, Ausrüstung und Beute-Inventar.
@@ -25,6 +27,7 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 - Der Belagerer eskaliert bei 66 % und 33 % LP in Phase II und III mit mehr Tempo, Schaden, Angriffstakt und Panzerung.
 - Trefferreaktionen und Boss-Phasen werden visuell stärker hervorgehoben.
 - Alpha v3.2: Schadenszahlen mit automatischer Dichtebegrenzung auf mobilen Geräten.
+- v3.2.0-alpha.2: leichte Treffer ohne Camera-Shake; normale Kanone 0,6; schwere Kanone/Boss-Treffer 3; Boss-Phasenwechsel 10. Hit-Stop bleibt Boss-Treffern und schweren Kanonen-Einschlägen vorbehalten.
 - Gegnerpanzerung wird mit einem Schildindikator neben dem HP-Balken sichtbar.
 - Ab Welle 12 erscheint alle vier Wellen ein rotierender Mini-Boss-Modifikator.
 
@@ -36,9 +39,10 @@ Level 1 umfasst Wellen 1–5. Danach wird Level 2 dauerhaft im Hauptmenü freige
 
 ## Prüfung
 
-Der GitHub-Actions-Workflow führt vor Veröffentlichung beide Regression-Suites aus:
+Die GitHub-Actions-Workflows führen vor Veröffentlichung die Regression-Suites aus:
 
 - `node tests/game.test.cjs`
+- `TEST_MOBILE=1 node tests/game.test.cjs`
 - `node tests/combat-fx.test.cjs`
 - `node tests/v3.1-features.test.cjs`
 
