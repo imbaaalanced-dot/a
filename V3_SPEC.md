@@ -55,3 +55,13 @@ The build is considered ready to leave alpha only after:
 - [x] Mage slow → Rift extra-chain synergy.
 - [x] Existing Alpha-7 tester telemetry retained.
 - [x] CI trigger generalized to all v3 release branches.
+
+
+## v3.2 alpha readability + endless modifiers
+- [x] Damage numbers with mobile density reduction and merge-on-cap accounting.
+- [x] Explicit armor shield indicator beside enemy HP bars.
+- [x] Rotating mini-boss wave modifiers every four waves after wave 8 (12, 16, 20, ...).
+- [x] Stable `DenkmalTestHooks` surface for feature regression tests.
+- [x] Dedicated `tests/v3.1-features.test.cjs` CI gate.
+- [ ] Stronger hit-stop/camera impulse limited to boss and heavy cannon impacts.
+- [ ] Final distinct production silhouettes for runner, guardian and sapper.
