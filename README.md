@@ -1,13 +1,15 @@
-# Denkmal TD · v3.5.0-alpha.1
+# Denkmal TD · v3.5.0-alpha.2
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
 ## Aktueller Alpha-Stand
 
-v3.5.0-alpha.1 konsolidiert die bisher getrennten v3-Patches auf einem gemeinsamen Tester-Stand.
+v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bisherige Darstellung durch den neuen Laternenhüter.
 
 - Vier feste Spawn-Tore in Level 1 und das freischaltbare Labyrinth als Level 2.
 - Steuerbarer Held Marcel mit automatischem Runenstab, Ausweichen, Seelenruf, Ausrüstung und Beute-Inventar.
+- Neuer Marcel-Look: Kapuze, dunkler Mantel und blaues Erinnerungslicht; im Spiel als eigener 4-Richtungs-Pixelatlas für oben, unten, links und rechts.
+- Neues Portrait für Startbildschirm, Story, Charaktermenü und HUD; der alte Marcel-/Kael-Spritepfad wird nicht mehr für den aktiven Helden verwendet.
 - Vier aktive Turmrollen: Bogen, Kanone, Magie und Riftlanze.
 - Kontextuelles Bauen auf festen Bauplätzen, Aufwerten bis Stufe 3 und Verkaufen.
 - Combat-Synergien: Kanone profitiert von verlangsamten Gegnern; Rift kann auf verlangsamte Ziele weiter ketten.
