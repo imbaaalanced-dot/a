@@ -21,5 +21,7 @@ jobs:
           node-version: "22"
       - name: Gameplay regression suite
         run: node tests/game.test.cjs
+      - name: Mobile gameplay regression suite
+        run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
         run: node tests/combat-fx.test.cjs

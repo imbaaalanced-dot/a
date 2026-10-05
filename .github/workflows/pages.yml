@@ -21,9 +21,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Verify gameplay before publish
         run: |
           node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
 
       - name: Mirror dist to gh-pages
