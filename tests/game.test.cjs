@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},set facing(v){facing=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -187,6 +187,27 @@ check('Belagerer escalates through three combat phases',()=>{
   const boss={x:300,y:300,type:'boss',hp:650,maxHp:1000,speed:30,damage:40,attackCooldown:.82,armor:0,phase:1,dead:false,hitKick:0};
   t.updateEnemyPressure(boss);assert.equal(boss.phase,2);assert.equal(t.bossPhaseLabel(boss.phase),'II');const phase2Speed=boss.speed;
   boss.hp=320;t.updateEnemyPressure(boss);assert.equal(boss.phase,3);assert.equal(t.bossPhaseLabel(boss.phase),'III');assert.ok(boss.speed>phase2Speed);assert.ok(boss.armor>=.12);assert.match(element('waveBanner').textContent,/PHASE III/);
+});
+check('v3.2 alpha.2 keeps light hits still and reserves hit-stop for boss hits',()=>{
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  const light={x:300,y:300,type:'wraith',hp:100,maxHp:100,armor:0,dead:false,hitKick:0};
+  t.hurtEnemy(light,10);assert.equal(t.shake,0);assert.equal(t.hitStop,0);
+  const boss={x:300,y:300,type:'boss',hp:1000,maxHp:1000,armor:0,phase:1,dead:false,hitKick:0};
+  t.hurtEnemy(boss,10);assert.equal(t.shake,3);assert.ok(t.hitStop>0);
+  sandbox.Math.random=oldRandom;
+});
+check('v3.2 alpha.2 marks normal and heavy cannon projectiles with distinct impact feedback',()=>{
+  const m=t.game.monument;t.game.hero.fireCd=100;
+  const enemy={x:m.x+220,y:m.y+170,hp:1000,maxHp:1000,r:12,speed:0,damage:0,attackCd:99,attackCooldown:.85,hit:0,hitKick:0,type:'wraith',armor:0,dead:false,gateIndex:0,waypoint:1,slow:0,slowFactor:1};
+  const cannon={x:m.x+220,y:m.y+100,kind:'cannon',level:1,damage:34,fireRate:1.15,fireCd:-1,range:275,targetMode:'nearest'};
+  t.game.enemies=[enemy];t.game.towers=[cannon];t.update(.01);
+  let shot=t.game.bullets.find(b=>b.kind==='cannon');assert.equal(shot.impactShake,.6);assert.equal(shot.hitStop,0);
+  t.game.bullets=[];cannon.level=3;cannon.fireCd=-1;t.update(.01);
+  shot=t.game.bullets.find(b=>b.kind==='cannon');assert.equal(shot.impactShake,3);assert.equal(shot.hitStop,.045);
+});
+check('v3.2 alpha.2 boss phase transition overrides the hit impulse with shake 10',()=>{
+  const boss={x:300,y:300,type:'boss',hp:650,maxHp:1000,speed:30,damage:40,attackCooldown:.82,armor:0,phase:1,dead:false,hitKick:0};
+  t.updateEnemyPressure(boss);assert.equal(t.shake,10);
 });
 check('Sapper detonates once at the monument instead of repeating melee attacks',()=>{
   const m=t.game.monument,h=t.game.hero;h.fireCd=100;h.x=m.x+500;h.y=m.y+500;
