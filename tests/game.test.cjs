@@ -160,7 +160,7 @@ check('Alpha.2 camera widens the view and adds movement lead without pausing',()
   listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);listeners.keyup({code:'ArrowRight'});assert.ok(t.cameraLead().x>0);
 });
 check('Walk camera ignores tiny analog jitter and scales lead with stick magnitude',()=>{
-  t.moveIntent={x:.05,y:.04};assert.deepEqual(t.cameraLead(),{x:0,y:0});
+  t.moveIntent={x:.05,y:.04};const idle=t.cameraLead();assert.equal(idle.x,0);assert.equal(idle.y,0);
   t.moveIntent={x:.25,y:0};const gentle=t.cameraLead().x;
   t.moveIntent={x:1,y:0};const full=t.cameraLead().x;
   assert.ok(gentle>0&&gentle<full*.4);
