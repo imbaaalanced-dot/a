@@ -171,7 +171,7 @@
     game={level,wave:level===2?6:1,elapsed:0,essence:level===2?130:70,selectedTower:'bow',kills:0,waveSpawned:0,waveKilled:0,waveTotal:waveSize(level===2?6:1),spawnTimer:1.2,intermission:5,
       hero:{x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
       monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
-      enemies:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:6,towers:[],maxTowers:level===2?6:4};
+      enemies:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:6,towers:[],maxTowers:level===2?6:4,build:{control:0,precision:0,rift:0,perks:new Set(),soulEvolution:null,dodgeEvolution:null}};
     game.waveTotal=waveSize(game.wave);
     saga.reset(game.hero);updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
   }
@@ -317,15 +317,33 @@
   function sellTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');const refund=Math.floor(t.spent*.6);game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);tone(220,.12)}
   function selectTower(kind){if(!towerSpecs[kind]||!enabledTowers.has(kind))return;game.selectedTower=kind;document.querySelectorAll('.arsenal button').forEach(b=>{b.classList.toggle('selected',b.dataset.tower===kind);b.setAttribute('aria-pressed',String(b.dataset.tower===kind));});$('buildText').textContent=`${towerSpecs[kind].name} BAUEN · ${towerSpecs[kind].cost}`;updateUI()}
   function endWave(){if(state!=='playing')return;if(game.level===1&&game.wave===5){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
-  function getPerks(){const pool=[
-    {name:'Eiserner Eid',icon:'✦',desc:'+25 maximale und aktuelle Hüter-LP.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
-    {name:'Runenmeister',icon:'◆',desc:'+30 % Feuerrate des Hüters.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
-    {name:'Kraft des Stabes',icon:'✧',desc:'+8 Schaden pro Geschoss.',apply:g=>g.hero.damage+=8},
-    {name:'Steinmetzsegen',icon:'⬟',desc:'Heilt das Monument um 140 LP.',apply:g=>g.monument.hp=Math.min(g.monument.maxHp,g.monument.hp+140)},
-    {name:'Festungsplan',icon:'▲',desc:'+1 maximales Turmlimit und 20 Essenz.',apply:g=>{g.maxTowers++;g.essence+=20}},
-    {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
-  ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
-  function selectPerk(p){if(state!=='perk')return;p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+18);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
+  function perkEligible(perk,g=game){
+    if(!perk)return false;
+    if(perk.unique&&perk.id&&g.build?.perks?.has(perk.id))return false;
+    if(perk.exclusive==='soul'&&g.build?.soulEvolution)return false;
+    if(perk.exclusive==='dodge'&&g.build?.dodgeEvolution)return false;
+    return true;
+  }
+  function getPerks(){
+    const buildPool=[
+      {id:'icebreak',path:'control',unique:true,name:'Eisbruch',icon:'❄',desc:'KONTROLLE · Kanonen brechen verlangsamte Gruppen härter.',apply:()=>{}},
+      {id:'huntersInstinct',path:'precision',unique:true,name:'Jägerinstinkt',icon:'➶',desc:'PRÄZISION · Fokusfeuer wird gegen Elite und Bosse stärker.',apply:()=>{}},
+      {id:'riftcharge',path:'rift',unique:true,name:'Rissladung',icon:'ϟ',desc:'RISS · Kettentreffer laden den nächsten Rift-Angriff auf.',apply:()=>{}}
+    ].filter(p=>perkEligible(p));
+    const generic=[
+      {id:'ironOath',name:'Eiserner Eid',icon:'✦',desc:'+25 maximale und aktuelle Hüter-LP.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
+      {id:'runeMaster',name:'Runenmeister',icon:'◆',desc:'+30 % Feuerrate des Hüters.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
+      {id:'staffPower',name:'Kraft des Stabes',icon:'✧',desc:'+8 Schaden pro Geschoss.',apply:g=>g.hero.damage+=8},
+      {id:'masonBlessing',name:'Steinmetzsegen',icon:'⬟',desc:'Heilt das Monument um 140 LP.',apply:g=>g.monument.hp=Math.min(g.monument.maxHp,g.monument.hp+140)},
+      {id:'fortressPlan',name:'Festungsplan',icon:'▲',desc:'+1 maximales Turmlimit und 20 Essenz.',apply:g=>{g.maxTowers++;g.essence+=20}},
+      {id:'marchStep',name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
+    ];
+    const pool=[...buildPool];
+    while(pool.length<3&&generic.length){const k=Math.floor(Math.random()*generic.length);pool.push(generic.splice(k,1)[0]);}
+    for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}
+    return pool.slice(0,3);
+  }
+  function selectPerk(p){if(state!=='perk')return;if(p.path&&game.build){game.build[p.path]=(game.build[p.path]||0)+1;if(p.id)game.build.perks.add(p.id);}if(p.exclusive==='soul')game.build.soulEvolution=p.evolution;if(p.exclusive==='dodge')game.build.dodgeEvolution=p.evolution;p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+18);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
   function gameOver(){saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
 
 
@@ -578,6 +596,6 @@
   $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
   atlas.onerror=()=>showToast('GRAFIK KONNTE NICHT GELADEN WERDEN');
   saga.init({getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
-  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget};
+  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,getPerks,perkEligible};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();
