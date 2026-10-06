@@ -331,6 +331,21 @@ check('v3.6 resonance rift-runner and elites have bounded counters',()=>{
   t.game.wave=5;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();assert.equal(t.game.enemies[0].type,'boss');assert.equal(t.game.enemies[0].elite,false);
   sandbox.Math.random=oldRandom;
 });
+check('v3.6 soul call evolutions are exclusive and numerically bounded',()=>{
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  const h=t.game.hero,b=t.game.build;baseDamage=70+h.damage*2;
+  const enemy=()=>({x:h.x+80,y:h.y,hp:1000,maxHp:1000,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1});
+  b.soulEvolution='shockwave';let e=enemy();t.game.enemies=[e];h.soul=100;assert.equal(saga.unleash(),true);assert.ok(Math.abs(e.hp-(1000-baseDamage*1.35))<1e-6);assert.equal(e.weakenedUntil||0,0);
+  t.startGame();saga.continueStory();const h2=t.game.hero,b2=t.game.build;b2.soulEvolution='weaken';e={...enemy(),x:h2.x+80,y:h2.y};t.game.enemies=[e];h2.soul=100;const base2=70+h2.damage*2;assert.equal(saga.unleash(),true);assert.ok(Math.abs(e.hp-(1000-base2*.70))<1e-6);assert.ok(e.weakenedUntil>t.game.elapsed);
+  const hp=e.hp;t.hurtEnemy(e,100);assert.ok(Math.abs(e.hp-(hp-115))<1e-6);
+  sandbox.Math.random=oldRandom;
+});
+check('v3.6 dodge evolutions apply readiness or a nonstacking counterstrike window',()=>{
+  const b=t.game.build,h=t.game.hero;b.dodgeEvolution='readiness';t.dodge();assert.ok(Math.abs(h.dodgeCd-.84)<1e-9);
+  t.startGame();saga.continueStory();const b2=t.game.build,h2=t.game.hero;b2.dodgeEvolution='counterstrike';t.dodge();t.update(.20);assert.ok(h2.counterstrikeUntil>t.game.elapsed);
+  const first=h2.counterstrikeUntil;t.dodge();assert.equal(h2.counterstrikeUntil,first,'second dodge does not stack before completion');t.update(1.3);t.dodge();t.update(.20);assert.ok(h2.counterstrikeUntil>=first,'later dodge refreshes the window');
+  t.game.bullets=[];const target={x:h2.x+80,y:h2.y,hp:1000,maxHp:1000,r:12,type:'wraith',armor:0,hit:0,dead:false};t.shoot(h2,target,100);assert.ok(Math.abs(t.game.bullets[0].damage-125)<1e-9);
+});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
