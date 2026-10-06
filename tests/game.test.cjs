@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,precisionMultiplier:typeof precisionMultiplier==='function'?precisionMultiplier:null,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -309,6 +309,27 @@ check('v3.6 control and rift perks stay bounded',()=>{
   t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:1});for(let i=0;i<15;i++)t.update(.02);
   sandbox.Math.random=oldRandom;
   assert.ok(Math.abs(a.hp-86.5)<1e-6,'overskip returns once for 35% damage');
+});
+check('v3.6 precision focus rewards elite and boss targeting without leaking',()=>{
+  assert.equal(typeof t.precisionMultiplier,'function');
+  const b=t.game.build;b.perks.add('huntersInstinct');b.perks.add('targetMark');b.perks.add('memoryStrike');
+  const elite={type:'brute',elite:true,dead:false,focusHits:0},boss={type:'boss',dead:false,focusHits:0},plain={type:'wraith',dead:false,focusHits:0};
+  assert.equal(t.precisionMultiplier({kind:'bow'},elite),1.3);
+  assert.equal(t.precisionMultiplier({kind:'bow'},boss),1.3);
+  assert.equal(t.precisionMultiplier({kind:'bow'},plain),1);
+  assert.equal(t.precisionMultiplier({kind:'wand'},elite),1,'unmarked Marcel hit has no memory bonus');
+  b.focusTarget=elite;b.focusHits=5;assert.ok(Math.abs(t.precisionMultiplier({kind:'wand'},elite)-1.25)<1e-9);
+  b.focusTarget=plain;b.focusHits=0;assert.equal(t.precisionMultiplier({kind:'wand'},elite),1,'focus does not leak after target change');
+});
+check('v3.6 resonance rift-runner and elites have bounded counters',()=>{
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  const resonance={x:0,y:0,hp:100,maxHp:100,r:12,type:'resonance',armor:0,hit:0,dead:false};
+  t.game.enemies=[resonance];t.hurtEnemy(resonance,20,{secondary:'chain'});assert.ok(Math.abs(resonance.hp-87)<1e-9);
+  const directHp=resonance.hp;t.hurtEnemy(resonance,10,{});assert.ok(Math.abs(resonance.hp-(directHp-10))<1e-9);
+  const rr={x:0,y:0,hp:100,maxHp:100,r:12,type:'riftRunner',armor:0,hit:0,dead:false,riftSurge:0};t.hurtEnemy(rr,1,{secondary:'chain'});assert.equal(rr.riftSurge,1.5);t.hurtEnemy(rr,1,{secondary:'chain'});assert.equal(rr.riftSurge,1.5);
+  sandbox.Math.random=()=>0;t.game.wave=8;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();const e=t.game.enemies[0];assert.equal(e.elite,true);assert.ok(['armored','frenzied','slowResist'].includes(e.eliteModifier));assert.equal(Array.isArray(e.eliteModifier),false);
+  t.game.wave=5;t.game.waveSpawned=0;t.game.enemies=[];t.spawnEnemy();assert.equal(t.game.enemies[0].type,'boss');assert.equal(t.game.enemies[0].elite,false);
+  sandbox.Math.random=oldRandom;
 });
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
