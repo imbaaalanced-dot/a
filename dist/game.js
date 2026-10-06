@@ -165,7 +165,7 @@
   function focusGame(){document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=false);canvas.focus({preventScroll:true});}
   function pauseGame(){if(state!=='playing')return;state='paused';clearInput();saga.stopVoice();$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));updateUI();}
   function resumeGame(){if(state!=='paused')return;state='playing';$('pauseScreen').classList.add('hidden');last=performance.now();focusGame();updateUI();}
-  function dodge(){if(state!=='playing'||game.hero.dodgeCd>0)return;const h=game.hero;h.dodge=.18;h.dodgeCd=1.2*saga.stats(h).dodge;h.invuln=.35;h.dodgeX=facing.x;h.dodgeY=facing.y;spark(h.x,h.y,'#dbc07e',9);}
+  function dodge(){if(state!=='playing'||game.hero.dodgeCd>0)return;const h=game.hero,evo=game.build?.dodgeEvolution;h.dodge=.18;h.dodgeCd=1.2*(evo==='readiness'?.70:1)*saga.stats(h).dodge;h.invuln=.35;h.dodgeX=facing.x;h.dodgeY=facing.y;if(evo==='counterstrike')h.counterstrikePending=true;spark(h.x,h.y,'#dbc07e',9);}
   const rand=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 
   let game;
@@ -259,6 +259,7 @@
   function shoot(from,target,damage,speed=520,color='#e9c477',effect={}){
     const kind=from.kind||'magic';
     if(kind==='rift'&&(game.build?.riftCharge||0)>0){damage*=1+game.build.riftCharge*.08;game.build.riftCharge=0;}
+    if(kind==='wand'&&(game.hero?.counterstrikeUntil||0)>game.elapsed)damage*=1.25;
     const d=dist(from,target)||1;const bullet={kind,level:from.level||1,x:from.x,y:from.y,vx:(target.x-from.x)/d*speed,vy:(target.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
   }
   function remainingRoute(e){const path=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];if(game.level===1)return dist(e,game.monument);let remaining=dist(e,path[Math.min(e.waypoint,path.length-1)]);for(let i=e.waypoint;i<path.length-1;i++)remaining+=dist(path[i],path[i+1]);return remaining;}
@@ -311,7 +312,7 @@
     }
   }
   function retireEnemy(e){if(e.dead)return;e.dead=true;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
-  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;if(impact.secondary&&e.type==='resonance')dmg*=.65;if(impact.secondary==='chain'&&e.type==='riftRunner')e.riftSurge=1.5;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
+  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;if((e.weakenedUntil||0)>game.elapsed)dmg*=1.15;if(impact.secondary&&e.type==='resonance')dmg*=.65;if(impact.secondary==='chain'&&e.type==='riftRunner')e.riftSurge=1.5;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
   function towerPosition(){const h=game.hero,p={x:h.x+facing.x*58,y:h.y+facing.y*58};return campaign.nearestSlot(p,game.level)||p;}
   function placementPreview(){
     if(!game||state!=='playing')return null;
@@ -366,10 +367,21 @@
       {id:'fortressPlan',name:'Festungsplan',icon:'▲',desc:'+1 maximales Turmlimit und 20 Essenz.',apply:g=>{g.maxTowers++;g.essence+=20}},
       {id:'marchStep',name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
     ];
-    const pool=[...buildPool];
+    const evolutionPool=[];
+    if(game.wave>=2&&!game.build.soulEvolution)evolutionPool.push(
+      {id:'soulShockwave',unique:true,exclusive:'soul',evolution:'shockwave',name:'Seelenruf · Druckwelle',icon:'✹',desc:'FÄHIGKEIT · Seelenruf verursacht 35 % mehr direkten Flächenschaden.',apply:()=>{}},
+      {id:'soulWeaken',unique:true,exclusive:'soul',evolution:'weaken',name:'Seelenruf · Schwächung',icon:'◈',desc:'FÄHIGKEIT · Weniger Direktschaden, dafür 5 s lang +15 % erlittener Schaden.',apply:()=>{}}
+    );
+    if(game.wave>=3&&!game.build.dodgeEvolution)evolutionPool.push(
+      {id:'dodgeReadiness',unique:true,exclusive:'dodge',evolution:'readiness',name:'Ausweichen · Bereitschaft',icon:'➹',desc:'FÄHIGKEIT · Ausweichen lädt 30 % schneller nach.',apply:()=>{}},
+      {id:'dodgeCounterstrike',unique:true,exclusive:'dodge',evolution:'counterstrike',name:'Ausweichen · Gegenstoß',icon:'✦',desc:'FÄHIGKEIT · Nach dem Ausweichen 2 s lang +25 % Runenstab-Schaden.',apply:()=>{}}
+    );
+    const pool=[];
+    if(evolutionPool.length){const k=Math.floor(Math.random()*evolutionPool.length);pool.push(evolutionPool[k]);}
+    const candidates=[...buildPool];
+    while(pool.length<3&&candidates.length){const k=Math.floor(Math.random()*candidates.length);pool.push(candidates.splice(k,1)[0]);}
     while(pool.length<3&&generic.length){const k=Math.floor(Math.random()*generic.length);pool.push(generic.splice(k,1)[0]);}
-    for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}
-    return pool.slice(0,3);
+    return pool;
   }
   function selectPerk(p){if(state!=='perk')return;if(p.path&&game.build){game.build[p.path]=(game.build[p.path]||0)+1;if(p.id)game.build.perks.add(p.id);}if(p.exclusive==='soul')game.build.soulEvolution=p.evolution;if(p.exclusive==='dodge')game.build.dodgeEvolution=p.evolution;p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+18);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
   function gameOver(){saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
@@ -377,7 +389,7 @@
 
   function update(dt){
     if(state!=='playing')return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);time+=dt;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
-    h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
+    h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;const wasDodging=h.dodge>0;if(h.dodge>0)h.dodge-=dt;if(wasDodging&&h.dodge<=0&&h.counterstrikePending){h.counterstrikePending=false;h.counterstrikeUntil=game.elapsed+2;}
     let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed;if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};h.x=clamp(h.x+dx*sp*dt,26,WORLD_W-26);h.y=clamp(h.y+dy*sp*dt,26,WORLD_H-26);updateCamera(dt);saga.update(dt,len>0||h.dodge>0,facing);
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage,560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack();h.fireCd=heroStats.rate}
