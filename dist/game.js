@@ -298,6 +298,10 @@
   function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
   function spark(x,y,color,n=7){for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
   function bossPhaseLabel(phase){return ['I','II','III'][clamp((phase||1)-1,0,2)];}
+  function buildSynergyMultiplier(target){
+    const b=game?.build,completed=!!b&&Math.max(b.control||0,b.precision||0,b.rift||0)>=2;
+    return completed&&target?.type==='boss'&&(target.exposedUntil||0)>game.elapsed?1.10:1;
+  }
   function updateEnemyPressure(e){
     if(e.dead)return;
     const ratio=e.hp/e.maxHp;
@@ -307,12 +311,12 @@
       const next=ratio<=.33?3:ratio<=.66?2:1;
       if(next>(e.phase||1)){
         while((e.phase||1)<next){e.phase=(e.phase||1)+1;if(e.phase===2){e.speed*=1.18;e.damage*=1.08;e.attackCooldown*=.88;e.armor=Math.max(e.armor,.06);}else if(e.phase===3){e.speed*=1.15;e.damage*=1.12;e.attackCooldown*=.82;e.armor=Math.max(e.armor,.12);}}
-        e.hitKick=1.4;shake=Math.max(shake,10);spark(e.x,e.y,'#ef7158',28);showWaveBanner(`BELAGERER · PHASE ${bossPhaseLabel(e.phase)}`);showToast('DER BELAGERER WIRD GEFÄHRLICHER');
+        e.exposedUntil=game.elapsed+3;e.hitKick=1.4;shake=Math.max(shake,10);spark(e.x,e.y,'#ef7158',28);showWaveBanner(`BELAGERER · PHASE ${bossPhaseLabel(e.phase)}`);showToast('DER BELAGERER IST VERWUNDBAR · 3 s');
       }
     }
   }
   function retireEnemy(e){if(e.dead)return;e.dead=true;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
-  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;if((e.weakenedUntil||0)>game.elapsed)dmg*=1.15;if(impact.secondary&&e.type==='resonance')dmg*=.65;if(impact.secondary==='chain'&&e.type==='riftRunner')e.riftSurge=1.5;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
+  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;if((e.weakenedUntil||0)>game.elapsed)dmg*=1.15;dmg*=buildSynergyMultiplier(e);if(impact.secondary&&e.type==='resonance')dmg*=.65;if(impact.secondary==='chain'&&e.type==='riftRunner')e.riftSurge=1.5;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
   function towerPosition(){const h=game.hero,p={x:h.x+facing.x*58,y:h.y+facing.y*58};return campaign.nearestSlot(p,game.level)||p;}
   function placementPreview(){
     if(!game||state!=='playing')return null;
@@ -636,6 +640,6 @@
   $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
   atlas.onerror=()=>showToast('GRAFIK KONNTE NICHT GELADEN WERDEN');
   saga.init({getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
-  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,getPerks,perkEligible,precisionMultiplier};
+  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,getPerks,perkEligible,precisionMultiplier,buildSynergyMultiplier};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();
