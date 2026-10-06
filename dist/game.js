@@ -99,6 +99,8 @@
     archer:{hp:46,speed:46,damage:10,r:12,bounty:3,attackRange:170,attackCooldown:1.25},
     guardian:{hp:118,speed:34,damage:17,r:17,bounty:4,armor:.32},
     sapper:{hp:62,speed:52,damage:32,r:14,bounty:4,focusMonument:true,attackCooldown:1.05},
+    resonance:{hp:96,speed:42,damage:18,r:16,bounty:5},
+    riftRunner:{hp:44,speed:78,damage:12,r:11,bounty:4},
     boss:{hp:760,speed:30,damage:46,r:34,bounty:35,attackCooldown:.82}
   };
   const waveSizes=[0,7,9,11,14,16,18,21,24];
@@ -111,6 +113,7 @@
     if(wave>=4)pool.push('archer');
     if(wave>=6)pool.push('guardian');
     if(wave>=7)pool.push('sapper');
+    if(wave>=8){pool.push('resonance');pool.push('riftRunner');}
     return pool[(index+wave)%pool.length];
   }
   const wavePlans={
@@ -135,7 +138,7 @@
   }
   const targetModes=['first','strongest','nearest','boss'];
   const targetLabels={first:'ERSTER',strongest:'STÄRKSTER',nearest:'NÄCHSTER',boss:'BOSS'};
-  const enemyLabels={wraith:'GEIST',runner:'LÄUFER',brute:'BRECHER',archer:'SCHÜTZE',guardian:'WÄCHTER',sapper:'SAPPEUR',boss:'BOSS'};
+  const enemyLabels={wraith:'GEIST',runner:'LÄUFER',brute:'BRECHER',archer:'SCHÜTZE',guardian:'WÄCHTER',sapper:'SAPPEUR',resonance:'RESONANZWÄCHTER',riftRunner:'RISSLÄUFER',boss:'BOSS'};
   function waveComposition(wave){
     const counts={};
     for(let i=0;i<waveSize(wave);i++){const type=enemyTypeForSpawn(wave,i);counts[type]=(counts[type]||0)+1;}
@@ -241,9 +244,14 @@
     const {x,y}=level.gates[gateIndex],type=enemyTypeForSpawn(game.wave,game.waveSpawned),base=enemySpecs[type],plan=applyWavePlan(type,base,game.wave);
     const hpScale=(1+Math.max(0,game.wave-1)*.13)*plan.hp,damageScale=(1+Math.max(0,game.wave-1)*.055)*plan.damage,speedScale=(game.level===2?1.16:1)*plan.speed;
     const maxHp=base.hp*hpScale;
-    const enemy={x,y,gateIndex,waypoint:1,type,hit:0,hitKick:0,slow:0,slowFactor:1,enraged:false,shieldBroken:false,phase:type==='boss'?1:0,
+    const enemy={x,y,gateIndex,waypoint:1,type,hit:0,hitKick:0,slow:0,slowFactor:1,enraged:false,shieldBroken:false,phase:type==='boss'?1:0,riftSurge:0,
       r:base.r,hp:maxHp,maxHp,speed:base.speed*speedScale,damage:base.damage*damageScale,
-      attackCd:0,attackRange:base.attackRange||0,attackCooldown:(base.attackCooldown||.85)*plan.cooldown,armor:clamp((base.armor||0)+plan.armor,0,.7),focusMonument:!!base.focusMonument,miniBoss:!!wavePlan(game.wave).miniBoss};
+      attackCd:0,attackRange:base.attackRange||0,attackCooldown:(base.attackCooldown||.85)*plan.cooldown,armor:clamp((base.armor||0)+plan.armor,0,.7),focusMonument:!!base.focusMonument,miniBoss:!!wavePlan(game.wave).miniBoss,elite:false,eliteModifier:null};
+    if(type!=='boss'&&game.wave>=6&&Math.random()<.14){
+      const mods=['armored','frenzied','slowResist'];enemy.elite=true;enemy.eliteModifier=mods[Math.floor(Math.random()*mods.length)%mods.length];
+      if(enemy.eliteModifier==='armored')enemy.armor=clamp(enemy.armor+.18,0,.7);
+      if(enemy.eliteModifier==='frenzied'){enemy.speed*=1.16;enemy.damage*=1.14;}
+    }
     if(game.waveSpawned===0)showWaveBanner(type==='boss'?`BOSSWELLE ${game.wave} · ${wavePlan(game.wave).name}`:`WELLE ${game.wave} · ${wavePlan(game.wave).name}`);
     game.enemies.push(enemy);game.waveSpawned++;
     if(type==='boss'){showToast('BOSSWELLE · DER BELAGERER');tone(62,.7,.07)}
@@ -271,6 +279,19 @@
     if(rift&&has('soulSpark')&&(game.build.soulSparkUntil||0)>game.elapsed)chain+=1;
     return {impact:cannon?1.25:1,splash:b.splash||0,splashFactor,chain:Math.min(chain,5)};
   }
+  function precisionMultiplier(source,target){
+    const b=game?.build,eliteOrBoss=!!(target?.elite||target?.type==='boss');
+    let mult=1;
+    if(source?.kind==='bow'&&eliteOrBoss&&b?.perks?.has('huntersInstinct'))mult*=1.30;
+    if(eliteOrBoss&&b?.perks?.has('targetMark')&&b.focusTarget===target)mult*=1+Math.min(5,b.focusHits||0)*.05;
+    if(source?.kind==='wand'&&b?.perks?.has('memoryStrike')&&b.focusTarget===target)mult*=1.20;
+    return mult;
+  }
+  function registerPrecisionHit(source,target){
+    const b=game?.build;if(!b?.perks?.has('targetMark'))return;
+    if(!(target?.elite||target?.type==='boss')||!['bow','wand'].includes(source?.kind)){if(b.focusTarget!==target){b.focusTarget=null;b.focusHits=0;}return;}
+    if(b.focusTarget!==target){b.focusTarget=target;b.focusHits=1;}else b.focusHits=Math.min(5,(b.focusHits||0)+1);
+  }
   function launchWave(){if(state==='playing'&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
   function collectWaveLoot(){for(const l of game.loot){if(l.kind==='item')pickupItem(l.item,true);else game.essence+=4;}game.loot=[];}
   function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
@@ -290,7 +311,7 @@
     }
   }
   function retireEnemy(e){if(e.dead)return;e.dead=true;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
-  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
+  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;if(impact.secondary&&e.type==='resonance')dmg*=.65;if(impact.secondary==='chain'&&e.type==='riftRunner')e.riftSurge=1.5;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
   function towerPosition(){const h=game.hero,p={x:h.x+facing.x*58,y:h.y+facing.y*58};return campaign.nearestSlot(p,game.level)||p;}
   function placementPreview(){
     if(!game||state!=='playing')return null;
@@ -330,7 +351,9 @@
       {id:'icebreak',path:'control',unique:true,name:'Eisbruch',icon:'❄',desc:'KONTROLLE · Kanonen brechen verlangsamte Gruppen härter.',apply:()=>{}},
       {id:'coldrift',path:'control',unique:true,name:'Kälteriss',icon:'✦',desc:'KONTROLLE · Rift erhält gegen verlangsamte Ziele einen weiteren Sprung.',apply:()=>{}},
       {id:'afterglow',path:'control',unique:true,name:'Nachhall',icon:'◌',desc:'KONTROLLE · Magie-Slow hält 0,6 Sekunden länger.',apply:()=>{}},
-      {id:'huntersInstinct',path:'precision',unique:true,name:'Jägerinstinkt',icon:'➶',desc:'PRÄZISION · Fokusfeuer wird gegen Elite und Bosse stärker.',apply:()=>{}},
+      {id:'huntersInstinct',path:'precision',unique:true,name:'Jägerinstinkt',icon:'➶',desc:'PRÄZISION · Bogen verursacht 30 % mehr Schaden gegen Elite und Bosse.',apply:()=>{}},
+      {id:'targetMark',path:'precision',unique:true,name:'Zielmarke',icon:'◎',desc:'PRÄZISION · Wiederholte Treffer auf Elite/Boss bauen bis zu 25 % Fokus auf.',apply:()=>{}},
+      {id:'memoryStrike',path:'precision',unique:true,name:'Erinnerungsschlag',icon:'✧',desc:'PRÄZISION · Marcels Runenstab verursacht 20 % mehr Schaden am markierten Ziel.',apply:()=>{}},
       {id:'riftcharge',path:'rift',unique:true,name:'Rissladung',icon:'ϟ',desc:'RISS · Kettentreffer laden den nächsten Rift-Angriff auf.',apply:()=>{}},
       {id:'overskip',path:'rift',unique:true,name:'Übersprung',icon:'↯',desc:'RISS · Eine Kette darf einmal abgeschwächt zum Primärziel zurückspringen.',apply:()=>{}},
       {id:'soulSpark',path:'rift',unique:true,name:'Seelenfunke',icon:'✺',desc:'RISS · Seelenruf verstärkt Rift-Ketten für 5 Sekunden.',apply:()=>{}}
@@ -361,11 +384,11 @@
     if(game.intermission>0)game.intermission=Math.max(0,game.intermission-dt);
     else if(game.waveSpawned<game.waveTotal){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=Math.max(.32,1.15-game.wave*.035)}}
     for(const t of game.towers){t.fireCd-=dt;const e=towerTarget(t);const spec=towerSpecs[t.kind];if(t.kind==='shrine')m.hp=Math.min(m.maxHp,m.hp+spec.heal*dt*t.level);if(e&&t.fireCd<=0){const speed=t.kind==='ballista'?610:t.kind==='cannon'?350:t.kind==='mortar'?275:460;const heavyCannon=(t.kind==='cannon'&&(t.level||1)>=3)||t.kind==='mortar';const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;shoot(t,e,t.damage,speed,spec.color,{splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon ? .045 : 0});t.fireCd=t.fireRate;}}
-    for(const b of game.bullets){b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;for(const e of game.enemies){if(!e.dead&&segmentDistance(e,b)<e.r+b.r){const synergy=projectileSynergy(b,e);hurtEnemy(e,b.damage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0});if(b.slow&&!e.dead){const slowDuration=(b.slowDuration||1.4)+(game.build?.perks?.has('afterglow')?.6:0);e.slow=Math.max(e.slow||0,slowDuration);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor)}spark(e.x,e.y,b.color,18)}if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<108&&chained<synergy.chain){hurtEnemy(other,b.damage*.62,{secondary:'chain'});chained++;if(b.kind==='rift'&&game.build?.perks?.has('riftcharge'))game.build.riftCharge=Math.min(3,(game.build.riftCharge||0)+1);}}if(b.kind==='rift'&&chained>0&&game.build?.perks?.has('overskip'))hurtEnemy(e,b.damage*.35,{secondary:'return'})}b.life=0;break}}}
+    for(const b of game.bullets){b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;for(const e of game.enemies){if(!e.dead&&segmentDistance(e,b)<e.r+b.r){const synergy=projectileSynergy(b,e);registerPrecisionHit({kind:b.kind},e);hurtEnemy(e,b.damage*synergy.impact*precisionMultiplier({kind:b.kind},e),{shake:b.impactShake||0,hitStop:b.hitStop||0,sourceKind:b.kind});if(b.slow&&!e.dead){let slowDuration=(b.slowDuration||1.4)+(game.build?.perks?.has('afterglow')?.6:0),slowFactor=b.slow;if(e.eliteModifier==='slowResist'){slowDuration*=.6;slowFactor=1-(1-slowFactor)*.6;}e.slow=Math.max(e.slow||0,slowDuration);e.slowFactor=Math.min(e.slowFactor||1,slowFactor);}fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor)}spark(e.x,e.y,b.color,18)}if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<108&&chained<synergy.chain){hurtEnemy(other,b.damage*.62,{secondary:'chain'});chained++;if(b.kind==='rift'&&game.build?.perks?.has('riftcharge'))game.build.riftCharge=Math.min(3,(game.build.riftCharge||0)+1);}}if(b.kind==='rift'&&chained>0&&game.build?.perks?.has('overskip'))hurtEnemy(e,b.damage*.35,{secondary:'return'})}b.life=0;break}}}
     game.bullets=game.bullets.filter(b=>b.life>0);
     for(const e of game.enemies){
-      if(e.dead)continue;e.hit-=dt;e.hitKick=Math.max(0,(e.hitKick||0)-dt*5);e.attackCd-=dt;e.slow=Math.max(0,(e.slow||0)-dt);
-      const speedMul=e.slow>0?(e.slowFactor||.58):1;
+      if(e.dead)continue;e.hit-=dt;e.hitKick=Math.max(0,(e.hitKick||0)-dt*5);e.attackCd-=dt;e.slow=Math.max(0,(e.slow||0)-dt);e.riftSurge=Math.max(0,(e.riftSurge||0)-dt);
+      const speedMul=(e.slow>0?(e.slowFactor||.58):1)*(e.riftSurge>0?1.2:1);
       if(game.level===2&&e.waypoint<campaign.levels[2].paths[0].length){const speed=e.speed;e.speed*=speedMul;campaign.advance(e,dt);e.speed=speed;continue;}
       // Maze enemies stay on their route; the hero cannot pull them through corners.
       const targetObj=game.level===2?m:(e.focusMonument?m:(dist(e,h)<dist(e,m)*.82?h:m));
@@ -601,6 +624,6 @@
   $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
   atlas.onerror=()=>showToast('GRAFIK KONNTE NICHT GELADEN WERDEN');
   saga.init({getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
-  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,getPerks,perkEligible};
+  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,getPerks,perkEligible,precisionMultiplier};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();
