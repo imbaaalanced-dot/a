@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,precisionMultiplier:typeof precisionMultiplier==='function'?precisionMultiplier:null,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,precisionMultiplier:typeof precisionMultiplier==='function'?precisionMultiplier:null,buildSynergyMultiplier:typeof buildSynergyMultiplier==='function'?buildSynergyMultiplier:null,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -346,6 +346,14 @@ check('v3.6 dodge evolutions apply readiness or a nonstacking counterstrike wind
   const first=h2.counterstrikeUntil;t.dodge();assert.equal(h2.counterstrikeUntil,first,'second dodge does not stack before completion');t.update(1.3);t.dodge();t.update(.20);assert.ok(h2.counterstrikeUntil>=first,'later dodge refreshes the window');
   t.game.bullets=[];const target={x:h2.x+80,y:h2.y,hp:1000,maxHp:1000,r:12,type:'wraith',armor:0,hit:0,dead:false};t.shoot(h2,target,100);assert.ok(Math.abs(t.game.bullets[0].damage-125)<1e-9);
 });
+check('v3.6 boss phase exposes a three-second synergy window without changing shake rules',()=>{
+  assert.equal(typeof t.buildSynergyMultiplier,'function');
+  const b=t.game.build;b.control=2;
+  const boss={x:300,y:300,hp:650,maxHp:1000,r:34,type:'boss',armor:0,hit:0,hitKick:0,dead:false,phase:1,speed:30,damage:40,attackCooldown:.82};
+  t.game.enemies=[boss];t.updateEnemyPressure(boss);assert.equal(boss.phase,2);assert.ok(Math.abs(boss.exposedUntil-(t.game.elapsed+3))<1e-9);assert.equal(t.shake,10);assert.equal(t.buildSynergyMultiplier(boss),1.1);
+  boss.hp=320;t.updateEnemyPressure(boss);assert.equal(boss.phase,3);assert.ok(Math.abs(boss.exposedUntil-(t.game.elapsed+3))<1e-9);assert.equal(t.shake,10);
+  b.control=1;b.precision=1;b.rift=1;assert.equal(t.buildSynergyMultiplier(boss),1,'hybrid without two perks in one path is not completed');
+});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
@@ -354,6 +362,8 @@ assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layou
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
 assert.ok(html.includes('marcel-lantern-portrait-v1.webp'));
+assert.ok(html.includes('DENKMAL TD · v3.6.0'));
+assert.ok(html.includes('?v=v360'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
