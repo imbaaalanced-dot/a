@@ -287,6 +287,23 @@ check('v3.6 initializes three build paths and tags build perks',()=>{
   assert.ok(buildPerks.length>=3);
   for(const p of buildPerks){assert.ok(p.id);assert.ok(['control','precision','rift'].includes(p.path));assert.match(p.desc,/^(KONTROLLE|PRÄZISION|RISS) ·/);}
 });
+check('v3.6 control and rift perks stay bounded',()=>{
+  const build=t.game.build;
+  build.perks.add('icebreak');build.perks.add('coldrift');build.perks.add('afterglow');
+  const slowed={slow:1};
+  const cannon=t.projectileSynergy({kind:'cannon',splash:64},slowed);
+  assert.ok(Math.abs(cannon.splashFactor-(.58*1.25*1.15))<1e-9);
+  assert.equal(t.projectileSynergy({kind:'rift',chain:2},slowed).chain,4);
+  const e={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
+  t.game.enemies=[e];t.shoot({x:200,y:300,kind:'mage',level:1},e,1,500,'#69bfff',{slow:.58,slowDuration:1.6});for(let i=0;i<15;i++)t.update(.02);
+  assert.ok(e.slow>1.8,'afterglow extends mage slow');
+  build.riftCharge=3;t.game.bullets=[];t.shoot({x:200,y:300,kind:'rift',level:1},e,100,520,'#ee58ff',{chain:2});
+  assert.ok(Math.abs(t.game.bullets[0].damage-124)<1e-9);assert.equal(build.riftCharge,0);
+  build.perks.add('soulSpark');build.soulSparkUntil=t.game.elapsed+5;
+  assert.equal(t.projectileSynergy({kind:'rift',chain:2},slowed).chain,5);
+  build.perks.add('overskip');
+  assert.ok(t.projectileSynergy({kind:'rift',chain:2},slowed).chain<=5,'rift chain budget remains finite');
+});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
