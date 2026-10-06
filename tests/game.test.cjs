@@ -303,6 +303,12 @@ check('v3.6 control and rift perks stay bounded',()=>{
   assert.equal(t.projectileSynergy({kind:'rift',chain:2},slowed).chain,5);
   build.perks.add('overskip');
   assert.ok(t.projectileSynergy({kind:'rift',chain:2},slowed).chain<=5,'rift chain budget remains finite');
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  const a={x:300,y:300,hp:100,maxHp:100,r:12,type:'wraith',armor:0,hit:0,dead:false,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
+  const b={...a,x:340};t.game.enemies=[a,b];t.game.bullets=[];build.riftCharge=0;build.soulSparkUntil=0;
+  t.shoot({x:200,y:300,kind:'rift',level:1},a,10,520,'#ee58ff',{chain:1});for(let i=0;i<15;i++)t.update(.02);
+  sandbox.Math.random=oldRandom;
+  assert.ok(Math.abs(a.hp-86.5)<1e-6,'overskip returns once for 35% damage');
 });
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
