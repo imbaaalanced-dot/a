@@ -1,10 +1,10 @@
-# Denkmal TD · v3.5.0-alpha.2
+# Denkmal TD · v3.6.0
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
-## Aktueller Alpha-Stand
+## Aktueller Stand
 
-v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bisherige Darstellung durch den neuen Laternenhüter.
+v3.6.0 ist das Gameplay-Depth-Update. Der bestehende v3.5-Live-Stand bleibt technisch die Basis; neu sind drei klar lesbare Build-Pfade, Marcel-Entwicklungen im Run sowie zusätzliche Gegner- und Elite-Gegenrollen.
 
 - Vier feste Spawn-Tore in Level 1 und das freischaltbare Labyrinth als Level 2.
 - Steuerbarer Held Marcel mit automatischem Runenstab, Ausweichen, Seelenruf, Ausrüstung und Beute-Inventar.
@@ -32,6 +32,14 @@ v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bi
 - v3.2.0-alpha.2: leichte Treffer ohne Camera-Shake; normale Kanone 0,6; schwere Kanone/Boss-Treffer 3; Boss-Phasenwechsel 10. Hit-Stop bleibt Boss-Treffern und schweren Kanonen-Einschlägen vorbehalten.
 - Gegnerpanzerung wird mit einem Schildindikator neben dem HP-Balken sichtbar.
 - Ab Welle 12 erscheint alle vier Wellen ein rotierender Mini-Boss-Modifikator.
+
+- v3.6.0 Build-Pfade: **KONTROLLE**, **PRÄZISION** und **RISS** mit getaggten, einzigartigen Perks.
+- Kontrolle vertieft Mage-Slow, Kanonen-Splash und Rift-Ketten ohne Endlosschleifen.
+- Präzision belohnt Bogen-/Marcel-Fokus auf Elite- und Bossziele mit Zielmarke und Erinnerungsschlag.
+- Neue Gegnerrollen: Resonanzwächter gegen Sekundärschaden und Rissläufer mit temporärem Tempo-Schub nach Kettentreffern.
+- Seltene Elite-Gegner tragen maximal einen klaren Modifikator: gepanzert, rasend oder Slow-resistent.
+- Marcel entwickelt Seelenruf zu **Druckwelle** oder **Schwächung** und Ausweichen zu **Bereitschaft** oder **Gegenstoß**.
+- Belagerer-Phasen öffnen ein 3-Sekunden-Synergiefenster; abgeschlossene Build-Pfade erhalten darin +10 % Schaden.
 
 ## Spielen
 
