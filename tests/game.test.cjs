@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,precisionMultiplier:typeof precisionMultiplier==='function'?precisionMultiplier:null,buildSynergyMultiplier:typeof buildSynergyMultiplier==='function'?buildSynergyMultiplier:null,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,precisionMultiplier:typeof precisionMultiplier==='function'?precisionMultiplier:null,buildSynergyMultiplier:typeof buildSynergyMultiplier==='function'?buildSynergyMultiplier:null,enemyReadabilityStyle:typeof enemyReadabilityStyle==='function'?enemyReadabilityStyle:null,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -353,6 +353,18 @@ check('v3.6 boss phase exposes a three-second synergy window without changing sh
   t.game.enemies=[boss];t.updateEnemyPressure(boss);assert.equal(boss.phase,2);assert.ok(Math.abs(boss.exposedUntil-(t.game.elapsed+3))<1e-9);assert.equal(t.shake,10);assert.equal(t.buildSynergyMultiplier(boss),1.1);
   boss.hp=320;t.updateEnemyPressure(boss);assert.equal(boss.phase,3);assert.ok(Math.abs(boss.exposedUntil-(t.game.elapsed+3))<1e-9);assert.equal(t.shake,10);
   b.control=1;b.precision=1;b.rift=1;assert.equal(t.buildSynergyMultiplier(boss),1,'hybrid without two perks in one path is not completed');
+});
+check('v3.6 new enemy roles and elite modifiers have readable visual identities',()=>{
+  assert.equal(typeof t.enemyReadabilityStyle,'function');
+  const resonance=t.enemyReadabilityStyle({type:'resonance',elite:false});
+  const runner=t.enemyReadabilityStyle({type:'riftRunner',elite:false});
+  assert.ok(resonance.filter&&runner.filter&&resonance.filter!==runner.filter);
+  for(const mod of ['armored','frenzied','slowResist']){const s=t.enemyReadabilityStyle({type:'wraith',elite:true,eliteModifier:mod});assert.ok(s.ring,'elite modifier '+mod+' has a visible ring');}
+});
+check('v3.6 precision focus clears when the marked target dies',()=>{
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;const e={x:0,y:0,hp:1,maxHp:10,r:12,type:'boss',armor:0,hit:0,dead:false};
+  t.game.enemies=[e];t.game.build.focusTarget=e;t.game.build.focusHits=5;t.hurtEnemy(e,10);sandbox.Math.random=oldRandom;
+  assert.equal(t.game.build.focusTarget,null);assert.equal(t.game.build.focusHits,0);
 });
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
