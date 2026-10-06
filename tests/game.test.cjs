@@ -281,6 +281,12 @@ check('Final wave collects the boss seal before unlocking level 2',()=>{t.game.w
 check('Towers choose the enemy closest to the monument within range',()=>{const m=t.game.monument,a={x:m.x+180,y:m.y},b={x:m.x+90,y:m.y},out={x:m.x+1,y:m.y};t.game.enemies=[a,b,out];const tower={x:m.x+190,y:m.y,range:150};assert.equal(t.towerTarget(tower),b);});
 check('Cannon splash hits a nearby group while bow stays single-target',()=>{const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;t.launchWave();const h=t.game.hero;h.fireCd=100;const m=t.game.monument;t.game.towers=[{x:m.x+220,y:m.y+100,kind:'cannon',level:1,damage:34,fireRate:1.15,fireCd:-1,range:275}];const e={x:m.x+220,y:m.y+170,hp:1000,maxHp:1000,r:12,speed:0,damage:0,attackCd:5,hit:0,type:'wraith'},other={...e,x:e.x+30};t.game.enemies=[e,other];for(let i=0;i<12;i++)t.update(.02);assert.ok(e.hp<1000);assert.ok(other.hp<1000);assert.ok(e.hp<other.hp);sandbox.Math.random=oldRandom;});
 check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const m=t.game.monument,slot=sandbox.DenkmalLevels.levels[1].slots[0];assert.notEqual(t.placementError({x:m.x+200,y:m.y}),'');assert.equal(t.placementError(slot),'');for(const p of sandbox.DenkmalLevels.levels[1].slots)for(const path of sandbox.DenkmalLevels.levels[1].paths)assert.ok(sandbox.DenkmalLevels.pathDistance(p,path)>=64);});
+check('v3.6 initializes three build paths and tags build perks',()=>{
+  assert.equal(t.game.build.control,0);assert.equal(t.game.build.precision,0);assert.equal(t.game.build.rift,0);
+  const buildPerks=t.getPerks().filter(p=>p.path);
+  assert.ok(buildPerks.length>=3);
+  for(const p of buildPerks){assert.ok(p.id);assert.ok(['control','precision','rift'].includes(p.path));assert.match(p.desc,/^(KONTROLLE|PRÄZISION|RISS) ·/);}
+});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
