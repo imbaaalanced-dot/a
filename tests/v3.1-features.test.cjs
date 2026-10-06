@@ -235,7 +235,7 @@ g36b.build.perks.add('icebreak');g36b.build.perks.add('coldrift');
 const v36c=hooks.projectileSynergy({kind:'cannon',splash:64},{slow:1});
 assert.ok(Math.abs(v36c.splashFactor-(.58*1.25*1.15))<1e-9,'icebreak adds bounded cannon splash bonus');
 assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain,4,'coldrift adds exactly one extra slowed chain');
-g36b.build.perks.add('soulSpark');g36b.soulSparkUntil=g36b.elapsed+5;
+g36b.build.perks.add('soulSpark');g36b.build.soulSparkUntil=g36b.elapsed+5;
 assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain,5,'soulSpark adds one temporary chain');
 
 // --- Burst cap ---
