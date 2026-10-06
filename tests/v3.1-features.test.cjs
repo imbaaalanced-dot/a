@@ -215,6 +215,19 @@ assert.ok(first, 'first mode returns an enemy');
 tower.range = 5;
 assert.strictEqual(hooks.towerTarget(tower), null, 'out of range = null');
 
+// --- v3.6 Build Paths ---
+hooks.resetGame(1);
+const g36 = hooks.getGame();
+assert.deepStrictEqual({control:g36.build.control,precision:g36.build.precision,rift:g36.build.rift},{control:0,precision:0,rift:0});
+assert.strictEqual(typeof hooks.getPerks,'function','v3.6 getPerks hook exposed');
+const tagged = hooks.getPerks().filter(p=>p.path);
+assert.ok(tagged.length >= 3, 'v3.6 exposes tagged build perks');
+for (const p of tagged) {
+  assert.ok(p.id, 'build perk has stable id');
+  assert.ok(['control','precision','rift'].includes(p.path), 'known build path');
+  assert.ok(/^(KONTROLLE|PRÄZISION|RISS) ·/.test(p.desc), 'build path is readable in perk copy');
+}
+
 // --- Burst cap ---
 const gb = { particles: [] };
 const bullet = { kind: 'cannon', x: 0, y: 0, color: '#fff', level: 1, life: 1.1, vy: 0, vx: 1 };
