@@ -145,7 +145,7 @@
   }
   function unleash() {
     const h=getHero();if(api.getState()!=='playing'||h.soul<100)return false;
-    h.soul=0;h.invuln=Math.max(h.invuln,1.1);const power=h.equipment.relic==='bell'?1.4:1;
+    h.soul=0;h.invuln=Math.max(h.invuln,1.1);const g=api.getGame();if(g.build?.perks?.has('soulSpark'))g.build.soulSparkUntil=g.elapsed+5;const power=h.equipment.relic==='bell'?1.4:1;
     if(h.equipment.relic==='lantern')h.hp=Math.min(h.maxHp,h.hp+25);
     pulse={x:h.x,y:h.y,life:.8,max:.8};
     for(const enemy of api.getGame().enemies){if(!enemy.dead&&distance(h,enemy)<270)api.hurtEnemy(enemy,(70+h.damage*2)*power);}
