@@ -299,7 +299,7 @@ check('v3.6 control and rift perks stay bounded',()=>{
   assert.ok(e.slow>1.8,'afterglow extends mage slow');
   build.riftCharge=3;t.game.bullets=[];t.shoot({x:200,y:300,kind:'rift',level:1},e,100,520,'#ee58ff',{chain:2});
   assert.ok(Math.abs(t.game.bullets[0].damage-124)<1e-9);assert.equal(build.riftCharge,0);
-  build.perks.add('soulSpark');build.soulSparkUntil=t.game.elapsed+5;
+  build.perks.add('soulSpark');t.game.hero.soul=100;assert.equal(saga.unleash(),true);assert.ok(build.soulSparkUntil>t.game.elapsed);
   assert.equal(t.projectileSynergy({kind:'rift',chain:2},slowed).chain,5);
   build.perks.add('overskip');
   assert.ok(t.projectileSynergy({kind:'rift',chain:2},slowed).chain<=5,'rift chain budget remains finite');
