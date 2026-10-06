@@ -228,6 +228,16 @@ for (const p of tagged) {
   assert.ok(/^(KONTROLLE|PRÄZISION|RISS) ·/.test(p.desc), 'build path is readable in perk copy');
 }
 
+// --- v3.6 Control + Rift ---
+hooks.resetGame(1);
+const g36b=hooks.getGame();
+g36b.build.perks.add('icebreak');g36b.build.perks.add('coldrift');
+const v36c=hooks.projectileSynergy({kind:'cannon',splash:64},{slow:1});
+assert.ok(Math.abs(v36c.splashFactor-(.58*1.25*1.15))<1e-9,'icebreak adds bounded cannon splash bonus');
+assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain,4,'coldrift adds exactly one extra slowed chain');
+g36b.build.perks.add('soulSpark');g36b.soulSparkUntil=g36b.elapsed+5;
+assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain,5,'soulSpark adds one temporary chain');
+
 // --- Burst cap ---
 const gb = { particles: [] };
 const bullet = { kind: 'cannon', x: 0, y: 0, color: '#fff', level: 1, life: 1.1, vy: 0, vx: 1 };
