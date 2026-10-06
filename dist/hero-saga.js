@@ -50,7 +50,7 @@
   function reset(h) {
     stopVoice();
     h.equipment={weapon:'ember',armor:'oath',relic:'lantern'};
-    h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.hitFlash=0;
+    h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.hitFlash=0;h.counterstrikeUntil=0;h.counterstrikePending=false;
     lowHpSpoken=false;storySeen=new Set();pulse=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
@@ -145,10 +145,15 @@
   }
   function unleash() {
     const h=getHero();if(api.getState()!=='playing'||h.soul<100)return false;
-    h.soul=0;h.invuln=Math.max(h.invuln,1.1);const g=api.getGame();if(g.build?.perks?.has('soulSpark'))g.build.soulSparkUntil=g.elapsed+5;const power=h.equipment.relic==='bell'?1.4:1;
+    h.soul=0;h.invuln=Math.max(h.invuln,1.1);const g=api.getGame();if(g.build?.perks?.has('soulSpark'))g.build.soulSparkUntil=g.elapsed+5;const power=h.equipment.relic==='bell'?1.4:1,evolution=g.build?.soulEvolution;
     if(h.equipment.relic==='lantern')h.hp=Math.min(h.maxHp,h.hp+25);
     pulse={x:h.x,y:h.y,life:.8,max:.8};
-    for(const enemy of api.getGame().enemies){if(!enemy.dead&&distance(h,enemy)<270)api.hurtEnemy(enemy,(70+h.damage*2)*power);}
+    for(const enemy of g.enemies){
+      if(enemy.dead||distance(h,enemy)>=270)continue;
+      const mult=evolution==='shockwave'?1.35:evolution==='weaken'?.70:1;
+      api.hurtEnemy(enemy,(70+h.damage*2)*power*mult,{sourceKind:'soul'});
+      if(evolution==='weaken'&&!enemy.dead)enemy.weakenedUntil=g.elapsed+5;
+    }
     const count=h.equipment.weapon==='echo'?5:3;
     echoes=Array.from({length:count},(_,i)=>({angle:i*Math.PI*2/count,life:5,fire:.3+i*.14}));
     say('ultimate');api.spark(h.x,h.y,'#96ffdf',32);api.tone(180,.4,.05);api.updateUI();return true;
