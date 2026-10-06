@@ -238,6 +238,13 @@ assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain
 g36b.build.perks.add('soulSpark');g36b.build.soulSparkUntil=g36b.elapsed+5;
 assert.strictEqual(hooks.projectileSynergy({kind:'rift',chain:2},{slow:1}).chain,5,'soulSpark adds one temporary chain');
 
+// --- v3.6 Precision + Elites ---
+hooks.resetGame(1);
+assert.strictEqual(typeof hooks.precisionMultiplier,'function','precision multiplier hook exposed');
+const gp=hooks.getGame();gp.build.perks.add('huntersInstinct');
+assert.strictEqual(hooks.precisionMultiplier({kind:'bow'},{type:'boss',elite:false}),1.3,'bow gains +30% vs boss');
+assert.ok(['resonance','riftRunner'].includes(hooks.enemyTypeForSpawn(8,7)),'new role enters after onboarding waves');
+
 // --- Burst cap ---
 const gb = { particles: [] };
 const bullet = { kind: 'cannon', x: 0, y: 0, color: '#fff', level: 1, life: 1.1, vy: 0, vx: 1 };
