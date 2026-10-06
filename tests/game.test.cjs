@@ -318,7 +318,7 @@ check('v3.6 precision focus rewards elite and boss targeting without leaking',()
   assert.equal(t.precisionMultiplier({kind:'bow'},boss),1.3);
   assert.equal(t.precisionMultiplier({kind:'bow'},plain),1);
   assert.equal(t.precisionMultiplier({kind:'wand'},elite),1,'unmarked Marcel hit has no memory bonus');
-  b.focusTarget=elite;b.focusHits=5;assert.ok(Math.abs(t.precisionMultiplier({kind:'wand'},elite)-1.25)<1e-9);
+  b.focusTarget=elite;b.focusHits=5;assert.ok(Math.abs(t.precisionMultiplier({kind:'wand'},elite)-1.50)<1e-9);
   b.focusTarget=plain;b.focusHits=0;assert.equal(t.precisionMultiplier({kind:'wand'},elite),1,'focus does not leak after target change');
 });
 check('v3.6 resonance rift-runner and elites have bounded counters',()=>{
