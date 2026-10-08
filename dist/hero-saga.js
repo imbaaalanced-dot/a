@@ -27,9 +27,9 @@
     ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 5 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute wirkt sofort · Ausrüstung mit H · Beute mit I'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Marcel hat den Echo-Stab freigeschaltet. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Überstehe Welle 5 und beschütze das Denkmal.',reward:'NEUE AUSRÜSTUNG · NACHHALL'},
-    {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NEUE AUSRÜSTUNG · DIE LETZTE GLOCKE'},
+    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 5 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Überstehe Welle 5 und beschütze das Denkmal.',reward:'NACH WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
+    {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
     {wave:16,id:'ending',kicker:'DIE WACHT BESTEHT',title:'Die Erinnerung bleibt.',text:'Marcel hat den Aschenkönig zurückgeschlagen. Das Denkmal steht. Die Wacht geht als endlose Herausforderung weiter.',objective:'Verstärke deine Verteidigung für die kommenden Wellen.',reward:'DIE NAMEN SIND FREI'}
   ];
   const heroAtlas = new Image();
@@ -45,18 +45,19 @@
   let pulse=null, echoes=[], trail=[], attackTime=0, walkTime=0;
   const getHero = () => api.getGame().hero;
   const ready = img => img && img.complete && img.naturalWidth > 0;
-  const item = (h, slot) => equipment[slot].find(i=>i.id===h.equipment[slot]);
+  const item = (h, slot) => equipment[slot].find(i=>i.id===h.equipment[slot])||{name:'Unbelegt',color:'#83cfff'};
 
-  function reset(h) {
+  function reset(h,loadout) {
     stopVoice();
-    h.equipment={weapon:'ember',armor:'oath',relic:'lantern'};
+    h.loadout=loadout||[];h.gear=globalThis.DenkmalLoot.totals(h.loadout);const p=h.gear.powers;
+    h.equipment={weapon:p.echo?'echo':p.ember?'ember':'none',armor:p.ash?'ash':p.oath?'oath':'none',relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
     h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.hitFlash=0;
     lowHpSpoken=false;storySeen=new Set();pulse=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
   }
   function stats(h) {
-    return {damage:h.damage*(h.equipment.weapon==='ember'?1.25:1), rate:h.fireRate*(h.equipment.weapon==='echo'?.7:1), speed:h.speed*(h.equipment.armor==='ash'?1.2:1), armor:h.equipment.armor==='oath'?.75:1, dodge:h.equipment.armor==='ash'?.7:1};
+    return {damage:(h.damage+(h.gear?.damage||0))*(h.equipment.weapon==='ember'?1.25:1), rate:h.fireRate*(h.equipment.weapon==='echo'?.7:1)/(1+(h.gear?.haste||0)), speed:h.speed*(h.equipment.armor==='ash'?1.2:1)*(1+(h.gear?.speed||0)), armor:(h.equipment.armor==='oath'?.75:1)*(1-(h.gear?.defense||0)), dodge:h.equipment.armor==='ash'?.7:1};
   }
   function stopVoice() {
     voiceGeneration++;
@@ -112,7 +113,7 @@
       const heading=document.createElement('h3');heading.textContent={weapon:'01 / WAFFE',armor:'02 / RÜSTUNG',relic:'03 / RELIKT'}[slot];section.appendChild(heading);
       for(const option of options){
         const unlocked=g.wave>=option.wave, equipped=h.equipment[slot]===option.id;
-        const button=document.createElement('button');button.type='button';button.className=`gear-card${equipped?' equipped':''}`;button.disabled=!unlocked;
+        const button=document.createElement('button');button.type='button';button.className=`gear-card${equipped?' equipped':''}`;button.disabled=true;
         button.setAttribute('aria-pressed',String(equipped));
         button.innerHTML=`<small>${option.label}</small><strong>${option.name}</strong><span>${option.desc}</span><em>${equipped?'ANGELEGT':unlocked?'ANLEGEN':`AB WELLE ${option.wave}`}</em>`;
         button.title=option.detail;
@@ -122,11 +123,7 @@
     const journal=$('journalEntries');journal.innerHTML='';
     for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze Marcels Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
   }
-  function equip(slot,id) {
-    if(api.getState()!=='character')return false;
-    const option=equipment[slot]?.find(i=>i.id===id);if(!option||api.getGame().wave<option.wave)return false;
-    getHero().equipment[slot]=id;renderCharacter();api.tone(420,.06);api.updateUI();return true;
-  }
+  function equip(){return false;} // Legacy wardrobe is read-only; management lives in the main-menu inventory.
   function openCharacter() {
     if(!['playing','paused'].includes(api.getState()))return;
     returnState=api.getState();api.setState('character');api.clearInput();stopVoice();renderCharacter();
@@ -225,7 +222,7 @@
     api=callbacks;
     try{voiceEnabled=localStorage.getItem('denkmal-voice')==='on';}catch{}
     voiceLabel();
-    $('heroBtn').onclick=()=>api.getState()==='character'?closeCharacter():openCharacter();
+    $('heroBtn').onclick=()=>api.openInventory();
     $('characterClose').onclick=closeCharacter;$('storyContinue').onclick=continueStory;
     $('storyReplay').onclick=()=>{if(currentStory)say(currentStory.id,true);};
     $('soulBtn').onclick=()=>{unleash();$('game').focus();};

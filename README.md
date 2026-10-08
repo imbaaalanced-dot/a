@@ -1,10 +1,10 @@
-# Denkmal TD · v3.5.0-alpha.2
+# Denkmal TD · v3.6.0-alpha.1
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
 ## Aktueller Alpha-Stand
 
-v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bisherige Darstellung durch den neuen Laternenhüter.
+v3.6.0-alpha.1 ergänzt eine dauerhafte Rüstkammer. Beute bleibt nach Niederlagen und Neuladen erhalten; Ausrüstung wird ausschließlich im Hauptmenü gewechselt.
 
 - Vier feste Spawn-Tore in Level 1 und das freischaltbare Labyrinth als Level 2.
 - Steuerbarer Held Marcel mit automatischem Runenstab, Ausweichen, Seelenruf, Ausrüstung und Beute-Inventar.
@@ -16,7 +16,7 @@ v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bi
 - Off-Screen-Bedrohungspfeile und optionale FPS-/Gegner-/FX-Telemetrie für Tester.
 - Portrait-first Android-Layout mit Safe-Area-Unterstützung, angepasstem Kamera-Zoom, Touch-Joystick und kompaktem 2×2-Arsenal.
 - Neue Projektil- und Treffer-Sprites für Bogen, Kanone, Magie und Rift. Der bisherige prozedurale Renderer bleibt als Fallback erhalten.
-- Einheitliches Browser-Cache-Busting für den v3.1-Testbuild.
+- Einheitliches Browser-Cache-Busting v360a1 für alle Skripte und Styles.
 - Taktische Zielprioritäten pro Turm: ERSTER, STÄRKSTER, NÄCHSTER oder BOSS.
 - Gegner-Vorschau während der Baupause.
 - Mage-Slow verstärkt Kanonen-Impact/Splash um 25 % und gibt der Riftlanze einen zusätzlichen Kettensprung.
@@ -33,6 +33,18 @@ v3.5.0-alpha.2 baut auf dem konsolidierten v3.5-Stand auf und ersetzt Marcels bi
 - Gegnerpanzerung wird mit einem Schildindikator neben dem HP-Balken sichtbar.
 - Ab Welle 12 erscheint alle vier Wellen ein rotierender Mini-Boss-Modifikator.
 
+## Dauerhafte Beute & Rüstkammer
+
+- Im Hauptmenü **HELD & INVENTAR** öffnen: Waffe, Kopf, Rüstung, Handschuhe, Stiefel, Amulett und zwei Ringe.
+- 30 Rucksackplätze, gesicherter Überlauf, Seltenheitsfilter, Sortierung und Vergleich mit angelegten Gegenständen.
+- Fünf Seltenheiten von gewöhnlich bis legendär. Zufällige Werte für Schaden, LP, Tempo, Schutz, kritische Treffer, Lebensraub und Turmschaden; legendäre Spezialeffekte.
+- Jede abgeschlossene Welle gibt Beute, Bosse garantieren mindestens epische Ausrüstung. Alte Ausrüstungsvarianten werden nach Wellen 3, 4 und 8 einmalig dauerhaft freigeschaltet.
+- **I / H** im Kampf öffnet die Sammlung nur zum Ansehen. Neue Funde verändern die Ausrüstung des laufenden Durchgangs nicht.
+- Favoriten schützen; unangelegte Gegenstände zerlegen oder für 50 dauerhafte Schmiedessenz neu würfeln. Schmiedessenz ist getrennt von der Turmbau-Essenz.
+- Autosave im Browser auf diesem Gerät. JSON-Export/Import für Sicherung und Gerätewechsel; Import ersetzt die Sammlung erst nach Bestätigung. Browserdaten löschen entfernt auch den lokalen Spielstand.
+- Speicherfehler werden angezeigt: in diesem Fall exportieren. Andere Tabs dürfen einen neueren Spielstand nicht überschreiben.
+- Alpha.2 hat keine dauerhafte Beute gespeichert. Frühere Lauf-Beute lässt sich deshalb nicht übernehmen. Die drei ursprünglichen Startboni sowie die bestehende Level-2-Freischaltung bleiben erhalten.
+
 ## Spielen
 
 WASD/Pfeile oder Touch-Joystick bewegen Marcel. Der Runenstab feuert automatisch. `E` baut, `Q` wertet auf, `X` verkauft, Leertaste weicht aus, `F` löst den Seelenruf aus, `H` öffnet Ausrüstung und `I` das Inventar. Auf Touch-Geräten stehen dieselben Aktionen als Bildschirmtasten bereit.
@@ -43,12 +55,15 @@ Level 1 umfasst Wellen 1–5. Danach wird Level 2 dauerhaft im Hauptmenü freige
 
 Die GitHub-Actions-Workflows führen vor Veröffentlichung die Regression-Suites aus:
 
+- `node tests/loot.test.cjs`
 - `node tests/game.test.cjs`
 - `TEST_MOBILE=1 node tests/game.test.cjs`
 - `node tests/combat-fx.test.cjs`
 - `node tests/v3.1-features.test.cjs`
 
-Der Pages-Workflow veröffentlicht nur nach erfolgreicher Prüfung den Inhalt von `dist/` auf `gh-pages`.
+Der Pages-Workflow veröffentlicht nur nach erfolgreicher Prüfung den Inhalt von `dist/` auf `gh-pages`; der separate Testpfad `superpowers-alpha3/` bleibt erhalten.
+
+Zusätzlich: `python tests/assets.test.py` (Pillow erforderlich) prüft die neuen Heldenbilder.
 
 Ein Langzeittest auf echten Android-Geräten bleibt weiterhin Teil des Alpha-Testings.
 

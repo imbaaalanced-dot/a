@@ -78,11 +78,12 @@
     mage:{label:'KONTROLLE',icon:'✦'},
     rift:{label:'KETTE',icon:'ϟ'}
   };
-  const lootTable=[
-    {id:'ash',name:'ASCHENSPLITTER',rarity:'GEWÖHNLICH',desc:'+3 Runenstab-Schaden für diesen Lauf.'},
-    {id:'rune',name:'RISSRUNE',rarity:'SELTEN',desc:'6 % kürzere Angriffspausen für diesen Lauf.'},
-    {id:'seal',name:'WÄCHTERSIEGEL',rarity:'BOSS',desc:'+30 maximale LP, heilt 50 Helden-LP und 80 Monument-LP.'}
-  ];
+  let inventoryReturn='start';
+  let storage;try{storage=localStorage;}catch{}
+  const lootModel=globalThis.DenkmalLoot.create({storage,canManage:()=>state==='inventory'&&inventoryReturn==='start'});
+  if(lootModel.profile.level2&&!campaign.unlocked)campaign.unlock();
+  if(campaign.unlocked&&!lootModel.profile.level2)lootModel.unlockLevel();
+  const lootUI=globalThis.DenkmalLootUI?.create(lootModel,{editable:()=>inventoryReturn==='start',onClose:()=>closeInventory(),onImport:()=>{if(lootModel.profile.level2)campaign.unlock();menuStatus();}});
   const towerSpecs={
     bow:{name:'BOGENTURM',cost:25,damage:12,rate:.50,range:300,color:'#d4b879'},
     cannon:{name:'KANONENTURM',cost:35,damage:34,rate:1.15,range:275,color:'#d7a16c',splash:64},
@@ -171,9 +172,9 @@
     game={level,wave:level===2?6:1,elapsed:0,essence:level===2?130:70,selectedTower:'bow',kills:0,waveSpawned:0,waveKilled:0,waveTotal:waveSize(level===2?6:1),spawnTimer:1.2,intermission:5,
       hero:{x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
       monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
-      enemies:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:6,towers:[],maxTowers:level===2?6:4};
+      enemies:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:30,rewardedWaves:new Set(),towers:[],maxTowers:level===2?6:4};
     game.waveTotal=waveSize(game.wave);
-    saga.reset(game.hero);updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
+    saga.reset(game.hero,lootModel.snapshot());game.inventory=lootModel.profile.bag;updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
   }
   function cameraLead(){
     const amount=mobileRender?44:72,magnitude=clamp(Math.hypot(moveIntent.x,moveIntent.y),0,1);
@@ -197,36 +198,42 @@
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
   function menuStatus(){
     $('level2Btn').disabled=!campaign.unlocked;
+    if($('collectionSummary'))$('collectionSummary').textContent=`${lootModel.profile.bag.length}/30 im Rucksack · ${lootModel.profile.overflow.length} im Überlauf · Ausrüstung nur hier wechseln`;
+    if($('saveStatus'))$('saveStatus').textContent=lootModel.status||'Beute und Ausrüstung werden auf diesem Gerät gespeichert.';
     $('levelProgress').textContent=campaign.unlocked?(campaign.storageAvailable?'Level 2 freigeschaltet · jederzeit hier starten':'Level 2 freigeschaltet · Speichern blockiert, nur für diese Sitzung'):'Level 2 wird nach Welle 5 freigeschaltet.';
   }
   function closeScreens(){saga.stopVoice();for(const id of ['startScreen','pauseScreen','perkScreen','gameover','levelComplete','storyScreen','characterScreen','inventoryScreen'])$(id).classList.add('hidden');}
-  function mainMenu(){closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
+  function mainMenu(){if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1){
     level=level===2?2:1;if(level===2&&!campaign.unlocked)return;
     closeScreens();reset(level);state='playing';focusGame();tone(220,.1);last=performance.now();
     if(level===1)saga.chapter(1);else showToast('LEVEL 2 · WELLE 6');updateUI();
   }
-  function renderInventory(){
-    const grid=$('inventoryGrid');if(!grid||!game)return;grid.innerHTML='';
-    for(let i=0;i<game.maxInventory;i++){const item=game.inventory[i],slot=document.createElement('div');slot.className='inventory-slot'+(item?' filled':'');slot.innerHTML=item?`<span>${i+1}</span><b>${item.name}</b><small>${item.rarity}</small><p>${item.desc}</p>`:`<span>${i+1}</span><b>LEERER SLOT</b><small>—</small>`;grid.appendChild(slot);}
-  }
+  function renderInventory(){if(state==='inventory')lootUI?.render();}
   function pickupItem(item,silent=false){
-    if(game.inventory.length>=game.maxInventory){game.essence+=8;if(!silent)showToast('INVENTAR VOLL · +8 ESSENZ');return false;}
-    game.inventory.push({...item});
-    if(item.id==='ash')game.hero.damage+=3;
-    if(item.id==='rune')game.hero.fireRate*=.94;
-    if(item.id==='seal'){game.hero.maxHp+=30;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+50);game.monument.hp=Math.min(game.monument.maxHp,game.monument.hp+80);}
-    if(!silent)showToast(`${item.name} GEFUNDEN`);renderInventory();return true;
+    const kept=lootModel.add(item);game.inventory=lootModel.profile.bag;
+    if(!silent)showToast(kept?`${item.name} · ${lootModel.profile.overflow.some(i=>i.id===item.id)?'IM ÜBERLAUF':'GESICHERT'}`:'BEUTE NICHT GESPEICHERT · INVENTAR PRÜFEN');
+    if(lootModel.status)$('saveStatus').textContent=lootModel.status;
+    renderInventory();return kept;
   }
-  function openInventory(){if(state!=='playing')return;state='inventory';clearInput();renderInventory();$('inventoryScreen').classList.remove('hidden');focusModal($('inventoryScreen'));updateUI();}
-  function closeInventory(){if(state!=='inventory')return;$('inventoryScreen').classList.add('hidden');state='playing';last=performance.now();focusGame();updateUI();}
+  function openInventory(){
+    if(!['start','playing','paused'].includes(state))return;
+    inventoryReturn=state;state='inventory';clearInput();saga.stopVoice();
+    for(const id of ['startScreen','pauseScreen'])$(id).classList.add('hidden');
+    renderInventory();$('inventoryScreen').classList.remove('hidden');focusModal($('inventoryScreen'));updateUI();
+  }
+  function closeInventory(){
+    if(state!=='inventory')return;lootUI?.close();$('inventoryScreen').classList.add('hidden');state=inventoryReturn;last=performance.now();
+    if(state==='start'){menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);}else if(state==='paused'){$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));}else focusGame();updateUI();
+  }
   function lootFor(enemy,index){
-    if(enemy.type==='boss'&&index===0)return {kind:'item',item:lootTable[2]};
-    if(enemy.type!=='boss'&&Math.random()<.10)return {kind:'item',item:Math.random()<.22?lootTable[1]:lootTable[0]};
+    if(enemy.type==='boss'&&index===0)return {kind:'item',item:lootModel.generate(game.wave,true)};
+    if(enemy.type!=='boss'&&Math.random()<.12)return {kind:'item',item:lootModel.generate(game.wave)};
     return {kind:'essence'};
   }
+  function rewardWave(){if(game.rewardedWaves.has(game.wave))return;game.rewardedWaves.add(game.wave);pickupItem(lootModel.generate(game.wave),true);lootModel.milestone(game.wave);}
   function completeLevel(){
-    collectWaveLoot();campaign.unlock();saga.stopVoice();state='levelcomplete';clearInput();
+    collectWaveLoot();rewardWave();campaign.unlock();lootModel.unlockLevel();saga.stopVoice();state='levelcomplete';clearInput();
     game.enemies=[];game.bullets=[];game.loot=[];
     $('levelSaveNote').textContent=campaign.storageAvailable?'Freischaltung gespeichert. Level 2 bleibt im Hauptmenü verfügbar.':'Speichern ist im Browser blockiert. Level 2 bleibt für diese Sitzung verfügbar.';
     $('levelComplete').classList.remove('hidden');focusModal($('levelComplete'));updateUI();
@@ -249,7 +256,10 @@
     if(type==='boss'){showToast('BOSSWELLE · DER BELAGERER');tone(62,.7,.07)}
   }
   function shoot(from,target,damage,speed=520,color='#e9c477',effect={}){
-    const d=dist(from,target)||1;const bullet={kind:from.kind||'magic',level:from.level||1,x:from.x,y:from.y,vx:(target.x-from.x)/d*speed,vy:(target.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
+    const heroShot=from===game.hero,gear=game.hero.gear;
+    if(heroShot&&gear?.powers.chain)effect={...effect,chain:Math.max(1,effect.chain||0)};
+    if(!heroShot&&towerSpecs[from.kind])damage*=1+(gear?.tower||0);
+    const d=dist(from,target)||1;const bullet={heroShot,kind:from.kind||'magic',level:from.level||1,x:from.x,y:from.y,vx:(target.x-from.x)/d*speed,vy:(target.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
   }
   function remainingRoute(e){const path=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];if(game.level===1)return dist(e,game.monument);let remaining=dist(e,path[Math.min(e.waypoint,path.length-1)]);for(let i=e.waypoint;i<path.length-1;i++)remaining+=dist(path[i],path[i+1]);return remaining;}
   function towerTarget(t){
@@ -289,7 +299,7 @@
     }
   }
   function retireEnemy(e){if(e.dead)return;e.dead=true;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
-  function hurtEnemy(e,dmg,impact={}){if(e.dead)return;const crit=Math.random()<.09;dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('WÄCHTERSIEGEL GEFALLEN');tone(520,.45,.08)}}}
+  function hurtEnemy(e,dmg,impact={}){if(e.dead)return 0;const before=e.hp;const crit=Math.random()<(.09+(impact.heroShot?(game.hero.gear?.crit||0):0));dmg*=crit?2:1;dmg*=1-(e.armor||0);e.hp-=dmg;fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=e.type==='boss';const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;e.dead=true;saga.onKill(e);const drops=e.type==='boss'?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:e.type==='boss'?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,e.type==='boss'?'#f5a14f':'#72d0c2',e.type==='boss'?34:11);if(e.type==='boss'){showToast('EPISCHE ODER LEGENDÄRE BEUTE GEFALLEN');tone(520,.45,.08)}}return Math.max(0,Math.min(before,dmg));}
   function towerPosition(){const h=game.hero,p={x:h.x+facing.x*58,y:h.y+facing.y*58};return campaign.nearestSlot(p,game.level)||p;}
   function placementPreview(){
     if(!game||state!=='playing')return null;
@@ -316,7 +326,7 @@
   function upgradeTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;t.damage*=1.42;t.fireRate*=.86;t.range+=18;spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);tone(360,.18)}
   function sellTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');const refund=Math.floor(t.spent*.6);game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);tone(220,.12)}
   function selectTower(kind){if(!towerSpecs[kind]||!enabledTowers.has(kind))return;game.selectedTower=kind;document.querySelectorAll('.arsenal button').forEach(b=>{b.classList.toggle('selected',b.dataset.tower===kind);b.setAttribute('aria-pressed',String(b.dataset.tower===kind));});$('buildText').textContent=`${towerSpecs[kind].name} BAUEN · ${towerSpecs[kind].cost}`;updateUI()}
-  function endWave(){if(state!=='playing')return;if(game.level===1&&game.wave===5){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
+  function endWave(){if(state!=='playing')return;if(game.level===1&&game.wave===5){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();rewardWave();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
   function getPerks(){const pool=[
     {name:'Eiserner Eid',icon:'✦',desc:'+25 maximale und aktuelle Hüter-LP.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
     {name:'Runenmeister',icon:'◆',desc:'+30 % Feuerrate des Hüters.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
@@ -326,7 +336,7 @@
     {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
   ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
   function selectPerk(p){if(state!=='perk')return;p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+18);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
-  function gameOver(){saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
+  function gameOver(){if(state==='gameover')return;collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
 
 
   function update(dt){
@@ -338,7 +348,7 @@
     if(game.intermission>0)game.intermission=Math.max(0,game.intermission-dt);
     else if(game.waveSpawned<game.waveTotal){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=Math.max(.32,1.15-game.wave*.035)}}
     for(const t of game.towers){t.fireCd-=dt;const e=towerTarget(t);const spec=towerSpecs[t.kind];if(t.kind==='shrine')m.hp=Math.min(m.maxHp,m.hp+spec.heal*dt*t.level);if(e&&t.fireCd<=0){const speed=t.kind==='ballista'?610:t.kind==='cannon'?350:t.kind==='mortar'?275:460;const heavyCannon=(t.kind==='cannon'&&(t.level||1)>=3)||t.kind==='mortar';const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;shoot(t,e,t.damage,speed,spec.color,{splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon ? .045 : 0});t.fireCd=t.fireRate;}}
-    for(const b of game.bullets){b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;for(const e of game.enemies){if(!e.dead&&segmentDistance(e,b)<e.r+b.r){const synergy=projectileSynergy(b,e);hurtEnemy(e,b.damage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0});if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor)}spark(e.x,e.y,b.color,18)}if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<108&&chained++<synergy.chain)hurtEnemy(other,b.damage*.62)}}b.life=0;break}}}
+    for(const b of game.bullets){b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;for(const e of game.enemies){if(!e.dead&&segmentDistance(e,b)<e.r+b.r){const synergy=projectileSynergy(b,e);const dealt=hurtEnemy(e,b.damage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot});if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor)}spark(e.x,e.y,b.color,18)}if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<108&&chained++<synergy.chain)hurtEnemy(other,b.damage*.62)}}b.life=0;break}}}
     game.bullets=game.bullets.filter(b=>b.life>0);
     for(const e of game.enemies){
       if(e.dead)continue;e.hit-=dt;e.hitKick=Math.max(0,(e.hitKick||0)-dt*5);e.attackCd-=dt;e.slow=Math.max(0,(e.slow||0)-dt);
@@ -360,7 +370,7 @@
     if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
   }
   function segmentDistance(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;const t=clamp(((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(e.x-(b.prevX+t*dx),e.y-(b.prevY+t*dy));}
-  function updateUI(){if(!game)return;saga.updateUI();const h=game.hero,m=game.monument,playing=state==='playing';const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreview(game.wave)}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,game.wave);setText($('levelLabel'),`LEVEL ${game.level}`);setWidth(ui.playerHp,`${clamp(h.hp/h.maxHp*100,0,100)}%`);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setWidth(ui.monumentHp,`${clamp(m.hp/m.maxHp*100,0,100)}%`);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${game.inventory.length} / ${game.maxInventory}`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:game.wave===5?'BOSSWELLE':`WELLE ${game.wave}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===2?'LABYRINTH · FESTE BAUPLÄTZE':`VIER TORE · FESTE BAUPLÄTZE · WELLE ${game.wave} / 5`);setDisabled($('pauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>e.type==='boss'&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`DER BELAGERER · ${bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);const buildContext=buildContextActive();setHidden($('arsenal'),!buildContext);setHidden($('buildBtn'),!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${Math.floor(nearby.spent*.6)}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');}
+  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreview(game.wave)}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,game.wave);setText($('levelLabel'),`LEVEL ${game.level}`);setWidth(ui.playerHp,`${clamp(h.hp/h.maxHp*100,0,100)}%`);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setWidth(ui.monumentHp,`${clamp(m.hp/m.maxHp*100,0,100)}%`);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:game.wave===5?'BOSSWELLE':`WELLE ${game.wave}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===2?'LABYRINTH · FESTE BAUPLÄTZE':`VIER TORE · FESTE BAUPLÄTZE · WELLE ${game.wave} / 5`);setDisabled($('pauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>e.type==='boss'&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`DER BELAGERER · ${bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);const buildContext=buildContextActive();setHidden($('arsenal'),!buildContext);setHidden($('buildBtn'),!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${Math.floor(nearby.spent*.6)}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');}
 
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
@@ -507,10 +517,10 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();saga.stopVoice();pauseGame();}});
   addEventListener('keydown',e=>{
     const active=document.querySelector('.modal:not(.hidden)');
-    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button')];if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
+    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input')].filter(b=>!b.disabled&&!b.hidden&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
     if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&state==='playing')e.preventDefault();
     if(e.code==='KeyI'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}
-    if(e.code==='KeyH'&&!e.repeat){state==='character'?saga.closeCharacter():saga.openCharacter();return;}
+    if(e.code==='KeyH'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}
     if(e.code==='Escape'&&state==='inventory'){closeInventory();return;}
     if(e.code==='Escape'&&state==='character'){saga.closeCharacter();return;}
     if(e.code==='Escape'||e.code==='KeyP'){if(!e.repeat){e.preventDefault();state==='paused'?resumeGame():pauseGame();}return;}
@@ -565,7 +575,7 @@
   }
   $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>startGame(2);$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
   document.querySelectorAll('.arsenal button').forEach(b=>b.onclick=()=>{if(state==='playing'){selectTower(b.dataset.tower);canvas.focus();}});
-  $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;
+  $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;
   function lowFX(){return reducedMotion||graphicsMode==='low'||(graphicsMode==='auto'&&mobileRender);}
   function graphicsLabel(){$('graphicsBtn').textContent=`GRAFIK: ${graphicsMode.toUpperCase()}`;}
   function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';try{localStorage.setItem('denkmal-graphics',graphicsMode);}catch{}graphicsLabel();resize(false);}
@@ -577,7 +587,7 @@
   function soundLabel(){$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
   atlas.onerror=()=>showToast('GRAFIK KONNTE NICHT GELADEN WERDEN');
-  saga.init({getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
+  saga.init({openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();

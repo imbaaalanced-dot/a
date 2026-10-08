@@ -33,6 +33,7 @@ jobs:
 
       - name: Verify gameplay before publish
         run: |
+          node tests/loot.test.cjs
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
@@ -45,7 +46,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
