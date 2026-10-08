@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Persistent loot regression suite
+        run: node tests/loot.test.cjs
       - name: Gameplay regression suite
         run: node tests/game.test.cjs
       - name: Mobile gameplay regression suite
