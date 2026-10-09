@@ -6,10 +6,11 @@
   <meta name="theme-color" content="#080b0c" />
   <title>Denkmal TD · Marcel der Denkmalschützer</title>
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
-  <link rel="stylesheet" href="styles.css?v=v360a1" />
-  <link rel="stylesheet" href="hero.css?v=v360a1" />
-  <link rel="stylesheet" href="polish.css?v=v360a1" />
-  <link rel="stylesheet" href="loot.css?v=v360a1" />
+  <link rel="stylesheet" href="styles.css?v=v360a2" />
+  <link rel="stylesheet" href="hero.css?v=v360a2" />
+  <link rel="stylesheet" href="polish.css?v=v360a2" />
+  <link rel="stylesheet" href="loot.css?v=v360a2" />
+  <link rel="stylesheet" href="menu.css?v=v360a2" />
 </head>
 <body>
   <main id="app">
@@ -77,21 +78,32 @@
     <div id="joystick" class="joystick" aria-label="Touch-Steuerung: zum Bewegen ziehen"><span></span></div>
 
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-      <div class="kael-intro">
-        <div class="kael-intro-copy">
-          <span class="release-badge">DENKMAL TD · v3.6.0-alpha.1</span>
-          <p class="eyebrow">VIER TORE · FÜNF WELLEN · EIN DENKMAL</p>
-          <h1 id="startTitle">MARCEL<span>DER DENKMALSCHÜTZER</span></h1>
-          <p>Schütze die Erinnerung.<br>Halte die Tore mit Runenstab und Türmen auf.</p>
-          <blockquote>„Solange jemand sich erinnert,<br>ist niemand ganz verloren.“</blockquote>
-          <button id="startBtn" class="primary">LEVEL 1 · VIER TORE</button>
-          <button id="level2Btn" class="primary secondary-level" disabled>LEVEL 2 · DAS LABYRINTH</button><p id="levelProgress" class="level-progress"></p>
-          <button id="collectionBtn">HELD &amp; INVENTAR</button><p id="collectionSummary"></p><p id="saveStatus" role="status"></p>
-          <div class="quick-tutorial" aria-label="Kurztutorial"><b>KURZ-TUTORIAL</b><span><kbd>WASD</kbd> Bewegen · Marcel feuert mit dem Runenstab automatisch</span><span><kbd>1–4</kbd> Bogen, Kanone, Magie oder Rift wählen · <kbd>E</kbd> bauen</span><span><kbd>Q</kbd> Turm aufwerten · <kbd>X</kbd> verkaufen</span><span>Beute dauerhaft sammeln · <kbd>I</kbd> ansehen · Ausrüsten im Hauptmenü</span></div>
-          <div class="hero-start-hints"><span><kbd>F</kbd> Seelenruf</span><span><kbd>H</kbd> Ausrüstung</span><span><kbd>I</kbd> Inventar</span><span><kbd>LEER</kbd> Ausweichen</span></div>
-          <small>Level 1: Wellen 1–5 · danach bleibt Level 2 dauerhaft freigeschaltet.</small>
+      <picture class="menu-scene" aria-hidden="true">
+        <source media="(max-width:700px)" srcset="assets/menu/warden-mobile-v2.webp" />
+        <img src="assets/menu/warden-desktop-v2.webp" alt="" width="1672" height="941" fetchpriority="high" />
+      </picture>
+      <div class="menu-shell">
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span class="release-badge">v3.6.0-alpha.2</span></header>
+        <div class="menu-content">
+          <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
+          <p class="menu-intro">Vier Tore. Ein Denkmal. Du entscheidest, was bleibt.</p>
+          <nav class="menu-actions" aria-label="Spiel starten und Ausrüstung verwalten">
+            <button id="startBtn" class="menu-play"><span><small>KAPITEL I · WELLEN 1–5</small><strong>DIE WACHT BEGINNEN</strong></span><span aria-hidden="true">➜</span></button>
+            <button id="collectionBtn" class="menu-inventory"><span aria-hidden="true">◈</span><span><strong>HELD &amp; INVENTAR</strong><small>Deine Beute. Deine Ausrüstung.</small></span><span aria-hidden="true">›</span></button>
+            <button id="level2Btn" class="menu-chapter" disabled>LEVEL 2 · DAS LABYRINTH</button>
+          </nav>
+          <p id="levelProgress" class="menu-progress"></p>
+          <p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p>
+          <a id="channelLink" class="channel-card" href="https://www.youtube.com/@denk-malnach" target="_blank" rel="noopener noreferrer" aria-label="denk mal nach auf YouTube öffnen (neuer Tab)">
+            <span class="channel-play" aria-hidden="true">▶</span><span class="channel-copy"><small>VOM SPIEL ZUM GEDANKEN · YOUTUBE</small><strong>denk mal <em>nach.</em></strong><span>Denk mal drüber nach.</span></span><span class="channel-arrow" aria-hidden="true">↗</span>
+          </a>
+          <details class="menu-help"><summary id="menuHelpToggle">SO SPIELST DU <span>Steuerung &amp; Spielstand</span></summary><div>
+            <p class="desktop-help"><b>WASD / Pfeile</b> bewegen · Marcel feuert automatisch.<br><b>1–4</b> Turm wählen · <b>E</b> bauen · <b>Q</b> aufwerten · <b>X</b> verkaufen.<br><b>Leertaste</b> ausweichen · <b>F</b> Seelenruf · <b>I / H</b> Inventar.</p>
+            <p class="touch-help">Links mit dem Stick bewegen. Marcel feuert automatisch. Turm auswählen und auf einem Bauplatz <b>BAUEN</b> antippen. Ausweichen und Seelenruf findest du rechts.</p>
+            <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
+          </div></details>
         </div>
-        <div class="kael-intro-art"><img src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel mit Cap und blauer Laterne"/><div class="intro-art-caption"><span>01 / DER HÜTER</span><b>Die Erinnerung bleibt.</b></div></div>
+        <footer class="menu-footer"><span>MARCEL · DER DENKMALSCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span></footer>
       </div>
     </section>
 
@@ -149,12 +161,12 @@
       <button id="nextLevelBtn" class="primary">LEVEL 2 STARTEN</button><button id="completeMenuBtn" class="icon-btn">HAUPTMENÜ</button>
     </section>
   </main>
-  <script src="levels.js?v=v360a1"></script>
-  <script src="visuals.js?v=v360a1"></script>
-  <script src="loot.js?v=v360a1"></script>
-  <script src="loot-ui.js?v=v360a1"></script>
-  <script src="hero-saga.js?v=v360a1"></script>
-  <script src="combat-fx.js?v=v360a1"></script>
-  <script src="game.js?v=v360a1"></script>
+  <script src="levels.js?v=v360a2"></script>
+  <script src="visuals.js?v=v360a2"></script>
+  <script src="loot.js?v=v360a2"></script>
+  <script src="loot-ui.js?v=v360a2"></script>
+  <script src="hero-saga.js?v=v360a2"></script>
+  <script src="combat-fx.js?v=v360a2"></script>
+  <script src="game.js?v=v360a2"></script>
 </body>
 </html>
