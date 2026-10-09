@@ -72,3 +72,6 @@ Ein Langzeittest auf echten Android-Geräten bleibt weiterhin Teil des Alpha-Tes
 ```bash
 python -m http.server 8777 --directory dist
 ```
+
+## OpenAI Phase A (experimental)
+A manual main-menu AI preview and offline fallback are available in the `feature/ai-phase-a` branch. AI is **off by default**, no API key is stored in the browser, and gameplay, inventory and saves are unchanged. The optional Cloudflare Worker is disabled until privately deployed/configured. For setup, security caveats and tests see [docs/AI_PHASE_A.md](docs/AI_PHASE_A.md).
