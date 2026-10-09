@@ -517,7 +517,7 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();saga.stopVoice();pauseGame();}});
   addEventListener('keydown',e=>{
     const active=document.querySelector('.modal:not(.hidden)');
-    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input')].filter(b=>!b.disabled&&!b.hidden&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
+    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input,a[href],summary')].filter(b=>!b.disabled&&!b.hidden&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
     if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&state==='playing')e.preventDefault();
     if(e.code==='KeyI'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}
     if(e.code==='KeyH'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}

@@ -9,3 +9,13 @@ for name in ('marcel-lantern-portrait-v1.webp', 'marcel-lantern-sprite-v1.webp')
         assert image.width > 0 and image.height > 0, name
         assert image.format == 'WEBP', name
         print(f'{name}: decoded {image.width}x{image.height}')
+
+# Menu downloads stay small enough for mobile connections.
+menu = root.parent / 'menu'
+for name, limit in (('warden-desktop-v2.webp', 200000), ('warden-mobile-v2.webp', 100000), ('crest-v2.webp', 20000)):
+    with Image.open(menu / name) as image:
+        image.load()
+        assert image.format == 'WEBP', name
+        assert image.width > 0 and image.height > 0, name
+        assert (menu / name).stat().st_size < limit, name
+        print(f'{name}: decoded {image.width}x{image.height}, within download budget')
