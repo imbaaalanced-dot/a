@@ -286,12 +286,25 @@ check('Rolled bonuses change derived stats without modifying base values',()=>{c
 check('Legendary chain and tower support apply to their intended projectiles',()=>{const h=t.game.hero,e={x:h.x+20,y:h.y};h.gear={powers:{chain:true},tower:.5};t.shoot(h,e,20);assert.equal(t.game.bullets.at(-1).chain,1);assert.equal(t.game.bullets.at(-1).damage,20);t.shoot({x:h.x,y:h.y,kind:'bow'},e,20);assert.equal(t.game.bullets.at(-1).damage,30);assert.equal(t.game.bullets.at(-1).heroShot,false);});
 check('Lifesteal heals only on hero projectile hits, bounded by actual damage',()=>{const h=t.game.hero;h.hp=50;h.fireCd=100;h.gear={powers:{},leech:.1,crit:0};const e={type:'wraith',x:h.x+10,y:h.y,hp:10,maxHp:10,r:12,speed:0,damage:0,attackCd:99,hit:0};t.game.enemies=[e];t.shoot(h,e,100);t.update(.02);assert.equal(h.hp,51);});
 check('Repeated endWave grants only one persistent reward',()=>{const count=()=>t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length;const n=count();t.endWave();t.endWave();assert.equal(count(),n+1);});
+check('Menu keyboard navigation reaches channel links and expandable help',()=>{
+  t.mainMenu();
+  const start=element('startBtn'),link=element('channelLink'),help=element('menuHelpToggle');
+  const oldQuery=document.querySelector;
+  for(const e of [start,link,help]) e.getClientRects=()=>[{}];
+  document.querySelector=()=>({querySelectorAll(selector){return [start,...(selector.includes('a[href]')?[link]:[]),...(selector.includes('summary')?[help]:[])];}});
+  try {
+    start.focus();listeners.keydown({code:'Tab',preventDefault(){}});assert.equal(document.activeElement,link);
+    listeners.keydown({code:'Tab',preventDefault(){}});assert.equal(document.activeElement,help);
+    listeners.keydown({code:'Tab',preventDefault(){}});assert.equal(document.activeElement,start);
+    listeners.keydown({code:'Tab',shiftKey:true,preventDefault(){}});assert.equal(document.activeElement,help);
+  } finally {document.querySelector=oldQuery;}
+});
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
 assert.ok(html.includes('viewport-fit=cover'));
 assert.ok(polish.includes('@media (orientation:portrait)'));
 assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));assert.ok(polish.includes('v3.1.0-alpha.3 — combat variety + boss escalation'));
-for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^\"]*)?"/g))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
+for(const m of html.matchAll(/(?:src|srcset|href)="([^"?#]+)(?:\?[^\"]*)?"/g))if(!/^https?:/.test(m[1]))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
 assert.ok(html.includes('marcel-lantern-portrait-v1.webp'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
