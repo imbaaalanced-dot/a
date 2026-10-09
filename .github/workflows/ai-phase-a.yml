@@ -1,0 +1,28 @@
+name: Phase A AI validation
+
+on:
+  push:
+    branches: ["feature/ai-phase-a"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: AI adapter and worker checks
+        run: node tests/ai-phase-a.test.cjs
+      - name: Existing regression checks
+        run: |
+          node tests/loot.test.cjs
+          node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+          node tests/combat-fx.test.cjs
+          node tests/v3.1-features.test.cjs
