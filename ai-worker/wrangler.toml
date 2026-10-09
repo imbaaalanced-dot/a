@@ -1,0 +1,23 @@
+name = "denkmal-td-ai-preview"
+main = "src/index.mjs"
+compatibility_date = "2026-09-01"
+
+[vars]
+AI_ENABLED = "false"
+ALLOWED_ORIGIN = "https://imbaaalanced-dot.github.io"
+OPENAI_MODEL = "gpt-4.1-mini"
+
+# Rate limiting is per Cloudflare location, not a precise spending cap.
+[[ratelimits]]
+name = "AI_RATE_LIMIT"
+namespace_id = "827103"
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+[[ratelimits]]
+name = "AI_GLOBAL_LIMIT"
+namespace_id = "827104"
+  [ratelimits.simple]
+  limit = 25
+  period = 60
