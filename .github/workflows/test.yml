@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Preloader startup regression suite
+        run: node tests/preloader.test.cjs
       - name: Persistent loot regression suite
         run: node tests/loot.test.cjs
       - name: Gameplay regression suite
