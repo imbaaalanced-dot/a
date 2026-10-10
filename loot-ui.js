@@ -44,6 +44,9 @@
       for(const [k,v] of Object.entries(stats)){if(k==='powers'||!v)continue;summary.append(el('span','',`+${fmt(k,v)} ${L.statInfo[k].label}`));}
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
       $('backpackCount').textContent=`RUCKSACK ${p.bag.length} / 30`;
+      const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
+      bulkBtn.disabled=!can()||bulk.count===0;
+      bulkBtn.textContent=`ALLES RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
       const visible=p.bag.filter(i=>filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
       for(const i of visible)grid.append(card(i));
@@ -81,6 +84,12 @@
     }
     function download(text,name){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a','');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     $('lootFilter').onchange=e=>{filter=e.target.value;render();};$('lootSort').onchange=e=>{sort=e.target.value;render();};
+    $('lootSalvageAllBtn').onclick=()=>{
+      if(!can())return;
+      const preview=model.salvagePreview();if(!preview.count)return;
+      pending={message:`${preview.count} nicht favorisierte Gegenstände aus Rucksack und Überlauf unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
+      render();$('lootConfirm').scrollIntoView({block:'nearest'});
+    };
     $('lootExportBtn').onclick=()=>download(model.exportJSON(),'Denkmal-TD-Spielstand.json');
     $('lootRecoveryBtn').onclick=()=>download(model.exportRecovery(),'Denkmal-TD-Rohsicherung.json');
     $('lootImportBtn').onclick=()=>{if(editable())$('lootImportFile').click();};
