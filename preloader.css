@@ -1,0 +1,12 @@
+/* Fullscreen startup cover, loads before game scripts */
+#td2Loading{position:fixed;inset:0;z-index:99999;background:#080b0f;color:#f6e9d4;display:grid;place-items:center;overflow:hidden;font-family:Georgia,serif}
+#td2Loading.td2-loaded{opacity:0;pointer-events:none;transition:opacity .3s}
+#td2Loading .td2-load-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%;opacity:.69}
+#td2Loading::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#05070efc 0%,#05070eb0 20%,transparent 65%,#05070e50 100%)}
+#td2Loading .td2-load-panel{position:absolute;z-index:1;left:50%;bottom:max(32px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(520px,calc(100% - 44px));text-align:center}
+#td2Loading h2{font-size:clamp(26px,5.8vw,43px);line-height:1.1;letter-spacing:.06em;margin:0 0 8px;text-shadow:0 3px 14px #000}
+#td2Loading .td2-load-tag{font:600 11px system-ui;letter-spacing:.16em;color:#dfb971}
+#td2Loading .td2-load-track{height:8px;background:#20242c;border:1px solid #a58b58;border-radius:9px;overflow:hidden;margin-top:17px}
+#td2LoadBar{height:100%;width:0;background:linear-gradient(90deg,#7e6336,#f1cc7d);transition:width .15s}
+#td2Loading .td2-load-caption{display:flex;justify-content:space-between;gap:10px;margin-top:10px;color:#e9e3d9;font:12px system-ui}
+@media(prefers-reduced-motion:reduce){#td2Loading.td2-loaded,#td2LoadBar{transition:none}}
