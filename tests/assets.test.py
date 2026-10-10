@@ -19,3 +19,9 @@ for name, limit in (('warden-desktop-v2.webp', 200000), ('warden-mobile-v2.webp'
         assert image.width > 0 and image.height > 0, name
         assert (menu / name).stat().st_size < limit, name
         print(f'{name}: decoded {image.width}x{image.height}, within download budget')
+
+with Image.open(root.parent / "items/equipment-v1.webp") as image:
+    image.load()
+    assert image.size == (1024, 512)
+    assert image.format == "WEBP"
+    print("equipment-v1.webp: 4x2 icon atlas decoded")

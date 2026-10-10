@@ -2,8 +2,8 @@
 (() => {
   'use strict';
   const L=globalThis.DenkmalLoot;
-  const glyph={weapon:'╱',head:'♜',armor:'⬟',gloves:'✥',boots:'♟',amulet:'◈',ring1:'◉',ring2:'◉'};
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
+  function icon(slot,large=false){const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;n.setAttribute('aria-hidden','true');return n;}
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
   function create(model,{editable,onClose,onImport}){
     let selected=null,filter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1';
@@ -16,7 +16,7 @@
       const b=button('',()=>{ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
       b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
-      b.append(el('span','loot-glyph',glyph[item.slot]),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
+      b.append(icon(slot||item.slot),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
       if(item.favorite)b.append(el('span','loot-star','★'));return b;
     }
     function render(){
@@ -27,7 +27,7 @@
       $('lootSaveState').textContent=model.status||'Automatisch gespeichert · auf diesem Gerät';$('lootSaveState').classList.toggle('warning',!!model.status);
       $('lootNotice').textContent=notice;$('forgeEssence').textContent=`${p.essence} SCHMIEDESSENZ`;
       const equipment=$('loadoutSlots');equipment.replaceChildren();
-      for(const slot of Object.keys(L.slots)){const i=p.items.find(i=>i.id===p.equipped[slot]);if(i)equipment.append(card(i,true,slot));else{const empty=el('div','loot-empty-slot');empty.append(el('span','loot-glyph',glyph[slot]),el('span','',L.slots[slot]));equipment.append(empty);}}
+      for(const slot of Object.keys(L.slots)){const i=p.items.find(i=>i.id===p.equipped[slot]);if(i)equipment.append(card(i,true,slot));else{const empty=el('div','loot-empty-slot');empty.append(icon(slot),el('span','',L.slots[slot]));equipment.append(empty);}}
       const stats=L.totals(p.items),summary=$('loadoutStats');summary.replaceChildren();
       for(const [k,v] of Object.entries(stats)){if(k==='powers'||!v)continue;summary.append(el('span','',`+${fmt(k,v)} ${L.statInfo[k].label}`));}
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
@@ -53,7 +53,7 @@
     function renderDetail(detail,i,p){
       const worn=Object.values(p.equipped).includes(i.id),slot=i.slot.startsWith('ring')?ringTarget:i.slot;
       const old=p.items.find(x=>x.id===p.equipped[slot]);detail.style.setProperty('--rarity',L.rarities[i.rarity].color);
-      detail.append(el('p','loot-rarity',`${L.rarities[i.rarity].label} · ${L.slots[i.slot]} · STUFE ${i.level}`),el('span','loot-detail-glyph',glyph[i.slot]),el('h3','loot-item-title',i.name));
+      detail.append(el('p','loot-rarity',`${L.rarities[i.rarity].label} · ${L.slots[i.slot]} · STUFE ${i.level}`),icon(i.slot,true),el('h3','loot-item-title',i.name));
       if(worn)detail.append(el('p','loot-tag','ANGELEGT'));
       if(i.slot.startsWith('ring')&&!worn){const group=el('div','loot-ring-choice');for(const target of ['ring1','ring2']){const b=button(L.slots[target],()=>{ringTarget=target;render();},false);b.setAttribute('aria-pressed',String(slot===target));group.append(b);}detail.append(group);}
       const lines=el('dl','loot-stat-list');for(const k of Object.keys(L.statInfo)){const value=i.stats[k]||0,previous=old?.stats[k]||0;if(!value&&!previous)continue;const row=el('div','');row.append(el('dt','',L.statInfo[k].label),el('dd','',fmt(k,value)));if(!worn){const diff=Math.round((value-previous)*1000)/1000;row.append(el('span',diff>0?'positive':diff<0?'negative':'neutral',`${diff>0?'+':''}${fmt(k,diff)}`));}lines.append(row);}detail.append(lines);

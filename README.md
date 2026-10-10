@@ -1,10 +1,10 @@
-# Denkmal TD · v3.6.0-alpha.2
+# Denkmal TD · v3.6.0-alpha.3
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
 ## Aktueller Alpha-Stand
 
-v3.6.0-alpha.2 ergänzt ein neu gestaltetes Hauptmenü mit Laternenhüter-Panorama, mobilen Bildvarianten und einem direkten Link zum YouTube-Kanal **denk mal nach**. Die dauerhafte Rüstkammer aus Alpha.1 bleibt erhalten. Beute bleibt nach Niederlagen und Neuladen erhalten; Ausrüstung wird ausschließlich im Hauptmenü gewechselt.
+v3.6.0-alpha.3 ergänzt ein neu gestaltetes Hauptmenü mit Laternenhüter-Panorama, mobilen Bildvarianten und einem direkten Link zum YouTube-Kanal **denk mal nach**. Die dauerhafte Rüstkammer aus Alpha.1 bleibt erhalten. Beute bleibt nach Niederlagen und Neuladen erhalten; Ausrüstung wird ausschließlich im Hauptmenü gewechselt.
 
 - Vier feste Spawn-Tore in Level 1 und das freischaltbare Labyrinth als Level 2.
 - Steuerbarer Held Marcel mit automatischem Runenstab, Ausweichen, Seelenruf, Ausrüstung und Beute-Inventar.
@@ -16,7 +16,7 @@ v3.6.0-alpha.2 ergänzt ein neu gestaltetes Hauptmenü mit Laternenhüter-Panora
 - Off-Screen-Bedrohungspfeile und optionale FPS-/Gegner-/FX-Telemetrie für Tester.
 - Portrait-first Android-Layout mit Safe-Area-Unterstützung, angepasstem Kamera-Zoom, Touch-Joystick und kompaktem 2×2-Arsenal.
 - Neue Projektil- und Treffer-Sprites für Bogen, Kanone, Magie und Rift. Der bisherige prozedurale Renderer bleibt als Fallback erhalten.
-- Einheitliches Browser-Cache-Busting v360a2 für alle Skripte und Styles.
+- Einheitliches Browser-Cache-Busting v360a3 für alle Skripte und Styles.
 - Taktische Zielprioritäten pro Turm: ERSTER, STÄRKSTER, NÄCHSTER oder BOSS.
 - Gegner-Vorschau während der Baupause.
 - Mage-Slow verstärkt Kanonen-Impact/Splash um 25 % und gibt der Riftlanze einen zusätzlichen Kettensprung.
@@ -34,6 +34,8 @@ v3.6.0-alpha.2 ergänzt ein neu gestaltetes Hauptmenü mit Laternenhüter-Panora
 - Ab Welle 12 erscheint alle vier Wellen ein rotierender Mini-Boss-Modifikator.
 
 ## Dauerhafte Beute & Rüstkammer
+
+Alpha.3: acht neue Ausrüstungsicons, kompakte Felder und begrenzter Rucksack-Scrollbereich mit sichtbarer Scrollleiste. Filter und Sortierung bleiben darüber erreichbar.
 
 - Im Hauptmenü **HELD & INVENTAR** öffnen: Waffe, Kopf, Rüstung, Handschuhe, Stiefel, Amulett und zwei Ringe.
 - 30 Rucksackplätze, gesicherter Überlauf, Seltenheitsfilter, Sortierung und Vergleich mit angelegten Gegenständen.
