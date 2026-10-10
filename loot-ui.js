@@ -12,11 +12,23 @@
     function button(text,fn,disabled=false,cls='loot-action'){const b=el('button',cls,text);b.type='button';b.disabled=disabled;b.onclick=fn;return b;}
     function act(fn){if(fn()){notice='Gespeichert.';}else notice='Aktion nicht möglich. Prüfe den Speicherstatus und die Ausrüstung.';render();}
     function choose(id){selected=id;pending=null;render();if(matchMedia('(max-width: 760px)').matches)$('lootDetail').scrollIntoView({block:'nearest',behavior:'auto'});}
+    // Only show an upgrade when no attribute gets worse compared with the currently equipped item.
+    function isStrictUpgrade(item,targetSlot){
+      const slot=targetSlot||item.slot;
+      const worn=model.profile.items.find(x=>x.id===model.profile.equipped[slot]);
+      if(!worn)return Object.values(item.stats).some(v=>Number(v)>0)||!!item.power;
+      if(item.id===worn.id)return false;
+      if(worn.power&&worn.power!==item.power)return false;
+      const keys=Object.keys(L.statInfo);
+      return keys.every(k=>(Number(item.stats[k])||0)>=(Number(worn.stats[k])||0)) &&
+        (keys.some(k=>(Number(item.stats[k])||0)>(Number(worn.stats[k])||0))|| (!!item.power&&!worn.power));
+    }
     function card(item,equipped=false,slot){
       const b=button('',()=>{ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
       b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
       b.append(icon(slot||item.slot),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
+      if(!equipped&&isStrictUpgrade(item,slot)){const up=el('span','loot-upgrade','↑');up.setAttribute('aria-label','Garantierte Verbesserung gegenüber angelegter Ausrüstung');up.title='Bessere Werte ohne Nachteile gegenüber der angelegten Ausrüstung';b.append(up);}
       if(item.favorite)b.append(el('span','loot-star','★'));return b;
     }
     function render(){
