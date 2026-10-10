@@ -16,7 +16,7 @@ assert.match(html,/HELD &amp; CHRONIK/);
 assert.match(html,/KAMPFPROFIL/);
 assert.match(html,/portrait-patch\.css\?v=v360a5/);
 assert.match(html,/hero-saga\.js\?v=v360a5/);
-assert.match(html,/game\.js\?v=v360a5/);
+assert.match(html,/game\.js\?v=v360a5balance1/);
 assert.match(css,/@media \(orientation:portrait\) and \(max-width:700px\)/);
 assert.match(css,/\.controls \.action-btn\.hidden\{display:none!important\}/);
 assert.match(css,/\.arsenal\.hidden\{display:none!important\}/);

@@ -83,7 +83,26 @@ check('Level 2 build HUD appears only at a valid free slot',()=>{
   t.buildTower();assert.equal(t.buildContextActive(),false);
 });
 check('First eight waves use explicit vertical-slice sizes',()=>{
-  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[7,9,11,14,16,18,21,24]);
+  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[9,12,15,18,21,23,26,29]);
+});
+check('Base enemy survives more than two starter hits and boss scales',()=>{
+  assert.ok(t.enemySpecs.wraith.hp>2*saga.stats(t.game.hero).damage);
+  assert.equal(t.waveSize(1),9);assert.equal(t.waveSize(9),33);assert.equal(t.waveSize(10),36);
+  t.game.wave=5;t.spawnEnemy();const boss=t.game.enemies[0];
+  assert.equal(boss.type,'boss');assert.ok(boss.maxHp>=1700);assert.ok(boss.damage>60);
+});
+check('Upgrade effectiveness does not snowball as rapidly',()=>{
+  t.game.essence=300;const slot=sandbox.DenkmalLevels.levels[1].slots[0];
+  t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};
+  t.selectTower('bow');t.buildTower();const tower=t.game.towers[0];
+  t.upgradeTower();t.upgradeTower();assert.equal(tower.level,3);
+  assert.ok(Math.abs(tower.damage-12*1.32**2)<1e-9);
+  assert.ok(Math.abs(tower.fireRate-.50*.92**2)<1e-9);
+});
+check('Spawning ramps without arriving all at once',()=>{
+  t.game.intermission=0;t.game.spawnTimer=0;t.update(.01);
+  assert.equal(t.game.waveSpawned,1);
+  assert.ok(Math.abs(t.game.spawnTimer-(1.02-.045))<1e-9);
 });
 check('Wave 7 exposes all six normal enemy roles',()=>{
   t.game.wave=7;t.game.waveSpawned=0;t.game.enemies=[];
@@ -132,8 +151,8 @@ check('Placement guards reject unsafe authored slots without spending essence',(
   }finally{level.slots=slots;level.paths=paths;}
 });
 check('Wave preview summarizes the authored enemy composition',()=>{
-  assert.equal(t.wavePreview(1),'7× GEIST');
-  const w7=t.waveComposition(7);assert.equal(Object.values(w7).reduce((a,b)=>a+b,0),21);assert.equal(Object.keys(w7).length,6);
+  assert.equal(t.wavePreview(1),'9× GEIST');
+  const w7=t.waveComposition(7);assert.equal(Object.values(w7).reduce((a,b)=>a+b,0),26);assert.equal(Object.keys(w7).length,6);
   t.game.intermission=5;t.update(.01);assert.match(element('wavePreview').textContent,/VORSCHAU/);
 });
 check('Tower target priority cycles first strongest nearest boss',()=>{
@@ -181,7 +200,7 @@ check('Alpha.3 wave profiles modify selected enemy roles without changing wave s
   assert.equal(t.wavePlan(2).name,'HETZJAGD');assert.equal(t.wavePlan(7).name,'SABOTAGE');
   const runner=t.applyWavePlan('runner',t.enemySpecs.runner,2),brute=t.applyWavePlan('brute',t.enemySpecs.brute,3),guardian=t.applyWavePlan('guardian',t.enemySpecs.guardian,6);
   assert.equal(runner.speed,1.14);assert.equal(brute.hp,1.12);assert.equal(guardian.armor,.06);
-  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[7,9,11,14,16,18,21,24]);
+  assert.deepEqual([1,2,3,4,5,6,7,8].map(t.waveSize),[9,12,15,18,21,23,26,29]);
 });
 check('Runner enrages and Guardian breaks shield below health thresholds',()=>{
   const runner={x:300,y:300,type:'runner',hp:44,maxHp:100,speed:100,damage:10,enraged:false,dead:false,hitKick:0};
