@@ -519,8 +519,8 @@
     const active=document.querySelector('.modal:not(.hidden)');
     if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input,a[href],summary,[tabindex="0"]')].filter(b=>!b.disabled&&!b.hidden&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
     if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&state==='playing')e.preventDefault();
-    if(e.code==='KeyI'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}
-    if(e.code==='KeyH'&&!e.repeat){state==='inventory'?closeInventory():openInventory();return;}
+    if(e.code==='KeyI'&&!e.repeat){e.preventDefault();if(state==='inventory')closeInventory();else openInventory();return;}
+    if(e.code==='KeyH'&&!e.repeat){e.preventDefault();if(state==='character')saga.closeCharacter();else saga.openCharacter();return;}
     if(e.code==='Escape'&&state==='inventory'){closeInventory();return;}
     if(e.code==='Escape'&&state==='character'){saga.closeCharacter();return;}
     if(e.code==='Escape'||e.code==='KeyP'){if(!e.repeat){e.preventDefault();state==='paused'?resumeGame():pauseGame();}return;}
