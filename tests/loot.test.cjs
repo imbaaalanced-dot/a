@@ -22,4 +22,30 @@ test('Unavailable localStorage getter does not crash initialization',()=>{const 
 test('Import from a stale tab must not overwrite a newer collection',()=>{const s=mem(),a=L.create({storage:s}),b=L.create({storage:s}),backup=b.exportJSON();a.add(a.generate(5));const newer=s.getItem(L.KEY);assert.equal(b.importJSON(backup),false);assert.equal(s.getItem(L.KEY),newer)});
 
 test('Unsafe imported item sequence is rejected before it can break future drops',()=>{const m=L.create({storage:mem()}),bad=JSON.parse(m.exportJSON());bad.profile.nextId=Number.MAX_SAFE_INTEGER;assert.equal(m.importJSON(JSON.stringify(bad)),false);assert.ok(m.add(m.generate(1)))});
+test('Bulk salvage recycles backpack and overflow but protects favorites and equipped gear',()=>{
+ const s=mem(),m=L.create({storage:s});
+ for(let n=0;n<35;n++)assert.equal(m.add(m.generate(2)),true);
+ const protectedItem=m.profile.overflow[0];assert.equal(m.favorite(protectedItem.id),true);
+ const expected=[...m.profile.bag,...m.profile.overflow].filter(i=>!i.favorite);
+ const expectedValue=expected.reduce((sum,i)=>sum+m.salvageValue(i),0);
+ assert.equal(m.salvagePreview().count,34);assert.equal(m.salvagePreview().essence,expectedValue);
+ const starterIds=m.profile.items.map(i=>i.id);
+ assert.equal(m.salvageAll(),true);
+ assert.deepEqual(m.profile.items.map(i=>i.id),starterIds);
+ assert.equal(m.profile.essence,expectedValue);
+ assert.equal(m.profile.bag.length,1);assert.equal(m.profile.bag[0].id,protectedItem.id);
+ assert.equal(m.profile.overflow.length,0);
+ assert.equal(L.create({storage:s}).profile.bag[0].id,protectedItem.id);
+ assert.equal(m.salvageAll(),false);
+});
+test('Bulk salvage rejects non-menu contexts and stale tabs without mutating inventory',()=>{
+ const s=mem();let menu=false;
+ const m=L.create({storage:s,canManage:()=>menu}),i=m.generate(3);
+ m.add(i);const before=m.exportJSON();
+ assert.equal(m.salvageAll(),false);assert.equal(m.exportJSON(),before);
+ menu=true;
+ const stale=L.create({storage:s});m.add(m.generate(4));
+ assert.equal(stale.salvageAll(),false);assert.equal(stale.readOnly,true);
+ assert.equal(m.salvageAll(),true);
+});
 console.log(count+' loot checks passed');

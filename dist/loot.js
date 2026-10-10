@@ -89,12 +89,29 @@
     function favorite(id){if(!manage())return false;const i=find(id);if(!i)return false;i.favorite=!i.favorite;save();return true;}
     function salvageValue(i){return 5+rarities[i.rarity].rank*8+i.level;}
     function salvage(id){if(!manage())return false;const i=[...profile.bag,...profile.overflow].find(x=>x.id===id);if(!i||i.favorite)return false;profile.essence=Math.min(1e9,profile.essence+salvageValue(i));profile.bag=profile.bag.filter(x=>x.id!==id);profile.overflow=profile.overflow.filter(x=>x.id!==id);refill();save();return true;}
+    function salvagePreview(){
+      const targets=[...profile.bag,...profile.overflow].filter(i=>!i.favorite);
+      return {count:targets.length,essence:targets.reduce((sum,i)=>sum+salvageValue(i),0)};
+    }
+    function salvageAll(){
+      if(!manage())return false;
+      const preview=salvagePreview();
+      if(!preview.count)return false;
+      // Commit once; equipped items and favorites never enter the candidate list.
+      const next=copy(profile);
+      next.bag=next.bag.filter(i=>i.favorite);
+      next.overflow=next.overflow.filter(i=>i.favorite);
+      while(next.bag.length<CAPACITY&&next.overflow.length)next.bag.push(next.overflow.shift());
+      next.essence=Math.min(1e9,next.essence+preview.essence);
+      try{validate(next);}catch{return false;}
+      profile=next;save();return true;
+    }
     function reforge(id){if(!manage()||profile.essence<50)return false;const i=[...profile.bag,...profile.overflow].find(x=>x.id===id);if(!i||i.favorite)return false;for(const k of Object.keys(i.stats)){const cap=statInfo[k].max,scale=(.18+i.level*.018)*(1+rarities[i.rarity].rank*.12)*(.7+rng()*.3);i.stats[k]=Math.round(Math.min(cap,cap*scale)*(statInfo[k].percent?1000:1))/(statInfo[k].percent?1000:1);}profile.essence-=50;save();return true;}
     function milestone(wave){const reward={3:['armor','ash'],4:['weapon','echo'],8:['amulet','bell']}[wave];if(!reward||profile.milestones.includes(wave)||!writable())return false;const i=starter('milestone-'+wave,...reward);i.level=wave;profile.milestones.push(wave);return add(i);}
     function validateImport(text){if(typeof text!=='string'||text.length>15000000)throw Error('Datei zu groß');const e=JSON.parse(text);if(e.format!=='denkmal-loot'||e.version!==1)throw Error('Falsches Format oder Version');return validate(e.profile);}
     function importJSON(text){if(!canManage())return false;try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}let next;try{next=validateImport(text);}catch{return false;}if(readOnly&&status.includes('anderen Tab'))return false;profile=next;readOnly=false;try{lastRaw=storage?.getItem(KEY)||null;}catch{}save();return true;}
     function unlockLevel(){if(!writable())return false;profile.level2=true;save();return true;}
-    return {storage,get count(){return profile.bag.length;},get overflowCount(){return profile.overflow.length;},get profile(){return copy(profile);},get readOnly(){return readOnly;},get status(){return status;},generate,add,equip,unequip,favorite,salvage,reforge,milestone,unlockLevel,save,salvageValue,find:id=>{const i=find(id);return i?copy(i):null;},snapshot:()=>copy(profile.items),exportJSON:raw,exportRecovery:()=>lastRaw||raw(),validateImport,importJSON};
+    return {storage,get count(){return profile.bag.length;},get overflowCount(){return profile.overflow.length;},get profile(){return copy(profile);},get readOnly(){return readOnly;},get status(){return status;},generate,add,equip,unequip,favorite,salvage,salvagePreview,salvageAll,reforge,milestone,unlockLevel,save,salvageValue,find:id=>{const i=find(id);return i?copy(i):null;},snapshot:()=>copy(profile.items),exportJSON:raw,exportRecovery:()=>lastRaw||raw(),validateImport,importJSON};
   }
   globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
 })();
