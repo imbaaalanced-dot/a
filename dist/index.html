@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#080b0c" />
   <title>Denkmal TD · Marcel der Denkmalschützer</title>
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
-  <link rel="stylesheet" href="styles.css?v=v360a5" />
-  <link rel="stylesheet" href="hero.css?v=v360a5" />
-  <link rel="stylesheet" href="polish.css?v=v360a5" />
-  <link rel="stylesheet" href="loot.css?v=v360a5" />
-  <link rel="stylesheet" href="menu.css?v=v360a5" />
+  <link rel="stylesheet" href="styles.css?v=v400a1" />
+  <link rel="stylesheet" href="hero.css?v=v400a1" />
+  <link rel="stylesheet" href="polish.css?v=v400a1" />
+  <link rel="stylesheet" href="loot.css?v=v400a1" />
+  <link rel="stylesheet" href="menu.css?v=v400a1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
-  <link rel="stylesheet" href="portrait-patch.css?v=v360a5" />
+  <link rel="stylesheet" href="portrait-patch.css?v=v400a1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -62,7 +62,7 @@
       <button data-tower="cannon" title="Flächenschaden gegen Gruppen"><kbd>2</kbd><span>KANONE</span><b>35</b></button>
       <button data-tower="mage" title="Verlangsamt getroffene Gegner"><kbd>3</kbd><span>MAGIE</span><b>46</b></button>
       <button data-tower="rift" title="Kettenblitz auf mehrere Gegner"><kbd>4</kbd><span>RIFT</span><b>58</b></button>
-    </section>
+    <button id="tower-thorn" data-tower="thorn" hidden>DORNEN · 65</button><button id="tower-lantern" data-tower="lantern" hidden>LATERNE · 75</button></section>
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
@@ -87,7 +87,7 @@
         <img src="assets/menu/warden-desktop-v2.webp" alt="" width="1672" height="941" fetchpriority="high" />
       </picture>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span class="release-badge">v3.6.0-alpha.5 · BALANCE</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span class="release-badge">v4.0.0-alpha.1 · KIRCHENDE</span></header>
         <div class="menu-content">
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Vier Tore. Ein Denkmal. Du entscheidest, was bleibt.</p>
@@ -95,6 +95,7 @@
             <button id="startBtn" class="menu-play"><span><small>KAPITEL I · WELLEN 1–5</small><strong>DIE WACHT BEGINNEN</strong></span><span aria-hidden="true">➜</span></button>
             <button id="collectionBtn" class="menu-inventory"><span aria-hidden="true">◈</span><span><strong>BEUTE &amp; AUSRÜSTUNG</strong><small>Rucksack, Gegenstände und Ausrüsten.</small></span><span aria-hidden="true">›</span></button>
             <button id="menuHeroBtn" class="menu-inventory menu-hero" type="button"><span aria-hidden="true">♜</span><span><strong>HELD &amp; CHRONIK</strong><small>Marcels Werte und Geschichte ansehen.</small></span><span aria-hidden="true">›</span></button>
+            <button id="level3Btn" class="menu-chapter" disabled>LEVEL 3 · KRIEGERDENKMAL KIRCHENDE</button><button id="endlessBtn" class="menu-chapter" disabled>LABYRINTH · ENDLOS</button>
             <button id="level2Btn" class="menu-chapter" disabled>LEVEL 2 · DAS LABYRINTH</button>
           </nav>
           <p id="levelProgress" class="menu-progress"></p>
@@ -162,16 +163,18 @@
     <section class="modal hidden pause-screen" id="pauseScreen" role="dialog" aria-modal="true" aria-labelledby="pauseTitle"><p class="eyebrow">EIN MOMENT DER RUHE</p><h2 id="pauseTitle">DIE WACHT RUHT</h2><p>Deine Beute bleibt gespeichert. Der laufende Kampf bleibt erhalten, solange diese Seite geöffnet ist.</p><button id="resumeBtn" class="primary">WEITER VERTEIDIGEN</button><button id="pauseMenuBtn" class="icon-btn">HAUPTMENÜ · LAUF BEENDEN</button><small>Esc oder P zum Fortsetzen</small></section>
     <section id="levelComplete" class="modal hidden perk-screen" role="dialog" aria-modal="true" aria-labelledby="levelCompleteTitle">
       <p class="eyebrow">FÜNF WELLEN ÜBERSTANDEN</p><h2 id="levelCompleteTitle">DAS LABYRINTH IST OFFEN</h2>
-      <p id="levelSaveNote"></p><p>Level 2 beginnt bei Welle 6 mit 130 Essenz und sechs Turmplätzen.<br>Baue auf den markierten Plätzen am Weg. Die Gegner folgen dem Labyrinth.</p>
-      <button id="nextLevelBtn" class="primary">LEVEL 2 STARTEN</button><button id="completeMenuBtn" class="icon-btn">HAUPTMENÜ</button>
+      <p id="levelSaveNote"></p><p id="levelCompleteInfo">Level 2 beginnt bei Welle 6 mit 130 Essenz und sechs Turmplätzen.<br>Baue auf den markierten Plätzen am Weg. Die Gegner folgen dem Labyrinth.</p>
+      <button id="nextLevelBtn" class="primary">LEVEL 2 STARTEN</button><button id="continueEndlessBtn" class="icon-btn hidden">BISHERIGES LEVEL ENDLOS</button><button id="completeMenuBtn" class="icon-btn">HAUPTMENÜ</button>
     </section>
   </main>
-  <script src="levels.js?v=v360a5"></script>
-  <script src="visuals.js?v=v360a5"></script>
-  <script src="loot.js?v=v360a6bulk1"></script>
-  <script src="loot-ui.js?v=v360a6bulk1"></script>
-  <script src="hero-saga.js?v=v360a5"></script>
-  <script src="combat-fx.js?v=v360a5"></script>
-  <script src="game.js?v=v360a5balance1"></script>
+  <script src="levels.js?v=v400a1"></script>
+  <script src="visuals.js?v=v400a1"></script>
+  <script src="loot.js?v=v400a1"></script>
+  <script src="loot-ui.js?v=v400a1"></script>
+  <script src="hero-saga.js?v=v400a1"></script>
+  <script src="combat-fx.js?v=v400a1"></script>
+  <script src="kirchende-combat.js?v=v400a1"></script>
+  <script src="kirchende-art.js?v=v400a1"></script>
+  <script src="game.js?v=v400a1"></script>
 </body>
 </html>
