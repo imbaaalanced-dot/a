@@ -21,6 +21,8 @@ jobs:
           node-version: "22"
       - name: Preloader startup regression suite
         run: node tests/preloader.test.cjs
+      - name: Portrait HUD and hero/loot navigation regression
+        run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
         run: node tests/loot.test.cjs
       - name: Gameplay regression suite

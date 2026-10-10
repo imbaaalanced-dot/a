@@ -1,0 +1,26 @@
+/* TD2 portrait HUD and hero/loot split regression. */
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const dist=path.join(__dirname,'../dist');
+const read=p=>fs.readFileSync(path.join(dist,p),'utf8');
+const game=read('game.js'),saga=read('hero-saga.js'),html=read('index.html'),css=read('portrait-patch.css');
+assert.match(game,/KeyH'&&!e\.repeat\)\{e\.preventDefault\(\);if\(state==='character'\)saga\.closeCharacter\(\);else saga\.openCharacter\(\)/,'H must open the hero profile');
+assert.match(game,/KeyI'&&!e\.repeat\)\{e\.preventDefault\(\);if\(state==='inventory'\)closeInventory\(\);else openInventory\(\)/,'I must open the loot screen');
+assert.match(saga,/\$\('heroBtn'\)\.onclick=openCharacter/,'hero button must not route to inventory');
+assert.match(saga,/menuHero\.onclick=openCharacter/,'main-menu hero button must be wired');
+assert.match(saga,/\['start','playing','paused'\]/,'hero view must open from main menu as well');
+assert.match(saga,/returnState==='start'/,'close hero must restore start menu');
+assert.match(html,/id="menuHeroBtn"/);
+assert.match(html,/BEUTE &amp; AUSRÜSTUNG/);
+assert.match(html,/HELD &amp; CHRONIK/);
+assert.match(html,/KAMPFPROFIL/);
+assert.match(html,/portrait-patch\.css\?v=v360a5/);
+assert.match(html,/hero-saga\.js\?v=v360a5/);
+assert.match(html,/game\.js\?v=v360a5/);
+assert.match(css,/@media \(orientation:portrait\) and \(max-width:700px\)/);
+assert.match(css,/\.controls \.action-btn\.hidden\{display:none!important\}/);
+assert.match(css,/\.arsenal\.hidden\{display:none!important\}/);
+assert.match(css,/\.hero-subtitle\{/);
+assert.match(css,/\.joystick\{/);
+assert.match(css,/\.fps-overlay\{/);
+console.log('TD2 portrait HUD, hero/loot routing and cache-busting checks passed.');

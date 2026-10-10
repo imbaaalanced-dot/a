@@ -33,6 +33,7 @@ jobs:
 
       - name: Verify gameplay before publish
         run: |
+          node tests/portrait-hud.test.cjs
           node tests/loot.test.cjs
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs

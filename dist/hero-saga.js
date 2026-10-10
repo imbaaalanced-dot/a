@@ -108,31 +108,25 @@
     $('equipmentPanel').classList.toggle('hidden',selectedTab!=='equipment');$('journalPanel').classList.toggle('hidden',selectedTab!=='journal');
     $('equipmentTab').setAttribute('aria-selected',String(selectedTab==='equipment'));$('journalTab').setAttribute('aria-selected',String(selectedTab==='journal'));
     const grid=$('gearGrid');grid.innerHTML='';
-    for(const [slot, options] of Object.entries(equipment)){
-      const section=document.createElement('section');section.className='gear-slot';
-      const heading=document.createElement('h3');heading.textContent={weapon:'01 / WAFFE',armor:'02 / RÜSTUNG',relic:'03 / RELIKT'}[slot];section.appendChild(heading);
-      for(const option of options){
-        const unlocked=g.wave>=option.wave, equipped=h.equipment[slot]===option.id;
-        const button=document.createElement('button');button.type='button';button.className=`gear-card${equipped?' equipped':''}`;button.disabled=true;
-        button.setAttribute('aria-pressed',String(equipped));
-        button.innerHTML=`<small>${option.label}</small><strong>${option.name}</strong><span>${option.desc}</span><em>${equipped?'ANGELEGT':unlocked?'ANLEGEN':`AB WELLE ${option.wave}`}</em>`;
-        button.title=option.detail;
-        button.onclick=()=>{equip(slot,option.id);};section.appendChild(button);
-      }grid.appendChild(section);
-    }
+    const profile=document.createElement('p');profile.className='hero-combat-overview';
+    profile.textContent=`Lebenspunkte: ${Math.ceil(h.hp)} / ${h.maxHp} · Schaden: ${Math.round(s.damage)} · Tempo: ${Math.round(s.speed)} · Angriffe/s: ${(1/s.rate).toFixed(1)}. Deine Beute und angelegte Ausrüstung verwaltest du ausschließlich im BEUTE-Menü des Hauptmenüs.`;
+    grid.appendChild(profile);
     const journal=$('journalEntries');journal.innerHTML='';
     for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze Marcels Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
   }
   function equip(){return false;} // Legacy wardrobe is read-only; management lives in the main-menu inventory.
   function openCharacter() {
-    if(!['playing','paused'].includes(api.getState()))return;
-    returnState=api.getState();api.setState('character');api.clearInput();stopVoice();renderCharacter();
+    if(!['start','playing','paused'].includes(api.getState()))return;
+    returnState=api.getState();api.setState('character');api.clearInput();stopVoice();
+    $('startScreen').classList.add('hidden');$('pauseScreen').classList.add('hidden');renderCharacter();
     $('characterScreen').classList.remove('hidden');api.focusModal($('characterScreen'));api.updateUI();
   }
   function closeCharacter() {
     if(api.getState()!=='character')return;
     $('characterScreen').classList.add('hidden');api.setState(returnState);
-    if(returnState==='paused')api.focusModal($('pauseScreen'));else api.focusGame();api.updateUI();
+    if(returnState==='paused'){$('pauseScreen').classList.remove('hidden');api.focusModal($('pauseScreen'));}
+    else if(returnState==='start'){$('startScreen').classList.remove('hidden');api.focusModal($('startScreen'));}
+    else api.focusGame();api.updateUI();
   }
   function onKill(enemy) { const h=getHero();h.soul=clamp(h.soul+(enemy.type==='boss'?25:8)+(h.equipment.relic==='bell'?1:0),0,100); }
   function onAttack() { attackTime=.24; }
@@ -222,7 +216,8 @@
     api=callbacks;
     try{voiceEnabled=localStorage.getItem('denkmal-voice')==='on';}catch{}
     voiceLabel();
-    $('heroBtn').onclick=()=>api.openInventory();
+    $('heroBtn').onclick=openCharacter;
+    const menuHero=$('menuHeroBtn');if(menuHero)menuHero.onclick=openCharacter;
     $('characterClose').onclick=closeCharacter;$('storyContinue').onclick=continueStory;
     $('storyReplay').onclick=()=>{if(currentStory)say(currentStory.id,true);};
     $('soulBtn').onclick=()=>{unleash();$('game').focus();};
