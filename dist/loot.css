@@ -48,3 +48,7 @@
  #lootDetail{max-height:none;overflow:visible;scroll-margin-top:100px}.loot-item{min-height:99px}.loot-cell-empty{height:99px}.loot-item strong{font-size:10px}.loot-item small{font-size:8px}.loot-detail-actions{grid-template-columns:1fr 1fr}
 }
 @media(max-width:360px){#inventoryGrid,.loot-overflow-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* v3.6.0-alpha.4: bronze equipment upgrade marker, legible on touch screens. */
+.loot-item{position:relative}
+.loot-upgrade{position:absolute;right:5px;top:5px;z-index:2;display:grid;place-items:center;width:24px;height:24px;border-radius:4px;border:1px solid #e0b176;background:linear-gradient(145deg,#8f532c,#cb8650 45%,#65371f);color:#fff0cf;font:bold 22px/1 system-ui,sans-serif;text-shadow:0 1px 3px #30170a;box-shadow:0 2px 7px #0009;pointer-events:none}
