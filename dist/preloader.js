@@ -33,7 +33,7 @@
     return new Promise(resolve=>{
       const item=new Image();
       let settled=false;
-      const timeout=setTimeout(()=>settle(false),8500);
+      const timeout=setTimeout(()=>settle(false),3500);
       function settle(ok){if(settled)return;settled=true;clearTimeout(timeout);finished++;if(!ok)failed++;progress();resolve(ok);}
       item.onload=()=>settle(true); item.onerror=()=>settle(false);
       item.decoding='async';item.src=src;
@@ -56,8 +56,7 @@
       image.src='assets/menu/warden-mobile-v2.webp';
     }
     await Promise.all(essential.map(load));
-    const minTime=new Promise(resolve=>setTimeout(resolve,450));
-    await minTime;
+    await new Promise(resolve=>setTimeout(resolve,180));
     status.textContent=failed?'Startbereit · fehlende Bilder nutzen Spielfallbacks':'Alle Startgrafiken bereit';
     screen.classList.add('td2-loaded');
     start?.removeAttribute('inert');
