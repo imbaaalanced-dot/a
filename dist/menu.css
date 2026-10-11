@@ -36,3 +36,11 @@
 .endless-menu button{min-height:48px;text-align:left;padding:9px 14px;border-radius:5px;background:#1d2e32;border:1px solid #b18a5570;color:#e6d1a4}
 .endless-menu button:disabled{opacity:.55;color:#9aa4a6;background:#10191c}
 .endless-menu button:focus-visible{outline:3px solid #92d9ec;outline-offset:2px}
+
+/* Honest Kirchende preview until the V4 level branch is integrated and tested. */
+.kirchende-preview{display:grid;gap:6px;padding:16px 17px;margin-top:8px;min-height:105px;border:1px solid #9e86576d;border-radius:6px;background:linear-gradient(120deg,#1b282c,#141c20 65%,#30271d)}
+.kirchende-preview .chapter-tag{color:#d4a869;font:700 10px/1.4 Inter,system-ui;letter-spacing:.12em}
+.kirchende-preview strong{font:700 clamp(14px,2.7vw,18px)/1.3 Georgia,serif;color:#e2d1aa}
+.kirchende-preview>span:not(.chapter-tag){font:400 11px/1.5 Inter,system-ui;color:#acb9b6}
+.kirchende-preview .preview-lock{justify-self:start;border:1px solid #ad9361;padding:3px 7px;border-radius:3px;color:#d6b984!important}
+@media(max-width:700px){.kirchende-preview{min-height:112px;padding:13px}.kirchende-preview strong{font-size:15px}}
