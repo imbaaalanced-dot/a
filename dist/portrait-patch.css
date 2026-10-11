@@ -118,3 +118,15 @@
   .arsenal button{min-height:38px}
   .joystick{width:90px;height:90px}
 }
+
+/* Alpha.7 Android touch feedback: no additional graphics assets or costly blur animation. */
+@media (pointer:coarse){
+  .joystick{user-select:none;-webkit-user-select:none;overscroll-behavior:contain}
+  .joystick.active{box-shadow:0 0 0 3px #d2b5789c,0 0 20px #d2b5784d}
+  .joystick.active>span{background:#e4c382;border-color:#f9df9f}
+  .controls .action-btn,.arsenal button{min-height:48px;touch-action:manipulation}
+  .controls .action-btn:active,.arsenal button:active{filter:brightness(1.25)}
+}
+@media (prefers-reduced-motion:reduce){
+  .joystick,.joystick>span,.controls .action-btn,.arsenal button{transition:none!important}
+}
