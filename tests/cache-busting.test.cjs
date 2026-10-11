@@ -20,7 +20,7 @@ const expectedVersions = new Map([
   ['loot.css', 'v360a5'],
   ['menu.css', 'v360a5'],
   ['preloader.css', 'td2preload1'],
-  ['portrait-patch.css', 'v360a5'],
+  ['portrait-patch.css', 'v360a7mobile1'],
   ['preloader.js', 'td2preload2'],
   ['levels.js', 'v360a5'],
   ['visuals.js', 'v360a5'],
@@ -28,7 +28,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'v360a6bulk1'],
   ['hero-saga.js', 'v360a5'],
   ['combat-fx.js', 'v360a5'],
-  ['game.js', 'v360a5balance1'],
+  ['game.js', 'v360a7mobile1'],
 ]);
 
 const resources = [
