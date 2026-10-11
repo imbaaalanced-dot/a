@@ -1,0 +1,26 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
+const src=fs.readFileSync(path.join(__dirname,'../dist/campaign-modes.js'),'utf8');
+function load(storage){const sandbox={localStorage:storage};vm.runInNewContext(src,sandbox);return sandbox.DenkmalCampaignModes;}
+const data=new Map();
+const storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+let m=load(storage);
+assert.equal(m.canPlayEndless(1),false);
+assert.equal(m.canPlayEndless(2),false);
+assert.equal(m.finish(99),false);
+assert.equal(m.finish(1),true);
+assert.equal(m.canPlayEndless(1),true);
+assert.equal(m.canPlayEndless(2),false);
+assert.equal(m.record(2,10),false);
+assert.equal(m.record(1,14),true);
+assert.equal(m.record(1,11),true);
+assert.equal(m.records[1],14);
+m=load(storage);
+assert.equal(m.canPlayEndless(1),true);
+assert.equal(m.records[1],14);
+m.adoptLegacyLevel2(true);
+assert.equal(m.completed.length,1);
+const other=load({getItem:()=>'{bad',setItem(){throw Error('no storage')}});
+assert.equal(other.canPlayEndless(1),false);
+assert.equal(other.finish(1),true);
+console.log('Campaign and endless map persistence regression passed');
