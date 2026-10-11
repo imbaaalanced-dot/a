@@ -23,6 +23,8 @@ jobs:
         run: node tests/preloader.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
+      - name: Android touch and visual regression
+        run: node tests/mobile-visual.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
