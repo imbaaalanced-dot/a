@@ -65,6 +65,7 @@ Noch aufzuräumen bzw. zu prüfen:
 - Versionsanzeige im Hauptmenü auf Alpha.6 bringen und Release-Dokumentation ergänzen.
 - Der Publish-Workflow führt die Preloader-Suite derzeit nicht selbst aus. Sie läuft im separaten Test-Workflow; dessen Erfolg ist keine explizite Abhängigkeit des Publish-Jobs.
 - Cache-Schlüssel sind dateispezifisch: Basis `v360a5`, Kampf `v360a5balance1`, Beute `v360a6bulk1`. Unterschiedliche Schlüssel sind allein kein Fehler; geänderte Dateien müssen einen neuen Schlüssel erhalten.
+- Kirchende-Basistests separat ausgeführt: fünf der sechs vorhandenen JavaScript-Suiten bestehen. `portrait-hud.test.cjs` scheitert an der fest erwarteten alten Cache-Version `v360a5`; das belegt zunächst eine veraltete Testannahme, keinen visuellen HUD-Fehler.
 - Kirchende enthält Level-3-Code und neue Grafiken, aber die im V4-Plan vorgesehenen zusätzlichen Kirchende-Tests, Workflow-Erweiterungen und Release-/Balance-Dokumente fehlen im Vergleich zu `main`. Vor einem Merge separat prüfen.
 - KI-Draft #15 bleibt unfertig und deaktiviert; die dort dokumentierten Zugangs-, Missbrauchs- und Kostenkontrollen sind Voraussetzungen für einen öffentlichen Dienst.
 
