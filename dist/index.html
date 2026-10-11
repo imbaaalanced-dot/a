@@ -92,10 +92,10 @@
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Vier Tore. Ein Denkmal. Du entscheidest, was bleibt.</p>
           <nav class="menu-actions" aria-label="Spiel starten, Beute und Held verwalten">
-            <button id="startBtn" class="menu-play"><span><small>KAPITEL I · WELLEN 1–5</small><strong>DIE WACHT BEGINNEN</strong></span><span aria-hidden="true">➜</span></button>
+            <button id="startBtn" class="menu-play"><span><small>KAMPAGNE · LEVEL 1</small><strong>KAMPAGNE STARTEN</strong></span><span aria-hidden="true">➜</span></button>
             <button id="collectionBtn" class="menu-inventory"><span aria-hidden="true">◈</span><span><strong>BEUTE &amp; AUSRÜSTUNG</strong><small>Rucksack, Gegenstände und Ausrüsten.</small></span><span aria-hidden="true">›</span></button>
             <button id="menuHeroBtn" class="menu-inventory menu-hero" type="button"><span aria-hidden="true">♜</span><span><strong>HELD &amp; CHRONIK</strong><small>Marcels Werte und Geschichte ansehen.</small></span><span aria-hidden="true">›</span></button>
-            <button id="level2Btn" class="menu-chapter" disabled>LEVEL 2 · DAS LABYRINTH</button>
+            <button id="level2Btn" class="menu-chapter" disabled>KAMPAGNE · LEVEL 2 · DAS LABYRINTH</button><section id="endlessMenu" class="endless-menu" aria-label="Endlosspiel – freigeschaltete Karten"><h2>∞ ENDLOSSPIEL</h2><p>Nur in der Kampagne abgeschlossene Karten sind verfügbar.</p><button id="endless1Btn" type="button" disabled>VIER TORE · GESPERRT</button><button id="endless2Btn" type="button" disabled>DAS LABYRINTH · GESPERRT</button><small id="endlessRecords"></small></section>
           </nav>
           <p id="levelProgress" class="menu-progress"></p>
           <p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p>
@@ -167,6 +167,7 @@
     </section>
   </main>
   <script src="levels.js?v=v360a5"></script>
+  <script src="campaign-modes.js?v=v4campaign1"></script>
   <script src="visuals.js?v=v360a5"></script>
   <script src="loot.js?v=v360a6bulk1"></script>
   <script src="loot-ui.js?v=v360a6bulk1"></script>
