@@ -23,7 +23,7 @@ const expectedVersions = new Map([
   ['portrait-patch.css', 'v360a5'],
   ['preloader.js', 'td2preload2'],
   ['levels.js', 'v360a5'],
-  ['campaign-modes.js', 'v4campaign1']
+  ['campaign-modes.js', 'v4campaign1'],
   ['visuals.js', 'v360a5'],
   ['loot.js', 'v360a6bulk1'],
   ['loot-ui.js', 'v360a6bulk1'],
