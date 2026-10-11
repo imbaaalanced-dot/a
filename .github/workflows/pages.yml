@@ -35,6 +35,7 @@ jobs:
         run: |
           node tests/preloader.test.cjs
           node tests/cache-busting.test.cjs
+          node tests/mobile-visual.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/loot.test.cjs
           node tests/game.test.cjs
