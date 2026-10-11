@@ -11,7 +11,7 @@ Stand der Prüfung: 11. Oktober 2026.
 | Hauptprojekt | `imbaaalanced-dot/a`, Branch `main` |
 | Aktueller geprüfter Spielcode | `273bf3a20ee8ad5ccf22bae1c967e6dc637e8c05` – Alpha.6, Sammel-Recycling |
 | Veröffentlichung | `gh-pages`; Publish- und Pages-Workflow für diesen Spielstand erfolgreich |
-| Anzeige im Hauptmenü | Noch „v3.6.0-alpha.5 · BALANCE“; die Alpha.6-Funktionen sind trotzdem enthalten |
+| Anzeige im Hauptmenü | `v3.6.0-alpha.6 · BEUTE` (nach Integration dieses Fixes) |
 | Kirchende / Level 3 | Separater Entwicklungsbranch `v4-kirchende`, noch nicht in `main` oder dem regulären Tester-Build |
 | Optionale KI | Draft-PR #15, nicht in `main`; laut PR nicht produktiv bereitgestellt |
 | GitHub Releases | Zum Prüfzeitpunkt keine veröffentlichten GitHub Releases; Pages-Testbuild und GitHub Release sind getrennte Dinge |
@@ -47,6 +47,7 @@ Am 11. Oktober 2026 am oben genannten Spielcode erfolgreich ausgeführt:
 
 ```bash
 node tests/preloader.test.cjs
+node tests/cache-busting.test.cjs
 node tests/portrait-hud.test.cjs
 node tests/loot.test.cjs
 node tests/game.test.cjs
@@ -62,10 +63,11 @@ Die Dateien aus `main:dist/` stimmen mit dem veröffentlichten `gh-pages`-Stand 
 
 Noch aufzuräumen bzw. zu prüfen:
 
-- Versionsanzeige im Hauptmenü auf Alpha.6 bringen und Release-Dokumentation ergänzen.
-- Der Publish-Workflow führt die Preloader-Suite derzeit nicht selbst aus. Sie läuft im separaten Test-Workflow; dessen Erfolg ist keine explizite Abhängigkeit des Publish-Jobs.
-- Cache-Schlüssel sind dateispezifisch: Basis `v360a5`, Kampf `v360a5balance1`, Beute `v360a6bulk1`. Unterschiedliche Schlüssel sind allein kein Fehler; geänderte Dateien müssen einen neuen Schlüssel erhalten.
-- Kirchende-Basistests separat ausgeführt: fünf der sechs vorhandenen JavaScript-Suiten bestehen. `portrait-hud.test.cjs` scheitert an der fest erwarteten alten Cache-Version `v360a5`; das belegt zunächst eine veraltete Testannahme, keinen visuellen HUD-Fehler.
+- Alpha.6-Hauptmenü-Badge aktualisiert; Einzelheiten: [Release-Notizen](RELEASE_v3.6.0-alpha.6.md).
+- `tests/cache-busting.test.cjs` prüft den Release-Badge, Existenz und eindeutige Zuordnung aller 15 lokalen JS/CSS-Dateien sowie deren explizite Cache-Schlüssel. Die versionsabhängigen Assertions wurden aus dem Portrait-HUD-Test entfernt.
+- Publish-Workflow prüft nun zusätzlich den Preloader und die Cache-Versionen **vor** dem Spiegeln nach `gh-pages`. Die Publish-Pipeline wiederholt diese Prüfungen unabhängig vom separaten Test-Workflow.
+- Cache-Schlüssel bleiben dateispezifisch: Basis `v360a5`, Kampf `v360a5balance1`, Beute `v360a6bulk1`. Bei jeder JS/CSS-Inhaltsänderung sind `index.html` und die Cache-Test-Erwartungen gemeinsam zu aktualisieren.
+- Den Kirchende-Branch vor V4-Integration mit diesem aktualisierten Teststand abgleichen; dessen frühere Cache-Test-Annahme kann so ohne HUD-Funktionsänderung entfallen.
 - Kirchende enthält Level-3-Code und neue Grafiken, aber die im V4-Plan vorgesehenen zusätzlichen Kirchende-Tests, Workflow-Erweiterungen und Release-/Balance-Dokumente fehlen im Vergleich zu `main`. Vor einem Merge separat prüfen.
 - KI-Draft #15 bleibt unfertig und deaktiviert; die dort dokumentierten Zugangs-, Missbrauchs- und Kostenkontrollen sind Voraussetzungen für einen öffentlichen Dienst.
 
