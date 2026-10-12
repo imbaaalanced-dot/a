@@ -40,6 +40,7 @@ jobs:
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
+          node tests/v4-alpha4.test.cjs
           node tests/v3.1-features.test.cjs
 
       - name: Publish isolated V4 path on gh-pages
@@ -64,6 +65,31 @@ jobs:
           fi
           git commit -m "Publish isolated V4 tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
+      - name: Publish isolated V4 alpha 4 tester path
+        if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'feature/td2-v4-alpha4-combat' || github.ref_name == 'v4-kirchende')
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-alpha4
+          find /tmp/denkmal-gh-pages/v4-alpha4 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha4/
+          # The alpha.3 monument image only exists on gh-pages so far; reuse it until the asset lands on a branch.
+          if [ ! -f /tmp/denkmal-gh-pages/v4-alpha4/assets/monument-level1-v2.webp ] && [ -f /tmp/denkmal-gh-pages/v4-alpha3/assets/monument-level1-v2.webp ]; then
+            cp /tmp/denkmal-gh-pages/v4-alpha3/assets/monument-level1-v2.webp /tmp/denkmal-gh-pages/v4-alpha4/assets/monument-level1-v2.webp
+            echo "Copied monument-level1-v2.webp from the published alpha.3 tester path."
+          fi
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-alpha4 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 alpha 4 tester build already current."
+            exit 0
+          fi
+          git commit -m "Publish V4 alpha 4 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
       - name: Publish main tester at root
         if: github.ref_name == 'main'
         shell: bash
@@ -72,7 +98,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
