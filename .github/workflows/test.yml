@@ -2,7 +2,7 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["main", "release/v3.*"]
+    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh"]
   pull_request:
     branches: ["main"]
 
