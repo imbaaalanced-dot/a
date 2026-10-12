@@ -4,15 +4,17 @@ Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen
 
 ## Welcher Stand ist aktuell?
 
-Stand der Prüfung: 11. Oktober 2026.
+Stand der Prüfung: 12. Oktober 2026.
 
 | Bereich | Stand |
 | --- | --- |
 | Hauptprojekt | `imbaaalanced-dot/a`, Branch `main` |
-| Aktueller geprüfter Spielcode | `273bf3a20ee8ad5ccf22bae1c967e6dc637e8c05` – Alpha.6, Sammel-Recycling |
-| Veröffentlichung | `gh-pages`; Publish- und Pages-Workflow für diesen Spielstand erfolgreich |
-| Anzeige im Hauptmenü | `v3.6.0-alpha.6 · BEUTE` (nach Integration dieses Fixes) |
-| Kirchende / Level 3 | Separater Entwicklungsbranch `v4-kirchende`, noch nicht in `main` oder dem regulären Tester-Build |
+| Aktueller geprüfter Spielcode | `dc420c3480799cc00658cde544e237751c01de56` – Alpha.6 plus kompaktes HUD-Menü und 2x-Tempo für Level 2 |
+| Veröffentlichung | `gh-pages`; letzter Pages-Build am 12. Oktober 2026 erfolgreich, aber keine neue Public-Alpha-Freigabe für V4 |
+| Anzeige im Hauptmenü | `v3.6.0-alpha.6 · BEUTE` |
+| V4-Alpha.3 / Public Alpha | Nicht freigegeben; V4-/Endlos-/Kirchende-Arbeit liegt nur in separaten, ungeprüft divergenten Branches |
+| Öffentliche PRs #23/#24 | Geschlossene Draft-PRs, nicht gemergt; beide waren laut GitHub `mergeable_state: dirty` |
+| Kirchende / Level 3 | Separater Entwicklungsbranch `v4-kirchende`, divergiert von `main` und ist noch nicht im regulären Tester-Build |
 | Optionale KI | Draft-PR #15, nicht in `main`; laut PR nicht produktiv bereitgestellt |
 | GitHub Releases | Zum Prüfzeitpunkt keine veröffentlichten GitHub Releases; Pages-Testbuild und GitHub Release sind getrennte Dinge |
 
@@ -69,6 +71,7 @@ Noch aufzuräumen bzw. zu prüfen:
 - Cache-Schlüssel bleiben dateispezifisch: Basis `v360a5`, Kampf `v360a5balance1`, Beute `v360a6bulk1`. Bei jeder JS/CSS-Inhaltsänderung sind `index.html` und die Cache-Test-Erwartungen gemeinsam zu aktualisieren.
 - Den Kirchende-Branch vor V4-Integration mit diesem aktualisierten Teststand abgleichen; dessen frühere Cache-Test-Annahme kann so ohne HUD-Funktionsänderung entfallen.
 - Kirchende enthält Level-3-Code und neue Grafiken, aber die im V4-Plan vorgesehenen zusätzlichen Kirchende-Tests, Workflow-Erweiterungen und Release-/Balance-Dokumente fehlen im Vergleich zu `main`. Vor einem Merge separat prüfen.
+- Die Public-Alpha-Luecke fuer V4 ist in [docs/PUBLIC_ALPHA_RELEASE_GAP_ANALYSIS.md](docs/PUBLIC_ALPHA_RELEASE_GAP_ANALYSIS.md) dokumentiert und durch `tests/public-alpha-readiness.test.cjs` gegen versehentliche Freigabebehauptungen abgesichert.
 - KI-Draft #15 bleibt unfertig und deaktiviert; die dort dokumentierten Zugangs-, Missbrauchs- und Kostenkontrollen sind Voraussetzungen für einen öffentlichen Dienst.
 
 Historische `RELEASE_*.md`-Dateien beschreiben ihren jeweiligen Stand und gelten nicht automatisch als Nachweis des aktuellen Veröffentlichungsstatus.
