@@ -2,14 +2,14 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh"]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: "tester-pages"
+  group: "tester-pages-v4"
   cancel-in-progress: true
 
 jobs:
@@ -33,6 +33,8 @@ jobs:
 
       - name: Verify gameplay before publish
         run: |
+          node tests/main-menu.test.cjs
+          node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/loot.test.cjs
           node tests/game.test.cjs
@@ -40,21 +42,44 @@ jobs:
           node tests/combat-fx.test.cjs
           node tests/v3.1-features.test.cjs
 
-      - name: Mirror dist to gh-pages
+      - name: Publish isolated V4 path on gh-pages
+        if: github.ref_name == 'feature/td2-v4-main-menu-refresh'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 -exec rm -rf {} +
+          mkdir -p /tmp/denkmal-gh-pages/v4 /tmp/denkmal-gh-pages/v4-alpha3
+          find /tmp/denkmal-gh-pages/v4 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages/v4-alpha3 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4/
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha3/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4 v4-alpha3 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 tester build already current."
+            exit 0
+          fi
+          git commit -m "Publish isolated V4 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish main tester at root
+        if: github.ref_name == 'main'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
           git add -A
           if git diff --cached --quiet; then
-            echo "Tester build already current."
+            echo "Main tester build already current."
             exit 0
           fi
-          git commit -m "Publish tester build ${GITHUB_SHA}"
+          git commit -m "Publish main tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
