@@ -12,7 +12,7 @@
   globalThis.DenkmalMobileRender=mobileRender;
   const atlas = new Image();
   const monumentImage = new Image();
-  monumentImage.src = 'assets/monument-level1-v1.webp';
+  monumentImage.src = 'assets/monument-level1-v2.webp';
   const hellscape = new Image();
   const art = {};
   const towerArt = { bow:new Image(), cannon:new Image(), ballista:new Image(), mage:new Image(), mortar:new Image(), rift:new Image(), shrine:new Image() };
