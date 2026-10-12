@@ -17,7 +17,7 @@ const campaign = section('campaignMenu');
 const endless = section('endlessMenu');
 
 for (const [id, label] of [
-  ['startBtn', 'KAMPAGNE'],
+  ['startBtn', 'EINLEITUNG'],
   ['level2Btn', 'LABYRINTH'],
   ['level3Btn', 'KIRCHENDE'],
 ]) {
