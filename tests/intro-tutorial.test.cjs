@@ -31,6 +31,8 @@ assert.match(game, /tutorialNext/);
 assert.match(game, /tutorialSkip/);
 assert.match(game, /introTutorial/);
 assert.match(game, /tutorialActive\)return/, 'simulation stays paused while tutorial is open');
+assert.match(game, /Wähle einen Turmtyp/);
+assert.doesNotMatch(game, /Turmart/);
 assert.match(css, /\.tutorial-arrow/);
 assert.match(css, /@media\s*\(pointer:coarse\)/);
 
