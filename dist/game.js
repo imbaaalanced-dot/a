@@ -208,10 +208,18 @@
   function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
+  function setMapStatus(id,unlocked){
+    const button=$(id);if(!button)return;button.disabled=!unlocked;
+    const status=button.querySelector('[data-map-status]');
+    if(status)status.textContent=unlocked?'FREIGESCHALTET':'GESPERRT';
+    button.setAttribute('aria-label',`${button.querySelector('.map-copy strong')?.textContent||'Karte'} · ${unlocked?'freigeschaltet':'gesperrt'}`);
+  }
   function menuStatus(){
-    $('level2Btn').disabled=!campaign.unlocked;
-    if($('level3Btn'))$('level3Btn').disabled=!lootModel.profile.level3;
-    if($('endlessBtn'))$('endlessBtn').disabled=!lootModel.profile.level3;
+    setMapStatus('level2Btn',campaign.unlocked);
+    setMapStatus('level3Btn',lootModel.profile.level3);
+    setMapStatus('endless1Btn',campaign.unlocked);
+    setMapStatus('endlessBtn',lootModel.profile.level3);
+    setMapStatus('endless3Btn',lootModel.profile.kirchendeCompleted);
     if($('collectionSummary'))$('collectionSummary').textContent=`${lootModel.profile.bag.length}/30 im Rucksack · ${lootModel.profile.overflow.length} im Überlauf · Ausrüstung nur hier wechseln`;
     if($('saveStatus'))$('saveStatus').textContent=lootModel.status||'Beute und Ausrüstung werden auf diesem Gerät gespeichert.';
     $('levelProgress').textContent=lootModel.profile.level3?'Kirchende freigeschaltet · Level 3 und Endlosmodus verfügbar':campaign.unlocked?(campaign.storageAvailable?'Level 2 freigeschaltet · jederzeit hier starten':'Level 2 freigeschaltet · Speichern blockiert, nur für diese Sitzung'):'Level 2 wird nach Welle 5 freigeschaltet.';
@@ -219,7 +227,9 @@
   function closeScreens(){saga.stopVoice();for(const id of ['startScreen','pauseScreen','perkScreen','gameover','levelComplete','storyScreen','characterScreen','inventoryScreen'])$(id).classList.add('hidden');}
   function mainMenu(){if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1,mode='campaign'){
-    level=[1,2,3].includes(level)?level:1;if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3)return;
+    level=[1,2,3].includes(level)?level:1;
+    if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3)return;
+    if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted))return;
     globalThis.KirchendeArt?.load(level===3);
     closeScreens();reset(level,mode);state='playing';focusGame();tone(220,.1);last=performance.now();
     if(level===1)saga.chapter(1);else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
@@ -604,7 +614,7 @@
     stick.addEventListener('touchend',releaseTouch,{passive:false});
     stick.addEventListener('touchcancel',releaseTouch,{passive:false});
   }
-  $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>game.level===3?continueEndless():startGame(game.level+1);$('continueEndlessBtn').onclick=continueEndless;$('level3Btn').onclick=()=>startGame(3);$('endlessBtn').onclick=()=>startGame(2,'endless');$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level,game.mode);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
+  $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>game.level===3?continueEndless():startGame(game.level+1);$('continueEndlessBtn').onclick=continueEndless;$('level3Btn').onclick=()=>startGame(3);$('endless1Btn').onclick=()=>startGame(1,'endless');$('endlessBtn').onclick=()=>startGame(2,'endless');$('endless3Btn').onclick=()=>startGame(3,'endless');$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level,game.mode);$('pauseBtn').onclick=pauseGame;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
   document.querySelectorAll('.arsenal button').forEach(b=>b.onclick=()=>{if(state==='playing'){selectTower(b.dataset.tower);canvas.focus();}});
   $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;
   function lowFX(){return reducedMotion||graphicsMode==='low'||(graphicsMode==='auto'&&mobileRender);}
