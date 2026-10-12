@@ -2,6 +2,17 @@
 
 Browser-Testbuild mit Marcel dem Denkmalschützer. Die spielbaren Dateien liegen direkt in `dist/`; es ist kein Build-Schritt und keine zusätzliche Laufzeit-Abhängigkeit erforderlich.
 
+## V4-Entwicklungslinie (Branch `v4-kirchende`)
+
+Parallel zur v3.x-Linie entsteht auf dem Branch `v4-kirchende` die V4-Fassung des Spiels (Kampagne mit Einleitung, Labyrinth und Kirchende, Endlosmodus, Level-Freischaltungen, Beute-Inventar, Spielstände). Der aktuelle Stand ist **v4.0.0-alpha.4**:
+
+- **Kampfsystem-Überarbeitung (alpha.4):** Türme treffen bewegte Gegner zuverlässig, weil Geschosse jetzt auf einen iterativ gelösten **Vorhaltepunkt** zielen statt auf die alte Gegnerposition. Die echte Bewegungsgeschwindigkeit jedes Gegners wird pro Frame gemessen; Projektilgeschwindigkeiten sind pro Turmtyp vereinheitlicht (Bogen 520, Kanone 430, Mörser 350, Balliste 660, Held 560 px/s).
+- **FX-Überarbeitung (alpha.4):** Einschläge erzeugen Schockringe, gerichtete Trümmer und weiße Kernblitze; Schüsse ein Mündungsfeuer entlang der Flugbahn; Rift-Kettenblitze zeichnen sichtbare Bögen zwischen Zielen. Partikel- und Schadenszahlen-Limits, Sound-Drossel und Geste-Freigabe bleiben erhalten.
+- **Menü- und Touch-Fix (alpha.4):** Das Ingame-Menü (`<details>`-Overlay) liegt mit `z-index:8` unter Pausen-/Story-/Level-Overlays, schließt bei jedem Bildschirmwechsel, bei Tap auf das Spielfeld und bietet einen eigenen PAUSE-Button. Portrait-Layout mit `touch-action:manipulation` und 48px-Tap-Flächen.
+- Erhaltene Systeme: Kampagne, Endlosmodus, Level-Freischaltungen, Inventar/Rüstkammer, Beute- und Tutorial-Spielstände, Intro-Tutorial, alle Turm- und Gegnerrollen.
+- Regressionsschutz: `tests/v4-alpha4.test.cjs` (10 Checks) deckt Zielvorhersage, Geschwindigkeiten, Velocity-Tracking, FX-Verträge, Menü-Routing, Cache-Busts und Persistenzschlüssel ab.
+- Tester-Builds: `v4-alpha3/` ist veröffentlicht; **alpha.4 wird nicht automatisch deployt** – der Pages-Workflow veröffentlicht `v4-alpha4/` nur manuell per `workflow_dispatch` (Fallback für das Monument-Asset von `v4-alpha3/`, bis `assets/monument-level1-v2.webp` auf einem Branch eingecheckt ist).
+
 ## Aktueller Alpha-Stand
 
 v3.6.0-alpha.3 ergänzt ein neu gestaltetes Hauptmenü mit Laternenhüter-Panorama, mobilen Bildvarianten und einem direkten Link zum YouTube-Kanal **denk mal nach**. Die dauerhafte Rüstkammer aus Alpha.1 bleibt erhalten. Beute bleibt nach Niederlagen und Neuladen erhalten; Ausrüstung wird ausschließlich im Hauptmenü gewechselt.
@@ -62,6 +73,7 @@ Die GitHub-Actions-Workflows führen vor Veröffentlichung die Regression-Suites
 - `TEST_MOBILE=1 node tests/game.test.cjs`
 - `node tests/combat-fx.test.cjs`
 - `node tests/v3.1-features.test.cjs`
+- `node tests/v4-alpha4.test.cjs` (V4-Linie: Zielvorhersage, FX, Menü und Persistenz)
 
 Der Pages-Workflow veröffentlicht nur nach erfolgreicher Prüfung den Inhalt von `dist/` auf `gh-pages`; der separate Testpfad `superpowers-alpha3/` bleibt erhalten.
 
