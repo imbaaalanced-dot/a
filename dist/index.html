@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#080b0c" />
   <title>Denkmal TD · Marcel der Denkmalschützer</title>
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
-  <link rel="stylesheet" href="styles.css?v=v400a1" />
-  <link rel="stylesheet" href="hero.css?v=v400a1" />
-  <link rel="stylesheet" href="polish.css?v=v400a1" />
-  <link rel="stylesheet" href="loot.css?v=v400a1" />
-  <link rel="stylesheet" href="menu.css?v=v400a3tutorial" />
+  <link rel="stylesheet" href="styles.css?v=v400a4a1" />
+  <link rel="stylesheet" href="hero.css?v=v400a4a1" />
+  <link rel="stylesheet" href="polish.css?v=v400a4a1" />
+  <link rel="stylesheet" href="loot.css?v=v400a4a1" />
+  <link rel="stylesheet" href="menu.css?v=v400a4a1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
-  <link rel="stylesheet" href="portrait-patch.css?v=v400a3menufix1" />
+  <link rel="stylesheet" href="portrait-patch.css?v=v400a4a1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -26,7 +26,7 @@
         <div><strong>DENKMAL TD</strong><small>MARCEL · DER DENKMALSCHÜTZER</small></div>
       </div>
       <div class="wave-seal"><small id="levelLabel">EINLEITUNG</small><strong id="wave">1</strong></div>
-      <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Beute-Inventar öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2x umschalten" aria-pressed="false">TEMPO: 1×</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="Tester FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button></div></details></div>
+      <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu" id="hudMenu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Beute-Inventar öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2x umschalten" aria-pressed="false">TEMPO: 1×</button><button id="menuPauseBtn" class="icon-btn" aria-label="Spiel pausieren">PAUSE</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="Tester FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button></div></details></div>
     </header>
 
     <section class="left-hud">
@@ -87,7 +87,7 @@
         <img src="assets/menu/warden-desktop-v2.webp" alt="" width="1672" height="941" fetchpriority="high" />
       </picture>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span class="release-badge">v4.0.0-alpha.3 · EINLEITUNG</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span class="release-badge">v4.0.0-alpha.4 · EINLEITUNG</span></header>
         <div class="menu-content">
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Vier Tore. Ein Denkmal. Du entscheidest, was bleibt.</p>
@@ -206,14 +206,14 @@
       </div>
     </section>
   </main>
-  <script src="levels.js?v=v400a1"></script>
-  <script src="visuals.js?v=v400a1"></script>
-  <script src="loot.js?v=v400a1"></script>
-  <script src="loot-ui.js?v=v400a1"></script>
-  <script src="hero-saga.js?v=v400a1"></script>
-  <script src="combat-fx.js?v=v400a1"></script>
-  <script src="kirchende-combat.js?v=v400a1"></script>
-  <script src="kirchende-art.js?v=v400a1"></script>
-  <script src="game.js?v=v400a3menufix1"></script>
+  <script src="levels.js?v=v400a4a1"></script>
+  <script src="visuals.js?v=v400a4a1"></script>
+  <script src="loot.js?v=v400a4a1"></script>
+  <script src="loot-ui.js?v=v400a4a1"></script>
+  <script src="hero-saga.js?v=v400a4a1"></script>
+  <script src="combat-fx.js?v=v400a4a1"></script>
+  <script src="kirchende-combat.js?v=v400a4a1"></script>
+  <script src="kirchende-art.js?v=v400a4a1"></script>
+  <script src="game.js?v=v400a4a1"></script>
 </body>
 </html>
