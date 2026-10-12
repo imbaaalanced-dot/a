@@ -38,6 +38,7 @@ assert.match(game, /endless1Btn[^\n]*startGame\(1,'endless'\)/);
 assert.match(game, /endlessBtn[^\n]*startGame\(2,'endless'\)/);
 assert.match(game, /endless3Btn[^\n]*startGame\(3,'endless'\)/);
 assert.match(game, /kirchendeCompleted/);
+assert.doesNotMatch(endless, /Wellenrekord wird gespeichert/, 'do not promise records until persistence exists');
 assert.match(html, /id="channelLink"[^>]*youtube\.com\/@denk-malnach/);
 assert.match(html, /id="collectionBtn"/);
 assert.match(html, /id="menuHeroBtn"/);
