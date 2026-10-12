@@ -34,7 +34,7 @@ function makeEnemy(overrides={}){
   e.prevX=e.x;e.prevY=e.y;return e;
 }
 check('Intercept prediction: exact for stationary targets, bounded and adaptive for movers',()=>{
-  assert.deepEqual(t.interceptPoint({x:0,y:0},{x:300,y:300},520),{x:300,y:300});
+  const still=t.interceptPoint({x:0,y:0},{x:300,y:300},520);assert.deepEqual({x:still.x,y:still.y},{x:300,y:300}); // vm objects carry the vm realm's prototype; compare fields, not cross-realm objects
   const mover={x:300,y:0,velX:120,velY:0};
   const far=t.interceptPoint({x:0,y:0},mover,520);
   assert.ok(far.x>300,'movers are led ahead of their current position');

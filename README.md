@@ -11,7 +11,7 @@ Parallel zur v3.x-Linie entsteht auf dem Branch `v4-kirchende` die V4-Fassung de
 - **Menü- und Touch-Fix (alpha.4):** Das Ingame-Menü (`<details>`-Overlay) liegt mit `z-index:8` unter Pausen-/Story-/Level-Overlays, schließt bei jedem Bildschirmwechsel, bei Tap auf das Spielfeld und bietet einen eigenen PAUSE-Button. Portrait-Layout mit `touch-action:manipulation` und 48px-Tap-Flächen.
 - Erhaltene Systeme: Kampagne, Endlosmodus, Level-Freischaltungen, Inventar/Rüstkammer, Beute- und Tutorial-Spielstände, Intro-Tutorial, alle Turm- und Gegnerrollen.
 - Regressionsschutz: `tests/v4-alpha4.test.cjs` (10 Checks) deckt Zielvorhersage, Geschwindigkeiten, Velocity-Tracking, FX-Verträge, Menü-Routing, Cache-Busts und Persistenzschlüssel ab.
-- Tester-Builds: `v4-alpha3/` ist veröffentlicht; **alpha.4 wird nicht automatisch deployt** – der Pages-Workflow veröffentlicht `v4-alpha4/` nur manuell per `workflow_dispatch` (Fallback für das Monument-Asset von `v4-alpha3/`, bis `assets/monument-level1-v2.webp` auf einem Branch eingecheckt ist).
+- Tester-Builds: `v4-alpha3/` ist veröffentlicht; `v4-alpha4/` wird nach grünen Tests automatisch bei jedem Push auf `v4-kirchende` veröffentlicht (Fallback für das Monument-Asset von `v4-alpha3/`, bis `assets/monument-level1-v2.webp` auf einem Branch eingecheckt ist).
 
 ## Aktueller Alpha-Stand
 

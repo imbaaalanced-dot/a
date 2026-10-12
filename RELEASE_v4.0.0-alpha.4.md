@@ -66,11 +66,12 @@ Neu: **`tests/v4-alpha4.test.cjs`** — 10 Checks:
 10. Persistenz: Freischalt- und Tutorial-Keys, Loot-Modell, Kollisions-Grenzfall (Radius+1 verfehlt).
 
 Alle 5 Suiten (main-menu, intro-tutorial, game × Desktop/Mobile, combat-fx, v4-alpha4) sind grün — lokal (Desktop + `TEST_MOBILE=1`) und via CI. `tests/game.test.cjs` wurde minimal angepasst (Monument-Sprite-Assertion v1→v2, Hotfix-Backport).
+`tests/v4-alpha4.test.cjs` vergleicht vm-Realm-Objekte feldweise statt per `deepEqual`, damit die Suite unter echtem Node/vm stabil läuft (Cross-Realm-Prototypen).
 
 ## CI & Deployment
 
 - `test.yml`: Suite läuft jetzt auch bei Push auf `feature/td2-v4-alpha4-combat` und bei PRs gegen `v4-kirchende`; neuer Schritt `node tests/v4-alpha4.test.cjs`.
-- `pages.yml`: Verifikation um die Alpha-4-Suite erweitert. **Alpha 4 wird nicht automatisch deployt**: Der neue Schritt „Publish isolated V4 alpha 4 tester path“ veröffentlicht `v4-alpha4/` ausschließlich per **manuellem `workflow_dispatch`** (Branch `feature/td2-v4-alpha4-combat` oder `v4-kirchende`), mit Fallback-Kopie des Monument-Assets aus `v4-alpha3/`. Der Root-Publish schließt `v4-alpha4/` aus.
+- `pages.yml`: Verifikation um die Alpha-4-Suite erweitert. Der Schritt „Publish isolated V4 alpha 4 tester path“ veröffentlicht `v4-alpha4/` **nach grünen Tests automatisch bei jedem Push auf `v4-kirchende`** (zusätzlich per manuellem `workflow_dispatch` für `feature/td2-v4-alpha4-combat` oder `v4-kirchende`), mit Fallback-Kopie des Monument-Assets aus `v4-alpha3/`. Der Root-Publish bleibt auf `main` beschränkt und schließt `v4-alpha4/` aus.
 - **Kein Merge auf `main`, kein automatisches Deployment** — nur nach ausdrücklicher Freigabe.
 
 ## Bekannte Einschränkungen

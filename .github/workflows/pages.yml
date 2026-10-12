@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main", "feature/td2-v4-main-menu-refresh"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende"]
   workflow_dispatch:
 
 permissions:
@@ -66,7 +66,7 @@ jobs:
           git commit -m "Publish isolated V4 tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
       - name: Publish isolated V4 alpha 4 tester path
-        if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'feature/td2-v4-alpha4-combat' || github.ref_name == 'v4-kirchende')
+        if: github.ref_name == 'v4-kirchende' || (github.event_name == 'workflow_dispatch' && github.ref_name == 'feature/td2-v4-alpha4-combat')
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
