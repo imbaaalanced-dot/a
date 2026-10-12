@@ -21,6 +21,8 @@ jobs:
           node-version: "22"
       - name: Main menu structure and unlock routes
         run: node tests/main-menu.test.cjs
+      - name: Level 1 intro tutorial regression suite
+        run: node tests/intro-tutorial.test.cjs
       - name: Preloader startup regression suite
         run: node tests/preloader.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
