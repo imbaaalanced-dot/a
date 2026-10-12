@@ -50,12 +50,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          mkdir -p /tmp/denkmal-gh-pages/v4
+          mkdir -p /tmp/denkmal-gh-pages/v4 /tmp/denkmal-gh-pages/v4-alpha3
           find /tmp/denkmal-gh-pages/v4 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages/v4-alpha3 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/v4/
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha3/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
-          git add v4 .nojekyll
+          git add v4 v4-alpha3 .nojekyll
           if git diff --cached --quiet; then
             echo "V4 tester build already current."
             exit 0
@@ -70,7 +72,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
