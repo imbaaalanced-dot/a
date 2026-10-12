@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Main menu structure and unlock routes
+        run: node tests/main-menu.test.cjs
       - name: Preloader startup regression suite
         run: node tests/preloader.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
