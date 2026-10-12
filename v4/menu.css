@@ -77,3 +77,34 @@
 }
 @media(max-width:360px){.menu-content{margin-top:145px}.menu-section{padding:9px}.map-card{grid-template-columns:28px minmax(0,1fr) auto;gap:7px}.map-number{width:27px;height:27px}.map-status{font-size:6px}}
 @media(prefers-reduced-motion:reduce){.map-card{transition:none}}
+
+/* First-run Einleitung tutorial: high-contrast speech bubble and anchored arrow. */
+#introTutorial{z-index:40;display:block;padding:0;background:#03090bb0;backdrop-filter:blur(1px);text-align:left}
+#introTutorial.hidden{display:none}
+#introTutorial .tutorial-bubble{position:fixed;top:clamp(82px,13vh,150px);left:50%;transform:translateX(-50%);z-index:2;width:min(500px,calc(100vw - 36px));padding:20px 22px 16px;background:linear-gradient(145deg,#17252bfa,#0b1319f5);border:1px solid #d5b56b;border-radius:8px;box-shadow:0 16px 60px #000c,0 0 26px #ddbd6530;color:#f1eadb}
+#introTutorial .tutorial-bubble:after{content:"";position:absolute;left:34px;bottom:-11px;width:20px;height:20px;background:#101a20;border-right:1px solid #d5b56b;border-bottom:1px solid #d5b56b;transform:rotate(45deg)}
+#introTutorial[data-step="3"] .tutorial-bubble{top:auto;bottom:clamp(105px,18vh,190px)}
+#introTutorial[data-step="3"] .tutorial-bubble:after{left:50%;top:-11px;bottom:auto;transform:rotate(225deg)}
+#introTutorial[data-step="4"] .tutorial-bubble{left:24px;top:auto;bottom:clamp(105px,16vh,180px);transform:none}
+#introTutorial[data-step="4"] .tutorial-bubble:after{left:auto;right:40px;top:auto;bottom:-11px;transform:rotate(45deg)}
+#introTutorial .tutorial-kicker{margin:0 0 8px;color:#d7bd81;font:700 10px/1.4 system-ui;letter-spacing:.16em}
+#introTutorial .tutorial-bubble h2{margin:0;color:#f0e5ce;font:700 clamp(20px,3vw,27px)/1.25 Cinzel,Georgia,serif;letter-spacing:.025em}
+#introTutorial #tutorialText{margin:10px 0 16px;color:#d3dddc;font:400 14px/1.65 Inter,system-ui,sans-serif}
+#introTutorial .tutorial-actions{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#introTutorial .tutorial-actions button{min-height:48px;margin:0;padding:10px 16px}
+#introTutorial #tutorialNext{margin-left:auto}
+#introTutorial :is(button):focus-visible{outline:3px solid #91dced;outline-offset:3px}
+#introTutorial .tutorial-arrow{position:fixed;z-index:1;height:3px;transform-origin:left center;background:linear-gradient(90deg,#f0d48c,#a9e8f3);box-shadow:0 0 8px #e3c57a;pointer-events:none}
+#introTutorial .tutorial-arrow:after{content:"";position:absolute;right:-2px;top:-7px;border-left:13px solid #b9edf2;border-top:8px solid transparent;border-bottom:8px solid transparent;filter:drop-shadow(0 0 3px #e5cf84)}
+@media(pointer:coarse){
+  #introTutorial .tutorial-bubble{width:calc(100vw - 24px);padding:17px 17px 14px}
+  #introTutorial #tutorialText{font-size:14px;line-height:1.55}
+  #introTutorial .tutorial-actions button{min-height:52px}
+  #introTutorial[data-step="0"] .tutorial-bubble,#introTutorial[data-step="1"] .tutorial-bubble,#introTutorial[data-step="2"] .tutorial-bubble{top:calc(env(safe-area-inset-top) + 74px)}
+  #introTutorial[data-step="3"] .tutorial-bubble,#introTutorial[data-step="4"] .tutorial-bubble{bottom:calc(env(safe-area-inset-bottom) + 96px)}
+}
+@media(max-width:700px) and (orientation:portrait){
+  #introTutorial .tutorial-bubble{max-height:calc(100dvh - env(safe-area-inset-top) - 102px);overflow:auto}
+  #introTutorial[data-step="4"] .tutorial-bubble{left:12px;right:12px;width:auto}
+}
+@media(prefers-reduced-motion:reduce){#introTutorial .tutorial-arrow{box-shadow:none}}

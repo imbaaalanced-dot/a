@@ -35,7 +35,7 @@
   for(const [x,y] of candidates){const p=point(x,y);if(kirchendePaths.every(path=>pathDistance(p,path)>=64))kirchendeSlots.push(p);}
   function getWaveGates(level,wave){return level===3?[0,1,2,3].slice(0,wave===9?2:wave===10?3:4):levels[level].gates.map((_,i)=>i);}
   const levels={
-    1:{name:'VIER TORE',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
+    1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true}
   };
