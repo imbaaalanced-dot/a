@@ -140,7 +140,7 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
   const portrait=fs.readFileSync(path.join(root,'portrait-patch.css'),'utf8');
-  assert.ok(html.includes('v4.0.0-alpha.4 · EINLEITUNG'),'release badge names alpha.4');
+  assert.ok(html.includes('name="application-version" content="v4.0.0-alpha.4"'),'metadata names alpha.4');
   assert.ok(html.includes('id="hudMenu"'),'the menu details element is addressable');
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
   assert.ok(!html.includes('v400a3'),'no stale alpha.3 cache busts remain');

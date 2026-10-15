@@ -6,9 +6,8 @@ const path = require('node:path');
 const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
-const badges = [...html.matchAll(/<span class="release-badge">([^<]+)<\/span>/g)];
-assert.equal(badges.length, 1, 'main menu should have exactly one release badge');
-assert.equal(badges[0][1], 'v4.0.0-alpha.4 · EINLEITUNG', 'badge must describe the integrated Alpha.4 features');
+assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.4"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -55,4 +54,4 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
-console.log('TD2 Alpha.4 badge and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 Alpha.4 metadata and ' + resources.length + ' static JS/CSS cache references verified.');
