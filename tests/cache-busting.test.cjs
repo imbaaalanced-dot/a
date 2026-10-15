@@ -27,7 +27,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'v400a5b1'],
   ['hero-saga.js', 'v400a5b1'],
   ['combat-fx.js', 'v400a5b1'],
-  ['game.js', 'v400a5art1'],
+  ['game.js', 'v400a5art2'],
   ['kirchende-combat.js', 'v400a5b1'],
   ['kirchende-art.js', 'v400a5b1'],
 ]);
