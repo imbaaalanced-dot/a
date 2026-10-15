@@ -2,9 +2,9 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["main", "release/v3.*"]
+    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "v4-kirchende"]
 
 permissions:
   contents: read
@@ -19,6 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Main menu structure and unlock routes
+        run: node tests/main-menu.test.cjs
+      - name: Level 1 intro tutorial regression suite
+        run: node tests/intro-tutorial.test.cjs
       - name: Preloader startup regression suite
         run: node tests/preloader.test.cjs
       - name: Release badge and cache key regression
@@ -33,6 +37,8 @@ jobs:
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
         run: node tests/combat-fx.test.cjs
+      - name: V4 alpha.4 combat, FX and menu regression suite
+        run: node tests/v4-alpha4.test.cjs
       - name: v3.1 + v3.2 feature regression suite
         run: node tests/v3.1-features.test.cjs
 

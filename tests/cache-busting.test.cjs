@@ -8,27 +8,29 @@ const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 const badges = [...html.matchAll(/<span class="release-badge">([^<]+)<\/span>/g)];
 assert.equal(badges.length, 1, 'main menu should have exactly one release badge');
-assert.equal(badges[0][1], 'v3.6.0-alpha.6 · BEUTE', 'badge must describe the deployed Alpha.6 features');
+assert.equal(badges[0][1], 'v4.0.0-alpha.4 · EINLEITUNG', 'badge must describe the integrated Alpha.4 features');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
 // and the expected key updated here; unchanged files keep their existing keys.
 const expectedVersions = new Map([
-  ['styles.css', 'v360a5'],
-  ['hero.css', 'v360a5'],
-  ['polish.css', 'v360a5'],
-  ['loot.css', 'v360a5'],
-  ['menu.css', 'v360a5'],
+  ['styles.css', 'v400a4merge1'],
+  ['hero.css', 'v400a4merge1'],
+  ['polish.css', 'v400a4merge1'],
+  ['loot.css', 'v400a4merge1'],
+  ['menu.css', 'v400a4merge1'],
   ['preloader.css', 'td2preload1'],
-  ['portrait-patch.css', 'v360a5'],
+  ['portrait-patch.css', 'v400a4merge1'],
   ['preloader.js', 'td2preload2'],
-  ['levels.js', 'v360a5'],
-  ['visuals.js', 'v360a5'],
-  ['loot.js', 'v360a6bulk1'],
-  ['loot-ui.js', 'v360a6bulk1'],
-  ['hero-saga.js', 'v360a5'],
-  ['combat-fx.js', 'v360a5'],
-  ['game.js', 'v360a5balance1'],
+  ['levels.js', 'v400a4merge1'],
+  ['visuals.js', 'v400a4merge1'],
+  ['loot.js', 'v400a4merge1'],
+  ['loot-ui.js', 'v400a4merge1'],
+  ['hero-saga.js', 'v400a4merge1'],
+  ['combat-fx.js', 'v400a4merge1'],
+  ['game.js', 'v400a4merge1'],
+  ['kirchende-combat.js', 'v400a4merge1'],
+  ['kirchende-art.js', 'v400a4merge1'],
 ]);
 
 const resources = [
@@ -53,4 +55,4 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
-console.log('TD2 Alpha.6 badge and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 Alpha.4 badge and ' + resources.length + ' static JS/CSS cache references verified.');
