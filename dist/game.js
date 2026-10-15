@@ -482,8 +482,8 @@
       // Aggro starts before melee contact, but pursuers stay near the route.
       // The corridor check prevents archers shooting through maze corners.
       const heroDistance=dist(e,h);
-      const segment=Math.max(1,Math.min(e.waypoint,route.length-1));
-      const heroOnLane=campaign.pathDistance(h,[route[segment-1],route[segment]])<=(e.attackRange?74:82);
+      const segment=Math.max(1,Math.min(Number.isFinite(e.waypoint)?e.waypoint:1,route.length-1));
+      const heroOnLane=game.level===1||route.length<2||campaign.pathDistance(h,[route[segment-1],route[segment]])<=(e.attackRange?74:82);
       const aggroRange=e.attackRange?195:(e.type==='runner'||e.type==='rootrunner'?160:135);
       const routeHeroTarget=!e.focusMonument&&e.type!=='uprooted'&&heroPursuers<3&&
         heroDistance<=aggroRange&&heroOnLane;
