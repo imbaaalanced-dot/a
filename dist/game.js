@@ -21,7 +21,7 @@
     cannon:[new Image(),new Image(),new Image()],
     ballista:[new Image(),new Image(),new Image()],
     rift:[new Image(),new Image(),new Image()],
-    boomerang:[new Image(),new Image(),new Image()]
+    boomerang:[new Image()]
   };
   // Visible bounds of the original transparent PNGs; retain their source bytes.
   // Rendering ignores uneven transparent margins and keeps each base on its slot.
@@ -34,9 +34,7 @@
     towerLevelArt[kind].forEach((image,index)=>{image.src=`assets/tower-${kind}-l${index+1}-v2.png`;});
   }
   // Three distinct alpha.5 gameplay sprites (stars are drawn separately in world space).
-  towerLevelArt.boomerang.forEach((image,index)=>{
-    image.src=`assets/tower-boomerang-l${index+1}.webp?v=v400a5art1`;
-  });
+  towerLevelArt.boomerang[0].src='assets/tower-boomerang-atlas.webp?v=v400a5art2';
   atlas.src = 'assets/asset-atlas.png';
   hellscape.src = 'assets/stone-terrain-v27.png';
   towerArt.bow.src = 'assets/tower-bow-infernal-v1.png';
@@ -613,12 +611,13 @@
   function drawTower(t){
     shadow(t.x,t.y,24);
     if(t.kind==='boomerang'){
-      const level=Math.max(1,Math.min(3,t.level||1)),sprite=towerLevelArt.boomerang[level-1];
+      const level=Math.max(1,Math.min(3,t.level||1)),sprite=towerLevelArt.boomerang[0];
       ctx.save();ctx.translate(t.x,t.y);
       if(sprite?.complete&&sprite.naturalWidth>0){
         // A single fixed ground anchor preserves the same slot position for all upgrades.
-        const height=[92,102,110][level-1],width=height*sprite.naturalWidth/sprite.naturalHeight;
-        ctx.drawImage(sprite,-width/2,20-height,width,height);
+        const height=[92,102,110][level-1],frameWidth=sprite.naturalWidth/3,frameHeight=sprite.naturalHeight;
+        const width=height*frameWidth/frameHeight;
+        ctx.drawImage(sprite,frameWidth*(level-1),0,frameWidth,frameHeight,-width/2,20-height,width,height);
       }else{
         // Visible fallback on the rare first frame while WebP assets are downloading.
         ctx.fillStyle=['#825a34','#bf722c','#616875'][level-1];
