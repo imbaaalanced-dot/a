@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/v4-boomerang-hero-aggro-monument"]
   workflow_dispatch:
 
 permissions:
@@ -43,6 +43,8 @@ jobs:
           TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
           node tests/v4-alpha4.test.cjs
+          node tests/v4-alpha5.test.cjs
+          TEST_MOBILE=1 node tests/v4-alpha5.test.cjs
           node tests/v3.1-features.test.cjs
 
       - name: Publish isolated V4 path on gh-pages
@@ -91,6 +93,35 @@ jobs:
             exit 0
           fi
           git commit -m "Publish V4 alpha 4 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated V4 alpha 5 boomerang tester
+        if: github.ref_name == 'feature/v4-boomerang-hero-aggro-monument'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-alpha5
+          find /tmp/denkmal-gh-pages/v4-alpha5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha5/
+          # The level 1 monument v2 is in an earlier tester build but not yet on main.
+          if [ ! -f /tmp/denkmal-gh-pages/v4-alpha5/assets/monument-level1-v2.webp ]; then
+            for prior in v4-alpha4 v4-alpha3; do
+              if [ -f /tmp/denkmal-gh-pages/${prior}/assets/monument-level1-v2.webp ]; then
+                cp /tmp/denkmal-gh-pages/${prior}/assets/monument-level1-v2.webp /tmp/denkmal-gh-pages/v4-alpha5/assets/
+                break
+              fi
+            done
+          fi
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-alpha5 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 alpha 5 boomerang tester already current."
+            exit 0
+          fi
+          git commit -m "Publish V4 alpha 5 boomerang tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
       - name: Publish main tester at root
         if: github.ref_name == 'main'
