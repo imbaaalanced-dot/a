@@ -3,7 +3,7 @@
   'use strict';
   const L=globalThis.DenkmalLoot;
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
-  function icon(slot,large=false){const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;n.setAttribute('aria-hidden','true');return n;}
+  function icon(slot,large=false,power){const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;if(['bark','roots','splinter','wardlight','grove'].includes(power)){n.dataset.power=power;n.style.backgroundImage=`url(assets/kirchende/item-${power}.webp?v=v400a1)`;n.style.backgroundSize='contain';n.style.backgroundRepeat='no-repeat';n.style.backgroundPosition='center';}n.setAttribute('aria-hidden','true');return n;}
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
   function create(model,{editable,onClose,onImport}){
     let selected=null,filter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1';
@@ -27,7 +27,7 @@
       const b=button('',()=>{ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
       b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
-      b.append(icon(slot||item.slot),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
+      b.append(icon(slot||item.slot,false,item.power),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
       if(!equipped&&isStrictUpgrade(item,slot)){const up=el('span','loot-upgrade','↑');up.setAttribute('aria-label','Garantierte Verbesserung gegenüber angelegter Ausrüstung');up.title='Bessere Werte ohne Nachteile gegenüber der angelegten Ausrüstung';b.append(up);}
       if(item.favorite)b.append(el('span','loot-star','★'));return b;
     }
@@ -68,7 +68,7 @@
     function renderDetail(detail,i,p){
       const worn=Object.values(p.equipped).includes(i.id),slot=i.slot.startsWith('ring')?ringTarget:i.slot;
       const old=p.items.find(x=>x.id===p.equipped[slot]);detail.style.setProperty('--rarity',L.rarities[i.rarity].color);
-      detail.append(el('p','loot-rarity',`${L.rarities[i.rarity].label} · ${L.slots[i.slot]} · STUFE ${i.level}`),icon(i.slot,true),el('h3','loot-item-title',i.name));
+      detail.append(el('p','loot-rarity',`${L.rarities[i.rarity].label} · ${L.slots[i.slot]} · STUFE ${i.level}`),icon(i.slot,true,i.power),el('h3','loot-item-title',i.name));
       if(worn)detail.append(el('p','loot-tag','ANGELEGT'));
       if(i.slot.startsWith('ring')&&!worn){const group=el('div','loot-ring-choice');for(const target of ['ring1','ring2']){const b=button(L.slots[target],()=>{ringTarget=target;render();},false);b.setAttribute('aria-pressed',String(slot===target));group.append(b);}detail.append(group);}
       const lines=el('dl','loot-stat-list');for(const k of Object.keys(L.statInfo)){const value=i.stats[k]||0,previous=old?.stats[k]||0;if(!value&&!previous)continue;const row=el('div','');row.append(el('dt','',L.statInfo[k].label),el('dd','',fmt(k,value)));if(!worn){const diff=Math.round((value-previous)*1000)/1000;row.append(el('span',diff>0?'positive':diff<0?'negative':'neutral',`${diff>0?'+':''}${fmt(k,diff)}`));}lines.append(row);}detail.append(lines);

@@ -23,7 +23,8 @@
   .left-hud .meter{height:5px;margin-top:2px}
   .header-actions{top:var(--hud-safe-top);right:var(--hud-safe-right);z-index:20}
   .hud-menu summary{min-height:42px}
-  .hud-menu-panel{min-width:174px;max-height:min(70dvh,430px);overflow-y:auto}
+  .hud-menu-panel{position:fixed;top:calc(var(--hud-safe-top) + 136px);right:var(--hud-safe-right);z-index:8;min-width:0;width:min(320px,calc(100vw - var(--hud-safe-left) - var(--hud-safe-right)));max-height:min(42dvh,280px);grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:8px;overflow-y:auto}
+  .hud-menu-panel button{width:100%;min-width:0;min-height:42px;padding:5px 6px;font-size:clamp(10px,2.8vw,13px);line-height:1.15;white-space:normal}
   .objective{
     top:calc(var(--hud-safe-top) + 52px);left:var(--hud-safe-left);right:auto;
     bottom:auto;transform:none;
@@ -125,4 +126,11 @@
   .hud-menu-panel #inventoryBtn span{margin-left:0;font-size:10px}
   .hud-menu-panel #inventoryBtn kbd{display:none}
   .hud-menu-panel #telemetryBtn{grid-column:1/-1}
+}
+
+/* v4.0.0-alpha.4 — touch polish for the in-game menu (alpha 4). */
+@media (orientation:portrait){
+  .hud-menu summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .hud-menu-panel{touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:contain;box-shadow:0 12px 32px #0009}
+  .hud-menu-panel button{min-height:48px}
 }
