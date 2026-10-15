@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.4"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.5"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -27,9 +27,11 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'v400a4merge1'],
   ['hero-saga.js', 'v400a4merge1'],
   ['combat-fx.js', 'v400a4merge1'],
-  ['game.js', 'v400a4hero1'],
+  ['game.js', 'v400a5visual1'],
   ['kirchende-combat.js', 'v400a4merge1'],
-  ['kirchende-art.js', 'v400a4merge1'],
+  ['kirchende-art.js', 'v400a5visual1'],
+  ['terrain-polish.js', 'v400a5visual1'],
+  ['forest-crowns.js', 'v400a5visual1'],
 ]);
 
 const resources = [
@@ -54,4 +56,4 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
-console.log('TD2 Alpha.4 metadata and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 Alpha.5 metadata and ' + resources.length + ' static JS/CSS cache references verified.');
