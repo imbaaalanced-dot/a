@@ -1,11 +1,11 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-v1.png'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
+  const assets={monument:'monument-v1.png'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted','thorn1','thorn2','thorn3','lantern1','lantern2','lantern3'])assets[key]=key+'.webp';
   const images={};let loading=null;
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
-    loading=Promise.all(Object.entries(assets).map(([key,file])=>new Promise(resolve=>{const img=new Image();images[key]=img;const timer=setTimeout(()=>resolve(false),3500);img.onload=()=>{clearTimeout(timer);resolve(true);};img.onerror=()=>{clearTimeout(timer);resolve(false);};img.src='assets/kirchende/'+file+'?v=v400a5b1';})));return loading;
+    loading=Promise.all(Object.entries(assets).map(([key,file])=>new Promise(resolve=>{const img=new Image();images[key]=img;const timer=setTimeout(()=>resolve(false),3500);img.onload=()=>{clearTimeout(timer);resolve(true);};img.onerror=()=>{clearTimeout(timer);resolve(false);};img.src='assets/kirchende/'+file+'?v=v400a1';})));return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
     const img=images[key];if(!img?.complete||!img.naturalWidth)return false;
@@ -23,7 +23,7 @@
       ctx.strokeStyle='#716e54';ctx.lineWidth=9;ctx.strokeRect(-100,-55,200,135);
       for(const [x,y] of [[-130,95],[140,-130]]){ctx.fillStyle='#8c6750';ctx.fillRect(x-28,y-6,56,12);ctx.fillStyle='#393b34';ctx.fillRect(x-22,y+6,5,8);ctx.fillRect(x+17,y+6,5,8);}
       for(const [x,y,r] of trees){ctx.fillStyle='#3e382e';ctx.fillRect(x-8,y-20,16,32);}
-    }else for(const [x,y,r] of trees){const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors);ctx.fillStyle='#273d29';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();if(!low){ctx.fillStyle='#475638';for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(x+Math.cos(i*1.8)*r*.45,y-40+Math.sin(i*1.8)*r*.4,r*.55,0,7);ctx.fill();}}}
+    }else trees.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors);if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){ctx.fillStyle='#273d29';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();}});
     ctx.restore();
   }
   function drawCracks(ctx,m){if(m.hp/m.maxHp>.66)return;ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle=m.hp/m.maxHp<=.33?'#db8b5555':'#34261b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-12,-130);ctx.lineTo(8,-105);ctx.lineTo(-3,-82);ctx.lineTo(16,-55);if(m.hp/m.maxHp<=.33){ctx.moveTo(28,-110);ctx.lineTo(10,-75);ctx.lineTo(22,-40);}ctx.stroke();ctx.restore();}

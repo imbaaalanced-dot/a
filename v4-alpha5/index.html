@@ -7,13 +7,13 @@
   <meta name="theme-color" content="#080b0c" />
   <title>Denkmal TD · Marcel der Denkmalschützer</title>
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
-  <link rel="stylesheet" href="styles.css?v=v400a5b1" />
-  <link rel="stylesheet" href="hero.css?v=v400a5b1" />
-  <link rel="stylesheet" href="polish.css?v=v400a5b1" />
-  <link rel="stylesheet" href="loot.css?v=v400a5b1" />
-  <link rel="stylesheet" href="menu.css?v=v400a5b1" />
+  <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
+  <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
+  <link rel="stylesheet" href="polish.css?v=v400a4merge1" />
+  <link rel="stylesheet" href="loot.css?v=v400a4merge1" />
+  <link rel="stylesheet" href="menu.css?v=v400a4merge1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
-  <link rel="stylesheet" href="portrait-patch.css?v=v400a5b1" />
+  <link rel="stylesheet" href="portrait-patch.css?v=v400a4merge1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -63,7 +63,7 @@
       <button data-tower="cannon" title="Flächenschaden gegen Gruppen"><kbd>2</kbd><span>KANONE</span><b>35</b></button>
       <button data-tower="mage" title="Verlangsamt getroffene Gegner"><kbd>3</kbd><span>MAGIE</span><b>46</b></button>
       <button data-tower="rift" title="Kettenblitz auf mehrere Gegner"><kbd>4</kbd><span>RIFT</span><b>58</b></button>
-    <button id="tower-boomerang" data-tower="boomerang" hidden title="Durchdringt Gegner und trifft beim Rückflug erneut"><kbd>5</kbd><span>BUMERANG</span><b>48</b></button></section>
+    <button id="tower-thorn" data-tower="thorn" hidden>DORNEN · 65</button><button id="tower-lantern" data-tower="lantern" hidden>LATERNE · 75</button></section>
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
@@ -207,14 +207,16 @@
       </div>
     </section>
   </main>
-  <script src="levels.js?v=v400a5b1"></script>
-  <script src="visuals.js?v=v400a5b1"></script>
-  <script src="loot.js?v=v400a5b1"></script>
-  <script src="loot-ui.js?v=v400a5b1"></script>
-  <script src="hero-saga.js?v=v400a5b1"></script>
-  <script src="combat-fx.js?v=v400a5b1"></script>
-  <script src="kirchende-combat.js?v=v400a5b1"></script>
-  <script src="kirchende-art.js?v=v400a5b1"></script>
-  <script src="game.js?v=v400a5art2"></script>
+  <script src="levels.js?v=v400a4merge1"></script>
+  <script src="visuals.js?v=v400a4merge1"></script>
+  <script src="loot.js?v=v400a4merge1"></script>
+  <script src="loot-ui.js?v=v400a4merge1"></script>
+  <script src="hero-saga.js?v=v400a4merge1"></script>
+  <script src="combat-fx.js?v=v400a4merge1"></script>
+  <script src="kirchende-combat.js?v=v400a4merge1"></script>
+  <script src="terrain-polish.js?v=v400a5visual1"></script>
+  <script src="forest-crowns.js?v=v400a5visual1"></script>
+  <script src="kirchende-art.js?v=v400a5visual1"></script>
+  <script src="game.js?v=v400a5visual1"></script>
 </body>
 </html>
