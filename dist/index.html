@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta name="application-version" content="v4.0.0-alpha.5" />
-  <meta name="application-build" content="kirchende-photo-2" />
+  <meta name="application-version" content="v4.0.0-alpha.6" />
+  <meta name="application-build" content="kirchende-church-1" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#080b0c" />
@@ -92,10 +92,10 @@
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
         <div class="menu-content">
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
-          <p class="menu-intro">Vier Tore. Ein Denkmal. Du entscheidest, was bleibt.</p>
+          <p class="menu-intro">Vier Kapitel. Vier Wege. Bewahre, was bleiben soll.</p>
           <div class="menu-actions" aria-label="Spielmodi">
             <section class="menu-section campaign-menu" id="campaignMenu" aria-labelledby="campaignTitle">
-              <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–III</span></div>
+              <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–IV</span></div>
               <div class="map-card-list">
                 <button id="startBtn" class="map-card map-card-primary" type="button">
                   <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Tutorial · Vier Tore · Wellen 1–5</span></span><span class="map-arrow" aria-hidden="true">➜</span>
@@ -105,6 +105,9 @@
                 </button>
                 <button id="level3Btn" class="map-card map-card-kirchende" type="button" disabled>
                   <span class="map-number">03</span><span class="map-copy"><small>KAPITEL III · LEVEL 3</small><strong>KRIEGERDENKMAL KIRCHENDE</strong><span>Wurzeln, Steinwacht und der Hainkern</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                </button>
+                <button id="level4Btn" class="map-card map-card-kirchende" type="button" disabled>
+                  <span class="map-number">04</span><span class="map-copy"><small>KAPITEL IV · LEVEL 4</small><strong>ENDER DORFKIRCHE</strong><span>Schlafender Löwe · Kirchhof · Wellen 13–16</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
               </div>
             </section>
@@ -119,6 +122,9 @@
                 </button>
                 <button id="endless3Btn" class="map-card map-card-endless" type="button" disabled>
                   <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 3</small><strong>KIRCHENDE</strong><span>Unbegrenzte Wellen · Endlosmodus</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                </button>
+                <button id="endless4Btn" class="map-card map-card-endless" type="button" disabled>
+                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 4</small><strong>DORFKIRCHE &amp; LÖWE</strong><span>Nach Welle 16 freischaltbar</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
               </div>
             </section>
@@ -208,7 +214,7 @@
       </div>
     </section>
   </main>
-  <script src="levels.js?v=v400a4merge1"></script>
+  <script src="levels.js?v=v400a6church1"></script>
   <script src="visuals.js?v=v400a4merge1"></script>
   <script src="loot.js?v=v400a4merge1"></script>
   <script src="loot-ui.js?v=v400a4merge1"></script>
@@ -218,6 +224,7 @@
   <script src="terrain-polish.js?v=v400a5photo2"></script>
   <script src="forest-crowns.js?v=v400a5photo1"></script>
   <script src="kirchende-art.js?v=v400a5combined1"></script>
-  <script src="game.js?v=v400a5combined1"></script>
+  <script src="church-art.js?v=v400a6church1"></script>
+  <script src="game.js?v=v400a6church1"></script>
 </body>
 </html>
