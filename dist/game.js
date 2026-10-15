@@ -526,7 +526,7 @@
       for(const e of hitOrder){
         if(e.dead||hitSet?.has(e)||segmentDistance(e,b)>=e.r+b.r)continue;
         const synergy=projectileSynergy(b,e);
-        const shotDamage=b.boomerang?b.damage:b.pierce?kirchende.thornDamage(b.damage,b.hitTargets?.size||0):b.damage;
+        const shotDamage=b.boomerang?b.damage:b.damage;
         const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,fixedDamage:!!b.boomerang});
         if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));
         if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}
