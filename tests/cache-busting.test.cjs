@@ -15,7 +15,7 @@ assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.
 const expectedVersions = new Map([
   ['styles.css', 'v400a4merge1'],
   ['hero.css', 'v400a4merge1'],
-  ['polish.css', 'v400a4merge1'],
+  ['polish.css', 'v400a5combined1'],
   ['loot.css', 'v400a4merge1'],
   ['menu.css', 'v400a4merge1'],
   ['preloader.css', 'td2preload1'],
@@ -27,9 +27,9 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'v400a4merge1'],
   ['hero-saga.js', 'v400a4merge1'],
   ['combat-fx.js', 'v400a4merge1'],
-  ['game.js', 'v400a5photo2'],
-  ['kirchende-combat.js', 'v400a4merge1'],
-  ['kirchende-art.js', 'v400a5photo2'],
+  ['game.js', 'v400a5combined1'],
+  ['kirchende-combat.js', 'v400a5combined1'],
+  ['kirchende-art.js', 'v400a5combined1'],
   ['terrain-polish.js', 'v400a5photo2'],
   ['forest-crowns.js', 'v400a5photo1'],
 ]);

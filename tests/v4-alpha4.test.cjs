@@ -47,7 +47,7 @@ check('Shell speed table covers every tower and hero shells stay at 560',()=>{
   assert.deepEqual([t.projectileSpeed('bow'),t.projectileSpeed('cannon'),t.projectileSpeed('mortar'),t.projectileSpeed('ballista')],[520,430,350,660]);
   assert.equal(t.projectileSpeed('mage'),520);
   assert.equal(t.projectileSpeed('rift'),520);
-  assert.equal(t.projectileSpeed('thorn'),560);
+  assert.equal(t.projectileSpeed('boomerang'),440);
   startRun();
   const h=t.game.hero;h.fireCd=0;
   t.game.enemies=[makeEnemy({x:h.x+80,y:h.y,hp:1000,maxHp:1000,speed:0,attackCd:99})];
@@ -143,9 +143,9 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   assert.ok(html.includes('name="application-version" content="v4.0.0-alpha.5"'),'metadata names alpha.4');
   assert.ok(html.includes('id="hudMenu"'),'the menu details element is addressable');
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
-  assert.ok(html.includes('game.js?v=v400a5photo2'),'hero targeting fix has a fresh cache key');
+  assert.ok(html.includes('game.js?v=v400a5combined1'),'hero targeting fix has a fresh cache key');
   assert.ok(!html.includes('v400a3'),'no stale alpha.3 cache busts remain');
-  assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,13,'unchanged assets retain their cache keys');
+  assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,11,'unchanged assets retain their cache keys');
   assert.ok(polish.includes('.hud-menu-panel{z-index:8}'),'polish keeps the menu under modal overlays');
   assert.ok(/\.hud-menu-panel\{[^}]*z-index:8/.test(portrait.replace(/\s/g,'')),'portrait keeps the menu under modal overlays');
   assert.ok(portrait.includes('touch-action:manipulation'),'menu taps avoid double-tap zoom');

@@ -1,7 +1,7 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-photo-v2.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted','thorn1','thorn2','thorn3','lantern1','lantern2','lantern3'])assets[key]=key+'.webp';
+  const assets={monument:'monument-photo-v2.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
   const images={};let loading=null;
   function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
   function load(enabled=true){
