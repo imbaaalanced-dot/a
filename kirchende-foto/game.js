@@ -70,7 +70,7 @@
   function setWidth(el,value){if(uiCache.get(el)!==value){el.style.width=value;uiCache.set(el,value);}}
   function setHidden(el,hidden){const key='h'+hidden;if(uiCache.get(el)!==key){el.classList.toggle('hidden',hidden);uiCache.set(el,key);}}
   function setDisabled(el,disabled){disabled=!!disabled;if(el.disabled!==disabled)el.disabled=disabled;}
-  let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,hitStop=0,toastTimer=0,tutorialActive=false,tutorialPending=false,tutorialStepIndex=0,speedMultiplier=1;
+  let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,hitStop=0,toastTimer=0,tutorialActive=false,tutorialPending=false,tutorialStepIndex=0,speedMultiplier=1,levelLoadRequest=0;
   let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, moveIntent={x:0,y:0}, hudClock=0,camera={x:0,y:0},cameraLeadState={x:0,y:0};
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -281,12 +281,23 @@
     if(tutorialStepIndex<introTutorialSteps.length-1){tutorialStepIndex++;renderIntroTutorialStep();$('tutorialNext').focus();}
     else finishIntroTutorial();
   }
-  function mainMenu(){if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
+  function mainMenu(){levelLoadRequest++;if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1,mode='campaign'){
     level=[1,2,3].includes(level)?level:1;
     if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3)return;
     if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted))return;
-    globalThis.KirchendeArt?.load(level===3);
+    const request=++levelLoadRequest,art=globalThis.KirchendeArt;
+    if(level===3)globalThis.DenkmalTerrain?.load?.();
+    if(level===3&&art?.ready&&!art.ready('monument')){
+      const fromState=state;showToast('Denkmal wird geladen …');
+      art.load(true).then(()=>{
+        if(request!==levelLoadRequest||state!==fromState)return;
+        if(art.ready('monument'))startGame(level,mode);
+        else showToast('Denkmalgrafik nicht verfügbar · bitte Level erneut starten');
+      });
+      return;
+    }
+    art?.load(level===3);
     closeScreens();reset(level,mode);state='playing';focusGame();tone(220,.1);last=performance.now();
     if(level===1){const storyShown=saga.chapter(1);if(!storyShown)queueIntroTutorial();}else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
   }
@@ -517,7 +528,7 @@
     ctx.restore();
   }
   function shadow(x,y,r){ctx.beginPath();ctx.ellipse(x,y+r*.65,r*1.25,r*.48,0,0,Math.PI*2);ctx.fillStyle='#0005';ctx.fill()}
-  function drawMonument(m){shadow(m.x,m.y,60);if(game.level===3){if(!globalThis.KirchendeArt?.draw(ctx,'monument',m.x,m.y,205)){ctx.save();ctx.fillStyle='#68675b';ctx.fillRect(m.x-40,m.y-150,80,160);ctx.fillRect(m.x-58,m.y,116,20);ctx.fillStyle='#9a9077';ctx.fillRect(m.x-27,m.y-125,54,96);ctx.fillStyle='#777669';ctx.beginPath();ctx.arc(m.x,m.y-160,24,Math.PI,0);ctx.fill();ctx.restore();}globalThis.KirchendeArt?.drawCracks(ctx,m);return;}if(game.level!==1&&globalThis.DenkmalArt?.draw(ctx,'monument',m.x,m.y,178))return;if(monumentImage.complete&&monumentImage.naturalWidth>0){ctx.save();ctx.translate(m.x,m.y+10);ctx.shadowBlur=25;ctx.shadowColor='#d0ad5a55';ctx.drawImage(monumentImage,-96,-112,192,218);ctx.restore();return;}if(art.monument){ctx.save();ctx.translate(m.x,m.y+10);ctx.shadowBlur=25;ctx.shadowColor='#d0ad5a55';ctx.drawImage(art.monument,-96,-112,192,218);ctx.restore();return}ctx.save();ctx.translate(m.x,m.y);for(let i=0;i<3;i++)diamond(0,20-i*7,58-i*8,24-i*5,i===0?'#343a37':i===1?'#4b4f49':'#61625a','#8d816866');ctx.fillStyle='#74736a';ctx.fillRect(-14,-68,28,82);ctx.restore()}
+  function drawMonument(m){if(game.level===3){ctx.save();ctx.fillStyle='#1b211f45';ctx.beginPath();ctx.ellipse(m.x,m.y+7,48,13,0,0,Math.PI*2);ctx.fill();ctx.restore();if(!globalThis.KirchendeArt?.draw(ctx,'monument',m.x,m.y,235)){ctx.save();ctx.fillStyle='#68675b';ctx.fillRect(m.x-40,m.y-150,80,160);ctx.fillRect(m.x-58,m.y,116,20);ctx.fillStyle='#9a9077';ctx.fillRect(m.x-27,m.y-125,54,96);ctx.fillStyle='#777669';ctx.beginPath();ctx.arc(m.x,m.y-160,24,Math.PI,0);ctx.fill();ctx.restore();}globalThis.KirchendeArt?.drawCracks(ctx,m);return;}shadow(m.x,m.y,60);if(game.level!==1&&globalThis.DenkmalArt?.draw(ctx,'monument',m.x,m.y,178))return;if(monumentImage.complete&&monumentImage.naturalWidth>0){ctx.save();ctx.translate(m.x,m.y+10);ctx.shadowBlur=25;ctx.shadowColor='#d0ad5a55';ctx.drawImage(monumentImage,-96,-112,192,218);ctx.restore();return;}if(art.monument){ctx.save();ctx.translate(m.x,m.y+10);ctx.shadowBlur=25;ctx.shadowColor='#d0ad5a55';ctx.drawImage(art.monument,-96,-112,192,218);ctx.restore();return}ctx.save();ctx.translate(m.x,m.y);for(let i=0;i<3;i++)diamond(0,20-i*7,58-i*8,24-i*5,i===0?'#343a37':i===1?'#4b4f49':'#61625a','#8d816866');ctx.fillStyle='#74736a';ctx.fillRect(-14,-68,28,82);ctx.restore()}
   function drawHero(h){saga.draw(ctx,h)}
   function drawEnemy(e){
     shadow(e.x,e.y,e.r);

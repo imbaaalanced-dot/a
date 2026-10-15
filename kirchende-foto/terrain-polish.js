@@ -2,7 +2,21 @@
  * Textures are seeded and cached; no route coordinates or combat state change. */
 (() => {
 'use strict';
-const textures=new Map(),patterns=new WeakMap();
+const textures=new Map();let patterns=new WeakMap(),groundPhoto=null;
+let groundLoading=null;
+function load(){
+  if(groundPhoto)return Promise.resolve(true);
+  if(typeof Image==='undefined')return Promise.resolve(false);
+  if(groundLoading)return groundLoading;
+  groundLoading=new Promise(resolve=>{
+    const image=new Image();image.decoding='async';
+    image.onload=()=>{groundPhoto=image;textures.delete('ground');patterns=new WeakMap();resolve(true);};
+    image.onerror=()=>{groundLoading=null;resolve(false);};
+    image.src='assets/kirchende/ground-photo-v2.webp?v=v400a5photo2';
+  });
+  return groundLoading;
+}
+load();
 function rng(seed){return ()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);}
 function leaf(ctx,x,y,r,color,angle){
   ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.fillStyle=color;
@@ -15,8 +29,9 @@ function litter(ctx,random,size,count){
 }
 function texture(kind){
   if(textures.has(kind))return textures.get(kind);
-  const size=kind==='ground'?1024:256,c=document.createElement('canvas');c.width=c.height=size;
+  const size=kind==='ground'?(groundPhoto?512:1024):256,c=document.createElement('canvas');c.width=c.height=size;
   const q=c.getContext('2d'),r=rng(kind==='ground'?164701:kind==='slabs'?9821:3749);
+  if(kind==='ground'&&groundPhoto){q.drawImage(groundPhoto,0,0,512,512);textures.set(kind,c);return c;}
   q.fillStyle=kind==='ground'?'#767952':kind==='slabs'?'#66665e':'#746958';q.fillRect(0,0,size,size);
   if(kind==='ground'){
     // Broad, uneven moss patches over exposed compacted earth, as in the photos.
@@ -69,5 +84,5 @@ for(let i=0;i<n;i++){const sx=x+(i-(n-1)/2)*29,sy=y+47;ctx.beginPath();
 for(let j=0;j<10;j++){let a=j*Math.PI/5-Math.PI/2,d=j%2?5.5:12.4,px=sx+Math.cos(a)*d,py=sy+Math.sin(a)*d;if(j)ctx.lineTo(px,py);else ctx.moveTo(px,py);}
 ctx.closePath();ctx.shadowBlur=low?0:7;ctx.shadowColor='#f1ae42';ctx.fillStyle='#ffcf51';ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#543c21';ctx.stroke();}
 ctx.restore();}
-globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars};
+globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,load};
 })();
