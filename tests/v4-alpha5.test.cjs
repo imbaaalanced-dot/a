@@ -43,13 +43,12 @@ function enemy(x,y,armor=0){
 }
 check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
   const gameSource=fs.readFileSync(path.join(root,'game.js'),'utf8');
-  for(let level=1;level<=3;level++){
-    const file=path.join(root,'assets',`tower-boomerang-l${level}.webp`);
-    assert.ok(fs.existsSync(file),'missing boomerang asset '+level);
-    assert.ok(fs.statSync(file).size>3000,'empty sprite '+level);
-  }
-  assert.ok(gameSource.includes('towerLevelArt.boomerang[level-1]'));
-  assert.ok(gameSource.includes('v400a5art1'));
+  const atlas=path.join(root,'assets','tower-boomerang-atlas.webp');
+  assert.ok(fs.existsSync(atlas),'missing three-stage transparent boomerang atlas');
+  assert.ok(fs.statSync(atlas).size>5000,'empty or truncated atlas');
+  assert.ok(gameSource.includes('towerLevelArt.boomerang[0]'));
+  assert.ok(gameSource.includes('frameWidth*(level-1)'));
+  assert.ok(gameSource.includes('v400a5art2'));
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   assert.ok(html.includes('game.js?v=v400a5art1'));
   assert.ok(gameSource.includes('for(let i=0;i<level;i++)'),'star count follows level');
