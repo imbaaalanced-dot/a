@@ -77,6 +77,27 @@ check('Maze follows corners without being attracted to hero',()=>{
   sandbox.DenkmalLevels.advance(e,1000);assert.equal(e.waypoint,path.length);assert.equal(e.x,t.game.monument.x);assert.equal(e.y,t.game.monument.y);
   const hp=t.game.monument.hp;t.update(.02);assert.ok(t.game.monument.hp<hp);
 });
+check('Route enemies attack a nearby hero in maze and Kirchende, then resume their route',()=>{
+  for(const level of [2,3]){t.startGame(2);t.game.level=level;t.launchWave();t.spawnEnemy();const e=t.game.enemies[0],h=t.game.hero;
+    e.type='wraith';e.focusMonument=false;e.attackRange=0;e.damage=10;e.attackCd=0;e.attackCooldown=.85;e.hp=e.maxHp=10000;
+    h.x=e.x+10;h.y=e.y;h.invuln=0;h.fireCd=100;const hp=h.hp,x=e.x,y=e.y,wp=e.waypoint;
+    t.update(.02);assert.ok(h.hp<hp,'level '+level+' should damage hero');assert.equal(e.x,x);assert.equal(e.y,y);assert.equal(e.waypoint,wp);
+    const after=h.hp;t.update(.02);assert.equal(h.hp,after,'cooldown prevents every-frame damage');e.attackCd=0;h.invuln=1;t.update(.02);assert.equal(h.hp,after,'dodge invulnerability is respected');
+    h.x=e.x+500;h.y=e.y+500;t.update(.02);assert.ok(e.x!==x||e.y!==y,'enemy resumes path');
+  }
+});
+check('Archers can attack while retreating from a nearby hero',()=>{
+  t.startGame(1);saga.continueStory();t.launchWave();t.spawnEnemy();const e=t.game.enemies[0],h=t.game.hero;
+  e.type='archer';e.focusMonument=false;e.attackRange=170;e.damage=10;e.attackCd=0;e.attackCooldown=1.1;e.hp=e.maxHp=10000;
+  h.x=e.x+50;h.y=e.y;h.invuln=0;h.fireCd=100;const hp=h.hp,x=e.x;t.update(.02);
+  assert.ok(h.hp<hp);assert.ok(e.x<x,'archer still retreats');
+});
+check('Ranged maze enemies do not attack through corners or abandon their lane',()=>{
+  t.startGame(2);t.launchWave();t.spawnEnemy();const e=t.game.enemies[0],h=t.game.hero;
+  e.type='archer';e.attackRange=170;e.attackCd=0;e.damage=10;e.hp=e.maxHp=10000;h.fireCd=100;h.invuln=0;
+  h.x=e.x+20;h.y=e.y+100;const hp=h.hp;t.update(.02);assert.equal(h.hp,hp,'off-lane hero is not attacked through terrain');
+  h.x=e.x+50;h.y=e.y;e.attackCd=0;const x=e.x,y=e.y;t.update(.02);assert.ok(h.hp<hp);assert.equal(e.x,x);assert.equal(e.y,y);
+});
 check('Maze permits only empty road-side slots and refunds on sale',()=>{
   t.startGame(2);assert.notEqual(t.placementError({x:250,y:250}),'');
   const slot=sandbox.DenkmalLevels.levels[2].slots[0];assert.equal(t.placementError(slot),'');
