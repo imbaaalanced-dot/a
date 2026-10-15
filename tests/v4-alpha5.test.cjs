@@ -27,7 +27,7 @@ vm.runInContext(source,sandbox);
 const t=sandbox.test;
 const results=[];
 function stage3(){
-  t.lootModel.profile.level3=true;
+  t.lootModel.unlockLevel3();
   t.startGame(3);
   assert.equal(t.game.level,3,'Kirchende must open for alpha.5 tests');
   t.game.intermission=0;
