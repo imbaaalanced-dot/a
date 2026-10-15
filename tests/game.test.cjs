@@ -19,6 +19,39 @@ vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
+check('Kirchende integrates the photo-based paved approach and memorial ground without moving gameplay objects',()=>{
+  for(const file of ['terrain-polish.js','forest-crowns.js','kirchende-art.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),sandbox);
+  const terrain=sandbox.DenkmalTerrain,art=sandbox.KirchendeArt,forest=sandbox.DenkmalForest,roads=[],layers=[],shrubs=[];let sites=0;
+  const road=terrain.drawRoad,site=art.drawSite,shrub=forest.drawShrub;
+  terrain.drawRoad=(ctx,path,options)=>{roads.push(options?.surface);layers.push('road');return road(ctx,path,options);};
+  art.drawSite=(...args)=>{sites++;layers.push('site');return site(...args);};
+  forest.drawShrub=(ctx,x,y,r,index)=>{shrubs.push({x,y,r});return shrub(ctx,x,y,r,index);};
+  t.game.level=3;
+  const before=JSON.stringify({hero:t.game.hero,monument:t.game.monument,paths:sandbox.DenkmalLevels.levels[3].paths,slots:sandbox.DenkmalLevels.levels[3].slots});
+  try{
+    t.draw();
+    assert.deepEqual(roads,['earth','earth','earth','slabs'],'only the Kirchweg approach is paved');
+    assert.equal(sites,1,'the memorial floor renders once');
+    assert.deepEqual(layers,['road','road','road','road','site'],'the memorial floor is layered above all routes');
+    for(const bush of shrubs)for(const pad of sandbox.DenkmalLevels.levels[3].slots){
+      const c=sandbox.DenkmalLevels.center;
+      assert.ok(Math.hypot(pad.x-c.x-bush.x,pad.y-c.y-bush.y)>=bush.r+25,'shrubs must leave every build pad visible');
+    }
+    const warmCanvases=serial;t.draw();assert.equal(serial,warmCanvases,'the warmed scenery allocates no canvas per frame');
+    assert.equal(JSON.stringify({hero:t.game.hero,monument:t.game.monument,paths:sandbox.DenkmalLevels.levels[3].paths,slots:sandbox.DenkmalLevels.levels[3].slots}),before);
+  }finally{terrain.drawRoad=road;art.drawSite=site;forest.drawShrub=shrub;delete sandbox.DenkmalTerrain;delete sandbox.DenkmalForest;delete sandbox.KirchendeArt;}
+});
+check('Kirchende waits for the monument image and ignores a cancelled level load',()=>{
+  t.mainMenu();t.lootModel.unlockLevel3();let loaded=false,resume;
+  sandbox.KirchendeArt={ready:()=>loaded,load:()=>({then(fn){resume=fn;}})};
+  try{
+    t.startGame(3);assert.equal(t.state,'start','combat must wait while the monument is loading');
+    loaded=true;resume();assert.equal(t.game.level,3);assert.equal(t.state,'playing');
+    t.mainMenu();loaded=false;t.startGame(3);const cancelled=resume;t.startGame(1);loaded=true;cancelled();
+    assert.equal(t.game.level,1,'a late image callback must not replace the chosen level');
+    t.mainMenu();loaded=false;t.startGame(3);resume();assert.equal(t.state,'start','failed image load keeps the menu usable');
+  }finally{delete sandbox.KirchendeArt;}
+});
 check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-v2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});

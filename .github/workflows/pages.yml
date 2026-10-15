@@ -36,6 +36,7 @@ jobs:
           node tests/preloader.test.cjs
           node tests/cache-busting.test.cjs
           node tests/terrain-polish.test.cjs
+          node tests/kirchende-loading.test.cjs
           node tests/main-menu.test.cjs
           node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs

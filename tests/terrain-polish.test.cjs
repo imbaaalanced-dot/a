@@ -3,8 +3,9 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 let canvases=0,patterns=0;
 function context(){
- const calls={fills:0,strokes:0,images:0};
+ const calls={fills:0,strokes:0,images:0,dashes:[]};
  const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;},drawImage(){calls.images++;},
+ setLineDash(value){calls.dashes.push(value);},
  createPattern(){patterns++;return {pattern:true};},
  createRadialGradient(){return {addColorStop(){}}}};
  return new Proxy(out,{get:(obj,key)=>key in obj?obj[key]:(()=>{}),set:(obj,key,value)=>(obj[key]=value,true)});
@@ -25,9 +26,19 @@ const firstPattern=patterns;g.drawGround(ctx,12,14,200,200);
 assert.equal(patterns,firstPattern,'ground does not recreate its pattern every frame');
 const road=[{x:0,y:0},{x:60,y:45},{x:150,y:45}];
 const beforeStrokes=ctx.calls.strokes;g.drawRoad(ctx,road);
-assert.ok(ctx.calls.strokes-beforeStrokes>=6,'roads include curb, surface and route markings');
+assert.ok(ctx.calls.strokes-beforeStrokes>=6,'footpaths include soft shoulders and a textured surface');
+assert.ok(ctx.calls.dashes.every(dash=>dash.length===0),'photo-based footpaths have no traffic-style dashed centerline');
+g.drawRoad(ctx,road,{surface:'slabs'});
+const warmRoadPatterns=patterns;
+g.drawRoad(ctx,road,{surface:'slabs'});
+assert.equal(patterns,warmRoadPatterns,'the paved approach reuses its texture');
 forest.drawCrown(ctx,120,150,90,0);
 const firstCanvases=canvases;forest.drawCrown(ctx,120,150,90,5);
 assert.equal(canvases,firstCanvases,'same foliage variant reuses its sprite');
 assert.equal(ctx.calls.images,2,'forest crowns draw successfully');
-console.log('Alpha.5 visual renderer: stars, cached ground/trees and roads passed.');
+for(let i=0;i<5;i++)forest.drawCrown(ctx,120,150,90,i);
+for(let i=0;i<3;i++)forest.drawShrub(ctx,90,110,50,i);
+const allVariants=canvases;
+for(let i=0;i<15;i++){forest.drawCrown(ctx,120,150,90,i);forest.drawShrub(ctx,90,110,50,i);}
+assert.equal(canvases,allVariants,'all tree and shrub variants reuse their sprites after warming');
+console.log('Alpha.5 photo renderer: stars, cached moss/earth/slabs, all trees and shrubs passed.');
