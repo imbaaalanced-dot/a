@@ -1,11 +1,11 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-v1.png'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted','thorn1','thorn2','thorn3','lantern1','lantern2','lantern3'])assets[key]=key+'.webp';
+  const assets={monument:'monument-v1.png'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
   const images={};let loading=null;
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
-    loading=Promise.all(Object.entries(assets).map(([key,file])=>new Promise(resolve=>{const img=new Image();images[key]=img;const timer=setTimeout(()=>resolve(false),3500);img.onload=()=>{clearTimeout(timer);resolve(true);};img.onerror=()=>{clearTimeout(timer);resolve(false);};img.src='assets/kirchende/'+file+'?v=v400a1';})));return loading;
+    loading=Promise.all(Object.entries(assets).map(([key,file])=>new Promise(resolve=>{const img=new Image();images[key]=img;const timer=setTimeout(()=>resolve(false),3500);img.onload=()=>{clearTimeout(timer);resolve(true);};img.onerror=()=>{clearTimeout(timer);resolve(false);};img.src='assets/kirchende/'+file+'?v=v400a5b1';})));return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
     const img=images[key];if(!img?.complete||!img.naturalWidth)return false;
