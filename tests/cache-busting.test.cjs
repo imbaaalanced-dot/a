@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.5"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.6"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -21,17 +21,18 @@ const expectedVersions = new Map([
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a4merge1'],
   ['preloader.js', 'td2preload3'],
-  ['levels.js', 'v400a4merge1'],
+  ['levels.js', 'v400a6church1'],
   ['visuals.js', 'v400a4merge1'],
   ['loot.js', 'v400a4merge1'],
   ['loot-ui.js', 'v400a4merge1'],
   ['hero-saga.js', 'v400a4merge1'],
   ['combat-fx.js', 'v400a4merge1'],
-  ['game.js', 'v400a5combined1'],
+  ['game.js', 'v400a6church1'],
   ['kirchende-combat.js', 'v400a5combined1'],
   ['kirchende-art.js', 'v400a5combined1'],
   ['terrain-polish.js', 'v400a5photo2'],
   ['forest-crowns.js', 'v400a5photo1'],
+  ['church-art.js', 'v400a6church1'],
 ]);
 
 const resources = [
