@@ -114,7 +114,7 @@ check('Kirchende monument sprite base rests in its contact shadow',()=>{
   let contact=null,anchor=null;
   const originalEllipse=context.ellipse;
   context.ellipse=(...args)=>{contact=args;};
-  sandbox.KirchendeArt={draw:(ctx,key,x,y,height)=>{anchor={key,x,y,height};return true;},drawCracks(){}};
+  sandbox.KirchendeArt={load:()=>Promise.resolve([]),draw:(ctx,key,x,y,height)=>{anchor={key,x,y,height};return true;},drawCracks(){}};
   const m=t.game.monument;
   t.drawMonument(m);
   context.ellipse=originalEllipse;
