@@ -485,7 +485,7 @@
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
   function drawGround(){
-    if(game.level===3){ctx.fillStyle='#343e2e';ctx.fillRect(0,0,WORLD_W,WORLD_H);ctx.fillStyle='#82734a44';for(let i=0;i<220;i++){const x=850+(i*137%1400),y=850+(i*211%1450);ctx.fillRect(x,y,5,3);}return;}
+    if(game.level===3){const x=Math.max(0,camera.x-64),y=Math.max(0,camera.y-64),w=Math.min(WORLD_W-x,W/zoom+128),h=Math.min(WORLD_H-y,H/zoom+128);if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);else{ctx.fillStyle='#394b34';ctx.fillRect(x,y,w,h);}return;}
     const loaded=hellscape.complete&&hellscape.naturalWidth>0;
     if(!groundCache||loaded!==groundLoaded){
       groundLoaded=loaded;groundCache=document.createElement('canvas');groundCache.width=1536;groundCache.height=1536;
@@ -505,6 +505,7 @@
   function drawLevel(){
     const level=campaign.levels[game.level];if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     for(const path of level.paths){
+      if(game.level===3&&globalThis.DenkmalTerrain?.drawRoad){globalThis.DenkmalTerrain.drawRoad(ctx,path);continue;}
       ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
       ctx.strokeStyle='#0a0f1188';ctx.lineWidth=94;ctx.stroke();
       ctx.strokeStyle='#cabd9940';ctx.lineWidth=74;ctx.stroke();ctx.strokeStyle='#a49c7a16';ctx.lineWidth=68;ctx.stroke();
@@ -542,7 +543,7 @@
   const towerCache=new WeakMap();
   function drawTower(t){
     shadow(t.x,t.y,24);
-    if(t.kind==='thorn'||t.kind==='lantern'){if(!globalThis.KirchendeArt?.draw(ctx,t.kind+t.level,t.x,t.y,90+t.level*7)){ctx.fillStyle=t.kind==='thorn'?'#799360':'#cbaa63';ctx.fillRect(t.x-22,t.y-50,44,60);ctx.fillStyle='#555a47';ctx.fillRect(t.x-30,t.y+3,60,12);}return;}
+    if(t.kind==='thorn'||t.kind==='lantern'){if(!globalThis.KirchendeArt?.draw(ctx,t.kind+t.level,t.x,t.y,90+t.level*7)){ctx.fillStyle=t.kind==='thorn'?'#799360':'#cbaa63';ctx.fillRect(t.x-22,t.y-50,44,60);ctx.fillStyle='#555a47';ctx.fillRect(t.x-30,t.y+3,60,12);}globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;}
     const kind=t.kind||'bow',level=Math.max(1,Math.min(3,t.level||1)),index=level-1;
     // Disabled ballista assets load only if this tower is actually rendered.
     const levelSprite=towerLevelArt[kind]?.[index];
@@ -571,15 +572,11 @@
       }else{
         ctx.drawImage(sprite,-size/2,-size*.7,size,size);
       }
-      for(let i=0;i<level;i++){
-        ctx.fillStyle=i===2?'#f2cd72':'#82b9c0';
-        diamond((i-index/2)*8,25,3,5,ctx.fillStyle);
-      }
-      ctx.restore();return;
+      ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,level,lowFX());return;
     }
     ctx.save();ctx.translate(t.x,t.y);
     diamond(0,8,23,12,'#4c514c','#9e8d68');ctx.fillStyle='#333b38';
-    ctx.fillRect(-11,-20,22,27);ctx.restore();
+    ctx.fillRect(-11,-20,22,27);ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());
   }
 
   function drawPlacementPreview(preview){

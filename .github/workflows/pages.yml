@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5"]
   workflow_dispatch:
 
 permissions:
@@ -35,6 +35,7 @@ jobs:
         run: |
           node tests/preloader.test.cjs
           node tests/cache-busting.test.cjs
+          node tests/terrain-polish.test.cjs
           node tests/main-menu.test.cjs
           node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs
@@ -92,6 +93,26 @@ jobs:
           fi
           git commit -m "Publish V4 alpha 4 tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
+      - name: Publish isolated alpha 5 visual tester
+        if: github.ref_name == 'feature/td2-terrain-stars-alpha5'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-alpha5
+          find /tmp/denkmal-gh-pages/v4-alpha5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha5/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-alpha5 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 alpha 5 tester build already current."
+            exit 0
+          fi
+          git commit -m "Publish V4 alpha 5 visuals"
+          git push origin HEAD:gh-pages
       - name: Publish main tester at root
         if: github.ref_name == 'main'
         shell: bash
@@ -100,7 +121,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
