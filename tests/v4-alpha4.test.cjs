@@ -47,7 +47,7 @@ check('Shell speed table covers every tower and hero shells stay at 560',()=>{
   assert.deepEqual([t.projectileSpeed('bow'),t.projectileSpeed('cannon'),t.projectileSpeed('mortar'),t.projectileSpeed('ballista')],[520,430,350,660]);
   assert.equal(t.projectileSpeed('mage'),520);
   assert.equal(t.projectileSpeed('rift'),520);
-  assert.equal(t.projectileSpeed('thorn'),560);
+  assert.equal(t.projectileSpeed('boomerang'),440);
   startRun();
   const h=t.game.hero;h.fireCd=0;
   t.game.enemies=[makeEnemy({x:h.x+80,y:h.y,hp:1000,maxHp:1000,speed:0,attackCd:99})];

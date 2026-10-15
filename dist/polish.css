@@ -315,3 +315,10 @@ button{border-radius:4px}button:disabled{opacity:.4}
 .boss-hud.phase-3{border-color:#ee6655aa;box-shadow:0 0 24px #ee665533;background:#21191ae8}
 .boss-hud.phase-3 .boss-meter i{filter:saturate(1.35) brightness(1.12)}
 @media (prefers-reduced-motion:reduce){.boss-hud{transition:none}}
+
+/* V4 alpha.5: five-slot Kirchende arsenal, prevent hidden tower leaks/overlap. */
+.arsenal button[hidden]{display:none!important}
+@media (orientation:portrait){
+  .arsenal #tower-boomerang:not([hidden]){grid-column:1/-1;min-height:44px;border-color:#d9b97688}
+  .arsenal:has(#tower-boomerang:not([hidden])){bottom:calc(var(--hud-safe-bottom) + 172px)}
+}
