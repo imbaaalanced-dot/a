@@ -33,17 +33,47 @@
   const kirchendeSlots=[];
   const candidates=[[-450,-380],[-210,-360],[-470,-100],[-420,90],[-190,170],[-200,340],[270,310],[290,100],[190,-150],[20,-250],[430,320],[450,-150]];
   for(const [x,y] of candidates){const p=point(x,y);if(kirchendePaths.every(path=>pathDistance(p,path)>=64))kirchendeSlots.push(p);}
-  function getWaveGates(level,wave){return level===3?[0,1,2,3].slice(0,wave===9?2:wave===10?3:4):levels[level].gates.map((_,i)=>i);}
+  // Level 4 approaches skirt the church building and converge on the lion plinth.
+  // Topology is gameplay-authored, not a metrically surveyed churchyard plan.
+  const churchPaths=[
+    [[-730,-380],[-390,-380],[-325,-140],[-140,-75],[0,0]],
+    [[-735,340],[-420,345],[-250,190],[-90,70],[0,0]],
+    [[635,700],[370,520],[280,270],[125,100],[0,0]],
+    [[0,-740],[-95,-520],[-95,-320],[-85,-120],[0,0]]
+  ].map(route=>route.map(([x,y])=>point(x,y)));
+  const churchSlots=[];
+  const churchCandidates=[[-520,-525],[-350,-560],[-525,-180],[-235,-420],
+    [-435,60],[-545,175],[-310,80],[-185,320],[80,320],[270,375],
+    [505,290],[370,85],[95,-200],[-270,-220],[540,520]];
+  for(const [x,y] of churchCandidates){
+    const pad=point(x,y);
+    const clear=churchPaths.every(path=>pathDistance(pad,path)>=84)&&Math.hypot(x,y)>=165;
+    const outsideChurch=!(x>70&&x<690&&y>-750&&y<30);
+    if(clear&&outsideChurch&&churchSlots.every(other=>Math.hypot(pad.x-other.x,pad.y-other.y)>95))churchSlots.push(pad);
+  }
+  function getWaveGates(level,wave){
+    if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
+    if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
+    return levels[level].gates.map((_,i)=>i);
+  }
   const levels={
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
-    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true}
+    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
+    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const saveKey='denkmal-level2-unlocked-v1';
   let unlocked=false,storageAvailable=true;
   try{unlocked=localStorage.getItem(saveKey)==='true';}catch{storageAvailable=false;}
   function unlock(){unlocked=true;try{localStorage.setItem(saveKey,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
+  const level4Key='denkmal-level4-completed-v1';
+  let level4Completed=false;
+  try{level4Completed=localStorage.getItem(level4Key)==='true';}catch{}
+  function completeLevel4(){
+    level4Completed=true;try{localStorage.setItem(level4Key,'true');storageAvailable=true;}catch{storageAvailable=false;}
+    return storageAvailable;
+  }
   function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
-  globalThis.DenkmalLevels={levels,center,unlock,nearestSlot,advance,pathDistance,getWaveGates,get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
+  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
 })();
