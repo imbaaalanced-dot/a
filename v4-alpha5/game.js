@@ -20,7 +20,8 @@
     bow:[new Image(),new Image(),new Image()],
     cannon:[new Image(),new Image(),new Image()],
     ballista:[new Image(),new Image(),new Image()],
-    rift:[new Image(),new Image(),new Image()]
+    rift:[new Image(),new Image(),new Image()],
+    boomerang:[new Image(),new Image(),new Image()]
   };
   // Visible bounds of the original transparent PNGs; retain their source bytes.
   // Rendering ignores uneven transparent margins and keeps each base on its slot.
@@ -32,6 +33,10 @@
   for(const kind of ['bow','cannon']){
     towerLevelArt[kind].forEach((image,index)=>{image.src=`assets/tower-${kind}-l${index+1}-v2.png`;});
   }
+  // Three distinct alpha.5 gameplay sprites (stars are drawn separately in world space).
+  towerLevelArt.boomerang.forEach((image,index)=>{
+    image.src=`assets/tower-boomerang-l${index+1}.webp?v=v400a5art1`;
+  });
   atlas.src = 'assets/asset-atlas.png';
   hellscape.src = 'assets/stone-terrain-v27.png';
   towerArt.bow.src = 'assets/tower-bow-infernal-v1.png';
@@ -608,15 +613,31 @@
   function drawTower(t){
     shadow(t.x,t.y,24);
     if(t.kind==='boomerang'){
+      const level=Math.max(1,Math.min(3,t.level||1)),sprite=towerLevelArt.boomerang[level-1];
       ctx.save();ctx.translate(t.x,t.y);
-      const level=Math.max(1,Math.min(3,t.level||1));
-      ctx.fillStyle='#484f47';ctx.fillRect(-19,-35,38,50);
-      ctx.fillStyle='#957c52';ctx.fillRect(-24,9,48,11);
-      ctx.strokeStyle='#e6c487';ctx.lineWidth=2+level;
-      for(let i=0;i<level;i++){ctx.beginPath();ctx.arc(0,-38,20+i*5,Math.PI*.18,Math.PI*.86);ctx.stroke();}
-      ctx.rotate(-Math.PI/7);ctx.lineWidth=8;ctx.lineCap='round';ctx.strokeStyle='#dfb66e';
-      ctx.beginPath();ctx.moveTo(-23,-53);ctx.lineTo(0,-65);ctx.lineTo(23,-53);ctx.stroke();
-      ctx.lineWidth=2;ctx.strokeStyle='#fff1c3';ctx.stroke();ctx.restore();return;
+      if(sprite?.complete&&sprite.naturalWidth>0){
+        // A single fixed ground anchor preserves the same slot position for all upgrades.
+        const height=[92,102,110][level-1],width=height*sprite.naturalWidth/sprite.naturalHeight;
+        ctx.drawImage(sprite,-width/2,20-height,width,height);
+      }else{
+        // Visible fallback on the rare first frame while WebP assets are downloading.
+        ctx.fillStyle=['#825a34','#bf722c','#616875'][level-1];
+        ctx.fillRect(-19,-45,38,64);ctx.strokeStyle='#e4c18b';ctx.lineWidth=6;
+        ctx.beginPath();ctx.moveTo(-18,-50);ctx.lineTo(0,-62);ctx.lineTo(18,-50);ctx.stroke();
+      }
+      // Unified in-world gold-star indicators: I, II, III.
+      for(let i=0;i<level;i++){
+        const x=(i-(level-1)/2)*19,y=31,outer=9,inner=4.1;
+        ctx.save();ctx.beginPath();
+        for(let p=0;p<10;p++){
+          const a=-Math.PI/2+p*Math.PI/5,r=p%2?inner:outer;
+          const px=x+Math.cos(a)*r,py=y+Math.sin(a)*r;
+          if(p===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+        }
+        ctx.closePath();ctx.fillStyle='#f4c64d';ctx.strokeStyle='#684719';
+        ctx.lineWidth=1.8;ctx.fill();ctx.stroke();ctx.restore();
+      }
+      ctx.restore();return;
     }
     const kind=t.kind||'bow',level=Math.max(1,Math.min(3,t.level||1)),index=level-1;
     // Disabled ballista assets load only if this tower is actually rendered.
