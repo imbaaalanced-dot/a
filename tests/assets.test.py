@@ -25,3 +25,16 @@ with Image.open(root.parent / "items/equipment-v1.webp") as image:
     assert image.size == (1024, 512)
     assert image.format == "WEBP"
     print("equipment-v1.webp: 4x2 icon atlas decoded")
+
+# Photo-derived Kirchende materials must decode, retain sprite alpha and fit mobile budgets.
+for name,limit in [('monument-photo-v2.webp',160000),('ground-photo-v2.webp',350000)]:
+    asset=root.parent/'kirchende'/name
+    with Image.open(asset) as image:
+        image.load()
+        assert image.format=='WEBP',name
+        assert asset.stat().st_size<limit,name
+        if name.startswith('monument'):
+            assert image.mode=='RGBA',name
+            assert image.getchannel('A').getextrema()[0]==0,name
+            assert image.getchannel('A').getextrema()[1]>=250,name
+        print(f'{name}: decoded {image.size}, within mobile budget')

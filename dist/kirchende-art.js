@@ -1,11 +1,23 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-v1.png'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted','thorn1','thorn2','thorn3','lantern1','lantern2','lantern3'])assets[key]=key+'.webp';
+  const assets={monument:'monument-photo-v2.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted','thorn1','thorn2','thorn3','lantern1','lantern2','lantern3'])assets[key]=key+'.webp';
   const images={};let loading=null;
+  function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
-    loading=Promise.all(Object.entries(assets).map(([key,file])=>new Promise(resolve=>{const img=new Image();images[key]=img;const timer=setTimeout(()=>resolve(false),3500);img.onload=()=>{clearTimeout(timer);resolve(true);};img.onerror=()=>{clearTimeout(timer);resolve(false);};img.src='assets/kirchende/'+file+'?v=v400a1';})));return loading;
+    loading=Promise.all(Object.entries(assets).map(([key,file])=>{
+      if(ready(key))return Promise.resolve(true);
+      return new Promise(resolve=>{
+        const img=new Image();images[key]=img;let settled=false;
+        const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);resolve(ok);};
+        const timer=setTimeout(()=>finish(false),8000);
+        img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
+        img.src='assets/kirchende/'+file+'?v='+(key==='monument'?'v400a5photo2':'v400a1');
+        if(img.complete&&img.naturalWidth)finish(true);
+      });
+    })).then(results=>{if(results.some(ok=>!ok))loading=null;return results;});
+    return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
     const img=images[key];if(!img?.complete||!img.naturalWidth)return false;
@@ -81,5 +93,5 @@
     ctx.restore();
   }
   function drawCracks(ctx,m){if(m.hp/m.maxHp>.66)return;ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle=m.hp/m.maxHp<=.33?'#db8b5555':'#34261b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-12,-130);ctx.lineTo(8,-105);ctx.lineTo(-3,-82);ctx.lineTo(16,-55);if(m.hp/m.maxHp<=.33){ctx.moveTo(28,-110);ctx.lineTo(10,-75);ctx.lineTo(22,-40);}ctx.stroke();ctx.restore();}
-  globalThis.KirchendeArt={load,draw,drawScenery,drawSite,drawCracks,crownOpacity};
+  globalThis.KirchendeArt={load,ready,draw,drawScenery,drawSite,drawCracks,crownOpacity};
 })();

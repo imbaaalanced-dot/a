@@ -28,7 +28,9 @@ jobs:
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
       - name: Kirchende terrain and renderer caching
-        run: node tests/terrain-polish.test.cjs
+        run: |
+          node tests/terrain-polish.test.cjs
+          node tests/kirchende-loading.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite

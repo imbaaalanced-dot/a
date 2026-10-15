@@ -41,6 +41,17 @@ check('Kirchende integrates the photo-based paved approach and memorial ground w
     assert.equal(JSON.stringify({hero:t.game.hero,monument:t.game.monument,paths:sandbox.DenkmalLevels.levels[3].paths,slots:sandbox.DenkmalLevels.levels[3].slots}),before);
   }finally{terrain.drawRoad=road;art.drawSite=site;forest.drawShrub=shrub;delete sandbox.DenkmalTerrain;delete sandbox.DenkmalForest;delete sandbox.KirchendeArt;}
 });
+check('Kirchende waits for the monument image and ignores a cancelled level load',()=>{
+  t.mainMenu();t.lootModel.unlockLevel3();let loaded=false,resume;
+  sandbox.KirchendeArt={ready:()=>loaded,load:()=>({then(fn){resume=fn;}})};
+  try{
+    t.startGame(3);assert.equal(t.state,'start','combat must wait while the monument is loading');
+    loaded=true;resume();assert.equal(t.game.level,3);assert.equal(t.state,'playing');
+    t.mainMenu();loaded=false;t.startGame(3);const cancelled=resume;t.startGame(1);loaded=true;cancelled();
+    assert.equal(t.game.level,1,'a late image callback must not replace the chosen level');
+    t.mainMenu();loaded=false;t.startGame(3);resume();assert.equal(t.state,'start','failed image load keeps the menu usable');
+  }finally{delete sandbox.KirchendeArt;}
+});
 check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-v2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
