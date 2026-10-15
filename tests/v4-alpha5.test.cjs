@@ -41,6 +41,19 @@ function enemy(x,y,armor=0){
     hp:500,maxHp:500,armor,damage:0,speed:0,attackCd:99,attackCooldown:1,
     focusMonument:false};
 }
+check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
+  const gameSource=fs.readFileSync(path.join(root,'game.js'),'utf8');
+  for(let level=1;level<=3;level++){
+    const file=path.join(root,'assets',`tower-boomerang-l${level}.webp`);
+    assert.ok(fs.existsSync(file),'missing boomerang asset '+level);
+    assert.ok(fs.statSync(file).size>3000,'empty sprite '+level);
+  }
+  assert.ok(gameSource.includes('towerLevelArt.boomerang[level-1]'));
+  assert.ok(gameSource.includes('v400a5art1'));
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  assert.ok(html.includes('game.js?v=v400a5art1'));
+  assert.ok(gameSource.includes('for(let i=0;i<level;i++)'),'star count follows level');
+});
 check('Thorn and lantern towers are no longer available',()=>{
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   const art=fs.readFileSync(path.join(root,'kirchende-art.js'),'utf8');
