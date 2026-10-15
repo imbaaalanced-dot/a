@@ -33,23 +33,34 @@
   const kirchendeSlots=[];
   const candidates=[[-450,-380],[-210,-360],[-470,-100],[-420,90],[-190,170],[-200,340],[270,310],[290,100],[190,-150],[20,-250],[430,320],[450,-150]];
   for(const [x,y] of candidates){const p=point(x,y);if(kirchendePaths.every(path=>pathDistance(p,path)>=64))kirchendeSlots.push(p);}
-  // Level 4 approaches skirt the church building and converge on the lion plinth.
-  // Topology is gameplay-authored, not a metrically surveyed churchyard plan.
+  // GPS reference: church OSM way 30729509 center approx 51.41905,7.42299;
+  // memorial object/photo point approx 51.418844,7.423072 (Commons).
+  // Approx 23 m north and 6 m west of lion at 22 playfield px/m.
+  // Footprint is deliberately conservative; only relative layout is derived
+  // from public geodata, not survey-grade building dimensions.
+  const churchFootprint={left:-415,right:235,top:-700,bottom:-290};
   const churchPaths=[
-    [[-730,-380],[-390,-380],[-325,-140],[-140,-75],[0,0]],
+    [[-730,-370],[-535,-335],[-380,-235],[-175,-125],[0,0]],
     [[-735,340],[-420,345],[-250,190],[-90,70],[0,0]],
     [[635,700],[370,520],[280,270],[125,100],[0,0]],
-    [[0,-740],[-95,-520],[-95,-320],[-85,-120],[0,0]]
+    [[-690,-790],[-615,-535],[-530,-260],[-200,-155],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
+  // Keep a 40 px clearance from the wall for paths/tower markers.
+  const outsideChurch=(x,y,padding=0)=>
+    x<churchFootprint.left-padding||x>churchFootprint.right+padding||
+    y<churchFootprint.top-padding||y>churchFootprint.bottom+padding;
   const churchSlots=[];
-  const churchCandidates=[[-520,-525],[-350,-560],[-525,-180],[-235,-420],
-    [-435,60],[-545,175],[-310,80],[-185,320],[80,320],[270,375],
-    [505,290],[370,85],[95,-200],[-270,-220],[540,520]];
+  const churchCandidates=[
+    [-760,-590],[-470,-810],[-240,-830],[100,-820],[320,-680],
+    [340,-345],[310,-210],[510,-210],[-740,-50],[-550,-65],
+    [-380,20],[-220,-250],[-160,380],[100,330],[230,390],
+    [440,340],[560,190],[380,60],[70,-205],[520,520]
+  ];
   for(const [x,y] of churchCandidates){
     const pad=point(x,y);
     const clear=churchPaths.every(path=>pathDistance(pad,path)>=84)&&Math.hypot(x,y)>=165;
-    const outsideChurch=!(x>70&&x<690&&y>-750&&y<30);
-    if(clear&&outsideChurch&&churchSlots.every(other=>Math.hypot(pad.x-other.x,pad.y-other.y)>95))churchSlots.push(pad);
+    if(clear&&outsideChurch(x,y,40)&&churchSlots.every(other=>Math.hypot(pad.x-other.x,pad.y-other.y)>95))
+      churchSlots.push(pad);
   }
   function getWaveGates(level,wave){
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
@@ -60,7 +71,7 @@
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
-    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
+    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const saveKey='denkmal-level2-unlocked-v1';
   let unlocked=false,storageAvailable=true;
