@@ -2,6 +2,8 @@
 
 Visueller Alpha.5-Patch vom 15. Oktober 2026: goldene Level-Sterne, gecachte Waldtexturen, Stein-/Wegoberflächen und neue Baumkronen in Kirchende. Keine Änderungen an Kampfwerten, Wegen oder Bauplätzen.
 
+Fotoabgleich Kirchende (`kirchende-photo-1`): moosiger Erdboden mit Laub, Plattenzugang mit flachen Stufen, verwitterter Denkmalplatz mit separater Steinplatte, seitliche Bänke und dichtes Gebüsch. Die räumliche Umsetzung ist eine Annäherung aus den bereitgestellten Fotos und Videos; siehe `docs/KIRCHENDE_PHOTO_TERRAIN.md`.
+
 Zusammengeführter Stand vom 15. Oktober 2026: main mit V4/Kirchende, Kampagnen- und Endlosmenü, Intro-Tutorial, Zielvorhersage und Treffer-Effekten.
 
 Enthalten bleiben das kompakte HUD-Menü, getrennte Helden-/Beuteansichten, Sammel-Recycling und dauerhafte Ausrüstung. 2×-Tempo steht ab Level 2 und im Endlosmodus bereit. Speicher-Schlüssel und bestehende Migrationen bleiben erhalten.

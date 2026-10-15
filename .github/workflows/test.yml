@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat"]
   pull_request:
-    branches: ["main", "v4-kirchende"]
+    branches: ["main", "v4-kirchende", "feature/td2-terrain-stars-alpha5"]
 
 permissions:
   contents: read
@@ -27,6 +27,8 @@ jobs:
         run: node tests/preloader.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
+      - name: Kirchende terrain and renderer caching
+        run: node tests/terrain-polish.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
