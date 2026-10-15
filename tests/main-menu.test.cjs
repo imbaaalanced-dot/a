@@ -20,6 +20,7 @@ for (const [id, label] of [
   ['startBtn', 'EINLEITUNG'],
   ['level2Btn', 'LABYRINTH'],
   ['level3Btn', 'KIRCHENDE'],
+  ['level4Btn', 'DORFKIRCHE'],
 ]) {
   assert.match(campaign, new RegExp('id="' + id + '"'));
   assert.match(campaign, new RegExp(label, 'i'));
@@ -28,16 +29,19 @@ for (const [id, label] of [
   ['endless1Btn', 'VIER TORE'],
   ['endlessBtn', 'LABYRINTH'],
   ['endless3Btn', 'KIRCHENDE'],
+  ['endless4Btn', 'DORFKIRCHE'],
 ]) {
   assert.match(endless, new RegExp('id="' + id + '"'));
   assert.match(endless, new RegExp(label, 'i'));
 }
-assert.doesNotMatch(campaign, /id="endless(?:1|3)?Btn"/);
-assert.doesNotMatch(endless, /id="(?:startBtn|level2Btn|level3Btn)"/);
+assert.doesNotMatch(campaign, /id="endless(?:1|3|4)?Btn"/);
+assert.doesNotMatch(endless, /id="(?:startBtn|level2Btn|level3Btn|level4Btn)"/);
 assert.match(game, /endless1Btn[^\n]*startGame\(1,'endless'\)/);
 assert.match(game, /endlessBtn[^\n]*startGame\(2,'endless'\)/);
 assert.match(game, /endless3Btn[^\n]*startGame\(3,'endless'\)/);
 assert.match(game, /kirchendeCompleted/);
+assert.match(game, /endless4Btn[^\n]*startGame\(4,'endless'\)/);
+assert.match(game, /level4Btn[^\n]*startGame\(4\)/);
 assert.doesNotMatch(endless, /Wellenrekord wird gespeichert/, 'do not promise records until persistence exists');
 assert.match(html, /id="speedBtn"[^>]*>TEMPO: 1×<\/button>/);
 assert.match(game, /function simulationStepsPerFrame\(\)/);

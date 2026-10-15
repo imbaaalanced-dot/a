@@ -22,7 +22,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');
-source=source.replace(/\}\)\(\);\s*$/, `globalThis.test={get game(){return game},get state(){return state},get lootModel(){return lootModel},startGame,selectTower,upgradeTower,shootBoomerang,moveBoomerang,update,drawMonument,projectileSpeed};})();`);
+source=source.replace(/\}\)\(\);\s*$/, `globalThis.test={get game(){return game},get state(){return state},get lootModel(){return lootModel},startGame,mainMenu,endWave,selectTower,upgradeTower,shootBoomerang,moveBoomerang,update,drawMonument,projectileSpeed};})();`);
 vm.runInContext(source,sandbox);
 const t=sandbox.test;
 const results=[];
@@ -50,7 +50,7 @@ check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
   assert.ok(gameSource.includes('frameWidth*(level-1)'));
   assert.ok(gameSource.includes('v400a5combined1'));
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.ok(html.includes('game.js?v=v400a5combined1'));
+  assert.ok(html.includes('game.js?v=v400a6church2'));
   assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');
 });
 check('Thorn and lantern towers are no longer available',()=>{
@@ -139,5 +139,17 @@ check('Low damage remains below single-target bow DPS at every stage',()=>{
   for(const [damage,rate] of [[8,1.75],[11,1.65],[14,1.55]]){
     assert.ok((damage*2)/rate<12/.5,'boomerang trades boss DPS for crowd penetration');
   }
+});
+check('Church level unlocks after Kirchende and persists completion of wave 16',()=>{
+  t.startGame(4);assert.equal(t.game.level,3,'level 4 is locked before Kirchende reward');
+  t.lootModel.claimKirchendeReward();t.startGame(4);
+  assert.equal(t.game.level,4);
+  assert.equal(t.game.wave,13);
+  assert.equal(t.game.maxTowers,10);
+  assert.equal(t.game.essence,245);
+  t.game.wave=16;t.game.waveSpawned=t.game.waveTotal;t.game.enemies=[];
+  t.endWave();assert.equal(t.state,'levelcomplete');
+  assert.equal(sandbox.DenkmalLevels.level4Completed,true,'clearing the lion stage unlocks endless');
+  t.mainMenu();t.startGame(4,'endless');assert.equal(t.game.mode,'endless');
 });
 console.log(results.length+' v4-alpha5 boomerang, hero aggro and monument tests passed\n'+results.join('\n'));
