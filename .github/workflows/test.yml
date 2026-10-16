@@ -2,9 +2,9 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat", "feature/v4-level4-church-lion", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016"]
+    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat", "feature/v4-level4-church-lion", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016"]
   pull_request:
-    branches: ["main", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/style2-churchyard-pass1-20261016"]
+    branches: ["main", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016"]
 
 permissions:
   contents: read
@@ -32,6 +32,7 @@ jobs:
           node tests/terrain-polish.test.cjs
           node tests/kirchende-loading.test.cjs
           node tests/style2-kirchende.test.cjs
+          node tests/style2-cannon.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
