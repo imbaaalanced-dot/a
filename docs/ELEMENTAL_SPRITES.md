@@ -14,3 +14,6 @@ Six fixed-cell RGBA WebP atlases replace the active mage/rift visual assets only
 21 Node test files pass, including fallback, tier crops, vertical projectile orientation, six animation phases and warm image reuse. Pillow decodes every WebP and verifies dimensions, populated cells, transparent gutters and per-file size limits. Mobile gameplay passes. Native Canvas rendering of all six towers, their projectiles and impacts was visually inspected on an opaque terrain-colored background. Real Android FPS and full browser playthrough remain unverified.
 
 All combat damage, slowing, chain-lightning targeting, route layout and build slots are unchanged. No merge to main; same separate Phase 6 tester.
+
+## Bow follow-up
+Three generated bow tower tiers now use the same fixed-cell renderer. Only tower images are enabled for bow; existing projectile and impact renderers remain active. Source hash and crop boundaries are recorded in the manifest. All 22 Node test files pass; all three bow cells decode with transparent margins and the atlas was inspected over an opaque terrain color. Browser and Android verification remain pending.

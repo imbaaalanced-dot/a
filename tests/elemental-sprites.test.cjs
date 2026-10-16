@@ -11,6 +11,10 @@ assert.equal(art.drawTower(ctx,'rift',100,200,1),false,'cold image permits proce
 images[0].complete=true;images[0].naturalWidth=1536;images[0].naturalHeight=512;
 assert.equal(art.drawTower(ctx,'rift',100,200,3),true);assert.deepEqual(draws.at(-1).slice(1,5),[1024,0,512,512]);
 assert.equal(art.drawTower(ctx,'bow',0,0,1),false);
+images.at(-1).complete=true;images.at(-1).naturalWidth=1536;
+assert.equal(art.drawTower(ctx,'bow',0,0,3),true);
+assert.deepEqual(draws.at(-1).slice(1,5),[1024,0,512,512]);
+assert.equal(art.drawProjectile(ctx,{kind:'bow'}),false,'bow projectiles retain existing renderer');
 assert.equal(art.drawProjectile(ctx,{kind:'mage',level:2,x:10,y:20,vx:0,vy:100}),false);
 images.at(-1).complete=true;images.at(-1).naturalWidth=384;images.at(-1).naturalHeight=128;
 assert.equal(art.drawProjectile(ctx,{kind:'mage',level:2,x:10,y:20,vx:0,vy:100}),true);
