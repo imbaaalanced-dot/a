@@ -131,7 +131,8 @@ Create `tests/map-manifest.test.cjs`. Assert all four JSON files use unique ids 
 
 - [ ] **Step 2: Run the test and verify the contract is absent**
 
-Run: `node tests/map-manifest.test.cjs`  
+Run: `node tests/map-manifest.test.cjs`
+
 Expected: FAIL because the four manifests do not exist.
 
 - [ ] **Step 3: Write the production styleguide**
@@ -144,7 +145,8 @@ Create the four `map.json` files with the exact schema. Level 3 identifies Kirch
 
 - [ ] **Step 5: Run the manifest test**
 
-Run: `node tests/map-manifest.test.cjs`  
+Run: `node tests/map-manifest.test.cjs`
+
 Expected: PASS with four validated contracts.
 
 - [ ] **Step 6: Add the test to CI and commit**
@@ -178,7 +180,8 @@ Create `tests/map-renderer.test.cjs` with fake `fetch`, `Image`, and Canvas cont
 
 - [ ] **Step 2: Run the renderer test**
 
-Run: `node tests/map-renderer.test.cjs`  
+Run: `node tests/map-renderer.test.cjs`
+
 Expected: FAIL because `dist/map-art.js` does not exist.
 
 - [ ] **Step 3: Implement `DenkmalMapArt`**

@@ -80,7 +80,7 @@ check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.
 check('Soul call has bounded range heal and resource use',()=>{const h=t.game.hero;h.hp=50;const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};t.game.enemies=[near,far];assert.equal(saga.unleash(),true);assert.ok(near.hp<1000);assert.equal(far.hp,1000);assert.equal(h.hp,75);assert.equal(h.soul,0);assert.equal(saga.unleash(),false);saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1);});
 check('Soul call cannot trigger in pause or wardrobe',()=>{t.pauseGame();assert.equal(saga.unleash(),false);assert.equal(t.game.hero.soul,100);t.resumeGame();saga.openCharacter();assert.equal(saga.unleash(),false);});
 check('Story milestones pause and never repeat; epilogue after wave 15',()=>{t.game.wave=3;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Siegel/);saga.continueStory();assert.equal(saga.chapter(4),false);t.game.wave=15;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Erinnerung/);saga.continueStory();assert.equal(t.state,'playing');assert.equal(element('sagaComplete').classList.contains('hidden'),false);});
-check('Lantern guardian uses the directional sprite atlas',()=>{draws.length=0;const h=t.game.hero;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(h.direction,'down');draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(draw[1],0);assert.equal(draw[2],0);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(draw[1],128);assert.equal(draw[2],128);});
+check('Lantern guardian uses the 4-direction 3-frame walking atlas',()=>{draws.length=0;const h=t.game.hero;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith('marcel-walk-atlas-v2.webp'));assert.ok(draw);assert.equal(h.direction,'down');assert.equal(draw[1],362,'idle uses the centered frame');assert.equal(draw[2],362,'down direction uses row two');draws.length=0;saga.update(.13,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-walk-atlas-v2.webp'));assert.ok(draw);assert.equal(draw[1],362);assert.equal(draw[2],0);draws.length=0;saga.update(.13,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-walk-atlas-v2.webp'));assert.ok(draw);assert.equal(draw[1],724);assert.equal(draw[2],1086);});
 check('Marcels dialogue replaces the old character and respects mute',()=>{assert.match(saga.lines.intro,/Marcel/);assert.equal(Object.values(saga.lines).some(s=>s.includes('Kael')),false);t.startGame();element('soundBtn').onclick();element('voiceBtn').onclick();saga.continueStory();assert.equal(t.state,'playing');element('soundBtn').onclick();});
 check('Four fixed gates ignore hero position and viewport',()=>{
   t.game.hero.x=120;t.game.hero.y=200;
@@ -329,8 +329,31 @@ check('Rift tower selects the matching level graphic',()=>{
     assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.png`)));
   }
 });
+check('Mage tower uses three distinct Aether Pillar upgrade sprites',()=>{
+  const sprites=new Set();
+  for(let level=1;level<=3;level++){
+    draws.length=0;t.drawTower({kind:'mage',level,x:250,y:350});
+    const draw=draws.find(d=>d[0].src?.endsWith(`tower-mage-l${level}-v2.webp`));
+    assert.ok(draw,`mage ${level} sprite missing`);sprites.add(draw[0].src);
+    assert.equal(draw.length,5,'square alpha sprite draws without source distortion');
+    assert.ok(Math.abs(draw[2]+draw[4]*.7)<1e-9,'mage upgrade keeps the shared baseline');
+  }
+  assert.equal(sprites.size,3);
+});
+check('Bow tower uses three distinct Style 2 upgrade sprites',()=>{
+  const sprites=new Set();
+  for(let level=1;level<=3;level++){
+    draws.length=0;t.drawTower({kind:'bow',level,x:250,y:350});
+    const draw=draws.find(d=>d[0].src?.endsWith(`tower-bow-l${level}-v3.webp`));
+    assert.ok(draw,`bow ${level} sprite missing`);sprites.add(draw[0].src);
+    assert.equal(draw.length,5,'square alpha sprite draws without source distortion');
+    assert.ok(Math.abs(draw[2]+draw[4]*.7)<1e-9,'bow upgrade keeps the shared baseline');
+    assert.ok(fs.existsSync(path.join(root,draw[0].src)));
+  }
+  assert.equal(sprites.size,3);
+});
 check('Tower upgrades select distinct sprites and preserve their base anchor',()=>{
-  for(const kind of ['bow','cannon','ballista']){
+  for(const kind of ['cannon','ballista']){
     const sprites=new Set();
     for(let level=1;level<=3;level++){
       draws.length=0;t.drawTower({kind,level,x:250,y:350});
@@ -345,7 +368,7 @@ check('Tower upgrades select distinct sprites and preserve their base anchor',()
     assert.equal(sprites.size,3);
   }
 });
-check('Tower crop is reused on consecutive frames',()=>{const tower={kind:'bow',level:1,x:250,y:350};t.drawTower(tower);draws.length=0;t.drawTower(tower);assert.ok(!draws.some(d=>d[0]===t.towerLevelArt.bow[0]));assert.ok(draws.some(d=>d.length===5&&d[0].width===192));});
+check('Tower crop is reused on consecutive frames',()=>{const tower={kind:'cannon',level:1,x:250,y:350};t.drawTower(tower);draws.length=0;t.drawTower(tower);assert.ok(!draws.some(d=>d[0]===t.towerLevelArt.cannon[0]));assert.ok(draws.some(d=>d.length===5&&d[0].width===192));});
 check('Terrain cache is reused and offscreen actors are culled',()=>{t.draw();draws.length=0;t.draw();const baseline=draws.length;t.game.enemies=[{x:-10000,y:-10000,type:'boss',hp:100,maxHp:100,r:34}];draws.length=0;t.draw();assert.equal(draws.length,baseline);assert.ok(!draws.some(d=>d[0].src?.endsWith('stone-terrain-v27.png')));});
 check('Loading or failed tower upgrades retain a usable fallback sprite',()=>{
   for(const [kind,fallback] of [['bow','infernal'],['cannon','ash'],['ballista','rift']]){
@@ -390,7 +413,7 @@ for(const m of html.matchAll(/(?:src|srcset|href)="([^"?#]+)(?:\?[^\"]*)?"/g))if
 assert.equal(html.includes('KAEL'),false);
 assert.ok(html.includes('marcel-lantern-portrait-v1.webp'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
-assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
+assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-walk-atlas-v2.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));

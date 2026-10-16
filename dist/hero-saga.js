@@ -33,12 +33,13 @@
     {wave:16,id:'ending',kicker:'DIE WACHT BESTEHT',title:'Die Erinnerung bleibt.',text:'Marcel hat den Aschenkönig zurückgeschlagen. Das Denkmal steht. Die Wacht geht als endlose Herausforderung weiter.',objective:'Verstärke deine Verteidigung für die kommenden Wellen.',reward:'DIE NAMEN SIND FREI'}
   ];
   const heroAtlas = new Image();
-  heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
+  heroAtlas.src = 'assets/hero/marcel-walk-atlas-v2.webp';
+  const heroCell = 362;
   const heroCells = {
-    up:[0,0],
-    down:[128,0],
-    left:[0,128],
-    right:[128,128]
+    up:0,
+    down:1,
+    left:2,
+    right:3
   };
   let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing';
   let selectedTab='equipment', lowHpSpoken=false, storySeen=new Set(), animationTime=0;
@@ -169,11 +170,12 @@
       if(enemy&&echo.fire<=0){api.shoot(from,enemy,14,520,'#94ffe1');echo.fire=.65;}
     }echoes=echoes.filter(e=>e.life>0);
   }
-  function drawSprite(ctx,x,y,direction='down',opacity=1,size=86) {
+  function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,frame=1) {
     if(ready(heroAtlas)){
-      const [sx,sy]=heroCells[direction]||heroCells.down;
+      const row=heroCells[direction]??heroCells.down;
+      const column=clamp(frame|0,0,2);
       ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
-      ctx.drawImage(heroAtlas,sx,sy,128,128,-size/2,12-size,size,size);
+      ctx.drawImage(heroAtlas,column*heroCell,row*heroCell,heroCell,heroCell,-size/2,12-size,size,size);
       ctx.restore();return true;
     }
     const fallbackFace=direction==='left'?-1:1;
@@ -181,7 +183,8 @@
   }
   function draw(ctx,h) {
     const moving=h.moving&&!reduced,direction=h.direction||'down';
-    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28);
+    const walkFrame=moving?Math.floor(walkTime*8)%3:1;
+    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28,86,1);
     ctx.save();ctx.translate(h.x,h.y);
     ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(0,11,22,8,0,0,Math.PI*2);ctx.fill();
     const relicColor=h.equipment.relic==='bell'?'#f5c572':'#79dfff';
@@ -191,7 +194,7 @@
     ctx.translate(0,bob);if(!reduced&&h.dodge>0)ctx.rotate((h.faceX||0)*.14);
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
-    if(!drawSprite(ctx,0,0,direction,1,90)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    if(!drawSprite(ctx,0,0,direction,1,90,walkFrame)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;
@@ -201,7 +204,7 @@
     }
     if(h.equipment.weapon==='echo'){ctx.fillStyle='#a4ffed';ctx.beginPath();ctx.arc((h.faceX||0)*25,-24+(h.faceY||0)*14,3,0,Math.PI*2);ctx.fill();}
     ctx.restore();
-    for(const echo of echoes)drawSprite(ctx,h.x+Math.cos(echo.angle)*70,h.y+Math.sin(echo.angle)*42,direction,Math.min(.42,echo.life*.42),78);
+    for(const echo of echoes)drawSprite(ctx,h.x+Math.cos(echo.angle)*70,h.y+Math.sin(echo.angle)*42,direction,Math.min(.42,echo.life*.42),78,1);
     if(pulse){ctx.save();ctx.globalAlpha=pulse.life/pulse.max;ctx.strokeStyle='#9affdf';ctx.lineWidth=4;ctx.beginPath();ctx.arc(pulse.x,pulse.y,reduced?270:270*(1-pulse.life/pulse.max),0,Math.PI*2);ctx.stroke();ctx.restore();}
   }
   function updateUI() {

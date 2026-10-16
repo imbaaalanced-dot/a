@@ -95,8 +95,16 @@ assert.ok(game.includes('campaign.completeLevel4()'),'wave 16 persists completio
 assert.ok(game.includes("game.level===4&&game.wave===16"),'wave 16 ends the campaign');
 assert.ok(game.includes('DenkmalChurch?.drawLion'),'lion is the combat objective');
 assert.ok(game.includes('DenkmalChurch?.drawBackdrop'),'churchyard backdrop is rendered');
+assert.ok(game.includes("if(mapReady&&game.level===4)globalThis.DenkmalChurch?.drawBackdrop"),'ready map layers must retain the separate church structure');
 assert.ok(game.includes('DenkmalChurch?.drawCanopies'),'tree overlap uses separate scenery layer');
 assert.ok(game.includes('function churchBlocks(x,y,r=13)'),'church must block the hero');
 assert.ok(game.includes('!churchBlocks(nx,h.y,h.r)'),'movement must stop before the masonry');
 assert.ok(art.churchFrame&&art.churchFrame.x===-500,'church positioning must be exported for review');
+const mapManifest=JSON.parse(fs.readFileSync(path.join(root,'assets/maps/level-4/map.json'),'utf8'));
+const mapChurch=mapManifest.structures.find(item=>item.id==='ender-village-church');
+const mapLion=mapManifest.structures.find(item=>item.role==='sleeping-lion');
+assert.ok(mapChurch&&mapLion,'map metadata separates church scenery from the lion objective');
+assert.ok(Math.hypot(mapChurch.position.x-mapLion.position.x,mapChurch.position.y-mapLion.position.y)>=450,'map art preserves at least 450px church/lion separation');
+assert.equal(mapLion.position.x,c.x);assert.equal(mapLion.position.y,c.y);
+assert.ok(mapManifest.sources.every(source=>source.label&&/^https:\/\//.test(source.url)),'historical map claims retain labels and URLs');
 console.log('Level 4 paths, build pads, wave gates, saved unlock and cached church/lion artwork passed.');

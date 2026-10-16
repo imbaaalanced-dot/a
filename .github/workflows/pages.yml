@@ -30,6 +30,7 @@ jobs:
         run: |
           python -m pip install Pillow
           python tests/assets.test.py
+          python tests/map-assets.test.py --levels 1 2 3 4
 
       - name: Verify gameplay before publish
         run: |
@@ -50,6 +51,31 @@ jobs:
           node tests/level4.test.cjs
           TEST_MOBILE=1 node tests/level4.test.cjs
           node tests/v3.1-features.test.cjs
+          node tests/map-manifest.test.cjs
+          node tests/map-renderer.test.cjs
+          node tests/map-layout.test.cjs --levels 1 2 3 4
+          node tests/style2-release.test.cjs
+
+      - name: Publish isolated Style 2 map tester
+        if: github.event_name == 'workflow_dispatch' && github.ref_name == 'feature/v4-graphic-overhaul-style2'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2
+          find /tmp/denkmal-gh-pages/v4-style2 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 Style 2 tester build already current."
+            exit 0
+          fi
+          git commit -m "Publish V4 Style 2 map tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
 
       - name: Publish isolated V4 path on gh-pages
         if: github.ref_name == 'feature/td2-v4-main-menu-refresh'
@@ -162,7 +188,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-level4 ! -name kirchende-foto -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-level4 ! -name v4-style2 ! -name kirchende-foto -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages

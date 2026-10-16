@@ -1,9 +1,13 @@
 # Denkmal TD2 – Grafik-Overhaul V4 (Style 2)
 
-**Status:** Gesamtdesign vom Nutzer am 16. Oktober 2026 freigegeben  
-**Arbeitsbranch:** feature/v4-graphic-overhaul-style2  
-**Basis:** feature/v4-level4-church-lion  
-**Produktionsziel:** Browser, Android-Browser und spätere WebView/APK  
+**Status:** Gesamtdesign vom Nutzer am 16. Oktober 2026 freigegeben
+
+**Arbeitsbranch:** feature/v4-graphic-overhaul-style2
+
+**Basis:** feature/v4-level4-church-lion
+
+**Produktionsziel:** Browser, Android-Browser und spätere WebView/APK
+
 **Geschützte Linie:** main und bestehende Live-Builds bleiben unverändert
 
 ## 1. Ziel
