@@ -38,3 +38,20 @@ for name,limit in [('monument-photo-v2.webp',160000),('ground-photo-v2.webp',350
             assert image.getchannel('A').getextrema()[0]==0,name
             assert image.getchannel('A').getextrema()[1]>=250,name
         print(f'{name}: decoded {image.size}, within mobile budget')
+
+# Generated elemental atlases: genuine alpha, clean cell borders and bounded download size.
+elemental=root.parent/'elemental'
+for kind in ['mage','rift']:
+    for typ,cell,cols,rows in [('towers',512,3,1),('projectiles',128,3,1),('impacts',128,6,3)]:
+        asset=elemental/f'{kind}-{typ}-v1.webp'
+        with Image.open(asset) as image:
+            image.load()
+            assert image.mode=='RGBA' and image.size==(cols*cell,rows*cell),asset.name
+            assert asset.stat().st_size<450000,asset.name
+            for row in range(rows):
+                for col in range(cols):
+                    alpha=image.getchannel('A').crop((col*cell,row*cell,(col+1)*cell,(row+1)*cell))
+                    assert alpha.getextrema()[1]>0,(asset.name,col,row)
+                    for edge in [(0,0,cell,4),(0,cell-4,cell,cell),(0,0,4,cell),(cell-4,0,cell,cell)]:
+                        assert alpha.crop(edge).getextrema()[1]==0,(asset.name,col,row,'clipped alpha edge')
+        print(f'{asset.name}: decoded, equal cells, transparent gutters verified')

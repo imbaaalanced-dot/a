@@ -1,0 +1,26 @@
+{
+  "rift": {
+    "sources": {
+      "exec-c63a5633-f0e6-44a6-88b9-aa00972bbc2a.png": "f0a9945a3099dde85a6bc832a3968ea35e0a4abad84166ad8d7271e8993e600a",
+      "exec-05ad9f1b-697d-4e8e-9827-6addbd4759ab.png": "0ba0e5ed978bc5531e199bb213398c3a6dac4295b7ba7cc490181384f91fb89b",
+      "exec-9fa23d09-81fd-49c5-a202-9576a0e0c5dc.png": "08188e3e94a7da7565d1b02e6877078b6a89dd271a5e5b6ff9176595cc6cd7ce"
+    },
+    "towerCell": 512,
+    "projectileCell": 128,
+    "impactCell": 128,
+    "impactFrames": 6,
+    "tiers": 3
+  },
+  "mage": {
+    "sources": {
+      "exec-b196a728-0fb2-4d02-8a23-1734c72f895d.png": "2cc4503b12aae7a188c9cb956e361916818a07692673e7060e2a4e8e03aaca3d",
+      "exec-a2237fd0-8d15-461a-80a0-9636135a475e.png": "63de22a5b9a81d0498309ff3bf0af7fc4e9cbe0fa0d338e0a58e1cb9208a73ae",
+      "exec-5102959c-ab02-4a16-a7ae-b43becbe7b75.png": "3ca9b22b1f288daa3ac518c83275b566568705271765df9d2c9bb6290f073f13"
+    },
+    "towerCell": 512,
+    "projectileCell": 128,
+    "impactCell": 128,
+    "impactFrames": 6,
+    "tiers": 3
+  }
+}
