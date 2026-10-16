@@ -29,4 +29,6 @@ Die visuelle Richtung orientiert sich an Nutzerfotos und -videos der Umgebung (M
 - Schnelltest: Syntax, Aufbau einmalig pro Grafik und 4 wiederverwendete Canvas bei Wiederholungsrendering.
 - CI: `node tests/style2-kirchende.test.cjs`, `node tests/kirchende-loading.test.cjs`, `node tests/terrain-polish.test.cjs`, `node tests/cache-busting.test.cjs` und übrige Suite.
 - Ausstehend: echter Android-Sicht-/FPS-Test (Portrait/Zoom, Szene mit vielen Einheiten), Test auf Überdeckung der Bauplätze durch Vegetation.
-- Noch kein automatischer GitHub-Pages-Tester für diesen Branch. `main` unverändert.
+- Isolierter GitHub-Pages-Tester: `https://imbaaalanced-dot.github.io/a/v4-style2/` (Veröffentlichung über Branch-Workflow). Die eigene Site enthält denselben Level-3-/Level-4-Grafikstand.
+- Nur im Vorschaupfad sind beide Kapitel direkt anwählbar. Kapitelabschlüsse für Level 3 und Level 4 werden von dieser Vorschau nicht als Freischaltung gespeichert; Beute-/Inventaraktionen folgen weiterhin der normalen Spielmechanik.
+- Die Hauptversion `main` ist unverändert. Der Cleanup-Schutz für `/v4-style2/` ist bislang nur im Entwicklungsworkflow enthalten; ein neuer Main-Deploy mit altem Cleanup kann den Testordner wieder entfernen.
