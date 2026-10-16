@@ -33,26 +33,24 @@
     const c=document.createElement('canvas');c.width=c.height=384;const q=c.getContext('2d');q.translate(192,144);
     q.fillStyle='#252d2440';q.fillRect(-145,-94,290,235);
     q.fillStyle='#59664b';q.fillRect(-142,-101,284,234);
-    for(let row=0;row<5;row++)for(let col=0;col<6;col++){
-      const x=-136+col*45,y=-96+row*44;
-      q.fillStyle=['#7e8070','#868575','#747b6b','#8e8b77'][(row*5+col*3)%4];q.fillRect(x,y,43,42);
-      q.fillStyle='#c5bfa129';q.fillRect(x+1,y+1,41,1);
-      q.strokeStyle='#525c463f';q.lineWidth=1;q.beginPath();q.moveTo(x+5,y+16);q.lineTo(x+18,y+22);q.lineTo(x+16,y+33);q.stroke();
-    }
-    for(let i=0;i<2800;i++){const x=-136+(i*73%270),y=-96+(i*131%220);q.fillStyle=i%2?'#bbb18a1c':'#40523924';q.fillRect(x,y,1+i%3,1);}
+    // The filmed terrace is leaf-covered earth, not a large tiled square.
+    q.fillStyle='#64523c';q.fillRect(-139,-98,278,229);
+    // Small stone footing immediately beneath the memorial keeps it grounded.
+    q.fillStyle='#777b69';q.fillRect(-61,-35,122,61);
+    q.strokeStyle='#b2ad91';q.lineWidth=2;q.strokeRect(-61,-35,122,61);
     // Low stone edging, worn joints and three shallow treads at the paved approach.
     q.strokeStyle='#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
     for(let i=0;i<3;i++){
-      q.fillStyle='#383e3388';q.fillRect(-44,138+i*11,128,11);
-      q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-44,134+i*11,128,8);
-      q.fillStyle='#d1cbb044';q.fillRect(-44,134+i*11,128,1);
+      q.fillStyle='#383e3388';q.fillRect(-64,138+i*11,128,11);
+      q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-64,134+i*11,128,8);
+      q.fillStyle='#d1cbb044';q.fillRect(-64,134+i*11,128,1);
     }
     // The separate, low memorial slab visible in the reference views.
     q.fillStyle='#313c3355';q.fillRect(-111,75,77,43);q.fillStyle='#6d7967';q.fillRect(-115,67,77,43);
     q.fillStyle='#a6ae94';q.fillRect(-115,64,77,38);q.strokeStyle='#ced1b24d';q.lineWidth=1;q.strokeRect(-113,66,73,34);
     // Fixed-seed leaf litter gathers around edges, not in an animated noise pass.
     let seed=1967;const random=()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);
-    for(let i=0;i<230;i++){
+    for(let i=0;i<650;i++){
       const x=-140+random()*280,y=-100+random()*232;
       if(Math.abs(x)<92&&y>-60&&y<65)continue;
       q.fillStyle=['#7f6546','#9c7c54','#b29b70','#5c6040'][i%4];q.save();q.translate(x,y);q.rotate(random()*3);

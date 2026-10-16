@@ -58,10 +58,19 @@ function context(){
 
 async function run(){
   {
+    const revised=manifest(3);revised.revision='kirchende-video-20261016-1';
+    const {api,requested}=harness({manifest:revised});
+    assert.equal(await api.load(3,{mobile:true,timeoutMs:50}),true);
+    const textures=requested.filter(value=>value.includes('.webp'));
+    assert.equal(textures.length,4);
+    assert.ok(textures.every(value=>value.endsWith('?v='+revised.revision)),
+      'revised map layers bypass cached artwork from the previous layout');
+  }
+  {
     const {api,requested}=harness();
     assert.equal(await api.load(1,{mobile:false,timeoutMs:50}),true);
     assert.equal(api.ready(1),true);
-    assert.ok(requested.includes('assets/maps/level-1/map.json?v=v4style2-1'));
+    assert.ok(requested.includes('assets/maps/level-1/map.json?v=v4style2-1-video1'));
     assert.equal(requested.filter(value=>value.includes('-desktop.webp')).length,4,'desktop selects only desktop layers');
     assert.equal(requested.some(value=>value.includes('-mobile.webp')),false);
     assert.equal(requested.some(value=>value.includes('/level-2/')),false,'only selected level is requested');

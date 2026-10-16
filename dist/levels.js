@@ -22,13 +22,13 @@
       if(pathDistance(p,maze)>=70&&Math.hypot(p.x-center.x,p.y-center.y)>100&&slots.every(s=>Math.hypot(s.x-p.x,s.y-p.y)>100))slots.push(p);
     }
   }
-  // Reference-derived layout: road along the lower edge, footpath to the left.
-  // Joining points under tree crowns remain an approximation, not survey data.
+  // Video review 2026-10-16: central slab approach and shallow stair.
+  // Four gameplay spawns remain; side/rear connections are reconstructed.
   const kirchendePaths=[
-    [[-340,-620],[-340,-260],[-250,-90],[0,0]],
-    [[-700,480],[-340,480],[-340,190],[-250,-90],[0,0]],
-    [[700,480],[160,480],[160,210],[90,90],[0,0]],
-    [[20,740],[20,480],[20,180],[0,0]]
+    [[-340,-620],[-340,-260],[-200,-160],[0,-160],[0,0]],
+    [[-700,700],[-180,700],[0,480],[0,180],[0,0]],
+    [[700,700],[180,700],[0,480],[0,180],[0,0]],
+    [[0,740],[0,480],[0,180],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
   const kirchendeSlots=[];
   const candidates=[[-450,-380],[-210,-360],[-470,-100],[-420,90],[-190,170],[-200,340],[270,310],[290,100],[190,-150],[20,-250],[430,320],[450,-150]];

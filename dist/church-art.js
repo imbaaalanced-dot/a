@@ -65,14 +65,21 @@
     g.fillStyle='#29302766';g.fillRect(-169,-128,336,296);
     g.fillStyle='#7d7f6f';g.fillRect(-163,-139,326,286);
     const rnd=seeded(1879);
-    for(let row=0;row<8;row++)for(let col=0;col<9;col++){
-      const x=-158+col*36,y=-135+row*35;
-      g.fillStyle=['#a09d89','#7f8578','#b6ae93','#898d7b'][Math.floor(rnd()*4)];
-      g.fillRect(x+1,y+1,34,33);
-      g.strokeStyle='#4e554a50';g.strokeRect(x+1,y+1,34,33);
-      g.fillStyle='#74806155';g.fillRect(x+3,y+25,8+rnd()*14,4);
+    // Curved rows of small cobbles visible around the real memorial plinth.
+    // No oversized square paving slabs around the lion.
+    g.save();g.beginPath();g.rect(-164,-139,328,286);g.clip();
+    g.fillStyle='#505e4c';g.fillRect(-164,-139,328,286);
+    for(let radius=25;radius<500;radius+=17){
+      const count=Math.ceil(Math.PI*2*radius/22);
+      for(let i=0;i<count;i++){
+        const angle=(i+(Math.floor(radius/17)%2)*.5)*Math.PI*2/count;
+        const x=Math.cos(angle)*radius,y=150+Math.sin(angle)*radius;
+        g.save();g.translate(x,y);g.rotate(angle+Math.PI/2);
+        g.fillStyle=['#a09d89','#7f8578','#b6ae93','#898d7b'][Math.floor(rnd()*4)];
+        g.beginPath();g.roundRect(-9,-6,18,12,2);g.fill();g.restore();
+      }
     }
-    g.strokeStyle='#bbb89b';g.lineWidth=8;g.strokeRect(-164,-139,328,286);
+    g.restore();
     return c;
   }
   function drawGround(ctx,cam,width,height){

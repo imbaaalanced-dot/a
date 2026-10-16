@@ -15,19 +15,21 @@ ROOT = Path(__file__).resolve().parents[1]
 MAP_ROOT = ROOT / "dist" / "assets" / "maps"
 SOURCE_ROOT = ROOT / "docs" / "art" / "source-material"
 
-LEVEL_PATHS = {
-    1: [[(1536, 936), CENTER], [(2136, 1536), CENTER], [(1536, 2136), CENTER], [(936, 1536), CENTER]],
-    2: [[(1096, 1096), (1976, 1096), (1976, 1976), (1096, 1976), (1096, 1376),
-         (1716, 1376), (1716, 1716), (1536, 1716), CENTER]],
-    3: [[(1196,916),(1196,1276),(1286,1446),CENTER],
-        [(836,2016),(1196,2016),(1196,1726),(1286,1446),CENTER],
-        [(2236,2016),(1696,2016),(1696,1746),(1626,1626),CENTER],
-        [(1556,2276),(1556,2016),(1556,1716),CENTER]],
-    4: [[(806,1166),(981,1171),(1101,1341),(1361,1411),CENTER],
-        [(801,1876),(1116,1881),(1286,1726),(1446,1606),CENTER],
-        [(2171,2236),(1906,2056),(1816,1806),(1661,1636),CENTER],
-        [(846,746),(921,1001),(1006,1276),(1336,1381),CENTER]],
-}
+# Runtime geometry is authoritative. Regenerating art must never silently keep
+# old road/slot coordinates after a level edit.
+import json
+import subprocess
+
+_GEOMETRY = json.loads(subprocess.check_output([
+    "node", "-e",
+    "const fs=require('fs'),vm=require('vm');"
+    "const s={localStorage:{getItem(){return null},setItem(){}}};"
+    "vm.createContext(s);vm.runInContext(fs.readFileSync(process.argv[1],'utf8'),s);"
+    "console.log(JSON.stringify(s.DenkmalLevels.levels));",
+    str(ROOT / "dist" / "levels.js")
+], text=True))
+LEVEL_PATHS = {int(n): [[(p["x"], p["y"]) for p in route] for route in level["paths"]]
+               for n, level in _GEOMETRY.items()}
 
 
 def distance_to_segment(point, a, b):
@@ -41,47 +43,7 @@ def path_distance(point, paths):
 
 
 def slots_for(level):
-    if level == 1:
-        gates = [route[0] for route in LEVEL_PATHS[1]]
-        slots = []
-        for gate in gates:
-            dx, dy = CENTER[0] - gate[0], CENTER[1] - gate[1]
-            length = math.hypot(dx, dy)
-            nx, ny = -dy / length, dx / length
-            for along in (165, 325, 485):
-                for side in (-1, 1):
-                    point = (gate[0] + dx * along / length + nx * 104 * side,
-                             gate[1] + dy * along / length + ny * 104 * side)
-                    if path_distance(point, LEVEL_PATHS[1]) >= 96 and math.dist(point, CENTER) > 145 and all(math.dist(point, old) > 94 for old in slots):
-                        slots.append(point)
-        return slots
-    if level == 2:
-        route = LEVEL_PATHS[2][0]
-        slots = []
-        for index in range(1, len(route)):
-            a, b = route[index - 1], route[index]
-            dx, dy, length = b[0] - a[0], b[1] - a[1], math.dist(a, b)
-            nx, ny = -dy / length, dx / length
-            along = 90
-            while along < length - 50:
-                for side in (-1, 1):
-                    point = (a[0] + dx * along / length + nx * 88 * side,
-                             a[1] + dy * along / length + ny * 88 * side)
-                    if path_distance(point, LEVEL_PATHS[2]) >= 70 and math.dist(point, CENTER) > 100 and all(math.dist(point, old) > 100 for old in slots):
-                        slots.append(point)
-                along += 160
-        return slots
-    if level == 3:
-        candidates=[(-450,-380),(-210,-360),(-470,-100),(-420,90),(-190,170),(-200,340),(270,310),(290,100),(190,-150),(20,-250),(430,320),(450,-150)]
-        return [(CENTER[0]+x,CENTER[1]+y) for x,y in candidates if path_distance((CENTER[0]+x,CENTER[1]+y),LEVEL_PATHS[3])>=64]
-    candidates=[(-760,-590),(-470,-810),(-240,-830),(100,-820),(320,-680),(340,-345),(310,-210),(510,-210),(-740,-50),(-550,-65),(-380,20),(-220,-250),(-160,380),(100,330),(230,390),(440,340),(560,190),(380,60),(70,-205),(520,520)]
-    church=(1121,1771,836,1246)
-    slots=[]
-    for x,y in candidates:
-        point=(CENTER[0]+x,CENTER[1]+y)
-        outside=point[0]<church[0]-40 or point[0]>church[1]+40 or point[1]<church[2]-40 or point[1]>church[3]+40
-        if path_distance(point,LEVEL_PATHS[4])>=84 and math.dist(point,CENTER)>=165 and outside and all(math.dist(point,old)>95 for old in slots):slots.append(point)
-    return slots
+    return [(p["x"], p["y"]) for p in _GEOMETRY[str(level)]["slots"]]
 
 
 def prepare_ground(source):
@@ -104,8 +66,29 @@ def draw_paths(level):
     layer = Image.new("RGBA", (WORLD, WORLD))
     draw = ImageDraw.Draw(layer, "RGBA")
     rng = random.Random(4000 + level)
+    # Film shows a broad cobbled forecourt wrapping around grass islands.
+    # Keep the church footprint and tower plots outside the paving mask.
+    if level == 4:
+        mask = Image.new("L", (WORLD, WORLD))
+        md = ImageDraw.Draw(mask)
+        md.ellipse((1240, 1270, 1795, 1745), fill=255)
+        for route in LEVEL_PATHS[4]:
+            md.line(route, fill=255, width=124, joint="curve")
+        clear_mask(mask, slots_for(4), 48)
+        cobbles = Image.new("RGBA", (WORLD, WORLD))
+        cd = ImageDraw.Draw(cobbles)
+        cd.rectangle((0, 0, WORLD, WORLD), fill=(69, 73, 65, 255))
+        for row, y in enumerate(range(640, 2380, 17)):
+            for x in range(650, 2370, 23):
+                xx = x + (row % 2) * 11
+                if mask.getpixel((min(xx, WORLD-1), y)):
+                    color = rng.choice(((139,142,127,255),(156,153,136,255),(119,128,116,255),(169,163,144,255)))
+                    cd.rounded_rectangle((xx, y, xx+20, y+14), radius=3, fill=color)
+        cobbles.putalpha(mask)
+        layer.alpha_composite(cobbles)
     for route_index,route in enumerate(LEVEL_PATHS[level]):
-        if level==3 and route_index<3:edge,stone,light=(69,57,43,238),(137,117,83,252),(190,156,102,105)
+        if level == 4: continue  # cobbled area already follows the runtime lanes
+        if level==3 and route_index==0:edge,stone,light=(69,57,43,238),(137,117,83,252),(190,156,102,105)
         elif level==4 or level==3:edge,stone,light=(66,65,58,238),(151,142,121,252),(210,187,139,110)
         else:edge,stone,light=(67,59,48,238),(142,125,95,252),(181,155,111,118)
         draw.line(route, fill=(2, 7, 9, 150), width=132, joint="curve")
@@ -262,9 +245,17 @@ def level_three_decor():
     segments=[((690,720),(1080,720)),((1320,720),(2380,720)),((2380,720),(2380,1810)),((2380,2080),(2380,2380)),
               ((1780,2380),(2380,2380)),((690,2380),(1350,2380)),((690,1510),(690,2380)),((690,720),(690,1220))]
     boundary_wall(back,segments)
-    for _ in range(54):
-        point=(rng.randint(760,2290),rng.randint(790,2290))
-        if path_distance(point,LEVEL_PATHS[3])>125 and math.dist(point,CENTER)>250 and all(math.dist(point,slot)>100 for slot in slots):grave(back,*point,rng)
+    # Sparse old markers at the side, as visible in clips 85807-85809.
+    # Their exact positions remain illustrative rather than measured.
+    for point in [(1100, 1530), (1090, 1690), (1880, 1320), (1950, 1540)]:
+        if path_distance(point,LEVEL_PATHS[3])>100 and all(math.dist(point,slot)>85 for slot in slots):
+            grave(back,*point,rng)
+    draw=ImageDraw.Draw(back,"RGBA")
+    # Leaf litter defines the small wooded clearing instead of a dense grave grid.
+    for _ in range(1400):
+        x,y=rng.randint(1000,2050),rng.randint(1100,2100)
+        if path_distance((x,y),LEVEL_PATHS[3])>70 and all(math.dist((x,y),slot)>48 for slot in slots):
+            draw.ellipse((x,y,x+5,y+2),fill=rng.choice(((127,75,39,130),(165,111,53,140),(101,79,42,150))))
     for edge in range(150,2920,175):
         for point in ((edge,rng.randint(100,380)),(edge,rng.randint(2680,2970)),(rng.randint(100,380),edge),(rng.randint(2680,2970),edge)):
             if path_distance(point,LEVEL_PATHS[3])>150:tree(back,*point,rng.randint(72,120),rng,autumn=rng.random()<.4)

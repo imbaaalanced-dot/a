@@ -53,7 +53,7 @@
     records.set(level,record);
     try{
       const work=(async()=>{
-        const response=await fetch(`assets/maps/level-${level}/map.json?v=v4style2-1`);
+        const response=await fetch(`assets/maps/level-${level}/map.json?v=v4style2-1-video1`);
         if(!response?.ok)throw new Error(`map manifest HTTP ${response?.status||0}`);
         const parsed=await response.json();
         if(!validManifest(parsed,level))throw new Error('invalid map manifest');
@@ -61,7 +61,7 @@
         const ordered=[...frozen.layers].sort((a,b)=>a.order-b.order);
         const layers=await Promise.all(ordered.map(async layer=>{
           const file=mobile?layer.mobile:layer.desktop;
-          const image=await decode(`assets/maps/level-${level}/${file}`,mobile);
+          const image=await decode(`assets/maps/level-${level}/${file}${frozen.revision?"?v="+encodeURIComponent(frozen.revision):""}`,mobile);
           return {definition:layer,image};
         }));
         if(records.get(level)!==record)throw new Error('map load superseded');
