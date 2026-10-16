@@ -5,6 +5,7 @@
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
     'assets/elemental/bow-towers-v1.webp?v=elemental1',
+    'assets/elemental/cannon-towers-v1.webp?v=elemental1',
     ...['mage','rift'].flatMap(kind=>['towers','projectiles','impacts'].map(type=>'assets/elemental/'+kind+'-'+type+'-v1.webp?v=elemental1')),
     'assets/kirchende/monument-photo-v2.webp?v=v400a5photo2',
     'assets/asset-atlas.png','assets/stone-terrain-v27.png','assets/guardian-atlas-v27.png',
