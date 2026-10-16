@@ -23,6 +23,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
  assert.equal(art.draw(ctx,'monument',100,200,235),true);assert.equal(calls.length,1,'decoded monument replaces the fallback');
  await art.load();assert.equal(images.length,warmImages+1,'ready images are reused');
  vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist/terrain-polish.js'),'utf8'),sandbox);
+ const oldCount=images.length;sandbox.DenkmalTerrain.load();assert.equal(images.length,oldCount+1);
  const ground=images.at(-1);ground.decodeFail();const groundImages=images.length;
  const groundRetry=sandbox.DenkmalTerrain.load();
  assert.equal(images.length,groundImages+1,'a failed ground texture can retry without reloading the page');

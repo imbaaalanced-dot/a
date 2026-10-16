@@ -311,7 +311,6 @@
     if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
     if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
-    if(level===3)globalThis.DenkmalTerrain?.load?.();
     if(level===3&&art?.ready&&!art.ready('monument')){
       const fromState=state;showToast('Denkmal wird geladen …');
       art.load(true).then(()=>{

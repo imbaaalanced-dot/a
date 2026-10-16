@@ -31,3 +31,9 @@ Preview levels 3/4 remain available without awarding the Kirchende campaign rewa
 Browser play check of the first build reached Kirchende successfully. The renderer applied the ground depth factor to the entire scene, which also compressed standing artwork. Standing objects now receive an inverse depth transform around their existing world anchor; the church bitmap receives the same correction around its existing base. Paths, camera picking and movement still use the oblique ground projection. This is still an approximation, not true isometry.
 
 The decoration layer now copies only the visible world rectangle, clipped to map bounds. Camera motion reuses the atlas. Regression tests verify stable sprite anchors, undistorted sprite height, transform restoration and camera clipping/cache reuse. Local Android emulation tests do not replace real-device FPS testing.
+
+## Follow-up: coherent ground painting
+
+Replaced repeated photographic ground in the active renderer with one deterministic, full-world 1536px painting: low-contrast moss/earth masses and sparse leaf clusters. All four maps share this palette through the terrain renderer; the first two retain their existing paving and hedges. Historical map footpaths now blend into the ground through nine graduated shoulder strokes. Road centrelines, core widths, object sizes and collision geometry are unchanged. Object proportion work remains separate.
+
+The old photo is removed from startup preloading and level-entry fetching. Its optional loader remains available for legacy callers. The shared ground painting adds roughly 9 MiB RGBA memory, reused across levels; the decoration atlas and Level1/2 map bitmap remain separate. No per-frame ground canvas allocation. A real Canvas render of Kirchende ground, routes and scenery was inspected; full Android gameplay visual/FPS assessment remains open. New regression tests cover no startup photo download, full-world source clipping and cache reuse.
