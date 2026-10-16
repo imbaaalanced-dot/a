@@ -53,5 +53,5 @@ assert.equal(canvases,cached,'canopy translucency must not allocate more buffers
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(html.includes('kirchende-art.js?v=v400a6s2p2'),'updated renderer must invalidate browser cache');
 const levels=fs.readFileSync(path.join(root,'levels.js'),'utf8');
-assert.ok(levels.includes('Kirchende'),'existing Kir­chende level remains available');
+assert.ok(levels.includes('KIRCHENDE'),'existing Kirchende level remains available');
 console.log('Style 2 Kirchende: baked light, moss, roots, transparency, caching and cache-key checks passed.');
