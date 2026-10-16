@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+assert.ok(fs.existsSync('dist/style2-markers.js'),'Style 2 marker renderer exists');
+let allocations=0,images=0,ghosts=0;const arcs=[],labels=[];
+const ctx=new Proxy({globalAlpha:1,drawImage(){images++;},arc(x,y,r){arcs.push(r);},fillText(s){labels.push(s);},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
+const box={Math,document:{createElement(){allocations++;return {getContext:()=>ctx};}}};vm.createContext(box);vm.runInContext(fs.readFileSync('dist/style2-markers.js','utf8'),box);
+const art=box.Style2Markers,p={x:120,y:140},before=JSON.stringify(p);
+art.drawPad(ctx,p);const warm=allocations;for(let i=0;i<100;i++)art.drawPad(ctx,p);
+assert.equal(warm,1);assert.equal(allocations,warm,'all pads reuse one stone/bronze bitmap');assert.equal(JSON.stringify(p),before);
+const preview={...p,kind:'mage',range:282,cost:46,role:'KONTROLLE',icon:'*',color:'#69bfff',valid:true,affordable:true};
+const snapshot=JSON.stringify(preview);art.drawPreview(ctx,preview,()=>{ghosts++;return true;});
+assert.equal(ghosts,1);assert.ok(arcs.includes(282),'range remains the actual world radius');assert.ok(labels.at(-1).includes('46'));assert.equal(JSON.stringify(preview),snapshot);
+art.drawPreview(ctx,{...preview,affordable:false},()=>true);assert.ok(labels.at(-1).includes('NICHT BAUBAR'));
+art.drawGate(ctx,p,{x:120,y:300},true);const gateWarm=allocations;for(let i=0;i<20;i++)art.drawGate(ctx,p,{x:120,y:300},true);
+assert.equal(allocations,gateWarm,'entrance marker reuses its cached bitmap');
+assert.equal(art.drawPreview(ctx,null,()=>{}),false);assert.equal(allocations,gateWarm);
+console.log('Style 2 markers: shared caches, immutable pads/previews, real range radius and visible cost/block state passed.');

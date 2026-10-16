@@ -137,7 +137,7 @@ function decorate(g,level,layout){
     shrubs(g,x,y,8+(i%3)*3,i);
   }
   // Build pads remain visually distinct even under the fully painted terrain.
-  for(const p of slots){
+  if(!globalThis.Style2Markers)for(const p of slots){
     circle(g,p.x,p.y,36,'#101e19aa','#c5ab7566');
     circle(g,p.x,p.y,29,'#29352b','#d8bc8266');
     for(let i=0;i<6;i++){

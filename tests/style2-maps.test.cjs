@@ -48,7 +48,7 @@ assert.equal(maps.draw(ctx,1,{x:900,y:900},1100,1100,layoutLevel(1)),true);
 assert.equal(maps.stats().builds,built+2,'switching back recreates one scene, not a second retained large atlas');
 assert.ok(draws>=28,'cached scenes are drawn as single source rectangles');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.match(html,/style2-maps\.js\?v=v400a6s2m6c/);
+assert.match(html,/style2-maps\.js\?v=v400a6markers1/);
 assert.ok(html.indexOf('style2-maps.js')<html.indexOf('game.js?v='),'map renderer loads before game');
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameplay,/Style2Maps\?\.draw/);
