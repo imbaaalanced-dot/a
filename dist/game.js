@@ -78,7 +78,8 @@
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
-  const level4Preview=!!globalThis.location?.pathname?.includes('/v4-level4/');
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/');
+  const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
   const towerRoles={
     bow:{label:'PRÄZISION',icon:'➶'},
@@ -230,7 +231,11 @@
   }
   function menuStatus(){
     setMapStatus('level2Btn',campaign.unlocked);
-    setMapStatus('level3Btn',lootModel.profile.level3);
+    setMapStatus('level3Btn',lootModel.profile.level3||style2Preview);
+    if(style2Preview&&!lootModel.profile.level3){
+      const label=$('level3Btn')?.querySelector('[data-map-status]');
+      if(label)label.textContent='TESTVORSCHAU';
+    }
     setMapStatus('level4Btn',lootModel.profile.kirchendeCompleted||level4Preview);
     if(level4Preview&&!lootModel.profile.kirchendeCompleted){
       const label=$('level4Btn')?.querySelector('[data-map-status]');
@@ -302,7 +307,7 @@
   function mainMenu(){levelLoadRequest++;if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1,mode='campaign'){
     level=[1,2,3,4].includes(level)?level:1;
-    if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
+    if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
     if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
     if(level===3)globalThis.DenkmalTerrain?.load?.();
@@ -347,7 +352,7 @@
     collectWaveLoot();rewardWave();
     if(game.level===1){campaign.unlock();lootModel.unlockLevel();}
     else if(game.level===2)lootModel.unlockLevel3();
-    else if(game.level===3)lootModel.claimKirchendeReward();
+    else if(game.level===3&&!style2Preview)lootModel.claimKirchendeReward();
     else if(game.level===4&&(!level4Preview||lootModel.profile.kirchendeCompleted))campaign.completeLevel4();
     saga.stopVoice();state='levelcomplete';clearInput();game.enemies=[];game.bullets=[];game.loot=[];
     $('levelCompleteTitle').textContent=game.level===1?'DAS LABYRINTH IST OFFEN':game.level===2?'KIRCHENDE IST OFFEN':game.level===3?'DIE DORFKIRCHE IST OFFEN':'DER SCHLAFENDE LÖWE IST SICHER';
