@@ -78,7 +78,7 @@
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
-  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/');
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
   const towerRoles={
@@ -597,6 +597,7 @@
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
   function drawGround(){
+    if((game.level===1||game.level===2)&&globalThis.Style2Maps?.draw?.(ctx,game.level,camera,W/zoom,H/zoom,{...campaign.levels[game.level],center:campaign.center}))return;
     if(game.level===4){globalThis.DenkmalChurch?.drawGround(ctx,camera,W/zoom,H/zoom);return;}
     if(game.level===3){const x=Math.max(0,camera.x-64),y=Math.max(0,camera.y-64),w=Math.min(WORLD_W-x,W/zoom+128),h=Math.min(WORLD_H-y,H/zoom+128);if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);else{ctx.fillStyle='#394b34';ctx.fillRect(x,y,w,h);}return;}
     const loaded=hellscape.complete&&hellscape.naturalWidth>0;
@@ -620,6 +621,8 @@
     if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
     if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     for(const [pathIndex,path] of level.paths.entries()){
+      // The cached Style 2 atlas already paints existing Level 1/2 routes.
+      if((game.level===1||game.level===2)&&globalThis.Style2Maps)continue;
       if(game.level===4&&globalThis.DenkmalChurch?.drawRoad){globalThis.DenkmalChurch.drawRoad(ctx,path);continue;}
       if(game.level===3&&globalThis.DenkmalTerrain?.drawRoad){globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:pathIndex===3?'slabs':'earth'});continue;}
       ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
