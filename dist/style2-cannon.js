@@ -100,6 +100,7 @@
     return c;
   }
   function tower(ctx,x,y,level,reduced=false){
+    if(globalThis.ElementalSprites?.drawTower(ctx,'cannon',x,y,level))return true;
     level=clampLevel(level);
     if(!towerCache.has(level))towerCache.set(level,makeTower(level));
     const art=towerCache.get(level),size=[94,102,110][level-1];

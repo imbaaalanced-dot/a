@@ -4,7 +4,7 @@
 const supported=new Set(['mage','rift']),images=new Map();
 const tier=value=>Math.max(1,Math.min(3,Math.floor(Number(value)||1)));
 function image(kind,type){
- if((!supported.has(kind)&&!(kind==='bow'&&type==='towers'))||typeof Image==='undefined')return null;
+ if((!supported.has(kind)&&!(['bow','cannon'].includes(kind)&&type==='towers'))||typeof Image==='undefined')return null;
  const key=kind+'-'+type;
  if(!images.has(key)){
   const entry={img:new Image(),failed:false,retryAt:0};images.set(key,entry);

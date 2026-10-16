@@ -17,3 +17,6 @@ All combat damage, slowing, chain-lightning targeting, route layout and build sl
 
 ## Bow follow-up
 Three generated bow tower tiers now use the same fixed-cell renderer. Only tower images are enabled for bow; existing projectile and impact renderers remain active. Source hash and crop boundaries are recorded in the manifest. All 22 Node test files pass; all three bow cells decode with transparent margins and the atlas was inspected over an opaque terrain color. Browser and Android verification remain pending.
+
+## Cannon follow-up
+Three generated cannon tower tiers use the fixed-cell image renderer through Style2Cannon, retaining procedural fallback and existing projectile/impact behavior. Bow and cannon image atlases are now included in automated decode, size and transparent-border checks. All 22 Node test files pass. Cannon sheet inspected over opaque terrain. Actual Android playthrough remains pending.

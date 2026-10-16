@@ -35,5 +35,12 @@
       1448,
       2172
     ]
+  },
+  "cannon": {
+    "sources": {
+      "exec-48ff0ef7-4947-41ca-911a-cfce0b201bbd.png": "efdb2dd76cdff5a73cdff443347d146bda8694a065d1a0141b2b1b27ff4e7351"
+    },
+    "towerCell": 512,
+    "tiers": 3
   }
 }

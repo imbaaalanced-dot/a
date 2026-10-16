@@ -41,8 +41,9 @@ for name,limit in [('monument-photo-v2.webp',160000),('ground-photo-v2.webp',350
 
 # Generated elemental atlases: genuine alpha, clean cell borders and bounded download size.
 elemental=root.parent/'elemental'
-for kind in ['mage','rift']:
+for kind in ['mage','rift','bow','cannon']:
     for typ,cell,cols,rows in [('towers',512,3,1),('projectiles',128,3,1),('impacts',128,6,3)]:
+        if kind in ['bow','cannon'] and typ!='towers':continue
         asset=elemental/f'{kind}-{typ}-v1.webp'
         with Image.open(asset) as image:
             image.load()
