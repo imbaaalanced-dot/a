@@ -36,8 +36,8 @@ function tile(){
 }
 function worldGround(g,level){
   g.fillStyle='#26362c';g.fillRect(0,0,WORLD,WORLD);
-  const pattern=g.createPattern(tile(),'repeat');
-  if(pattern){g.fillStyle=pattern;g.fillRect(0,0,WORLD,WORLD);}
+  if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(g,0,0,WORLD,WORLD);
+  else{const pattern=g.createPattern(tile(),'repeat');if(pattern){g.fillStyle=pattern;g.fillRect(0,0,WORLD,WORLD);}}
   const halo=g.createRadialGradient(1536,1510,130,1536,1510,1500);
   halo.addColorStop(0,level===1?'#b0a06a14':'#7e895e14');
   halo.addColorStop(.55,'#1d2d2600');halo.addColorStop(1,'#060c12a0');

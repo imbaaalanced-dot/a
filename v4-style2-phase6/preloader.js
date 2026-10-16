@@ -5,7 +5,6 @@
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
     'assets/kirchende/monument-photo-v2.webp?v=v400a5photo2',
-    'assets/kirchende/ground-photo-v2.webp?v=v400a5photo2',
     'assets/asset-atlas.png','assets/stone-terrain-v27.png','assets/guardian-atlas-v27.png',
     'assets/tower-bow-infernal-v1.png','assets/tower-cannon-ash-v1.png',
     'assets/tower-mage-hellfire-v1.png','assets/tower-rift-lance-v1.png',
