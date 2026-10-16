@@ -130,6 +130,7 @@
   }
   function drawTower(ctx,kind,x,y,level,reduced=false){
     if(!kinds.has(kind))return false;
+    if(globalThis.ElementalSprites?.drawTower(ctx,kind,x,y,level))return true;
     level=tier(level);const key=kind+level;
     if(!towerCache.has(key))towerCache.set(key,makeTower(kind,level));
     const size=[91,101,112][level-1];
@@ -173,6 +174,7 @@
   }
   function drawProjectile(ctx,b,reduced=false){
     if(!kinds.has(b?.kind))return false;
+    if(globalThis.ElementalSprites?.drawProjectile(ctx,b))return true;
     const level=tier(b.level),key=b.kind+level;
     if(!projectileCache.has(key))projectileCache.set(key,makeProjectile(b.kind,level));
     const size=b.kind==='bow'?[27,31,36][level-1]:[23,29,37][level-1];
@@ -209,6 +211,7 @@
   }
   function drawImpact(ctx,p){
     if(!p?.style2Impact||!kinds.has(p.kind))return false;
+    if(globalThis.ElementalSprites?.drawImpact(ctx,p))return true;
     const level=tier(p.level),progress=1-Math.max(0,p.life)/Math.max(.001,p.max);
     const frame=Math.max(0,Math.min(4,Math.floor(progress*5))),key=p.kind+level+'-'+frame;
     if(!impactCache.has(key))impactCache.set(key,makeImpact(p.kind,level,frame));
