@@ -70,7 +70,11 @@
         const life=reduced?.17:.3;
         push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,cannonImpact:true,level:bullet.level||1});
       }
-      if (spriteRows[bullet.kind] !== undefined && (bullet.kind!=='cannon'||!globalThis.Style2Cannon?.drawImpact) && game.particles.length < MAX_PARTICLES) {
+      if(['bow','mage','rift'].includes(bullet.kind)&&globalThis.Style2Towers?.drawImpact){
+        const life=reduced?.15:.25;
+        push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,style2Impact:true,kind:bullet.kind,level:bullet.level||1});
+      }
+      if (spriteRows[bullet.kind] !== undefined && (bullet.kind!=='cannon'||!globalThis.Style2Cannon?.drawImpact) && (!['bow','mage','rift'].includes(bullet.kind)||!globalThis.Style2Towers?.drawImpact) && game.particles.length < MAX_PARTICLES) {
         const life = reduced ? .16 : .28;
         game.particles.push({x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:22,color:bullet.color,spriteFx:true,kind:bullet.kind});
       }
@@ -130,6 +134,7 @@
   }
   function draw(ctx,b,reduced) {
     if(b.kind==='cannon'&&globalThis.Style2Cannon?.drawProjectile?.(ctx,b,reduced))return;
+    if(globalThis.Style2Towers?.drawProjectile?.(ctx,b,reduced))return;
     const kind=b.kind||'magic', level=b.level||1, arrow=kind==='bow'||kind==='ballista',heavy=kind==='cannon'||kind==='mortar';
     const travelFrame=1+(Math.floor(Math.max(0,1.1-(b.life??1.1))*12)%3);
     if(drawSprite(ctx,kind,travelFrame,b.x,b.y,Math.atan2(b.vy,b.vx),.8+level*.08,1))return;
@@ -151,6 +156,7 @@
   function drawParticle(ctx,p){
     if(!p)return false;
     if(p.cannonImpact&&globalThis.Style2Cannon?.drawImpact?.(ctx,p))return true;
+    if(p.style2Impact&&globalThis.Style2Towers?.drawImpact?.(ctx,p))return true;
     if(p.spriteFx){
       const progress=1-Math.max(0,p.life)/Math.max(.001,p.max);
       const frame=4+Math.min(2,Math.floor(progress*3));
