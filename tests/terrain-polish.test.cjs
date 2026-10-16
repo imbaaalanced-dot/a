@@ -7,7 +7,7 @@ function context(){
  const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;},drawImage(){calls.images++;},
  setLineDash(value){calls.dashes.push(value);},
  createPattern(){patterns++;return {pattern:true};},
- createRadialGradient(){return {addColorStop(){}}}};
+ createRadialGradient(){return {addColorStop(){}}},createLinearGradient(){return {addColorStop(){}}}};
  return new Proxy(out,{get:(obj,key)=>key in obj?obj[key]:(()=>{}),set:(obj,key,value)=>(obj[key]=value,true)});
 }
 const sandbox={document:{createElement(){canvases++;return {getContext:context};}},Math};
@@ -35,7 +35,7 @@ assert.equal(patterns,warmRoadPatterns,'the paved approach reuses its texture');
 forest.drawCrown(ctx,120,150,90,0);
 const firstCanvases=canvases;forest.drawCrown(ctx,120,150,90,5);
 assert.equal(canvases,firstCanvases,'same foliage variant reuses its sprite');
-assert.equal(ctx.calls.images,2,'forest crowns draw successfully');
+assert.equal(ctx.calls.images,4,'two cached ground draws and two forest crowns render successfully');
 for(let i=0;i<5;i++)forest.drawCrown(ctx,120,150,90,i);
 for(let i=0;i<3;i++)forest.drawShrub(ctx,90,110,50,i);
 const allVariants=canvases;

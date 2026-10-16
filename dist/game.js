@@ -78,7 +78,8 @@
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
-  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/');
+  const viewDepth=globalThis.Style2Phase6?.depth||1;
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
   const towerRoles={
@@ -211,7 +212,7 @@
   }
   function updateCamera(dt=0){
     if(!game)return;
-    const vw=W/zoom,vh=H/zoom,focusY=portraitLayout()?.43:.5,targetLead=cameraLead();
+    const vw=W/zoom,vh=H/(zoom*viewDepth),focusY=portraitLayout()?.43:.5,targetLead=cameraLead();
     const alpha=dt>0?1-Math.exp(-dt*(mobileRender?9:11)):1;
     cameraLeadState.x+=(targetLead.x-cameraLeadState.x)*alpha;
     cameraLeadState.y+=(targetLead.y-cameraLeadState.y)*alpha;
@@ -219,7 +220,7 @@
     camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x+lead.x-vw*.5,0,WORLD_W-vw);
     camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y-vh*focusY,0,WORLD_H-vh);
   }
-  function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/zoom+camera.y};}
+  function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/(zoom*viewDepth)+camera.y};}
   function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
@@ -310,7 +311,6 @@
     if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
     if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
-    if(level===3)globalThis.DenkmalTerrain?.load?.();
     if(level===3&&art?.ready&&!art.ready('monument')){
       const fromState=state;showToast('Denkmal wird geladen …');
       art.load(true).then(()=>{
@@ -468,7 +468,7 @@
     const h=game.hero,probe={x:h.x+facing.x*58,y:h.y+facing.y*58},p=campaign.nearestSlot(probe,game.level);
     if(!p||game.towers.some(t=>dist(t,p)<20))return null;
     const spec=towerSpecs[game.selectedTower],role=towerRoles[game.selectedTower]||{label:'TURM',icon:'▲'};
-    return {x:p.x,y:p.y,range:spec.range,color:spec.color,role:role.label,icon:role.icon,affordable:game.essence>=spec.cost&&game.towers.length<game.maxTowers,valid:placementError(p)===''};
+    return {x:p.x,y:p.y,kind:game.selectedTower,cost:spec.cost,range:spec.range,color:spec.color,role:role.label,icon:role.icon,affordable:game.essence>=spec.cost&&game.towers.length<game.maxTowers,valid:placementError(p)===''};
   }
   function buildContextActive(){if(state!=='playing')return false;return placementError(towerPosition())==='';}
   function placementError(p){const level=campaign.levels[game.level];if(level.slots.length&&!level.slots.some(s=>dist(s,p)<1))return 'NUR AUF MARKIERTEN BAUPLÄTZEN';if(level.gates.some(g=>dist(g,p)<75))return 'TOR FREIHALTEN';if(p.x<28||p.x>WORLD_W-28||p.y<28||p.y>WORLD_H-28)return 'ZU NAH AM WELTRAND';if(level.paths.some(path=>campaign.pathDistance(p,path)<64))return 'NEBEN DEM WEG BAUEN';if(dist(p,game.monument)<110)return 'ZU NAH AM MONUMENT';if(game.towers.some(t=>dist(p,t)<62))return 'BAUPLATZ BELEGT';return '';}
@@ -597,9 +597,9 @@
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
   function drawGround(){
-    if((game.level===1||game.level===2)&&globalThis.Style2Maps?.draw?.(ctx,game.level,camera,W/zoom,H/zoom,{...campaign.levels[game.level],center:campaign.center}))return;
-    if(game.level===4){globalThis.DenkmalChurch?.drawGround(ctx,camera,W/zoom,H/zoom);return;}
-    if(game.level===3){const x=Math.max(0,camera.x-64),y=Math.max(0,camera.y-64),w=Math.min(WORLD_W-x,W/zoom+128),h=Math.min(WORLD_H-y,H/zoom+128);if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);else{ctx.fillStyle='#394b34';ctx.fillRect(x,y,w,h);}return;}
+    if((game.level===1||game.level===2)&&globalThis.Style2Maps?.draw?.(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),{...campaign.levels[game.level],center:campaign.center}))return;
+    if(game.level===4){globalThis.DenkmalChurch?.drawGround(ctx,camera,W/zoom,H/(zoom*viewDepth));return;}
+    if(game.level===3){const x=Math.max(0,camera.x-64),y=Math.max(0,camera.y-64),w=Math.min(WORLD_W-x,W/zoom+128),h=Math.min(WORLD_H-y,H/(zoom*viewDepth)+128);if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);else{ctx.fillStyle='#394b34';ctx.fillRect(x,y,w,h);}return;}
     const loaded=hellscape.complete&&hellscape.naturalWidth>0;
     if(!groundCache||loaded!==groundLoaded){
       groundLoaded=loaded;groundCache=document.createElement('canvas');groundCache.width=1536;groundCache.height=1536;
@@ -609,12 +609,12 @@
       const v=q.createRadialGradient(1536,1536,180,1536,1536,WORLD_W*.72);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(7,12,14,.3)');q.fillStyle=v;q.fillRect(0,0,WORLD_W,WORLD_H);
       const fog=q.createLinearGradient(0,WORLD_H*.45,0,WORLD_H);fog.addColorStop(0,'transparent');fog.addColorStop(1,'#66746c12');q.fillStyle=fog;q.fillRect(0,WORLD_H*.4,WORLD_W,WORLD_H*.6);
     }
-    const x=Math.max(0,camera.x-32),y=Math.max(0,camera.y-32),w=Math.min(WORLD_W-x,W/zoom+64),h=Math.min(WORLD_H-y,H/zoom+64);
-    ctx.fillStyle='#151b1b';ctx.fillRect(camera.x-32,camera.y-32,W/zoom+64,H/zoom+64);
+    const x=Math.max(0,camera.x-32),y=Math.max(0,camera.y-32),w=Math.min(WORLD_W-x,W/zoom+64),h=Math.min(WORLD_H-y,H/(zoom*viewDepth)+64);
+    ctx.fillStyle='#151b1b';ctx.fillRect(camera.x-32,camera.y-32,W/zoom+64,H/(zoom*viewDepth)+64);
     ctx.drawImage(groundCache,x/2,y/2,w/2,h/2,x,y,w,h);
     ctx.save();ctx.translate(game.monument.x,game.monument.y);ctx.rotate(time*.015);ctx.strokeStyle='#bca16a28';ctx.lineWidth=2;for(let r of [105,132]){ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke()}for(let i=0;i<8;i++){const a=i*Math.PI/4;diamond(Math.cos(a)*118,Math.sin(a)*118,5,3,'#c4a96b30')}ctx.restore();
   }
-  function visible(o,margin=180){return o.x+margin>=camera.x&&o.x-margin<=camera.x+W/zoom&&o.y+margin>=camera.y&&o.y-margin<=camera.y+H/zoom;}
+  function visible(o,margin=180){return o.x+margin>=camera.x&&o.x-margin<=camera.x+W/zoom&&o.y+margin>=camera.y&&o.y-margin<=camera.y+H/(zoom*viewDepth);}
 
   function drawLevel(){
     const level=campaign.levels[game.level];
@@ -632,8 +632,8 @@
     }
     if(game.level===3)globalThis.KirchendeArt?.drawSite(ctx,campaign.center);
     if(game.level===4)globalThis.DenkmalChurch?.drawSite(ctx,campaign.center);
-    for(const p of level.slots){if(!visible(p,35))continue;if(game.towers.some(t=>dist(t,p)<20))continue;ctx.strokeStyle='#d6c38c';ctx.fillStyle='#14201fdd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#e1cc8d';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText('+',p.x,p.y+8);}
-    level.gates.forEach((p,i)=>{if(!visible(p))return;const gates=campaign.getWaveGates(game.level,game.wave),active=game.intermission<=0&&game.waveSpawned<game.waveTotal&&i===gates[game.waveSpawned%gates.length];if(game.level===3||game.level===4){ctx.fillStyle=active?'#efce8a':'#bfb897';ctx.font='700 15px sans-serif';ctx.textAlign='center';ctx.fillText((game.level===4?['KIRCHHOF NORD','DORFWEG WEST','GARTENWEG','PFARRWEG']:['FUSSWEG','DORFWEG LINKS','DORFWEG RECHTS','KIRCHWEG'])[i],p.x,p.y-30);ctx.strokeStyle=active?'#efce8a':'#bfb89755';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,35,0,7);ctx.stroke();return;}ctx.strokeStyle=active?'#f0b873cc':'#bda66c55';ctx.lineWidth=active?4:2;ctx.beginPath();ctx.arc(p.x,p.y,54+(active?Math.sin(time*4)*5:0),0,Math.PI*2);ctx.stroke();ctx.fillStyle=active?'#f0c982':'#b9aa7a';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(game.level===1?`TOR ${i+1}`:'EINGANG',p.x,p.y+72);if(active){ctx.strokeStyle='#d6886388';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,48+Math.sin(time*4)*4,0,Math.PI*2);ctx.stroke();}if(globalThis.DenkmalArt?.draw(ctx,'gate',p.x,p.y,116)){ctx.fillStyle='#d7c8a1';ctx.textAlign='center';ctx.font='600 16px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-115);return;}ctx.fillStyle='#171719';ctx.strokeStyle='#cf8d52';ctx.lineWidth=5;ctx.fillRect(p.x-38,p.y-38,76,76);ctx.strokeRect(p.x-38,p.y-38,76,76);ctx.fillStyle='#a64b2b';ctx.fillRect(p.x-23,p.y-29,46,58);ctx.fillStyle='#ffe0a1';ctx.textAlign='center';ctx.font='bold 15px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-52);});
+    for(const p of level.slots){if(!visible(p,35))continue;if(game.towers.some(t=>dist(t,p)<20))continue;if(globalThis.Style2Markers?.drawPad(ctx,p))continue;ctx.strokeStyle='#d6c38c';ctx.fillStyle='#14201fdd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#e1cc8d';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText('+',p.x,p.y+8);}
+    level.gates.forEach((p,i)=>{if(!visible(p))return;const gates=campaign.getWaveGates(game.level,game.wave),active=game.intermission<=0&&game.waveSpawned<game.waveTotal&&i===gates[game.waveSpawned%gates.length];if(game.level===3||game.level===4){ctx.fillStyle=active?'#efce8a':'#bfb897';ctx.font='700 15px sans-serif';ctx.textAlign='center';ctx.fillText((game.level===4?['KIRCHHOF NORD','DORFWEG WEST','GARTENWEG','PFARRWEG']:['FUSSWEG','DORFWEG LINKS','DORFWEG RECHTS','KIRCHWEG'])[i],p.x,p.y-30);if(!globalThis.Style2Markers?.drawGate(ctx,p,level.paths[i]?.[1]||campaign.center,active)){ctx.strokeStyle=active?'#efce8a':'#bfb89755';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,35,0,7);ctx.stroke();}return;}ctx.strokeStyle=active?'#f0b873cc':'#bda66c55';ctx.lineWidth=active?4:2;ctx.beginPath();ctx.arc(p.x,p.y,54+(active?Math.sin(time*4)*5:0),0,Math.PI*2);ctx.stroke();ctx.fillStyle=active?'#f0c982':'#b9aa7a';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(game.level===1?`TOR ${i+1}`:'EINGANG',p.x,p.y+72);if(active){ctx.strokeStyle='#d6886388';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,48+Math.sin(time*4)*4,0,Math.PI*2);ctx.stroke();}if(globalThis.DenkmalArt?.draw(ctx,'gate',p.x,p.y,116)){ctx.fillStyle='#d7c8a1';ctx.textAlign='center';ctx.font='600 16px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-115);return;}ctx.fillStyle='#171719';ctx.strokeStyle='#cf8d52';ctx.lineWidth=5;ctx.fillRect(p.x-38,p.y-38,76,76);ctx.strokeRect(p.x-38,p.y-38,76,76);ctx.fillStyle='#a64b2b';ctx.fillRect(p.x-23,p.y-29,46,58);ctx.fillStyle='#ffe0a1';ctx.textAlign='center';ctx.font='bold 15px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-52);});
     ctx.restore();
   }
   function shadow(x,y,r){ctx.beginPath();ctx.ellipse(x,y+r*.65,r*1.25,r*.48,0,0,Math.PI*2);ctx.fillStyle='#0005';ctx.fill()}
@@ -716,6 +716,11 @@
   function drawBoomerangProjectile(b){ctx.save();ctx.translate(b.x,b.y);ctx.rotate(time*13);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#694e2c';ctx.lineWidth=11;ctx.beginPath();ctx.moveTo(-15,7);ctx.lineTo(0,-10);ctx.lineTo(15,7);ctx.stroke();ctx.strokeStyle='#f0d38f';ctx.lineWidth=6;ctx.stroke();ctx.fillStyle='#fff3c0';ctx.beginPath();ctx.arc(0,-10,2,0,Math.PI*2);ctx.fill();ctx.restore();}
   function drawPlacementPreview(preview){
     if(!preview)return;
+    if(globalThis.Style2Markers?.drawPreview(ctx,preview,()=>{
+      const paint=()=>drawTower({kind:preview.kind,x:0,y:0,level:1});
+      if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:0,y:0},paint);else paint();
+      return true;
+    }))return;
     ctx.save();ctx.translate(preview.x,preview.y);
     const ok=preview.valid&&preview.affordable;
     ctx.globalAlpha=ok?.18:.12;ctx.fillStyle=ok?preview.color:'#c56c5d';ctx.beginPath();ctx.arc(0,0,preview.range,0,Math.PI*2);ctx.fill();
@@ -724,7 +729,7 @@
     ctx.fillStyle=ok?'#f0ddb0':'#e59a8e';ctx.textAlign='center';ctx.font='700 18px sans-serif';ctx.fillText(preview.icon,0,6);
     ctx.font='700 10px sans-serif';ctx.fillText(preview.role,0,46);ctx.restore();
   }
-  function worldToScreen(p){return {x:(p.x-camera.x)*zoom,y:(p.y-camera.y)*zoom};}
+  function worldToScreen(p){return {x:(p.x-camera.x)*zoom,y:(p.y-camera.y)*zoom*viewDepth};}
   function threatIndicators(){
     if(!game||state!=='playing')return [];
     const out=[],level=campaign.levels[game.level];
@@ -747,7 +752,7 @@
       ctx.save();ctx.fillStyle='#eee2c8';ctx.font='700 10px sans-serif';ctx.textAlign='center';ctx.fillText(indicator.label,x,y+20);ctx.restore();
     }
   }
-  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom);ctx.translate(-camera.x,-camera.y);drawGround();drawLevel();const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,...game.enemies]);for(const l of game.loot){if(!visible(l,35))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
+  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();globalThis.Style2Phase6?.draw(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},camera,W/zoom,H/(zoom*viewDepth));drawLevel();const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){const paint=()=>{if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)};if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,paint);else paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,...game.enemies]);for(const l of game.loot){if(!visible(l,35))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
   function updateTelemetry(now){

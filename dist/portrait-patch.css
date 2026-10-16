@@ -134,3 +134,16 @@
   .hud-menu-panel{touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:contain;box-shadow:0 12px 32px #0009}
   .hud-menu-panel button{min-height:48px}
 }
+
+/* Phase 6: thumb-sized menu and tower choices with safe-area bounds. */
+.hud-menu-panel{max-height:calc(100dvh - 96px - env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain}
+.hud-menu summary:focus-visible,.arsenal button:focus-visible,.controls button:focus-visible{outline:2px solid #f0d69a;outline-offset:3px}
+@media(pointer:coarse){
+ .hud-menu summary,.header-actions>.icon-btn{min-height:48px;min-width:48px;display:flex;align-items:center;justify-content:center}
+ .hud-menu-panel button,.arsenal button,.controls .action-btn{min-height:48px;touch-action:manipulation}
+ .joystick{border:2px solid #d5b679aa;box-shadow:0 3px 18px #0007,inset 0 0 18px #d5b67918}
+}
+@media(pointer:coarse) and (orientation:landscape) and (max-height:500px){
+ .hud-menu-panel{width:min(340px,70vw);grid-template-columns:repeat(2,minmax(0,1fr));max-height:calc(100dvh - 78px - env(safe-area-inset-bottom,0px))}
+ .joystick{bottom:max(14px,env(safe-area-inset-bottom,0px));left:max(14px,env(safe-area-inset-left,0px))}
+}
