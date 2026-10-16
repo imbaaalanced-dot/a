@@ -38,12 +38,44 @@
       const x=250+r()*345,y=86+r()*118;
       g.strokeStyle=['#6e7580','#313a42','#858b89'][i%3];g.lineWidth=.8;g.beginPath();g.moveTo(x,y);g.lineTo(x+14,y-2);g.stroke();
     }
+    // STYLE 2: Slate-scale courses, chipped ridges and aged roof patina.
+    // Drawn once into the church bitmap; no new per-frame textures.
+    g.save();
+    g.beginPath();g.moveTo(289,75);g.lineTo(630,75);g.lineTo(600,211);g.lineTo(218,211);g.closePath();g.clip();
+    const slate=seeded(1759);
+    for(let row=0;row<14;row++){
+      const yy=79+row*10.5;
+      for(let col=0;col<26;col++){
+        const xx=213+col*17+(row%2)*8;
+        g.strokeStyle=['#a6adb238','#1b293251','#b5b6aa31','#202c3650'][Math.floor(slate()*4)];
+        g.lineWidth=.8+slate()*.6;
+        g.beginPath();g.moveTo(xx,yy);g.lineTo(xx+14,yy-2);g.stroke();
+        if(slate()<.11){g.fillStyle='#8a917d3b';g.fillRect(xx+3,yy-3,3+slate()*7,1.5);}
+      }
+    }
+    g.restore();
+    g.strokeStyle='#c2b89b83';g.lineWidth=3;g.beginPath();
+    g.moveTo(288,77);g.lineTo(629,77);g.stroke();
+    // Faint wall seams and natural sandstone discoloration stay inside the masonry.
+    const masonry=seeded(1760);
+    for(let i=0;i<110;i++){
+      const x=220+masonry()*324,y=289+masonry()*360;
+      g.strokeStyle=i%3?'#4d53482b':'#d1c4a02c';g.lineWidth=.8+masonry();
+      g.beginPath();g.moveTo(x,y);g.lineTo(x+5+masonry()*12,y+1);g.stroke();
+    }
     // Three tall arched windows with sandstone surrounds.
     for(const x of [247,345,443]){
       g.fillStyle='#c9c0a5';g.beginPath();g.roundRect(x,443,45,100,[22,22,4,4]);g.fill();
-      g.fillStyle='#283c43';g.beginPath();g.roundRect(x+5,449,35,88,[18,18,2,2]);g.fill();
+      const glass=g.createLinearGradient(x,449,x,537);
+      glass.addColorStop(0,'#92714a');glass.addColorStop(.28,'#66583d');
+      glass.addColorStop(.65,'#304344');glass.addColorStop(1,'#26373b');
+      g.fillStyle=glass;g.beginPath();g.roundRect(x+5,449,35,88,[18,18,2,2]);g.fill();
+      g.fillStyle='#f1bc6430';g.fillRect(x+9,474,5,37);
       g.strokeStyle='#9b9d8d';g.lineWidth=2;g.beginPath();g.moveTo(x+22,454);g.lineTo(x+22,531);g.stroke();
     }
+    // Slate courses and ochre edge highlights define the church silhouette.
+    g.strokeStyle='#cabf9c46';g.lineWidth=2;g.beginPath();
+    g.moveTo(141,268);g.lineTo(218,210);g.lineTo(601,210);g.stroke();
     // Thick square tower and slate belfry with the distinctive clock.
     brick(g,48,180,167,432,381);brick(g,62,130,136,95,737);
     polygon(g,[[42,145],[127,-21],[221,145]],'#4e5b65','#343e46');
@@ -72,6 +104,28 @@
       g.strokeStyle='#4e554a50';g.strokeRect(x+1,y+1,34,33);
       g.fillStyle='#74806155';g.fillRect(x+3,y+25,8+rnd()*14,4);
     }
+    // STYLE 2: stone fractures, moss in joints and autumn debris near the edges.
+    // Preserve a clean reading area around the lion's collision point.
+    for(let i=0;i<175;i++){
+      const x=-155+rnd()*311,y=-133+rnd()*272;
+      if(Math.abs(x)<91&&Math.abs(y)<92)continue;
+      g.strokeStyle=['#38483b69','#d4c2a737','#51584851'][i%3];
+      g.lineWidth=.6+rnd()*1.3;g.beginPath();g.moveTo(x,y);
+      g.lineTo(x+2+rnd()*9,y+1+rnd()*6);
+      if(i%4===0)g.lineTo(x+6+rnd()*11,y+4+rnd()*11);
+      g.stroke();
+    }
+    for(let i=0;i<220;i++){
+      const x=-158+rnd()*316,y=-135+rnd()*273;
+      if(Math.abs(x)<105&&Math.abs(y)<93)continue;
+      const w=2+rnd()*7;
+      g.fillStyle=i%3===0?'#5366478a':i%3===1?'#8b744cad':'#ab8b5d9c';
+      g.beginPath();g.ellipse(x,y,w,1+rnd()*2,rnd()*Math.PI,0,Math.PI*2);g.fill();
+    }
+    // Warm late-afternoon highlights are baked into the cached paving texture.
+    const warm=g.createRadialGradient(-104,-89,5,-104,-89,113);
+    warm.addColorStop(0,'#f6c77929');warm.addColorStop(1,'#f6c77900');
+    g.fillStyle=warm;g.fillRect(-163,-139,210,215);
     g.strokeStyle='#bbb89b';g.lineWidth=8;g.strokeRect(-164,-139,328,286);
     return c;
   }

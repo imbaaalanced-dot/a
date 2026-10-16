@@ -8,12 +8,12 @@ const localStorage={
   getItem(k){return data.get(k)||null;},
   setItem(k,v){writes.push([k,v]);data.set(k,v);}
 };
-let canvases=0,drawn=0,lionDate=false;
+let canvases=0,drawn=0,lionDate=false,style2Radials=0;
 const imageCalls=[];
 const ctx=new Proxy({
   drawImage(...args){drawn++;imageCalls.push(args);},
   fillText(t){if(t==='1879')lionDate=true;},
-  createRadialGradient(){return {addColorStop(){}};},
+  createRadialGradient(){style2Radials++;return {addColorStop(){}};},
   createLinearGradient(){return {addColorStop(){}};}
 },{get:(obj,key)=>key in obj?obj[key]:()=>{}});
 const sandbox={
@@ -81,6 +81,7 @@ assert.ok(churchDraw[2]+churchDraw[4]<-150,'church must leave a clear forecourt 
 const lionDraw=imageCalls.find(args=>args.length===5&&args[1]===c.x-128&&args[2]===c.y-293&&args[3]===256&&args[4]===304);
 assert.ok(lionDraw,'detailed memorial art must render at the exact combat objective');
 assert.ok(lionDate,'sleeping lion honors the 1879 memorial, not the 1927 memorial');
+assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
 const n=canvases;
 art.drawBackdrop(ctx,c);art.drawSite(ctx,c);art.drawCanopies(ctx,c,[]);
 art.drawLion(ctx,{...c,hp:300,maxHp:500});
