@@ -58,9 +58,60 @@
       q.fillStyle=['#7f6546','#9c7c54','#b29b70','#5c6040'][i%4];q.save();q.translate(x,y);q.rotate(random()*3);
       q.beginPath();q.ellipse(0,0,1+random()*3,.8+random()*1.4,0,0,7);q.fill();q.restore();
     }
+    // STYLE 2: weathered joints, edge moss, and subtle canopy light on the stone plaza.
+    // Keep the monument's center clear and bake all details into this cached 384px canvas.
+    q.save();q.beginPath();q.rect(-140,-100,280,232);q.clip();
+    for(let i=0;i<58;i++){
+      const x=-133+random()*265,y=-94+random()*220;
+      if(Math.abs(x)<65&&y>-78&&y<75)continue;
+      q.strokeStyle=i%3===0?'#c9c0a535':'#323c354f';
+      q.lineWidth=.6+random()*1.2;q.beginPath();q.moveTo(x,y);
+      q.lineTo(x+4+random()*10,y+1+random()*5);
+      if(i%3===0)q.lineTo(x+8+random()*13,y+5+random()*9);
+      q.stroke();
+    }
+    for(let i=0;i<170;i++){
+      const x=-136+random()*273,y=-97+random()*223;
+      if(Math.abs(x)<97&&y>-77&&y<72)continue;
+      q.fillStyle=['#4a62465b','#66784f70','#a18a5e68','#ad986753'][i%4];
+      q.beginPath();q.ellipse(x,y,1+random()*4,.7+random()*2,random()*Math.PI,0,Math.PI*2);q.fill();
+    }
+    const dapple=q.createRadialGradient(-115,-90,6,-115,-90,186);
+    dapple.addColorStop(0,'#f1bd7522');
+    dapple.addColorStop(.55,'#cfa5650c');
+    dapple.addColorStop(1,'#f1bd7500');
+    q.fillStyle=dapple;q.fillRect(-140,-100,280,232);
+    // Shaded outer joints give the paved center more depth without obscuring towers.
+    const shade=q.createLinearGradient(-140,-100,140,132);
+    shade.addColorStop(0,'#18251d2a');shade.addColorStop(.45,'#1b241b00');
+    shade.addColorStop(1,'#1b251c24');
+    q.fillStyle=shade;q.fillRect(-140,-100,280,232);
+    q.restore();
     return c;
   }
   function drawSite(ctx,center){if(!site)site=createSite();ctx.drawImage(site,center.x-192,center.y-144);}
+  // Three small, deterministic root-and-leaf decals; each is cached once and reused.
+  // Decoration is visual only: no changes to navigation, cover or enemy collisions.
+  const rootPatches=[];
+  function rootPatch(variant){
+    if(rootPatches[variant])return rootPatches[variant];
+    const canvas=document.createElement('canvas');canvas.width=192;canvas.height=112;
+    const g=canvas.getContext('2d'),r=(()=>{
+      let seed=2107+variant*913;return ()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);
+    })();
+    const shadow=g.createRadialGradient(96,64,2,96,64,91);
+    shadow.addColorStop(0,'#15201971');shadow.addColorStop(.6,'#2631242f');
+    shadow.addColorStop(1,'#26312400');
+    g.fillStyle=shadow;g.fillRect(0,0,192,112);
+    for(let i=0;i<75;i++){
+      const x=18+r()*158,y=22+r()*70;
+      // A few low-contrast leaves and moss clumps at the tree foot.
+      g.fillStyle=['#6d744151','#a08a5b65','#4e614951','#8064475a'][i%4];
+      g.beginPath();g.ellipse(x,y,1.5+r()*5,.6+r()*2.6,r()*Math.PI,0,Math.PI*2);g.fill();
+    }
+    rootPatches[variant]=canvas;
+    return canvas;
+  }
   function bench(ctx,x,y,angle){
     ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.fillStyle='#28342e55';ctx.fillRect(-9,-33,25,76);
     ctx.fillStyle='#3f463b';for(const y of [-23,24])ctx.fillRect(-6,y,20,5);
@@ -80,6 +131,10 @@
       building(ctx,-790,-430,185,205,true);building(ctx,590,-475,230,300);
       ctx.fillStyle='#77786b';ctx.fillRect(-820,700,1640,86);ctx.fillStyle='#a5a28a';ctx.fillRect(-820,700,1640,4);
       bench(ctx,-90,435,-.05);bench(ctx,105,435,.05);
+      // Root decals sit below the tree trunks and below subsequently rendered routes.
+      for(let i=0;i<trees.length;i++){
+        const [x,y]=trees[i];ctx.drawImage(rootPatch(i%3),x-96,y-48);
+      }
       for(const [x,y,r] of trees){
         ctx.strokeStyle='#383f3170';ctx.lineWidth=13;ctx.beginPath();ctx.moveTo(x,y+9);ctx.lineTo(x+24,y+38);ctx.stroke();
         ctx.strokeStyle='#747568';ctx.lineWidth=12;ctx.beginPath();ctx.moveTo(x,y+9);ctx.lineTo(x-3,y-37);ctx.lineTo(x-20,y-72);ctx.stroke();

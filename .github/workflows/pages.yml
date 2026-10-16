@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/v4-level4-church-lion"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/v4-level4-church-lion", "feature/style2-kirchende-pass2-20261016"]
   workflow_dispatch:
 
 permissions:
@@ -37,6 +37,7 @@ jobs:
           node tests/cache-busting.test.cjs
           node tests/terrain-polish.test.cjs
           node tests/kirchende-loading.test.cjs
+          node tests/style2-kirchende.test.cjs
           node tests/main-menu.test.cjs
           node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs
@@ -154,6 +155,26 @@ jobs:
             git commit -m "Publish Level 4 churchyard tester ${GITHUB_SHA}"
             git push origin HEAD:gh-pages
           fi
+      - name: Publish isolated Style 2 Kirchende tester
+        if: github.ref_name == 'feature/style2-kirchende-pass2-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2
+          find /tmp/denkmal-gh-pages/v4-style2 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 Kirchende tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
       - name: Publish main tester at root
         if: github.ref_name == 'main'
         shell: bash
@@ -162,7 +183,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-level4 ! -name kirchende-foto -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-level4 ! -name v4-style2 ! -name kirchende-foto -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages
