@@ -1,0 +1,30 @@
+{
+  "id": "level-4",
+  "version": "v4-style2-1",
+  "classification": "rekonstruiert",
+  "world": {"width": 3072, "height": 3072},
+  "gameplay": {
+    "level": 4,
+    "paths": "DenkmalLevels.levels[4].paths",
+    "slots": "DenkmalLevels.levels[4].slots",
+    "objective": "game.monument"
+  },
+  "layers": [
+    {"id": "ground", "pass": "ground", "desktop": "ground-desktop.webp", "mobile": "ground-mobile.webp", "alpha": false, "order": 0},
+    {"id": "paths", "pass": "paths", "desktop": "paths-desktop.webp", "mobile": "paths-mobile.webp", "alpha": true, "order": 1},
+    {"id": "decor-back", "pass": "decor-back", "desktop": "decor-back-desktop.webp", "mobile": "decor-back-mobile.webp", "alpha": true, "order": 2},
+    {"id": "decor-front", "pass": "decor-front", "desktop": "decor-front-desktop.webp", "mobile": "decor-front-mobile.webp", "alpha": true, "order": 3, "actorNearOpacity": 0.22}
+  ],
+  "structures": [
+    {"id": "ender-village-church", "role": "scenery", "status": "belegt", "position": {"x": 1446, "y": 1041}, "bounds": {"left": 1121, "right": 1771, "top": 836, "bottom": 1246}, "anchor": "ground-center"},
+    {"id": "sleeping-lion-1879", "role": "sleeping-lion", "status": "belegt", "position": {"x": 1536, "y": 1536}, "anchor": "ground-center"},
+    {"id": "churchyard-route-links", "role": "route-context", "status": "rekonstruiert"},
+    {"id": "lantern-light-and-fog", "role": "atmosphere", "status": "kuenstlerisch"}
+  ],
+  "production": {"terrainMaterial": {"status": "kuenstlerisch", "file": "docs/art/source-material/level-4-ground-source.webp", "tool": "OpenAI built-in image generator"}},
+  "sources": [
+    {"id": "city-herdecke-sleeping-lion", "status": "belegt", "label": "Stadt Herdecke – Kunstobjekte im öffentlichen Raum: Schlafender Löwe, 1879", "url": "https://www.herdecke.de/"},
+    {"id": "commons-village-church", "status": "belegt", "label": "Wikimedia Commons – Dorfkirche Kirchende", "url": "https://commons.wikimedia.org/wiki/Category:Dorfkirche_Kirchende"},
+    {"id": "commons-sleeping-lion", "status": "belegt", "label": "Wikimedia Commons – Ehrenmal Schlafender Löwe (Ende)", "url": "https://commons.wikimedia.org/wiki/Category:Ehrenmal_Schlafender_L%C3%B6we_(Ende)"}
+  ]
+}
