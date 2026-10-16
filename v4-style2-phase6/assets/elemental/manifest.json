@@ -22,5 +22,18 @@
     "impactCell": 128,
     "impactFrames": 6,
     "tiers": 3
+  },
+  "bow": {
+    "sources": {
+      "exec-f1dbba95-9ec2-443f-b8a3-82ae4a007f3c.png": "156f5eced38f4d012512af9641487c5b7bb9d3b738db48c9c210b40079acb0d7"
+    },
+    "towerCell": 512,
+    "tiers": 3,
+    "sourceCells": [
+      0,
+      724,
+      1448,
+      2172
+    ]
   }
 }
