@@ -1,14 +1,6 @@
 /* TD2 initial asset preloader. No runtime dependencies. */
 (() => {
   'use strict';
-  // Map layers are intentionally excluded from the boot preload. A level choice
-  // is required first so Android and desktop request only one matching variant.
-  globalThis.DenkmalPreloadSelectedMap=(level,mobile)=>{
-    const maps=globalThis.DenkmalMapArt;
-    if(!maps?.load)return Promise.resolve(false);
-    maps.unloadExcept(level);
-    return maps.load(level,{mobile:!!mobile,timeoutMs:8000});
-  };
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
@@ -17,13 +9,11 @@
     'assets/asset-atlas.png','assets/stone-terrain-v27.png','assets/guardian-atlas-v27.png',
     'assets/tower-bow-infernal-v1.png','assets/tower-cannon-ash-v1.png',
     'assets/tower-mage-hellfire-v1.png','assets/tower-rift-lance-v1.png',
-    'assets/tower-bow-l1-v3.webp','assets/tower-bow-l2-v3.webp','assets/tower-bow-l3-v3.webp',
+    'assets/tower-bow-l1-v2.png','assets/tower-bow-l2-v2.png','assets/tower-bow-l3-v2.png',
     'assets/tower-cannon-l1-v2.png','assets/tower-cannon-l2-v2.png','assets/tower-cannon-l3-v2.png',
-    'assets/tower-mage-l1-v2.webp','assets/tower-mage-l2-v2.webp','assets/tower-mage-l3-v2.webp',
     'assets/tower-rift-lance-l1.png','assets/tower-rift-lance-l2.png','assets/tower-rift-lance-l3.png',
     'assets/menu/warden-mobile-v2.webp','assets/menu/warden-desktop-v2.webp',
-    'assets/menu/crest-v2.webp','assets/hero/marcel-lantern-portrait-v1.webp',
-    'assets/hero/marcel-walk-atlas-v2.webp?v=v4style2-hero1'
+    'assets/menu/crest-v2.webp','assets/hero/marcel-lantern-portrait-v1.webp'
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

@@ -9,8 +9,6 @@
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d', {alpha:false});
   const mobileRender=matchMedia('(pointer:coarse)').matches;
-  const mapDebug=/(?:^|[?&])debug=maps(?:&|$)/.test(globalThis.location?.search||'');
-  if(mapDebug)document.body.dataset.mapDebug='true';
   globalThis.DenkmalMobileRender=mobileRender;
   const atlas = new Image();
   const monumentImage = new Image();
@@ -22,19 +20,19 @@
     bow:[new Image(),new Image(),new Image()],
     cannon:[new Image(),new Image(),new Image()],
     ballista:[new Image(),new Image(),new Image()],
-    mage:[new Image(),new Image(),new Image()],
     rift:[new Image(),new Image(),new Image()],
     boomerang:[new Image()]
   };
   // Visible bounds of the original transparent PNGs; retain their source bytes.
   // Rendering ignores uneven transparent margins and keeps each base on its slot.
   const towerSpriteBounds = {
+    bow:[[242,118,772,1061],[216,63,852,1165],[238,13,945,1222]],
     cannon:[[202,185,877,937],[156,55,977,1155],[123,30,1009,1205]],
     ballista:[[195,67,916,1127],[134,10,1026,1234],[57,44,1169,1190]]
   };
-  towerLevelArt.bow.forEach((image,index)=>{image.src=`assets/tower-bow-l${index+1}-v3.webp`;});
-  towerLevelArt.cannon.forEach((image,index)=>{image.src=`assets/tower-cannon-l${index+1}-v2.png`;});
-  towerLevelArt.mage.forEach((image,index)=>{image.src=`assets/tower-mage-l${index+1}-v2.webp`;});
+  for(const kind of ['bow','cannon']){
+    towerLevelArt[kind].forEach((image,index)=>{image.src=`assets/tower-${kind}-l${index+1}-v2.png`;});
+  }
   // Three distinct alpha.5 gameplay sprites (stars are drawn separately in world space).
   towerLevelArt.boomerang[0].src='assets/tower-boomerang-atlas.webp?v=v400a5combined1';
   atlas.src = 'assets/asset-atlas.png';
@@ -307,7 +305,6 @@
     if(level===2&&!campaign.unlocked||level===3&&!lootModel.profile.level3||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
     if(mode==='endless'&&(level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
-    globalThis.DenkmalPreloadSelectedMap?.(level,mobileRender);
     if(level===3)globalThis.DenkmalTerrain?.load?.();
     if(level===3&&art?.ready&&!art.ready('monument')){
       const fromState=state;showToast('Denkmal wird geladen …');
@@ -595,7 +592,6 @@
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
   function drawGround(){
-    if(globalThis.DenkmalMapArt?.draw(ctx,game.level,'ground',{camera}))return;
     if(game.level===4){globalThis.DenkmalChurch?.drawGround(ctx,camera,W/zoom,H/zoom);return;}
     if(game.level===3){const x=Math.max(0,camera.x-64),y=Math.max(0,camera.y-64),w=Math.min(WORLD_W-x,W/zoom+128),h=Math.min(WORLD_H-y,H/zoom+128);if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);else{ctx.fillStyle='#394b34';ctx.fillRect(x,y,w,h);}return;}
     const loaded=hellscape.complete&&hellscape.naturalWidth>0;
@@ -616,23 +612,16 @@
 
   function drawLevel(){
     const level=campaign.levels[game.level];
-    const mapArt=globalThis.DenkmalMapArt;
-    const mapReady=mapArt?.ready(game.level)===true;
-    if(!mapReady&&game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
-    if(!mapReady&&game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});
-    const pathsDrawn=mapArt?.draw(ctx,game.level,'paths',{camera})===true;
-    ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
-    if(!pathsDrawn)for(const [pathIndex,path] of level.paths.entries()){
-        if(game.level===4&&globalThis.DenkmalChurch?.drawRoad){globalThis.DenkmalChurch.drawRoad(ctx,path);continue;}
-        if(game.level===3&&globalThis.DenkmalTerrain?.drawRoad){globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:pathIndex===3?'slabs':'earth'});continue;}
-        ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
-        ctx.strokeStyle='#0a0f1188';ctx.lineWidth=94;ctx.stroke();
-        ctx.strokeStyle='#cabd9940';ctx.lineWidth=74;ctx.stroke();ctx.strokeStyle='#a49c7a16';ctx.lineWidth=68;ctx.stroke();
-        ctx.setLineDash([12,22]);ctx.strokeStyle='#d8bb7755';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+    if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
+    if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
+    for(const [pathIndex,path] of level.paths.entries()){
+      if(game.level===4&&globalThis.DenkmalChurch?.drawRoad){globalThis.DenkmalChurch.drawRoad(ctx,path);continue;}
+      if(game.level===3&&globalThis.DenkmalTerrain?.drawRoad){globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:pathIndex===3?'slabs':'earth'});continue;}
+      ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+      ctx.strokeStyle='#0a0f1188';ctx.lineWidth=94;ctx.stroke();
+      ctx.strokeStyle='#cabd9940';ctx.lineWidth=74;ctx.stroke();ctx.strokeStyle='#a49c7a16';ctx.lineWidth=68;ctx.stroke();
+      ctx.setLineDash([12,22]);ctx.strokeStyle='#d8bb7755';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
     }
-    if(mapReady)mapArt.draw(ctx,game.level,'decor-back',{camera});
-    if(mapReady&&game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
-    if(mapReady&&game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});
     if(game.level===3)globalThis.KirchendeArt?.drawSite(ctx,campaign.center);
     if(game.level===4)globalThis.DenkmalChurch?.drawSite(ctx,campaign.center);
     for(const p of level.slots){if(!visible(p,35))continue;if(game.towers.some(t=>dist(t,p)<20))continue;ctx.strokeStyle='#d6c38c';ctx.fillStyle='#14201fdd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#e1cc8d';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText('+',p.x,p.y+8);}
@@ -743,7 +732,7 @@
       ctx.save();ctx.fillStyle='#eee2c8';ctx.font='700 10px sans-serif';ctx.textAlign='center';ctx.fillText(indicator.label,x,y+20);ctx.restore();
     }
   }
-  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom);ctx.translate(-camera.x,-camera.y);drawGround();drawLevel();const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)}const frontDrawn=globalThis.DenkmalMapArt?.draw(ctx,game.level,'decor-front',{camera,actorNear:true})===true;if(!frontDrawn&&game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{crowns:true,low:lowFX()});if(!frontDrawn&&game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,...game.enemies]);if(mapDebug)globalThis.DenkmalMapArt?.drawDebug(ctx,game.level,campaign.levels[game.level]);for(const l of game.loot){if(!visible(l,35))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
+  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom);ctx.translate(-camera.x,-camera.y);drawGround();drawLevel();const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,...game.enemies]);for(const l of game.loot){if(!visible(l,35))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
   function updateTelemetry(now){

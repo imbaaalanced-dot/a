@@ -316,9 +316,6 @@ button{border-radius:4px}button:disabled{opacity:.4}
 .boss-hud.phase-3 .boss-meter i{filter:saturate(1.35) brightness(1.12)}
 @media (prefers-reduced-motion:reduce){.boss-hud{transition:none}}
 
-/* V4 Style 2: tester-only marker; world-space geometry is drawn by map-art.js. */
-body[data-map-debug="true"] #fpsOverlay::after{content:" · MAP DEBUG";color:#65e7ff}
-
 /* V4 alpha.5: five-slot Kirchende arsenal, prevent hidden tower leaks/overlap. */
 .arsenal button[hidden]{display:none!important}
 @media (orientation:portrait){
