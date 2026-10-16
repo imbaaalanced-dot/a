@@ -92,7 +92,7 @@ const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 for(const id of ['level4Btn','endless4Btn'])
   assert.match(html,new RegExp('id="'+id+'"'),'new chapter navigation must be reachable');
 assert.ok(html.includes('church-art.js?v=v400a6s2p6b'));
-assert.ok(html.includes('kirchende-art.js?v=v400a6s2p2'))
+assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish4'))
 assert.ok(game.includes('campaign.completeLevel4()'),'wave 16 persists completion');
 assert.ok(game.includes("game.level===4&&game.wave===16"),'wave 16 ends the campaign');
 assert.ok(game.includes('DenkmalChurch?.drawLion'),'lion is the combat objective');

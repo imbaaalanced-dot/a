@@ -7,7 +7,7 @@ function context(){
  const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;},drawImage(){calls.images++;},
  setLineDash(value){calls.dashes.push(value);},
  createPattern(){patterns++;return {pattern:true};},
- createRadialGradient(){return {addColorStop(){}}}};
+ createRadialGradient(){return {addColorStop(){}}},createLinearGradient(){return {addColorStop(){}}}};
  return new Proxy(out,{get:(obj,key)=>key in obj?obj[key]:(()=>{}),set:(obj,key,value)=>(obj[key]=value,true)});
 }
 const sandbox={document:{createElement(){canvases++;return {getContext:context};}},Math};

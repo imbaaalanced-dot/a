@@ -118,11 +118,60 @@
     for(let i=0;i<3;i++){ctx.fillStyle=i===0?'#9b7964':'#796153';ctx.fillRect(-6+i*5,-32,4,67);}
     ctx.fillStyle='#b495772f';ctx.fillRect(-6,-31,1,64);ctx.restore();
   }
+  const buildingCache=new Map();
   function building(ctx,x,y,w,h,halfTimber=false){
-    ctx.fillStyle=halfTimber?'#b8b39a':'#b3aa8b';ctx.fillRect(x,y,w,h);
-    ctx.fillStyle='#77796b';ctx.fillRect(x-7,y-13,w+14,31);
-    for(let yy=y+36;yy<y+h-20;yy+=58)for(let xx=x+20;xx<x+w-15;xx+=46){ctx.fillStyle='#58635a';ctx.fillRect(xx,yy,19,29);ctx.fillStyle='#a6b9a34d';ctx.fillRect(xx+2,yy+2,6,23);}
-    if(halfTimber){ctx.strokeStyle='#5a5546';ctx.lineWidth=5;ctx.strokeRect(x,y+18,w,h-18);ctx.beginPath();ctx.moveTo(x+w/2,y+18);ctx.lineTo(x+w/2,y+h);ctx.moveTo(x,y+h/2);ctx.lineTo(x+w,y+h/2);ctx.stroke();}
+    const key=w+':'+h+':'+halfTimber;
+    let sprite=buildingCache.get(key);
+    if(!sprite){
+      sprite=document.createElement('canvas');sprite.width=w+80;sprite.height=h+80;
+      const q=sprite.getContext('2d');q.translate(30,30);
+      const polygon=(points,fill,stroke)=>{
+        q.beginPath();points.forEach(([xx,yy],i)=>i?q.lineTo(xx,yy):q.moveTo(xx,yy));q.closePath();
+        q.fillStyle=fill;q.fill();if(stroke){q.strokeStyle=stroke;q.lineWidth=2;q.stroke();}
+      };
+      // All roof, facade and contact shading are baked once; original world bounds stay fixed.
+      q.fillStyle='#0b1c2466';q.beginPath();q.ellipse(w*.57,h*.94,w*.65,20,-.1,0,Math.PI*2);q.fill();
+      const wallTop=h*.36,side=22;
+      const wall=q.createLinearGradient(0,wallTop,w,h);
+      wall.addColorStop(0,halfTimber?'#b1a38a':'#9d9981');wall.addColorStop(1,'#6c7364');
+      q.fillStyle=wall;q.fillRect(0,wallTop,w-side,h-wallTop-9);
+      polygon([[w-side,wallTop],[w,wallTop-18],[w,h-27],[w-side,h-9]],'#535f54','#3d4942');
+      // Small, low-contrast masonry courses replace the plain rectangular facade.
+      q.strokeStyle='#d3c6a527';q.lineWidth=1;
+      for(let row=wallTop+13;row<h-14;row+=15){
+        q.beginPath();q.moveTo(2,row);q.lineTo(w-side-2,row);q.stroke();
+        for(let col=8+(Math.floor(row/15)%2)*13;col<w-side-4;col+=27){q.beginPath();q.moveTo(col,row);q.lineTo(col,row+12);q.stroke();}
+      }
+      const roof=q.createLinearGradient(0,0,w,wallTop+15);
+      roof.addColorStop(0,'#667375');roof.addColorStop(.48,'#414f55');roof.addColorStop(1,'#263b46');
+      polygon([[-9,wallTop+6],[w*.30,0],[w+8,7],[w-side+9,wallTop+6]],roof,'#253740');
+      // Tile strokes are clipped to the pitched roof, avoiding facade overpaint.
+      q.save();q.beginPath();q.moveTo(-9,wallTop+6);q.lineTo(w*.30,0);q.lineTo(w+8,7);q.lineTo(w-side+9,wallTop+6);q.closePath();q.clip();
+      for(let yy=10;yy<wallTop+6;yy+=10){
+        q.strokeStyle=yy%20?'#b0b7ab28':'#182b354d';q.lineWidth=2;q.beginPath();q.moveTo(-9,yy);q.lineTo(w+8,yy+5);q.stroke();
+        for(let xx=(yy%20?4:13);xx<w;xx+=21){q.strokeStyle='#172d3544';q.lineWidth=1;q.beginPath();q.moveTo(xx,yy);q.lineTo(xx-4,yy+10);q.stroke();}
+      }
+      q.restore();q.strokeStyle='#c1c0a66b';q.lineWidth=3;q.beginPath();q.moveTo(w*.30,0);q.lineTo(w+8,7);q.stroke();
+      q.fillStyle='#5d655b';q.fillRect(w*.67,9,17,30);q.fillStyle='#b8b092';q.fillRect(w*.67-2,7,21,5);
+      // Recessed windows share the same cool shadow and warm upper-left lighting.
+      let index=0;
+      for(let yy=wallTop+24;yy<h-45;yy+=49)for(let xx=17;xx<w-side-24;xx+=42){
+        q.fillStyle='#c1b79b';q.fillRect(xx-3,yy-3,24,31);q.fillStyle='#253e41';q.fillRect(xx,yy,18,25);
+        if(index++%5===1){q.fillStyle='#d2a75a88';q.fillRect(xx+2,yy+2,14,21);}
+        q.fillStyle='#52685f';q.fillRect(xx+8,yy,2,25);q.fillRect(xx,yy+11,18,2);
+        q.fillStyle='#b1a98b';q.fillRect(xx-4,yy+26,26,3);
+      }
+      if(halfTimber){
+        q.strokeStyle='#514e3e';q.lineWidth=5;q.beginPath();
+        q.moveTo(3,wallTop+10);q.lineTo(3,h-10);q.moveTo(w-side-3,wallTop+10);q.lineTo(w-side-3,h-10);
+        q.moveTo((w-side)/2,wallTop+9);q.lineTo((w-side)/2,h-10);
+        q.moveTo(0,h*.68);q.lineTo(w-side,h*.68);q.stroke();
+      }
+      q.fillStyle='#4c5749';q.fillRect(-3,h-18,w-side+6,12);
+      q.fillStyle='#a49d8177';q.fillRect(-3,h-18,w-side+6,2);
+      buildingCache.set(key,sprite);
+    }
+    ctx.drawImage(sprite,x-30,y-30);
   }
   function drawScenery(ctx,center,actors,{crowns=false,low=false}={}){
     ctx.save();ctx.translate(center.x,center.y);
