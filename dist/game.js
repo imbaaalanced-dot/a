@@ -78,7 +78,7 @@
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
-  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/');
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
   const towerRoles={
@@ -661,6 +661,10 @@
   const towerCache=new WeakMap();
   function drawTower(t){
     shadow(t.x,t.y,24);
+    // Style 2 cannon tiers are self-contained, cached 2.5D sprites.
+    if(t.kind==='cannon'&&globalThis.Style2Cannon?.drawTower?.(ctx,t.x,t.y,t.level,lowFX())){
+      globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;
+    }
     if(t.kind==='boomerang'){
       const level=Math.max(1,Math.min(3,t.level||1)),sprite=towerLevelArt.boomerang[0];
       ctx.save();ctx.translate(t.x,t.y);
