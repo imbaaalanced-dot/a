@@ -25,3 +25,9 @@ Tester destination: `/a/v4-style2-phase6/`.
 The Pages workflow runs regression checks before publishing only this directory on gh-pages. The new workflow also preserves this directory during this branch's main-root publishing logic. Older main workflow revisions do not know this new directory; carry forward the preservation rule before publishing main from an older revision.
 
 Preview levels 3/4 remain available without awarding the Kirchende campaign reward. Existing save behavior is inherited from PR #39. Main is not merged or changed.
+
+## Follow-up: upright sprites and cropped terrain (16 October)
+
+Browser play check of the first build reached Kirchende successfully. The renderer applied the ground depth factor to the entire scene, which also compressed standing artwork. Standing objects now receive an inverse depth transform around their existing world anchor; the church bitmap receives the same correction around its existing base. Paths, camera picking and movement still use the oblique ground projection. This is still an approximation, not true isometry.
+
+The decoration layer now copies only the visible world rectangle, clipped to map bounds. Camera motion reuses the atlas. Regression tests verify stable sprite anchors, undistorted sprite height, transform restoration and camera clipping/cache reuse. Local Android emulation tests do not replace real-device FPS testing.

@@ -154,7 +154,8 @@
     if(!church)church=createChurch();
     ctx.save();ctx.translate(center.x,center.y);
     // Westward and northward relative to lion. Southern facade clears the monument.
-    ctx.drawImage(church,churchFrame.x,churchFrame.y,churchFrame.w,churchFrame.h);
+    const paintChurch=()=>ctx.drawImage(church,churchFrame.x,churchFrame.y,churchFrame.w,churchFrame.h);
+    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:churchFrame.x+churchFrame.w/2,y:churchFrame.y+churchFrame.h},paintChurch);else paintChurch();
     for(const [i,[x,y]] of graves.entries())drawGrave(ctx,x,y,i);
     for(const [x,y] of benches)drawBench(ctx,x,y);
     for(const [x,y] of trees){

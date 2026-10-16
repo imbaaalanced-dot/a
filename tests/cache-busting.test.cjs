@@ -30,13 +30,13 @@ const expectedVersions = new Map([
   ['style2-cannon.js', 'v400a6s2c3'],
   ['style2-towers.js', 'v400a6s2t4'],
   ['style2-maps.js', 'v400a6s2m5'],
-  ['game.js', 'v400a6s2p6'],
-  ['style2-phase6.js', 'phase6-1'],
+  ['game.js', 'v400a6s2p6b'],
+  ['style2-phase6.js', 'phase6-2'],
   ['kirchende-combat.js', 'v400a5combined1'],
   ['kirchende-art.js', 'v400a6s2p2'],
   ['terrain-polish.js', 'v400a5photo2'],
   ['forest-crowns.js', 'v400a5photo1'],
-  ['church-art.js', 'v400a6s2p1'],
+  ['church-art.js', 'v400a6s2p6b'],
 ]);
 
 const resources = [

@@ -5,6 +5,11 @@
 const depth=.82;
 const project=(p,c,z)=>({x:(p.x-c.x)*z,y:(p.y-c.y)*z*depth});
 const unproject=(p,c,z)=>({x:p.x/z+c.x,y:p.y/(z*depth)+c.y});
+function upright(ctx,point,paint){
+ ctx.save();
+ try{ctx.translate(point.x,point.y);ctx.scale(1,1/depth);ctx.translate(-point.x,-point.y);return paint();}
+ finally{ctx.restore();}
+}
 let active=0,cache=null;
 function details(level,layout){
  let seed=62917+level*7919;
@@ -21,7 +26,7 @@ function details(level,layout){
  }
  return result;
 }
-function draw(ctx,level,layout){
+function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
  if(!cache||active!==level){
   cache=document.createElement('canvas');cache.width=cache.height=1536;active=level;
   const g=cache.getContext('2d');g.scale(.5,.5);
@@ -68,7 +73,9 @@ function draw(ctx,level,layout){
   halo.addColorStop(0,'#0b141c66');halo.addColorStop(.55,'#4d493c33');halo.addColorStop(1,'#34372a00');
   g.fillStyle=halo;g.fillRect(c.x-145,c.y-145,290,290);
  }
- ctx.drawImage(cache,0,0,1536,1536,0,0,3072,3072);
+ const x=Math.max(0,camera.x),y=Math.max(0,camera.y);
+ const right=Math.min(3072,camera.x+viewWidth),bottom=Math.min(3072,camera.y+viewHeight);
+ if(right>x&&bottom>y)ctx.drawImage(cache,x*.5,y*.5,(right-x)*.5,(bottom-y)*.5,x,y,right-x,bottom-y);
 }
-globalThis.Style2Phase6={depth,project,unproject,details,draw};
+globalThis.Style2Phase6={depth,project,unproject,upright,details,draw};
 })();
