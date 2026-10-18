@@ -34,6 +34,7 @@ jobs:
 
       - name: Verify gameplay before publish
         run: |
+          node tests/alpha8-preview.test.cjs
           node tests/preloader.test.cjs
           node tests/cache-busting.test.cjs
           node tests/terrain-polish.test.cjs

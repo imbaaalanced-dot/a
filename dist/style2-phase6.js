@@ -11,6 +11,12 @@ function upright(ctx,point,paint){
  finally{ctx.restore();}
 }
 let active=0,cache=null;
+let environment=null,environmentReady=false;
+if(typeof Image==='function'){
+ const image=new Image();image.decoding='async';
+ image.onload=()=>{if(image.naturalWidth>0&&image.naturalHeight>0){environment=image;environmentReady=true;cache=null;}};
+ image.src='assets/scenery-alpha8.webp?v=alpha8a2';
+}
 function details(level,layout){
  let seed=62917+level*7919;
  const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
@@ -20,6 +26,8 @@ function details(level,layout){
   if(Math.hypot(p.x-layout.center.x,p.y-layout.center.y)<220)continue;
   if(layout.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<115))continue;
   if(layout.slots.some(s=>Math.hypot(s.x-p.x,s.y-p.y)<88))continue;
+  const terrace=layout.syburgTerrace;
+  if(terrace&&[terrace.raised,terrace.forecourt].some(f=>p.x>layout.center.x+f.left-55&&p.x<layout.center.x+f.right+55&&p.y>layout.center.y+f.top-55&&p.y<layout.center.y+f.bottom+55))continue;
   const f=layout.churchFootprint;
   if(f&&p.x>layout.center.x+f.left-80&&p.x<layout.center.x+f.right+80&&p.y>layout.center.y+f.top-80&&p.y<layout.center.y+f.bottom+80)continue;
   result.push(p);
@@ -70,6 +78,14 @@ function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
     g.fillStyle='#85816c';g.fillRect(p.x-14,p.y-5,28,6);
     g.strokeStyle='#c6b89588';g.beginPath();g.moveTo(p.x-14,p.y-5);g.lineTo(p.x+14,p.y-5);g.stroke();
     g.fillStyle='#4b593999';g.fillRect(p.x-11,p.y-3,10,3);
+   }
+  }
+  if(environmentReady){
+   const sw=environment.naturalWidth/3,sh=environment.naturalHeight/2;
+   for(const [index,p] of details(level,layout).entries()){
+    if(index%3!==0)continue;
+    const cell=Math.floor(index/3)%6,size=42+p.r*3;
+    g.drawImage(environment,(cell%3)*sw,Math.floor(cell/3)*sh,sw,sh,p.x-size/2,p.y-size*.94,size,size);
    }
   }
   for(const gate of layout.gates){

@@ -1,7 +1,7 @@
 /* Generated Rift/Ice art. Existing mage identity and all combat values stay intact.
  * Failed/cold images return false so the procedural Style2 renderer remains usable. */
 (()=>{'use strict';
-const supported=new Set(['mage','rift']),images=new Map();
+const supported=new Set(['mage','rift','cannon']),images=new Map();
 const tier=value=>Math.max(1,Math.min(3,Math.floor(Number(value)||1)));
 function image(kind,type){
  if((!supported.has(kind)&&!(['bow','cannon','boomerang'].includes(kind)&&type==='towers'))||typeof Image==='undefined')return null;
@@ -41,7 +41,7 @@ const heights=[62,54,80,62,80,64,60,86,72,116,140];let img=null,failed=false,ret
 let walk=null,walkFailed=false;
 function draw(ctx,e,face=1,time){const i=types.indexOf(e.type);if(i<0||typeof Image==='undefined')return false;
  if(time!==undefined&&i<3){
-  if(!walk&&!walkFailed){walk=new Image();walk.decoding='async';walk.onerror=()=>{walkFailed=true;};walk.src='assets/elemental/enemies-walk-alpha8.png?v=alpha8a1';}
+  if(!walk&&!walkFailed){walk=new Image();walk.decoding='async';walk.onerror=()=>{walkFailed=true;};walk.src='assets/elemental/enemies-walk-alpha8.webp?v=alpha8a2';}
   if(!walkFailed&&walk?.complete&&walk.naturalWidth>0&&walk.naturalHeight>0){
    const width=walk.naturalWidth/3,height=walk.naturalHeight/3,size=heights[i];
    const frame=Math.floor(time*7+(e.x+e.y)*.013)%3;

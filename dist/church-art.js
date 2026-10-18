@@ -21,13 +21,13 @@
       }else churchSpriteFailed=true;
     };
     sprite.onerror=()=>{churchSpriteFailed=true;};
-    sprite.src='assets/church-ende-alpha8.png?v=alpha8a1';
+    sprite.src='assets/church-ende-alpha8.webp?v=alpha8a2';
   }
   let lionSprite=null;
   if(typeof Image==='function'){
     const sprite=new Image();
     sprite.onload=()=>{if(sprite.naturalWidth>0&&sprite.naturalHeight>0)lionSprite=sprite;};
-    sprite.src='assets/lion-ende-alpha8.png?v=alpha8a1';
+    sprite.src='assets/lion-ende-alpha8.webp?v=alpha8a2';
   }
   function seeded(seed){return () => ((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
   function polygon(c,points,fill,stroke){

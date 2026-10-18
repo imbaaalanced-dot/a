@@ -1,6 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const box={Math,localStorage:{getItem(){return null;}}};vm.createContext(box);
+const loaded=[];
+const box={Image:class{constructor(){loaded.push(this);}},Math,localStorage:{getItem(){return null;}}};vm.createContext(box);
 vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),box);
 assert.ok(fs.existsSync('dist/style2-phase6.js'),'phase 6 renderer exists');
 vm.runInContext(fs.readFileSync('dist/style2-phase6.js','utf8'),box);
@@ -52,3 +53,16 @@ assert.deepEqual(copies.at(-1).slice(1),[0,0,150,150,0,0,300,300],'world-edge vi
 const count=copies.length;p.draw(target,3,layout,{x:4000,y:4000},200,200);
 assert.equal(copies.length,count,'fully off-map views skip bitmap copies');
 console.log('Decoration cache reuses its atlas and crops world-edge camera views.');
+
+assert.equal(loaded.length,1,'shared scenery atlas is requested once');
+loaded[0].naturalWidth=768;loaded[0].naturalHeight=512;loaded[0].onload();
+p.draw(target,3,layout,{x:1000,y:1200},600,800);
+assert.equal(allocations,2,'newly decoded scenery invalidates the ground decoration cache once');
+p.draw(target,3,layout,{x:1000,y:1200},600,800);
+assert.equal(allocations,2,'warm scenery never allocates another canvas');
+for(let i=5;i<=6;i++){
+ const layout={...box.DenkmalLevels.levels[i],center:box.DenkmalLevels.center};
+ const before=JSON.stringify(layout);
+ for(const d of p.details(i,layout))for(const path of layout.paths)assert.ok(box.DenkmalLevels.pathDistance(d,path)>100);
+ assert.equal(JSON.stringify(layout),before);
+}

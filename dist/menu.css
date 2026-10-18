@@ -108,3 +108,8 @@
   #introTutorial[data-step="4"] .tutorial-bubble{left:12px;right:12px;width:auto}
 }
 @media(prefers-reduced-motion:reduce){#introTutorial .tutorial-arrow{box-shadow:none}}
+
+.hero-choice{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;color:#dbc594;font-size:11px;letter-spacing:.08em}
+.hero-choice button{min-height:48px;padding:10px 14px;background:#152124e8;border:1px solid #74654c;border-radius:6px;color:#c8c7b9;font:inherit;cursor:pointer}
+.hero-choice button[aria-pressed="true"]{background:#343326;border-color:#e4be73;color:#ffe1a2;box-shadow:inset 0 1px #ffe4b033,0 0 16px #ddab4520}
+.hero-choice button:focus-visible{outline:3px solid #ffe4a0;outline-offset:3px}

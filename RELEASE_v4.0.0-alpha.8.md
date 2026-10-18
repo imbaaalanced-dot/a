@@ -1,17 +1,23 @@
 # Denkmal TD2 V4 Alpha 8 · Environment & Character Graphics
 
-Independent tester: `/a/v4-alpha8/`. Alpha 7 at the site root and its saved campaign state remain separate. The test path uses the same storage keys as Alpha 7, so visiting it in the same browser reads existing inventory and progress.
+Tester: https://imbaaalanced-dot.github.io/a/v4-alpha8/
+Base: Alpha 7, `45b7d8d216ced6d325acac6837e7e55f416ca839`. The main branch and published Alpha 7 remain unchanged.
 
 ## In the playable build
 
-- Ender Dorfkirche: 1254 px RGBA architecture artwork replaces the 256 px church sprite. Its lower ground anchor and the gameplay footprint stay at their Alpha 7 coordinates; the tower extends further upward visually.
-- Ender Löwe: 1122 × 1402 px transparent memorial image, facing south toward the viewer, drawn at the same collision anchor and size. The generated plaque is blank; the old procedural inscription remains a fallback when the new image fails.
-- Marcel: a 3-frame walk cycle in four directions. Kim: matching animation atlas loaded by the renderer when a hero has `character: 'kim'`; the campaign still selects Marcel because Alpha 8 does not change the hero selection rules.
-- Wraith, runner and brute: 3-frame movement sprites with automatic fallback to the previous static atlas. Other ground and flying enemies retain Alpha 7 art.
-- Six levels share a subtle monument and gate contact-shadow pass; the existing terrain, buildings, paths, forest canopy, atmospheric lights, 2.5D camera and rendering order remain intact. HUD contrast and meter highlights are improved.
+- Ender Dorfkirche: approved high-resolution architecture, exported as a 1536×1536 RGBA WebP with its source proportions retained. The southern ground anchor and collision footprint remain at their Alpha 7 coordinates.
+- Ender Löwe: 1184×1328 RGBA memorial, sleeping lion facing south toward the viewer; separate from the church, with unchanged objective anchor and gameplay size. The inset plaque is blank rather than carrying invented historical text.
+- Marcel and Kim: menu selection, four directions and three walk phases each. Identical combat stats and equipment rules; selection is cosmetic and does not add a save key. Existing Marcel story/dialogue remains. Directional animation atlases have normalized square cells and grounded feet, with stray neighbouring-frame fragments removed.
+- Wraith, runner and brute: three movement phases and static-atlas fallback. Other enemies retain their existing art/flight animation.
+- All six levels: shared illustrated shrub, rock, fern, stump, rubble and leaf sprites, deterministic lane-safe placement, cached terrain dressing and contact shadows. Hohensyburg uses the shared detailed tree crowns. Terrace masonry stays free of new ground props.
+- Cannon: painted wood, iron and explosive ammunition; three six-frame impact sequences. Existing projectile collisions, damage and particle caps remain unchanged. Cold/failed images use the previous cached procedural graphics.
+- HUD: stronger contrast and bronze edges. Hero choice uses 48px buttons in the main menu.
+- Alpha 8 path: all six campaign cards directly playable for visual testing. Test victories do not write campaign completion/unlock flags. Inventory and loot still use the existing Alpha 7 keys and formats, so earned loot is shared when using the same browser.
 
-## Visual limits and verification
+## Validation and remaining limits
 
-The architecture and lion are stylized interpretations of the approved direction; their precise historical dimensions cannot be established from the available in-repo reference art. The six maps have not been replaced by six full painted map images, and projectiles/impacts use the existing Alpha 7 atlas. This release does not claim every concept painting is represented pixel for pixel.
+Run `node --test tests/*.test.cjs`, `TEST_MOBILE=1 node tests/game.test.cjs`, `TEST_MOBILE=1 node tests/alpha8-preview.test.cjs`, `python tests/assets.test.py`, `python tests/alpha8-assets.test.py`, and `git diff --check`. Both Actions workflows run Alpha 8 asset decoding and preview regression checks before release.
 
-Run `node --test tests/*.test.cjs`, `TEST_MOBILE=1 node tests/game.test.cjs`, `python tests/assets.test.py`, and `python tests/alpha8-assets.test.py`. The Pages workflow also runs its full regression suite before publishing the isolated directory.
+The original Alpha 8 branch had five broken PNG streams. These are removed and replaced with fully decoded RGBA WebP exports. The image gate verifies the actual decoder, populated frame cells and transparent edges, not just file headers. Runtime canvas rendering of all six maps is checked locally.
+
+The buildings are illustrated interpretations of approved reference images, not a measured architectural survey. Historical dimensions are not newly claimed. This is an incremental graphical pass: full concept-painted terrain, every enemy animation and real-device Android FPS remain further work. A successful automated gate does not establish pixel-for-pixel concept parity or Android performance.

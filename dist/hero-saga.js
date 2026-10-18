@@ -35,8 +35,8 @@
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
   const walkAtlases={marcel:new Image(),kim:new Image()};
-  walkAtlases.marcel.src='assets/hero/marcel-walk-alpha8.png?v=alpha8a1';
-  walkAtlases.kim.src='assets/hero/kim-walk-alpha8.png?v=alpha8a1';
+  walkAtlases.marcel.src='assets/hero/marcel-walk-alpha8.webp?v=alpha8a2';
+  walkAtlases.kim.src='assets/hero/kim-walk-alpha8.webp?v=alpha8a2';
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
     up:[0,0],
@@ -193,7 +193,7 @@
   }
   function draw(ctx,h) {
     const moving=h.moving&&!reduced,direction=h.direction||'down';
-    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28);
+    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28,86,h.character);
     ctx.save();ctx.translate(h.x,h.y);
     ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(0,11,22,8,0,0,Math.PI*2);ctx.fill();
     const relicColor=h.equipment.relic==='bell'?'#f5c572':'#79dfff';

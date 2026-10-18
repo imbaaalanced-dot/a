@@ -55,6 +55,7 @@
       if(level.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<rad+60))continue;
       if(level.slots.some(slot=>Math.hypot(slot.x-x,slot.y-y)<rad+50))continue;
       q.fillStyle='#0b1819a8';q.beginPath();q.ellipse(x+18,y+23,rad,rad*.62,0,0,Math.PI*2);q.fill();
+      if(globalThis.DenkmalForest?.drawCrown){globalThis.DenkmalForest.drawCrown(q,x,y,rad,i);continue;}
       q.fillStyle=['#38503b','#324a3a','#455945','#2c4238','#4c6247'][i%5];
       q.beginPath();q.arc(x,y,rad,0,Math.PI*2);q.fill();
       q.fillStyle='#b4b59020';q.beginPath();

@@ -75,7 +75,7 @@ for(let i=0;i<1000;i++)fx.burst(game,{kind:'cannon',level:3,x:0,y:0,vx:1,vy:0,co
 assert.ok(game.particles.length<=fx.MAX_PARTICLES,'cannon impacts respect the global particle budget');
 assert.ok(game.particles.every(p=>Number.isFinite(p.life)&&p.life===p.max),'particle lifecycle invariant stays intact');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.match(html,/style2-cannon\.js\?v=v400a6s2c4/);
+assert.match(html,/style2-cannon\.js\?v=alpha8cannon2/);
 assert.match(html,/combat-fx\.js\?v=v400a6s2t4/);
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameplay,/Style2Cannon\?\.drawTower/,'cannon graphics must be used by gameplay');
