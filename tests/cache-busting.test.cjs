@@ -35,7 +35,7 @@ const expectedVersions = new Map([
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe1'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'phase7a1'],
+  ['game.js', 'ref4a1'],
   ['style2-ambience.js', 'phase7a1'],
   ['style2-ui-polish.css', 'phase7a1'],
   ['style2-phase6.js', 'phase6-3'],
@@ -44,6 +44,7 @@ const expectedVersions = new Map([
   ['terrain-polish.js', 'v400a6s2ground3'],
   ['forest-crowns.js', 'v400a6s2foliage4'],
   ['church-art.js', 'v400a6lionsouth1'],
+  ['style2-level4-reference.js', 'ref4a1'],
 ]);
 
 const resources = [
