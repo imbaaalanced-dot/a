@@ -76,16 +76,38 @@
     if(Math.hypot(x,y)>=190&&goethePaths.every(path=>pathDistance(p,path)>=92)&&
       goethePaths.some(path=>pathDistance(p,path)<245)&&goetheSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>120))goetheSlots.push(p);
   }
+  // Plateau paths represent three tactical entries, not exact surveyed walking routes.
+  // Southern ravine and overlook stay decorative; flying enemies use the separate air gate.
+  const syburgPaths=[
+    [[-1100,-630],[-800,-500],[-560,-280],[-340,-120],[-140,-20],[0,0]],
+    [[1000,-650],[780,-460],[560,-220],[310,-80],[0,0]],
+    [[980,360],[740,340],[600,180],[360,110],[150,50],[0,0]]
+  ].map(route=>route.map(([x,y])=>point(x,y)));
+  const syburgSlots=[];
+  const syburgCandidates=[
+    [-670,-450],[-410,-460],[-620,-80],[-520,150],[-380,390],
+    [-180,440],[100,410],[360,390],[580,450],[600,-420],
+    [420,-380],[520,-60],[400,130],[180,-390],[-80,-390],
+    [-650,430],[-650,320],[-390,-600],[630,-550],[-60,500]
+  ];
+  for(const [x,y] of syburgCandidates){
+    const p=point(x,y);
+    if(Math.hypot(x,y)>=200&&Math.abs(x)<710&&Math.abs(y)<700&&
+      syburgPaths.every(path=>pathDistance(p,path)>=90)&&
+      syburgSlots.every(other=>Math.hypot(other.x-p.x,other.y-p.y)>115))syburgSlots.push(p);
+  }
   function getWaveGates(level,wave){
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
     if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
+    if(level===5)return wave===17?[0,1]:[0,1,2];
     return levels[level].gates.map((_,i)=>i);
   }
   const levels={
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
-    6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:17,lastWave:20,startEssence:320,maxTowers:12,approximate:true},
+    5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
+    6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
     4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const saveKey='denkmal-level2-unlocked-v1';
@@ -99,11 +121,15 @@
     level4Completed=true;try{localStorage.setItem(level4Key,'true');storageAvailable=true;}catch{storageAvailable=false;}
     return storageAvailable;
   }
+  const level5Key='denkmal-level5-completed-v1';
+  let level5Completed=false;
+  try{level5Completed=localStorage.getItem(level5Key)==='true';}catch{}
+  function completeLevel5(){level5Completed=true;try{localStorage.setItem(level5Key,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
   const level6Key='denkmal-level6-completed-v1';
   let level6Completed=false;
   try{level6Completed=localStorage.getItem(level6Key)==='true';}catch{}
   function completeLevel6(){level6Completed=true;try{localStorage.setItem(level6Key,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
   function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
-  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel6,get level6Completed(){return level6Completed;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
+  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,get level5Completed(){return level5Completed;},get level6Completed(){return level6Completed;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
 })();
