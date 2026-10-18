@@ -3,3 +3,15 @@ for(const type of ['shadowwing','gargoyle','stormwing']){const e={...f.specs[typ
 assert.equal(f.canHit({kind:'cannon'},{flying:false}),true);
 const a={...f.specs.shadowwing,x:0,y:0,slow:1,slowFactor:.5};f.advance(a,{x:1000,y:0,r:30},1);assert.equal(a.x,47);
 console.log('Flight enemies: three specs, air targeting, direct movement, contact bounds and slowing passed');
+// Generated art must load lazily, fall back while cold, and recover from failure.
+let now=0;const created=[];const artBox={Math,Date:{now:()=>now},Image:class{constructor(){created.push(this);this.complete=false;this.naturalWidth=0;}}};
+vm.createContext(artBox);vm.runInContext(fs.readFileSync('dist/flight-enemies.js','utf8'),artBox);
+let drawn=0;const ctx=new Proxy({drawImage(){drawn++;}},{get:(o,k)=>o[k]||(()=>{})});
+const flyer={...f.specs.shadowwing,type:'shadowwing',x:100,y:100};
+assert.equal(artBox.FlightEnemies.draw(ctx,flyer),true);assert.equal(drawn,0);assert.equal(created.length,1);
+created[0].complete=true;created[0].naturalWidth=512;
+artBox.FlightEnemies.draw(ctx,flyer);assert.equal(drawn,1);
+created[0].onerror();artBox.FlightEnemies.draw(ctx,flyer);assert.equal(drawn,1);
+now=5001;artBox.FlightEnemies.draw(ctx,flyer);assert.equal(created.length,2);
+assert.equal(artBox.FlightEnemies.draw(ctx,{flying:false}),false);
+console.log('Flight sprite loading, warm draw, error fallback and retry passed');

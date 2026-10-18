@@ -32,7 +32,7 @@ const expectedVersions = new Map([
   ['elemental-sprites.js', 'elemental4'],
   ['style2-markers.js', 'markers2'],
   ['style2-maps.js', 'v400a6markers1'],
-  ['flight-enemies.js', 'flight1'],
+  ['flight-enemies.js', 'flight2'],
   ['game.js', 'v400a6flight1'],
   ['style2-phase6.js', 'phase6-3'],
   ['kirchende-combat.js', 'v400a5combined1'],

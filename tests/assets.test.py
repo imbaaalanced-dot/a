@@ -65,3 +65,13 @@ with Image.open(elemental/'enemies-v1.webp') as image:
         assert a.getbbox() and a.getbbox()[3]==240
         for edge in [(0,0,256,4),(0,252,256,256),(0,0,4,256),(252,0,256,256)]:assert a.crop(edge).getextrema()[1]==0
 print('Eleven enemy sprites: decode, populated cells, foot anchors and transparent borders verified')
+for kind in ['shadowwing','gargoyle','stormwing']:
+    asset=elemental/(kind+'-v1.webp')
+    with Image.open(asset) as image:
+        image.load()
+        assert image.mode=='RGBA' and image.size==(512,512)
+        assert asset.stat().st_size<200000
+        a=image.getchannel('A')
+        assert a.getbbox() and a.getextrema()[1]>200
+        for edge in [(0,0,512,8),(0,504,512,512),(0,0,8,512),(504,0,512,512)]:assert a.crop(edge).getextrema()[1]==0
+print('Three flying sprites: decode, alpha, size budget and padded borders verified')

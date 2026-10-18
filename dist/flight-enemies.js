@@ -12,8 +12,18 @@ function advance(e,target,dt){
  if(distance){e.x+=(target.x-e.x)/distance*step;e.y+=(target.y-e.y)/distance*step;}
  return distance-step<=reach+.5;
 }
+const sprites=new Map();
+function sprite(type){
+ if(!specs[type]||typeof Image==='undefined')return null;
+ let entry=sprites.get(type);
+ if(entry?.failed&&Date.now()>=entry.retryAt){sprites.delete(type);entry=null;}
+ if(!entry){entry={img:new Image(),failed:false,retryAt:0};sprites.set(type,entry);entry.img.decoding='async';entry.img.onerror=()=>{entry.failed=true;entry.retryAt=Date.now()+5000;};entry.img.src='assets/elemental/'+type+'-v1.webp?v=flight2';}
+ return !entry.failed&&entry.img.complete&&entry.img.naturalWidth>0?entry.img:null;
+}
 function draw(ctx,e,time=0,reduced=false){
  if(!e.flying)return false;
+ const img=sprite(e.type);
+ if(img){const size=e.type==='gargoyle'?100:e.type==='stormwing'?94:86,bob=reduced?0:Math.sin(time*4)*2;ctx.drawImage(img,e.x-size/2,e.y-12-size*.65+bob,size,size);return true;}
  const heavy=e.type==='gargoyle',storm=e.type==='stormwing',r=e.r;
  const flap=reduced?0:Math.sin(time*(heavy?5:9)+e.x*.02)*r*.35;
  ctx.save();try{ctx.translate(e.x,e.y-12);ctx.lineJoin='round';ctx.lineWidth=2;
