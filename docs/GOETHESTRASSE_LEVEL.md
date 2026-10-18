@@ -4,9 +4,9 @@ Playable reference-based park map, derived from the user's photographs 81505–8
 
 - Three asymmetric ground approaches: western park path, northern street, eastern street. The two eastern approaches merge.
 - Air spawns separately at the front street and flies directly across lawn. Cyan dotted corridor appears only in build pauses; it is not a ground path.
-- Shadowwing, gargoyle and stormwing are introduced over waves 17–19; wave 20 includes the existing siege boss. Air warning names the three anti-air tower roles before each wave.
+- Shadowwing, gargoyle and stormwing are introduced over waves 21–23; wave 24 includes the existing siege boss. Air warning names the three anti-air tower roles before each wave.
 - Fourteen marked sites, twelve active towers, 320 starting essence, standard hero and monument rules. Cannon and boomerang remain ground-only; bow, ice, rift and hero hit air.
-- Normal campaign access follows completion of the existing church chapter. Number 5 remains reserved for Hohensyburg. The menu explicitly explains this temporary chapter ordering.
+- Normal campaign access follows completion of Hohensyburg (Level 5). Existing completed Level 6 saves keep their unlocked chapter and endless access.
 - Separate Style 2 preview can launch Level 6 without prior progress; completing that preview does not store campaign completion. Same-run endless continuation remains possible.
 - A normal victory persists `denkmal-level6-completed-v1` and enables Level 6 endless. Storage failure retains the unlock for the session and reports the failure.
 - Garden ground, brick paths, flagstone apron, street and rear woods are baked once into a cached canvas. Memorial art remains an upright sprite.
