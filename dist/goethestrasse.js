@@ -2,7 +2,7 @@
 (()=>{'use strict';
 const air=['shadowwing','gargoyle','stormwing'];
 function enemyType(wave,index){
- if(wave>=24&&index===0)return 'boss';
+ if(wave%4===0&&index===0)return 'boss';
  if(index%4===2)return air[(Math.floor(index/4)+Math.max(0,wave-21))%Math.min(3,Math.max(1,wave-20))];
  const ground=wave>=23?['wraith','runner','guardian','archer','sapper']:['wraith','runner','guardian'];
  return ground[index%ground.length];
