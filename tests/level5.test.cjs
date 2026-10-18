@@ -51,8 +51,8 @@ vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/levels.js','utf8
 assert.equal(blocked.DenkmalLevels.completeLevel5(),false);
 assert.equal(blocked.DenkmalLevels.level5Completed,true,'blocked storage keeps session progress');
 // Renderer: test both cache reuse and objective anchoring, without a DOM or WebGL.
-let creations=0,images=0;
-const paint=new Proxy({drawImage(){images++;},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
+let creations=0,images=0;const drawArgs=[];
+const paint=new Proxy({drawImage(...args){images++;drawArgs.push(args);},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
 box.document={createElement(tag){assert.equal(tag,'canvas');creations++;return {width:0,height:0,getContext:()=>paint};}};
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
 const art=box.DenkmalHohensyburgArt;
@@ -60,10 +60,30 @@ art.drawGround(paint,level);art.drawMonument(paint,{...center,hp:500,maxHp:500})
 const n=creations;art.drawGround(paint,level);art.drawMonument(paint,center);
 assert.equal(creations,n,'draw calls reuse their pre-rendered caches');assert.equal(n,2);
 assert.ok(images>=4,'painted terrain and upright memorial are rendered');
+const spritePath='dist/assets/hohensyburg/kaiser-wilhelm-v1.webp';
+const asset=fs.readFileSync(spritePath);
+assert.ok(asset.length>10000&&asset.length<120000,'transparent game WebP is lightweight');
+assert.equal(asset.toString('ascii',0,4),'RIFF');
+assert.equal(asset.toString('ascii',8,12),'WEBP');
+assert.equal(asset.toString('ascii',12,16),'VP8X');
+assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
+box.Image=class {
+  constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;}
+  set src(value){this.loadedFrom=value;}
+};
+vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
+const beforeSprite=creations;
+box.DenkmalHohensyburgArt.drawMonument(paint,center);
+assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
+const drawnSprite=drawArgs.at(-1);
+assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-v1\.webp\?v=syburg3/);
+assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
+assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg1'));
-for(const script of ['levels.js','hohensyburg-art.js'])assert.ok(html.includes(script+'?v=syburg2'));
+assert.ok(html.includes('levels.js?v=syburg2'));
+assert.ok(html.includes('hohensyburg-art.js?v=syburg3'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));
