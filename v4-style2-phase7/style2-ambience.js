@@ -68,5 +68,48 @@ function drawAir(ctx,level,camera,viewWidth,viewHeight,time=0,{low=false}={}){
  }finally{ctx.restore();}
  return particles.length;
 }
-globalThis.Style2Ambience={drawGround,drawAir,motes,get allocations(){return lightCache.size;},MAX_MOTES};
+
+const pickupCache=new Map();
+function pickup(type){
+ if(pickupCache.has(type))return pickupCache.get(type);
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=96;
+ const g=canvas.getContext('2d');g.translate(48,48);
+ const item=type==='item',a=g.createRadialGradient(0,0,1,0,0,40);
+ a.addColorStop(0,item?'#e9ad3855':'#5ad7ca4c');a.addColorStop(1,item?'#c17d1800':'#247c8a00');
+ g.fillStyle=a;g.fillRect(-43,-43,86,86);
+ // Dark 2.5D foot shadow, cached with the object.
+ g.fillStyle='#0a1619a0';g.beginPath();g.ellipse(0,17,17,5,0,0,Math.PI*2);g.fill();
+ if(item){
+  // Chunky bronze reliquary with a readable gold seam and a lit rune socket.
+  g.fillStyle='#35281e';g.strokeStyle='#f0be6e';g.lineWidth=2;
+  g.beginPath();g.moveTo(-18,-6);g.lineTo(0,-15);g.lineTo(18,-6);g.lineTo(17,10);g.lineTo(0,18);g.lineTo(-18,10);g.closePath();g.fill();g.stroke();
+  g.fillStyle='#a97d41';g.beginPath();g.moveTo(-17,-6);g.lineTo(0,-15);g.lineTo(0,2);g.lineTo(-17,10);g.closePath();g.fill();
+  g.fillStyle='#76512e';g.beginPath();g.moveTo(0,2);g.lineTo(18,-6);g.lineTo(17,10);g.lineTo(0,18);g.closePath();g.fill();
+  g.strokeStyle='#e7ad5e';g.lineWidth=3;g.beginPath();g.moveTo(0,-13);g.lineTo(0,16);g.stroke();
+  g.fillStyle='#fff0bd';g.beginPath();g.arc(0,0,4,0,Math.PI*2);g.fill();
+  g.fillStyle='#f6c46d';g.fillRect(-14,-5,5,3);g.fillRect(10,-5,5,3);
+ }else{
+  // Fractured soul crystal with warm bronze clasps, distinct from dropped gear.
+  g.fillStyle='#274a4b';g.strokeStyle='#b2f2e9';g.lineWidth=2;
+  g.beginPath();g.moveTo(0,-22);g.lineTo(14,-6);g.lineTo(10,13);g.lineTo(0,22);g.lineTo(-12,10);g.lineTo(-14,-7);g.closePath();g.fill();g.stroke();
+  g.fillStyle='#73c5bc';g.beginPath();g.moveTo(0,-20);g.lineTo(0,20);g.lineTo(-12,10);g.lineTo(-14,-7);g.closePath();g.fill();
+  g.fillStyle='#c7fff2';g.beginPath();g.moveTo(0,-19);g.lineTo(5,-6);g.lineTo(0,9);g.closePath();g.fill();
+  g.strokeStyle='#b3975c';g.lineWidth=3;g.beginPath();g.moveTo(-13,-6);g.lineTo(12,-6);g.moveTo(-10,12);g.lineTo(10,12);g.stroke();
+ }
+ pickupCache.set(type,canvas);return canvas;
+}
+function drawLoot(ctx,drop,time=0,low=false){
+ if(!drop||!Number.isFinite(drop.x)||!Number.isFinite(drop.y))return false;
+ const item=drop.kind==='item',bob=low?0:Math.sin(time*3.6+drop.x*.011)*2;
+ ctx.save();
+ try{
+  ctx.drawImage(pickup(item?'item':'essence'),drop.x-25,drop.y-30+bob,50,50);
+  if(item&&!low){
+   ctx.strokeStyle='#f5c56b';ctx.globalAlpha=.28+.15*(.5+.5*Math.sin(time*4));
+   ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(drop.x,drop.y-5+bob,17,0,Math.PI*2);ctx.stroke();
+  }
+ }finally{ctx.restore();}
+ return true;
+}
+globalThis.Style2Ambience={drawGround,drawAir,drawLoot,motes,get allocations(){return lightCache.size+pickupCache.size;},MAX_MOTES};
 })();
