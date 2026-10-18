@@ -79,7 +79,7 @@
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
-  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/');
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/')||!!globalThis.location?.pathname?.includes('/v4-style2-phase7/')||!!globalThis.location?.pathname?.includes('/v4-style2-reference/')||!!globalThis.location?.pathname?.includes('/v4-20261018/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const level5Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level5/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
@@ -367,7 +367,7 @@
     if(game.level===1){campaign.unlock();lootModel.unlockLevel();}
     else if(game.level===2)lootModel.unlockLevel3();
     else if(game.level===3&&!style2Preview)lootModel.claimKirchendeReward();
-    else if(game.level===4&&(!level4Preview||lootModel.profile.kirchendeCompleted))campaign.completeLevel4();
+    else if(game.level===4&&!level4Preview)campaign.completeLevel4();
     else if(game.level===5&&!level5Preview)campaign.completeLevel5();
     else if(game.level===6&&!style2Preview)campaign.completeLevel6();
     saga.stopVoice();state='levelcomplete';clearInput();game.enemies=[];game.bullets=[];game.loot=[];
@@ -641,7 +641,6 @@
 
   function drawLevel(){
     const level=campaign.levels[game.level];
-    if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
     if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     for(const [pathIndex,path] of level.paths.entries()){
       // The cached Style 2 atlas already paints existing Level 1/2 routes.
@@ -655,6 +654,7 @@
       ctx.setLineDash([12,22]);ctx.strokeStyle='#d8bb7755';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
     }
     if(game.level===3)globalThis.KirchendeArt?.drawSite(ctx,campaign.center);
+    if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
     if(game.level===4)globalThis.DenkmalChurch?.drawSite(ctx,campaign.center);
     if(game.level===5)globalThis.DenkmalHohensyburgArt?.drawAirLane(ctx,level,game.intermission>0);
     if(game.level===6)globalThis.DenkmalGoetheArt?.drawAirLane(ctx,level,game.intermission>0);

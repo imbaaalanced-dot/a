@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.6"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.7"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -35,7 +35,7 @@ const expectedVersions = new Map([
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'syburg1'],
+  ['game.js', 'merge1810v1'],
   ['hohensyburg.js', 'syburg1'],
   ['hohensyburg-art.js', 'syburg3'],
   ['style2-ambience.js', 'phase7a1'],
@@ -45,7 +45,8 @@ const expectedVersions = new Map([
   ['kirchende-art.js', 'v400a6s2polish5'],
   ['terrain-polish.js', 'v400a6s2ground3'],
   ['forest-crowns.js', 'v400a6s2foliage4'],
-  ['church-art.js', 'v400a6lionsouth1'],
+  ['church-art.js', 'style2church3'],
+  ['style2-level4-reference.js', 'ref4a1'],
 ]);
 
 const resources = [

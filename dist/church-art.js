@@ -9,6 +9,19 @@
   const graves=[[-485,-245],[-390,60],[-540,150],[-350,235],[330,-290],[470,-430],[490,80],[-450,-105]];
   const benches=[[-500,125],[320,380]];
   let church=null,site=null,lionArt=null;
+  // Fixed-camera photographic Style-2 church asset. Keep procedural art for offline/missing files.
+  const churchSpriteFrame={x:-520,y:-910,w:760,h:570};
+  let churchSprite=null,churchSpriteReady=false,churchSpriteFailed=false;
+  if(typeof Image==='function'){
+    const sprite=new Image();
+    sprite.onload=()=>{
+      if(sprite.naturalWidth>0&&sprite.naturalHeight>0){
+        churchSprite=sprite;churchSpriteReady=true;
+      }else churchSpriteFailed=true;
+    };
+    sprite.onerror=()=>{churchSpriteFailed=true;};
+    sprite.src='assets/church-ende-style2.webp?v=style2church3';
+  }
   function seeded(seed){return () => ((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
   function polygon(c,points,fill,stroke){
     c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));
@@ -21,6 +34,100 @@
       c.fillStyle=['#b6ac93','#9b9a87','#777c72','#c8baa0','#a2a38f'][Math.floor(rnd()*5)];
       c.fillRect(xx+(Math.floor((yy-y)/13)%2)*7,yy,width,height);
     }
+  }
+  // Reference pass 2: more legible masonry depth and warm/cool material hierarchy.
+  // All marks are baked into the existing church canvas, not generated per frame.
+  function paintChurchFinish(g){
+    const light='#e2cfa6',deep='#343b3b';
+    const rng=seeded(18021779);
+    g.save();
+    // Two clipped roof planes: staggered slate scales, moss and a pale stone ridge.
+    polygon(g,[[289,75],[630,75],[600,211],[218,211]],null,null);
+    g.clip();
+    const roofLight=g.createLinearGradient(0,75,0,211);
+    roofLight.addColorStop(0,'#89909936');
+    roofLight.addColorStop(.5,'#59606b09');
+    roofLight.addColorStop(1,'#121d2e66');
+    g.fillStyle=roofLight;g.fillRect(211,72,425,144);
+    for(let row=0;row<16;row++){
+      const y=80+row*8.25;
+      for(let col=0;col<35;col++){
+        const x=218+col*13+((row%2)*6),n=rng();
+        g.strokeStyle=n>.78?'#c6c7b650':n<.21?'#16212a7a':'#929ea53a';
+        g.lineWidth=n>.9?1.35:.9;
+        g.beginPath();g.moveTo(x,y);g.lineTo(x+11,y-1.5);g.stroke();
+        if(n>.972){g.fillStyle='#8c9b786e';g.fillRect(x+2,y-2,6,2);}
+      }
+    }
+    g.restore();
+    // Deep gutter and thin eave highlight show the thickness of the nave.
+    g.lineJoin='round';
+    g.strokeStyle='#202b2cdd';g.lineWidth=10;g.beginPath();
+    g.moveTo(140,270);g.lineTo(218,211);g.lineTo(600,211);g.stroke();
+    g.strokeStyle='#e3cfa466';g.lineWidth=3;g.beginPath();
+    g.moveTo(143,265);g.lineTo(219,207);g.lineTo(601,207);g.stroke();
+    for(const x of [214,314,413,513]){
+      // Buttresses frame the arched windows; low relief, not additional hitboxes.
+      g.fillStyle='#29332ecc';g.fillRect(x+3,348,15,290);
+      g.fillStyle='#9d9883';g.fillRect(x,345,12,285);
+      g.fillStyle='#c7bba0';g.fillRect(x,344,3,281);
+      g.fillStyle='#7d8175';g.fillRect(x-5,344,23,10);
+      g.fillStyle='#a7a38a';g.fillRect(x-5,541,21,6);
+      g.strokeStyle='#4c554e75';g.lineWidth=1;
+      for(let y=376;y<620;y+=27){
+        g.beginPath();g.moveTo(x,y);g.lineTo(x+11,y-2);g.stroke();
+      }
+    }
+    // Existing triple windows: recessed glass, mullions and soft amber glow.
+    for(const x of [247,345,443]){
+      g.save();g.beginPath();g.roundRect(x+6,449,34,88,[18,18,2,2]);g.clip();
+      const glass=g.createLinearGradient(x,449,x+34,537);
+      glass.addColorStop(0,'#6d613e99');glass.addColorStop(.46,'#e6ad5266');
+      glass.addColorStop(1,'#102e3acc');
+      g.fillStyle=glass;g.fillRect(x+5,447,35,94);
+      g.strokeStyle='#e6c68777';g.lineWidth=1.8;
+      g.beginPath();g.moveTo(x+22,453);g.lineTo(x+22,532);
+      g.moveTo(x+7,483);g.lineTo(x+39,483);g.stroke();g.restore();
+      g.strokeStyle='#f1e1bf89';g.lineWidth=2;
+      g.beginPath();g.moveTo(x+4,536);g.lineTo(x+41,536);g.stroke();
+      g.fillStyle='#efad4236';g.fillRect(x+8,542,31,5);
+    }
+    // Tower stonework has a directional edge, carved bands and deep bell ports.
+    g.fillStyle='#e1d4b030';g.fillRect(55,184,8,424);
+    g.fillStyle='#28372d5e';g.fillRect(201,181,11,430);
+    g.strokeStyle='#e2d4b36d';g.lineWidth=5;
+    g.beginPath();g.moveTo(63,228);g.lineTo(203,228);
+    g.moveTo(63,408);g.lineTo(203,408);
+    g.moveTo(70,493);g.lineTo(198,493);g.stroke();
+    for(let row=0;row<10;row++){
+      const yy=236+row*25;
+      g.strokeStyle=row%2?'#554f4677':'#decfb02d';g.lineWidth=1;
+      g.beginPath();g.moveTo(66,yy);g.lineTo(197,yy);g.stroke();
+    }
+    g.strokeStyle='#202c2eaf';g.lineWidth=3;
+    for(const x of [81,143]){
+      g.beginPath();g.roundRect(x-3,170,31,60,[16,16,1,1]);g.stroke();
+      g.strokeStyle='#d6bd8f83';g.lineWidth=2;g.beginPath();
+      g.moveTo(x+6,187);g.lineTo(x+6,215);g.stroke();
+    }
+    // Roof apex and clock bezel catch the same upper-left light direction.
+    g.strokeStyle=light+'92';g.lineWidth=3;
+    g.beginPath();g.moveTo(47,145);g.lineTo(127,-16);g.stroke();
+    g.strokeStyle='#f8e6c0b8';g.lineWidth=2;
+    g.beginPath();g.arc(128,302,45,Math.PI*.7,Math.PI*1.7);g.stroke();
+    g.strokeStyle=deep;g.lineWidth=2;
+    g.beginPath();g.arc(128,302,37,0,Math.PI*2);g.stroke();
+    // South portal in stepped stone, with a warm lamp instead of a flat door.
+    g.fillStyle='#d3c5a899';g.beginPath();g.roundRect(90,513,80,105,[39,39,2,2]);g.fill();
+    g.fillStyle='#26332f';g.beginPath();g.roundRect(98,521,64,95,[32,32,2,2]);g.fill();
+    const portal=g.createLinearGradient(98,523,160,610);
+    portal.addColorStop(0,'#98714794');portal.addColorStop(1,'#131c1c');
+    g.fillStyle=portal;g.beginPath();g.roundRect(102,525,56,88,[28,28,1,1]);g.fill();
+    g.strokeStyle='#d9c6a2';g.lineWidth=4;g.beginPath();g.roundRect(89,512,82,106,[40,40,1,1]);g.stroke();
+    g.strokeStyle='#192522';g.lineWidth=3;g.beginPath();g.moveTo(130,551);g.lineTo(130,609);g.stroke();
+    g.fillStyle='#f8cd7a';g.beginPath();g.arc(136,577,3,0,Math.PI*2);g.fill();
+    g.fillStyle='#b5aa8b';g.fillRect(87,613,91,9);
+    g.fillStyle='#5a614f';g.fillRect(85,622,95,5);
   }
   function createChurch(){
     const c=document.createElement('canvas');c.width=720;c.height=900;
@@ -89,6 +196,7 @@
     g.strokeStyle='#d0c1a0';g.lineWidth=6;g.stroke();g.fillStyle='#b6a991';g.fillRect(89,613,90,11);
     // Subtle highlights to keep the stone readable at portrait zoom.
     g.strokeStyle='#d7d1b04d';g.lineWidth=3;g.strokeRect(54,190,155,424);
+    paintChurchFinish(g);
     return c;
   }
   function createSite(){
@@ -151,11 +259,14 @@
     ctx.fillStyle='#484e44';ctx.fillRect(-34,11,7,12);ctx.fillRect(27,11,7,12);ctx.restore();
   }
   function drawBackdrop(ctx,center){
-    if(!church)church=createChurch();
+    const usingSprite=churchSpriteReady&&!!churchSprite;
+    if(!usingSprite&&!church)church=createChurch();
     ctx.save();ctx.translate(center.x,center.y);
-    // Westward and northward relative to lion. Southern facade clears the monument.
-    const paintChurch=()=>ctx.drawImage(church,churchFrame.x,churchFrame.y,churchFrame.w,churchFrame.h);
-    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:churchFrame.x+churchFrame.w/2,y:churchFrame.y+churchFrame.h},paintChurch);else paintChurch();
+    // New photo-derived 2.5D artwork uses the same ground footprint and anchor.
+    const frame=usingSprite?churchSpriteFrame:churchFrame;
+    const sprite=usingSprite?churchSprite:church;
+    const paintChurch=()=>ctx.drawImage(sprite,frame.x,frame.y,frame.w,frame.h);
+    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:frame.x+frame.w/2,y:frame.y+frame.h},paintChurch);else paintChurch();
     for(const [i,[x,y]] of graves.entries())drawGrave(ctx,x,y,i);
     for(const [x,y] of benches)drawBench(ctx,x,y);
     for(const [x,y] of trees){
@@ -184,6 +295,44 @@
   // Draw the 1879 stone monument once to a transparent canvas and reuse it.
   // The real object is a tall, stepped and ornamented memorial with the lion on top;
   // see Commons Category:Ehrenmal_Schlafender_Löwe_(Ende).
+  // Slightly richer south-facing stone sculpture without changing its anchor.
+  function paintLionFinish(g){
+    const rng=seeded(19071879);
+    g.save();
+    // Carved brow, nostrils and layered mane read even at mobile zoom.
+    g.lineCap='round';
+    g.strokeStyle='#f6e5bd71';g.lineWidth=2.4;
+    g.beginPath();g.moveTo(-22,-272);g.quadraticCurveTo(-14,-280,-6,-273);
+    g.moveTo(6,-273);g.quadraticCurveTo(15,-280,23,-272);g.stroke();
+    g.strokeStyle='#4f5449ad';g.lineWidth=1.4;
+    for(let side of [-1,1]){
+      for(let row=0;row<5;row++){
+        const x=side*(29+row%2*7),y=-275+row*11;
+        g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x+side*11,y+8,x+side*2,y+15);g.stroke();
+      }
+    }
+    g.fillStyle='#626251';for(const x of [-6,6]){
+      g.beginPath();g.ellipse(x,-255,2.5,1.4,0,0,Math.PI*2);g.fill();
+    }
+    // Pedestal with dark corner seams and weathered stone blocks.
+    g.strokeStyle='#4e5c5477';g.lineWidth=1.4;
+    for(let y=-187;y<-48;y+=21){
+      g.beginPath();g.moveTo(-89,y);g.lineTo(-68,y-2);
+      g.moveTo(70,y-1);g.lineTo(88,y-1);g.stroke();
+    }
+    g.strokeStyle='#f5ddae78';g.lineWidth=2;
+    g.strokeRect(-66,-166,134,101);
+    g.strokeStyle='#a38c6099';g.lineWidth=2;
+    g.strokeRect(-60,-160,123,91);
+    // Low-contrast lichen outside inscription center, all cached.
+    for(let i=0;i<95;i++){
+      const x=-108+rng()*216,y=-227+rng()*208;
+      if(y>-166&&y<-66&&Math.abs(x)<72)continue;
+      g.fillStyle=i%2?'#5f815034':'#e5d4ab33';
+      g.beginPath();g.ellipse(x,y,1+rng()*3,1+rng()*2,0,0,Math.PI*2);g.fill();
+    }
+    g.restore();
+  }
   function createLionArt(){
     const canvas=document.createElement('canvas');canvas.width=320;canvas.height=380;
     const g=canvas.getContext('2d');g.translate(160,366);
@@ -282,6 +431,7 @@
       g.fillStyle=i%5?'#61735721':'#e0d8b326';
       g.beginPath();g.ellipse(x,y,1+rand()*3,1+rand()*2,0,0,7);g.fill();
     }
+    paintLionFinish(g);
     return canvas;
   }
   function drawLion(ctx,m){
@@ -298,5 +448,5 @@
     }
     ctx.restore();
   }
-  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,trees,graves};
+  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get churchSpriteFailed(){return churchSpriteFailed;}};
 })();
