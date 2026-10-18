@@ -24,7 +24,7 @@ let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.repla
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 t.startGame(6);assert.equal(t.game.level,6);assert.equal(t.state,'playing');
 assert.equal(sandbox.DenkmalLevels.level4Completed,false);assert.equal(sandbox.DenkmalLevels.level6Completed,false);
-t.game.wave=20;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level6Completed,false);
+t.game.wave=24;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level6Completed,false);
 assert.equal(sandbox.localStorage.data.has('denkmal-level6-completed-v1'),false);
 assert.match(element('levelSaveNote').textContent,/Testvorschau/);
 element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
