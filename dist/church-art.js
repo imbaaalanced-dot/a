@@ -9,6 +9,19 @@
   const graves=[[-485,-245],[-390,60],[-540,150],[-350,235],[330,-290],[470,-430],[490,80],[-450,-105]];
   const benches=[[-500,125],[320,380]];
   let church=null,site=null,lionArt=null;
+  // Fixed-camera photographic Style-2 church asset. Keep procedural art for offline/missing files.
+  const churchSpriteFrame={x:-520,y:-910,w:760,h:570};
+  let churchSprite=null,churchSpriteReady=false,churchSpriteFailed=false;
+  if(typeof Image==='function'){
+    const sprite=new Image();
+    sprite.onload=()=>{
+      if(sprite.naturalWidth>0&&sprite.naturalHeight>0){
+        churchSprite=sprite;churchSpriteReady=true;
+      }else churchSpriteFailed=true;
+    };
+    sprite.onerror=()=>{churchSpriteFailed=true;};
+    sprite.src='assets/church-ende-style2.webp?v=style2church3';
+  }
   function seeded(seed){return () => ((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
   function polygon(c,points,fill,stroke){
     c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));
@@ -246,11 +259,14 @@
     ctx.fillStyle='#484e44';ctx.fillRect(-34,11,7,12);ctx.fillRect(27,11,7,12);ctx.restore();
   }
   function drawBackdrop(ctx,center){
-    if(!church)church=createChurch();
+    const usingSprite=churchSpriteReady&&!!churchSprite;
+    if(!usingSprite&&!church)church=createChurch();
     ctx.save();ctx.translate(center.x,center.y);
-    // Westward and northward relative to lion. Southern facade clears the monument.
-    const paintChurch=()=>ctx.drawImage(church,churchFrame.x,churchFrame.y,churchFrame.w,churchFrame.h);
-    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:churchFrame.x+churchFrame.w/2,y:churchFrame.y+churchFrame.h},paintChurch);else paintChurch();
+    // New photo-derived 2.5D artwork uses the same ground footprint and anchor.
+    const frame=usingSprite?churchSpriteFrame:churchFrame;
+    const sprite=usingSprite?churchSprite:church;
+    const paintChurch=()=>ctx.drawImage(sprite,frame.x,frame.y,frame.w,frame.h);
+    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:frame.x+frame.w/2,y:frame.y+frame.h},paintChurch);else paintChurch();
     for(const [i,[x,y]] of graves.entries())drawGrave(ctx,x,y,i);
     for(const [x,y] of benches)drawBench(ctx,x,y);
     for(const [x,y] of trees){
@@ -432,5 +448,5 @@
     }
     ctx.restore();
   }
-  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,trees,graves};
+  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get churchSpriteFailed(){return churchSpriteFailed;}};
 })();
