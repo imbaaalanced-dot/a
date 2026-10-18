@@ -27,6 +27,15 @@ assert.equal(JSON.stringify(camera),camBefore,'render must not move the camera')
 assert.equal(a.drawAir(paint,3,camera,700,550,1,{low:false}),p1.length);
 assert.equal(a.drawAir(paint,3,camera,700,550,1,{low:true}),0);
 assert.equal(creations,warm,'moving motes never allocate canvases');
+const relic={x:1200,y:1500,kind:'item'},essence={x:1300,y:1400,kind:'essence'};
+const relicBefore=JSON.stringify(relic),essenceBefore=JSON.stringify(essence);
+assert.ok(a.drawLoot(paint,relic,1,false));
+assert.ok(a.drawLoot(paint,essence,1,false));
+assert.equal(creations,warm+2,'two cached loot sprites are added once');
+for(let frame=0;frame<60;frame++)a.drawLoot(paint,frame%2?relic:essence,frame/30,false);
+assert.equal(creations,warm+2,'animated loot uses cached sprites, not fresh canvases');
+assert.equal(JSON.stringify(relic),relicBefore);assert.equal(JSON.stringify(essence),essenceBefore);
+assert.equal(a.drawLoot(paint,null),false);
 assert.equal(saved,0,'render state must be restored');
 assert.ok(rects>0);
 const css=fs.readFileSync('dist/style2-ui-polish.css','utf8');
