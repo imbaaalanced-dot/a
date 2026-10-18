@@ -23,3 +23,12 @@ Die Ender Dorfkirche mit dem südlich blickenden Löwendenkmal dient als erste s
 
 ## Veröffentlichungsstrategie
 Draft-Branch auf Phase 7, ohne Merge in `main`. Erst neuer Testbuild, Prüfung des tatsächlichen Bildes im mobilen Browser, Screenshots gegen Zielgrafik und Performance, dann Entscheidung über weitere Grafikarbeit. Vor einem späteren Root-Deploy muss dessen Pages-Workflow den neuen Testordner ebenfalls erhalten, sonst könnte er ihn entfernen.
+
+## Durchgang 2 – Architektur und Steinreliefs
+- Kirchendach mit kleineren Schieferkursen, entlang der Traufe verdunkelter Tiefe, schmalen Lichtkanten und einem klareren Dachfirst.
+- Fassaden mit hervorgehobenen Strebepfeilern, eingezogenen Buntglasfenstern, Giebelschatten und architektonisch gerahmtem Südportal; Uhrturm mit Steinlagen und Glockenöffnungen.
+- Südwärts ausgerichteter schlafender Löwe bleibt unverändert verankert. Feinere Mähnenkonturen, weich abgestufter Steinton, hervorgehobene Tafelumrandung und dezente Flechten sind in der bestehenden Objektbitmap enthalten.
+- **Technischer Nachweis:** Der Renderer-Schnelltest hat 3 Canvas-Erzeugungen beim ersten Zeichnen und keine weiteren während 90 Folgezeichnungen gesehen. Das ist keine Sichtprüfung im Livebrowser und kein Android-FPS-Nachweis.
+- Browsercache-Key für `church-art.js` auf `ref4b2` gesetzt; dazu Cache- und Level-4-Regressionen aktualisiert. Kein Eingriff in Löwenausrichtung, Kampfverhalten, Kartenwege oder Kollision.
+
+Weiterhin offen: Vergleich mit den Original-Konzeptbildern in echter Gerätedarstellung. Diese Stufe ist ein verbesserter Canvas-Art-Pass, keine fertig produzierte fotorealistische Asset-Pipeline.
