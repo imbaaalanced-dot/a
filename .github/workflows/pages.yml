@@ -50,6 +50,7 @@ jobs:
           node tests/style2-markers.test.cjs
           node tests/style2-ambience.test.cjs
           node tests/style2-level4-reference.test.cjs
+          node tests/style2-church-sprite.test.cjs
           node tests/main-menu.test.cjs
           node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs
