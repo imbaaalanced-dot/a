@@ -54,3 +54,6 @@ Reduced isolated decoration anchors from 650 candidates to 380, adding softly bl
 
 ### Village facade follow-up
 Kirchende's two cached village buildings now include recessed plank doors, a roof-overhang shadow, low stone entry steps and moss along the foundation. Existing building bounds, routes and slots remain unchanged. Native Canvas output was inspected; all 22 Node test files pass, including warm-cache reuse and building render checks.
+
+### Church access correction from user aerial image
+Replaced the previous illustrative radial churchyard lanes using the user's 18 October aerial screenshot. Northern access now runs east of the church from In den Eichen; two southern entries approach from the village-road side; the western lane skirts the south-west churchyard. Four spawn lanes and the lion target remain, with build slots filtered against the revised routes. This is a reference-based approximation: the aerial screenshot does not establish the exact memorial position or measured path widths. New tests assert north/east access and southern entry orientation in addition to continuous church-wall clearance, pad clearance and wave gate behavior. All 22 Node test files pass. A native Canvas preview of the revised route layer with church/lion artwork was inspected.

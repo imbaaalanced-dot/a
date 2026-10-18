@@ -39,11 +39,13 @@
   // Footprint is deliberately conservative; only relative layout is derived
   // from public geodata, not survey-grade building dimensions.
   const churchFootprint={left:-415,right:235,top:-700,bottom:-290};
+  // User aerial reference, 18 October: northern lane follows the east side;
+  // southern approaches share the village-road access. Illustrative, not surveyed.
   const churchPaths=[
-    [[-730,-370],[-555,-365],[-435,-195],[-175,-125],[0,0]],
-    [[-735,340],[-420,345],[-250,190],[-90,70],[0,0]],
-    [[635,700],[370,520],[280,270],[125,100],[0,0]],
-    [[-690,-790],[-615,-535],[-530,-260],[-200,-155],[0,0]]
+    [[420,-1000],[420,-760],[420,-360],[350,-200],[200,-90],[0,0]],
+    [[850,520],[450,520],[400,250],[250,100],[0,0]],
+    [[-850,520],[-300,520],[-100,280],[-100,100],[0,0]],
+    [[-850,-220],[-600,-220],[-420,-200],[-220,-180],[-100,-80],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
   // Keep a 40 px clearance from the wall for paths/tower markers.
   const outsideChurch=(x,y,padding=0)=>
@@ -71,7 +73,7 @@
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
-    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
+    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const saveKey='denkmal-level2-unlocked-v1';
   let unlocked=false,storageAvailable=true;

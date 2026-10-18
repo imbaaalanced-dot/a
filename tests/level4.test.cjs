@@ -102,3 +102,10 @@ assert.ok(game.includes('function churchBlocks(x,y,r=13)'),'church must block th
 assert.ok(game.includes('!churchBlocks(nx,h.y,h.r)'),'movement must stop before the masonry');
 assert.ok(art.churchFrame&&art.churchFrame.x===-500,'church positioning must be exported for review');
 console.log('Level 4 paths, build pads, wave gates, saved unlock and cached church/lion artwork passed.');
+// Aerial-reference correction: north access uses the east side of the church,
+// while both village-road entries originate south of the churchyard.
+assert.equal(level.gateLabels[0],'IN DEN EICHEN');
+assert.ok(level.gates[0].x>c.x+f.right+48);
+assert.ok(level.gates[0].y<c.y+f.top);
+for(const i of [1,2])assert.ok(level.gates[i].y>c.y+400);
+for(const p of level.paths[0])if(p.y<c.y+f.bottom)assert.ok(p.x>c.x+f.right+48,'northern access stays east of church');
