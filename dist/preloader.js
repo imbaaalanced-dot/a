@@ -4,6 +4,12 @@
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
+    'assets/elemental/enemies-v1.webp?v=enemies1',
+    'assets/elemental/boomerang-towers-v1.webp?v=elemental1',
+    'assets/elemental/bow-towers-v1.webp?v=elemental1',
+    'assets/elemental/cannon-towers-v1.webp?v=elemental1',
+    ...['mage','rift'].flatMap(kind=>['towers','projectiles','impacts'].map(type=>'assets/elemental/'+kind+'-'+type+'-v1.webp?v=elemental1')),
+    'assets/kirchende/monument-photo-v2.webp?v=v400a5photo2',
     'assets/asset-atlas.png','assets/stone-terrain-v27.png','assets/guardian-atlas-v27.png',
     'assets/tower-bow-infernal-v1.png','assets/tower-cannon-ash-v1.png',
     'assets/tower-mage-hellfire-v1.png','assets/tower-rift-lance-v1.png',

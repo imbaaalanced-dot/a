@@ -2,9 +2,9 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat"]
+    branches: ["main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat", "feature/v4-level4-church-lion", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018"]
   pull_request:
-    branches: ["main", "v4-kirchende"]
+    branches: ["main", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-phase7-ambience-20261018"]
 
 permissions:
   contents: read
@@ -27,6 +27,26 @@ jobs:
         run: node tests/preloader.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
+      - name: Kirchende terrain and renderer caching
+        run: |
+          node tests/terrain-polish.test.cjs
+          node tests/kirchende-loading.test.cjs
+          node tests/style2-kirchende.test.cjs
+          node tests/style2-cannon.test.cjs
+          node tests/style2-towers.test.cjs
+          node tests/elemental-sprites.test.cjs
+          node tests/flight-enemies.test.cjs
+          node tests/goethestrasse.test.cjs
+          node tests/goethestrasse-preview.test.cjs
+          node tests/level5.test.cjs
+          node tests/level5-preview.test.cjs
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
+          node tests/style2-maps.test.cjs
+          node tests/style2-phase6.test.cjs
+          node tests/style2-ground.test.cjs
+          node tests/style2-markers.test.cjs
+          node tests/style2-ambience.test.cjs
+          node tests/style2-level4-reference.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
@@ -37,8 +57,13 @@ jobs:
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
         run: node tests/combat-fx.test.cjs
-      - name: V4 alpha.4 combat, FX and menu regression suite
-        run: node tests/v4-alpha4.test.cjs
+      - name: V4 alpha.4 + alpha.5 and churchyard regression
+        run: |
+          node tests/v4-alpha4.test.cjs
+          node tests/v4-alpha5.test.cjs
+          TEST_MOBILE=1 node tests/v4-alpha5.test.cjs
+          node tests/level4.test.cjs
+          TEST_MOBILE=1 node tests/level4.test.cjs
       - name: v3.1 + v3.2 feature regression suite
         run: node tests/v3.1-features.test.cjs
 

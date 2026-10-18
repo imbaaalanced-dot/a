@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende"]
+    branches: ["main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/v4-level4-church-lion", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018"]
   workflow_dispatch:
 
 permissions:
@@ -35,6 +35,24 @@ jobs:
         run: |
           node tests/preloader.test.cjs
           node tests/cache-busting.test.cjs
+          node tests/terrain-polish.test.cjs
+          node tests/kirchende-loading.test.cjs
+          node tests/style2-kirchende.test.cjs
+          node tests/style2-cannon.test.cjs
+          node tests/style2-towers.test.cjs
+          node tests/elemental-sprites.test.cjs
+          node tests/flight-enemies.test.cjs
+          node tests/goethestrasse.test.cjs
+          node tests/goethestrasse-preview.test.cjs
+          node tests/level5.test.cjs
+          node tests/level5-preview.test.cjs
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
+          node tests/style2-maps.test.cjs
+          node tests/style2-phase6.test.cjs
+          node tests/style2-ground.test.cjs
+          node tests/style2-markers.test.cjs
+          node tests/style2-ambience.test.cjs
+          node tests/style2-level4-reference.test.cjs
           node tests/main-menu.test.cjs
           node tests/intro-tutorial.test.cjs
           node tests/portrait-hud.test.cjs
@@ -43,6 +61,10 @@ jobs:
           TEST_MOBILE=1 node tests/game.test.cjs
           node tests/combat-fx.test.cjs
           node tests/v4-alpha4.test.cjs
+          node tests/v4-alpha5.test.cjs
+          TEST_MOBILE=1 node tests/v4-alpha5.test.cjs
+          node tests/level4.test.cjs
+          TEST_MOBILE=1 node tests/level4.test.cjs
           node tests/v3.1-features.test.cjs
 
       - name: Publish isolated V4 path on gh-pages
@@ -92,6 +114,220 @@ jobs:
           fi
           git commit -m "Publish V4 alpha 4 tester ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
+      - name: Publish isolated alpha 5 visual tester
+        if: github.ref_name == 'feature/td2-terrain-stars-alpha5'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-alpha5
+          find /tmp/denkmal-gh-pages/v4-alpha5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha5/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-alpha5 .nojekyll
+          if git diff --cached --quiet; then
+            echo "V4 alpha 5 tester build already current."
+            exit 0
+          fi
+          git commit -m "Publish V4 alpha 5 visuals"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated combined alpha 5 tester
+        if: github.ref_name == 'feature/v4-alpha5-unified-kirchende'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-alpha6
+          find /tmp/denkmal-gh-pages/v4-alpha6 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-alpha6/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-alpha6 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish combined Kirchende boomerang tester ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
+      - name: Publish isolated level 4 churchyard tester
+        if: github.ref_name == 'feature/v4-level4-church-lion'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-level4
+          find /tmp/denkmal-gh-pages/v4-level4 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-level4/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-level4 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Level 4 churchyard tester ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
+      - name: Publish isolated Style 2 Kirchende tester
+        if: github.ref_name == 'feature/style2-kirchende-pass2-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2
+          find /tmp/denkmal-gh-pages/v4-style2 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 Kirchende tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Style 2 cannon tester
+        if: github.ref_name == 'feature/style2-cannon-pass3-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2-cannon
+          find /tmp/denkmal-gh-pages/v4-style2-cannon -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2-cannon/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2-cannon .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 cannon tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 cannon tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Style 2 towers tester
+        if: github.ref_name == 'feature/style2-towers-pass4-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2-towers
+          find /tmp/denkmal-gh-pages/v4-style2-towers -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2-towers/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2-towers .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 towers tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 bow mage rift tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Style 2 maps tester
+        if: github.ref_name == 'feature/style2-maps-pass5-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2-maps
+          find /tmp/denkmal-gh-pages/v4-style2-maps -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2-maps/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2-maps .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 maps tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 maps tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Style 2 phase 6 tester
+        if: github.ref_name == 'feature/style2-phase6-20261016'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2-phase6
+          find /tmp/denkmal-gh-pages/v4-style2-phase6 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2-phase6/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2-phase6 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 phase 6 tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 phase 6 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Style 2 phase 7 tester
+        if: github.ref_name == 'feature/style2-phase7-ambience-20261018'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-style2-phase7
+          find /tmp/denkmal-gh-pages/v4-style2-phase7 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-style2-phase7/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-style2-phase7 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Style 2 phase 7 tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 phase 7 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish isolated Hohensyburg Level 5 tester
+        if: github.ref_name == 'feature/level5-hohensyburg-20261018'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-level5
+          find /tmp/denkmal-gh-pages/v4-level5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-level5/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-level5 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Hohensyburg tester already current."
+            exit 0
+          fi
+          git commit -m "Publish Hohensyburg Level 5 tester ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - name: Publish consolidated V4 October 18 tester
+        if: github.ref_name == 'integrate/td2-v4-20261018'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/denkmal-gh-pages origin/gh-pages
+          mkdir -p /tmp/denkmal-gh-pages/v4-20261018
+          find /tmp/denkmal-gh-pages/v4-20261018 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/denkmal-gh-pages/v4-20261018/
+          touch /tmp/denkmal-gh-pages/.nojekyll
+          cd /tmp/denkmal-gh-pages
+          git add v4-20261018 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish TD2 consolidated V4 ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
       - name: Publish main tester at root
         if: github.ref_name == 'main'
         shell: bash
@@ -100,7 +336,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-level4 ! -name v4-level5 ! -name v4-20261018 ! -name v4-style2-reference ! -name v4-style2 ! -name v4-style2-cannon ! -name v4-style2-towers ! -name v4-style2-maps ! -name v4-style2-phase6 ! -name v4-style2-phase7 ! -name kirchende-foto -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages

@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.4"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.7"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -15,21 +15,38 @@ assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.
 const expectedVersions = new Map([
   ['styles.css', 'v400a4merge1'],
   ['hero.css', 'v400a4merge1'],
-  ['polish.css', 'v400a4merge1'],
+  ['polish.css', 'v400a5combined1'],
   ['loot.css', 'v400a4merge1'],
   ['menu.css', 'v400a4merge1'],
   ['preloader.css', 'td2preload1'],
-  ['portrait-patch.css', 'v400a4merge1'],
-  ['preloader.js', 'td2preload2'],
-  ['levels.js', 'v400a4merge1'],
+  ['portrait-patch.css', 'v400a6hud2'],
+  ['preloader.js', 'td2preload8'],
+  ['levels.js', 'syburg2'],
   ['visuals.js', 'v400a4merge1'],
   ['loot.js', 'v400a4merge1'],
   ['loot-ui.js', 'v400a4merge1'],
   ['hero-saga.js', 'v400a4merge1'],
-  ['combat-fx.js', 'v400a4merge1'],
-  ['game.js', 'v400a4hero1'],
-  ['kirchende-combat.js', 'v400a4merge1'],
-  ['kirchende-art.js', 'v400a4merge1'],
+  ['combat-fx.js', 'v400a6s2t4'],
+  ['style2-cannon.js', 'v400a6s2c4'],
+  ['style2-towers.js', 'v400a6elemental1'],
+  ['elemental-sprites.js', 'elemental4'],
+  ['style2-markers.js', 'markers2'],
+  ['style2-maps.js', 'v400a6markers1'],
+  ['flight-enemies.js', 'flight2'],
+  ['goethestrasse.js', 'goethe2'],
+  ['goethestrasse-art.js', 'goethe1'],
+  ['game.js', 'merge1810v1'],
+  ['hohensyburg.js', 'syburg1'],
+  ['hohensyburg-art.js', 'syburg3'],
+  ['style2-ambience.js', 'phase7a1'],
+  ['style2-ui-polish.css', 'phase7a1'],
+  ['style2-phase6.js', 'phase6-3'],
+  ['kirchende-combat.js', 'v400a5combined1'],
+  ['kirchende-art.js', 'v400a6s2polish5'],
+  ['terrain-polish.js', 'v400a6s2ground3'],
+  ['forest-crowns.js', 'v400a6s2foliage4'],
+  ['church-art.js', 'style2church3'],
+  ['style2-level4-reference.js', 'ref4a1'],
 ]);
 
 const resources = [
@@ -54,4 +71,4 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
-console.log('TD2 Alpha.4 metadata and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 Alpha.5 metadata and ' + resources.length + ' static JS/CSS cache references verified.');

@@ -16,9 +16,47 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
+check('Kirchende integrates the photo-based paved approach and memorial ground without moving gameplay objects',()=>{
+  for(const file of ['terrain-polish.js','forest-crowns.js','kirchende-art.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),sandbox);
+  const terrain=sandbox.DenkmalTerrain,art=sandbox.KirchendeArt,forest=sandbox.DenkmalForest,roads=[],layers=[],shrubs=[];let sites=0;
+  const road=terrain.drawRoad,site=art.drawSite,shrub=forest.drawShrub;
+  terrain.drawRoad=(ctx,path,options)=>{roads.push(options?.surface);layers.push('road');return road(ctx,path,options);};
+  art.drawSite=(...args)=>{sites++;layers.push('site');return site(...args);};
+  forest.drawShrub=(ctx,x,y,r,index)=>{shrubs.push({x,y,r});return shrub(ctx,x,y,r,index);};
+  t.game.level=3;
+  const before=JSON.stringify({hero:t.game.hero,monument:t.game.monument,paths:sandbox.DenkmalLevels.levels[3].paths,slots:sandbox.DenkmalLevels.levels[3].slots});
+  try{
+    t.draw();
+    assert.deepEqual(roads,['earth','earth','earth','slabs'],'only the Kirchweg approach is paved');
+    assert.equal(sites,1,'the memorial floor renders once');
+    assert.deepEqual(layers,['road','road','road','road','site'],'the memorial floor is layered above all routes');
+    for(const bush of shrubs)for(const pad of sandbox.DenkmalLevels.levels[3].slots){
+      const c=sandbox.DenkmalLevels.center;
+      assert.ok(Math.hypot(pad.x-c.x-bush.x,pad.y-c.y-bush.y)>=bush.r+25,'shrubs must leave every build pad visible');
+    }
+    const warmCanvases=serial;t.draw();assert.equal(serial,warmCanvases,'the warmed scenery allocates no canvas per frame');
+    assert.equal(JSON.stringify({hero:t.game.hero,monument:t.game.monument,paths:sandbox.DenkmalLevels.levels[3].paths,slots:sandbox.DenkmalLevels.levels[3].slots}),before);
+  }finally{terrain.drawRoad=road;art.drawSite=site;forest.drawShrub=shrub;delete sandbox.DenkmalTerrain;delete sandbox.DenkmalForest;delete sandbox.KirchendeArt;}
+});
+check('Kirchende waits for the monument image and ignores a cancelled level load',()=>{
+  t.mainMenu();t.lootModel.unlockLevel3();let loaded=false,resume;
+  sandbox.KirchendeArt={ready:()=>loaded,load:()=>({then(fn){resume=fn;}})};
+  try{
+    t.startGame(3);assert.equal(t.state,'start','combat must wait while the monument is loading');
+    loaded=true;resume();assert.equal(t.game.level,3);assert.equal(t.state,'playing');
+    t.mainMenu();loaded=false;t.startGame(3);const cancelled=resume;t.startGame(1);loaded=true;cancelled();
+    assert.equal(t.game.level,1,'a late image callback must not replace the chosen level');
+    t.mainMenu();loaded=false;t.startGame(3);resume();assert.equal(t.state,'start','failed image load keeps the menu usable');
+  }finally{delete sandbox.KirchendeArt;}
+});
 check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-v2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
@@ -360,4 +398,48 @@ assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
+check('Flying enemies bypass ground lanes and reject cannon targeting and collisions',()=>{
+  t.game.enemies=[];t.game.towers=[];t.game.bullets=[];
+  sandbox.DenkmalTestHooks.spawnEnemy('shadowwing');
+  const e=t.game.enemies[0],hp=e.hp,m=t.game.monument;
+  assert.equal(e.flying,true);
+  const tower={x:e.x,y:e.y,range:1000,kind:'cannon'};
+  assert.equal(t.towerTarget(tower),null);
+  assert.equal(t.towerTarget({...tower,kind:'bow'}),e);
+  t.game.bullets.push({kind:'cannon',x:e.x,y:e.y,vx:0,vy:0,r:60,damage:999,splash:150,life:1});
+  const before=Math.hypot(e.x-m.x,e.y-m.y);t.update(.01);
+  assert.equal(e.hp,hp,'cannon cannot collide with airborne targets');
+  assert.ok(Math.hypot(e.x-m.x,e.y-m.y)<before,'flight approaches monument directly');
+});
+check('Hohensyburg has gated campaign, ground/air waves and persistent unlock',()=>{
+  t.mainMenu();t.startGame(5);assert.equal(t.state,'start','level 5 requires cleared churchyard');
+  sandbox.DenkmalLevels.completeLevel4();t.startGame(5);
+  assert.equal(t.game.level,5);assert.equal(t.game.wave,17);assert.equal(t.game.maxTowers,11);
+  assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);
+  t.game.waveSpawned=0;for(let i=0;i<18;i++)t.spawnEnemy();
+  const layout=sandbox.DenkmalLevels.levels[5];
+  assert.ok(t.game.enemies.some(e=>e.flying));
+  assert.ok(t.game.enemies.some(e=>!e.flying));
+  for(const e of t.game.enemies)if(e.flying)assert.equal(e.y,layout.airGate.y);
+  t.mainMenu();t.startGame(5,'endless');assert.equal(t.state,'start');
+  t.startGame(6);assert.equal(t.state,'start','chapter VI remains locked before Hohensyburg completion');
+  t.startGame(5);t.game.wave=20;t.endWave();
+  assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level5Completed,true);
+  element('nextLevelBtn').onclick();assert.equal(t.game.level,6,'regular story continues with Level 6');
+});
+check('Goethestraße gates, mixed waves, air origin, completion and endless unlock',()=>{
+  t.mainMenu();t.startGame(6);assert.equal(t.game.level,6,'chapter VI unlock survives the preceding Level 5 test');assert.equal(t.game.wave,21);assert.equal(t.game.maxTowers,12);
+  assert.match(t.wavePreview(21),/SCHATTENFLÜGLER/);assert.match(element('wavePreview').textContent,/LUFTANGRIFF/);
+  t.launchWave();const heroY=t.game.hero.y;t.game.hero.y=200;t.resize(false);t.game.waveSpawned=2;assert.ok(t.threatIndicators().some(p=>p.label==='LUFTZULAUF'),'next offscreen airborne spawn points to the air corridor');t.game.hero.y=heroY;t.resize(false);t.game.waveSpawned=0;for(let i=0;i<16;i++)t.spawnEnemy();
+  const definition=sandbox.DenkmalLevels.levels[6];
+  for(const e of t.game.enemies){const p=e.flying?definition.airGate:definition.gates[e.gateIndex];assert.equal(e.x,p.x);assert.equal(e.y,p.y);}
+  assert.equal(t.game.enemies.filter(e=>e.flying).length,4);
+  assert.equal(new Set(t.game.enemies.filter(e=>!e.flying).map(e=>e.gateIndex)).size,3);
+  t.mainMenu();t.startGame(6,'endless');assert.equal(t.state,'start','endless locked until completion');
+  t.startGame(6);t.game.wave=24;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level6Completed,true);
+  assert.match(element('levelCompleteTitle').textContent,/GOETHESTRASSE/);
+  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
+  t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,25);assert.ok(t.wavePreview(25).includes('STURMGEIST'));
+  t.mainMenu();t.startGame(6,'endless');assert.equal(t.game.level,6);assert.equal(t.game.mode,'endless');
+});
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
