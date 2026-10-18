@@ -30,6 +30,11 @@
 }
 .action-btn:not(:disabled):active,.arsenal button:not(:disabled):active{filter:brightness(1.19)}
 .meter,.wave-meter{box-shadow:inset 0 1px 3px #0009,0 1px rgba(196,156,93,.16)}
+/* Alpha 8: stronger icon silhouettes and a readable stone/bronze HUD edge. */
+.left-hud,.right-hud{filter:drop-shadow(0 5px 9px rgba(0,0,0,.34))}
+.resource b,.hud-label b{font-variant-numeric:tabular-nums;text-shadow:0 1px 3px #000b}
+.meter i,.wave-meter i{box-shadow:inset 0 1px rgba(255,245,202,.32),0 0 8px rgba(226,166,83,.21)}
+.boss-meter i{box-shadow:inset 0 1px rgba(255,235,190,.25),0 0 13px rgba(244,93,54,.35)}
 @media (prefers-reduced-motion:reduce){
  .arsenal button{transition:none}
 }

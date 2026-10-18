@@ -37,6 +37,16 @@ for(const [i,type] of ['wraith','runner','brute','archer','guardian','sapper','r
  assert.equal(box.Style2Enemies.draw(ctx,{type,x:1,y:2},-1),true);
  assert.deepEqual(draws.at(-1).slice(1,5),[(i%4)*256,Math.floor(i/4)*256,256,256]);
 }
+const runner={type:'runner',x:100,y:200};
+assert.equal(box.Style2Enemies.draw(ctx,runner,1,0),true,'cold animation falls back to the original enemy atlas');
+const animation=images.at(-1);assert.match(animation.src,/enemies-walk-alpha8\.png/);
+animation.complete=true;animation.naturalWidth=1448;animation.naturalHeight=1086;
+box.Style2Enemies.draw(ctx,runner,1,0);
+const first=draws.at(-1).slice(1,5);
+box.Style2Enemies.draw(ctx,runner,1,1/7);
+const second=draws.at(-1).slice(1,5);
+assert.equal(first[1],1086/3,'runner uses the middle row');
+assert.notEqual(first[0],second[0],'moving enemy changes walk frame');
 
 const gameSource=fs.readFileSync('dist/game.js','utf8');
 assert.ok(!gameSource.slice(gameSource.indexOf('function upgradeTower('),gameSource.indexOf('function sellTower(')).includes('ElementalSprites'),'tower upgrades never depend on image readiness');

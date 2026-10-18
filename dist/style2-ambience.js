@@ -10,7 +10,9 @@ function light(color){
  const c=document.createElement('canvas');c.width=c.height=128;
  const g=c.getContext('2d');
  const halo=g.createRadialGradient(64,64,1,64,64,63);
- if(color==='blue'){
+ if(color==='shadow'){
+  halo.addColorStop(0,'rgba(5,12,14,.68)');halo.addColorStop(.46,'rgba(6,15,18,.31)');halo.addColorStop(1,'rgba(6,15,18,0)');
+ }else if(color==='blue'){
   halo.addColorStop(0,'rgba(105,202,215,.65)');halo.addColorStop(.28,'rgba(72,178,190,.25)');halo.addColorStop(1,'rgba(35,138,155,0)');
  }else{
   halo.addColorStop(0,'rgba(255,213,138,.72)');halo.addColorStop(.28,'rgba(232,151,65,.22)');halo.addColorStop(1,'rgba(186,99,30,0)');
@@ -23,6 +25,12 @@ function drawGround(ctx,level,layout,time=0,{low=false}={}){
  const gates=layout.gates,center=layout.center;
  ctx.save();
  try{
+  // One shared contact shadow ties monuments and entry structures to every map.
+  // All coordinates are existing authored anchors; this cannot create a road.
+  ctx.globalAlpha=low?.20:.34;
+  ctx.drawImage(light('shadow'),center.x-105,center.y-35,210,92);
+  ctx.globalAlpha=low?.12:.22;
+  for(const gate of gates)ctx.drawImage(light('shadow'),gate.x-70,gate.y-16,140,56);
   // Monument light is a ground accent, not an ever-expanding combat aura.
   ctx.globalAlpha=low?.16:.24;
   ctx.drawImage(light(level===6?'blue':'amber'),center.x-165,center.y-138,330,270);

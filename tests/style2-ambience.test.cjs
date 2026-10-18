@@ -13,7 +13,7 @@ vm.createContext(box);vm.runInContext(source,box);
 const a=box.Style2Ambience,layout={center:{x:1536,y:1536},gates:[{x:1536,y:900},{x:2000,y:1400}],airGate:{x:1800,y:550}};
 const before=JSON.stringify(layout);
 a.drawGround(paint,6,layout,2,{low:false});
-const warm=creations;assert.equal(warm,2,'amber and blue gradients are the only canvases created');
+const warm=creations;assert.equal(warm,3,'amber, blue and ground shadow gradients are cached');
 for(let frame=0;frame<120;frame++)a.drawGround(paint,6,layout,frame/60,{low:false});
 assert.equal(creations,warm,'no canvas allocations per frame');assert.ok(images>200);
 const camera={x:1300,y:1240},camBefore=JSON.stringify(camera);
