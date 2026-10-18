@@ -31,3 +31,10 @@ Vorschau nach erfolgreichem GitHub-Actions-Deployment:
 https://imbaaalanced-dot.github.io/a/v4-level5/
 
 Dieser Branch enthält auch die vorgelagerten Style-2-Änderungen. Nicht vor manueller Freigabe und CI-Status in `main` mergen.
+
+## Raster-Sprite-Integration (18. Oktober)
+- Der aus dem freigegebenen generierten Denkmalbild extrahierte **RGBA-Sprite** liegt im Repository unter `dist/assets/hohensyburg/kaiser-wilhelm-v1.webp` (361 × 550 Pixel, ~36 KiB).
+- Der Sprite enthält nur Monument, Reiter und Figuren samt ihren Sockeln, **keinen separaten breiten Aussichtsplatz**. Dadurch bleiben Terrain, Bauflächen und Treppen der vorhandenen Karte intakt.
+- `hohensyburg-art.js` lädt das Bild asynchron genau einmal und zeichnet es am existierenden Monument-Anker; ohne geladenes Bild greift die alte Canvas-Denkmalzeichnung.
+- Die hochauflösende freigestellte Arbeitsdatei wird separat aufbewahrt; die WebP-Version ist für die sichtbare Größe in der mobilen TD2-Kamera optimiert.
+- Keine Änderung an Wellen, Gegnerwegen, Schaden, Speichern oder Freischaltungen.
