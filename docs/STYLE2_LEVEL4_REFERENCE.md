@@ -32,3 +32,10 @@ Draft-Branch auf Phase 7, ohne Merge in `main`. Erst neuer Testbuild, Prüfung d
 - Browsercache-Key für `church-art.js` auf `ref4b2` gesetzt; dazu Cache- und Level-4-Regressionen aktualisiert. Kein Eingriff in Löwenausrichtung, Kampfverhalten, Kartenwege oder Kollision.
 
 Weiterhin offen: Vergleich mit den Original-Konzeptbildern in echter Gerätedarstellung. Diese Stufe ist ein verbesserter Canvas-Art-Pass, keine fertig produzierte fotorealistische Asset-Pipeline.
+
+## Spielasset-Integration – 18. Oktober 2026
+- Das transparente Bild aus dem vierteiligen Generator-Sheet wurde als WebP-Sprite in `dist/assets/church-ende-style2.webp` im Testbranch aufgenommen (240 × 180 px, 8.9 KiB). Weitere Ansichten bleiben bislang Produktionsvorlagen; die feste Spielkamera nutzt eine geeignete Ansicht.
+- `church-art.js` lädt es zur Laufzeit nach, rendert es an einem festen Weltanker (`x=-520,y=-910,w=760,h=570` relativ zur Monumentmitte) und verwendet die alte Canvas-Kirche, wenn das Asset noch lädt oder ausfällt.
+- `game.js` zeichnet die Kirche nun nach dem Pflaster, damit die Wege nicht über die Mauern gemalt werden. Keine Änderung an Pfad-, Hitbox-, Kollision- oder Speicherdaten.
+- Die Browser-Version der Grafik nutzt `style2church3`. Test `tests/style2-church-sprite.test.cjs` prüft WebP-Header, erfolgreiches Laden, Anker und Fallback im Node-Canvas-Mock.
+- Wichtig: Das exportierte Spielasset ist eine heruntergerechnete Version für den mobilen Test. Ein späterer höherauflösender Atlas sowie optischer Abgleich mit den Fotos müssen folgen. Die 4 im Generator erstellten Ansichten sind keine identisch ausmodellierten 3D-Kamerawinkel.
