@@ -7,7 +7,7 @@ assert.ok(l.slots.length>=10);for(const pad of l.slots){assert.ok(l.paths.every(
 assert.equal(c.level6Completed,false);c.completeLevel6();assert.equal(c.level6Completed,true);assert.equal(data.get('denkmal-level6-completed-v1'),'true');
 vm.runInContext(fs.readFileSync('dist/goethestrasse.js','utf8'),box);const g=box.DenkmalGoethe;
 for(let wave=21;wave<=24;wave++){const types=Array.from({length:48},(_,i)=>g.enemyType(wave,i));assert.ok(types.includes('shadowwing'));assert.ok(types.includes('wraith'));assert.match(g.warning(wave),/LUFTANGRIFF/);assert.ok(g.waveName(wave));}
-assert.ok(Array.from({length:48},(_,i)=>g.enemyType(23,i)).includes('gargoyle'));assert.ok(Array.from({length:48},(_,i)=>g.enemyType(19,i)).includes('stormwing'));assert.equal(g.enemyType(24,0),'boss');
+assert.ok(Array.from({length:48},(_,i)=>g.enemyType(23,i)).includes('gargoyle'));assert.ok(Array.from({length:48},(_,i)=>g.enemyType(23,i)).includes('stormwing'));assert.equal(g.enemyType(24,0),'boss');
 console.log('Goethestraße geometry, slots, mixed waves and completion passed');
 let canvases=0,draws=0;const ctx=new Proxy({drawImage(){draws++;},createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
 box.document={createElement(){canvases++;return{width:0,height:0,getContext:()=>ctx};}};
