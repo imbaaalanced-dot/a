@@ -15,7 +15,7 @@ function details(level,layout){
  let seed=62917+level*7919;
  const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  const result=[];
- for(let i=0;i<650;i++){
+ for(let i=0;i<380;i++){
   const p={x:360+random()*2352,y:360+random()*2352,r:3+random()*9,kind:i%4};
   if(Math.hypot(p.x-layout.center.x,p.y-layout.center.y)<220)continue;
   if(layout.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<115))continue;
@@ -31,6 +31,10 @@ function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
   cache=document.createElement('canvas');cache.width=cache.height=1536;active=level;
   const g=cache.getContext('2d');g.scale(.5,.5);
   for(const p of details(level,layout)){
+   // Broad moss/soil transitions anchor the smaller details into the terrain.
+   const moss=g.createRadialGradient(p.x,p.y,1,p.x,p.y,p.r*5);
+   moss.addColorStop(0,p.kind===1?'#8b795329':'#6f805b35');moss.addColorStop(1,'#40523900');
+   g.fillStyle=moss;g.fillRect(p.x-p.r*5,p.y-p.r*5,p.r*10,p.r*10);
    // Ground-level leaf clumps, weathered stones and shallow masonry fragments.
    g.fillStyle='#07141055';g.beginPath();g.ellipse(p.x+7,p.y+6,p.r*1.8,p.r*.65,0,0,7);g.fill();
    g.fillStyle=['#636c4666','#a4967d99','#394c35aa','#777b6666'][p.kind];
@@ -43,6 +47,22 @@ function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
      const a=leaf*1.256;g.fillStyle=leaf%2?'#76825488':'#3d5939aa';
      g.beginPath();g.ellipse(p.x+Math.cos(a)*p.r,p.y+Math.sin(a)*p.r*.5,p.r*.7,p.r*.35,a,0,7);g.fill();
     }
+   }
+   if(p.kind===0){
+    // Flattened leaf clusters, rather than isolated high-contrast dots.
+    for(let leaf=0;leaf<4;leaf++){
+     const x=p.x+(leaf-1.5)*p.r*.7,y=p.y+(leaf%2)*p.r*.4;
+     g.fillStyle=['#91744e88','#a18b6180','#68774688','#7b684777'][leaf];
+     g.beginPath();g.ellipse(x,y,p.r*.65,p.r*.26,-.5+leaf*.3,0,7);g.fill();
+    }
+   }
+   if(p.kind===2){
+    // Short grass blades remain within the existing clear-of-path footprint.
+    g.lineWidth=1.5;g.strokeStyle='#a3ad7488';g.beginPath();
+    for(let blade=0;blade<5;blade++){
+     const x=p.x+(blade-2)*p.r*.38;
+     g.moveTo(x,p.y+2);g.quadraticCurveTo(x-3,p.y-p.r*.65,x+(blade-2)*1.7,p.y-p.r*(.7+(blade%3)*.22));
+    }g.stroke();
    }
    if(p.kind===1&&p.r>9){
     // Short, ankle-height remnants; clear of every path and build pad.
