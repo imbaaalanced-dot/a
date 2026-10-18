@@ -415,7 +415,7 @@ check('Hohensyburg has gated campaign, ground/air waves and persistent unlock',(
   t.mainMenu();t.startGame(5);assert.equal(t.state,'start','level 5 requires cleared churchyard');
   sandbox.DenkmalLevels.completeLevel4();t.startGame(5);
   assert.equal(t.game.level,5);assert.equal(t.game.wave,17);assert.equal(t.game.maxTowers,11);
-  assert.match(t.wavePreview(21),/SCHATTENFLÜGLER/);
+  assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);
   t.game.waveSpawned=0;for(let i=0;i<18;i++)t.spawnEnemy();
   const layout=sandbox.DenkmalLevels.levels[5];
   assert.ok(t.game.enemies.some(e=>e.flying));
@@ -429,7 +429,7 @@ check('Hohensyburg has gated campaign, ground/air waves and persistent unlock',(
 check('Goethestraße gates, mixed waves, air origin, completion and endless unlock',()=>{
   t.startGame(6);assert.equal(t.game.level,1,'locked chapter stays locked');
   sandbox.DenkmalLevels.completeLevel5();t.startGame(6);assert.equal(t.game.level,6);assert.equal(t.game.wave,21);assert.equal(t.game.maxTowers,12);
-  assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);assert.match(element('wavePreview').textContent,/LUFTANGRIFF/);
+  assert.match(t.wavePreview(21),/SCHATTENFLÜGLER/);assert.match(element('wavePreview').textContent,/LUFTANGRIFF/);
   t.launchWave();const heroY=t.game.hero.y;t.game.hero.y=200;t.resize(false);t.game.waveSpawned=2;assert.ok(t.threatIndicators().some(p=>p.label==='LUFTZULAUF'),'next offscreen airborne spawn points to the air corridor');t.game.hero.y=heroY;t.resize(false);t.game.waveSpawned=0;for(let i=0;i<16;i++)t.spawnEnemy();
   const definition=sandbox.DenkmalLevels.levels[6];
   for(const e of t.game.enemies){const p=e.flying?definition.airGate:definition.gates[e.gateIndex];assert.equal(e.x,p.x);assert.equal(e.y,p.y);}
