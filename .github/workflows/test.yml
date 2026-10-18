@@ -47,6 +47,7 @@ jobs:
           node tests/style2-markers.test.cjs
           node tests/style2-ambience.test.cjs
           node tests/style2-level4-reference.test.cjs
+          node tests/style2-church-sprite.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
       - name: Persistent loot regression suite
