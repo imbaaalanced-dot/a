@@ -41,9 +41,9 @@ for name,limit in [('monument-photo-v2.webp',160000),('ground-photo-v2.webp',350
 
 # Generated elemental atlases: genuine alpha, clean cell borders and bounded download size.
 elemental=root.parent/'elemental'
-for kind in ['mage','rift','bow','cannon']:
+for kind in ['mage','rift','bow','cannon','boomerang']:
     for typ,cell,cols,rows in [('towers',512,3,1),('projectiles',128,3,1),('impacts',128,6,3)]:
-        if kind in ['bow','cannon'] and typ!='towers':continue
+        if kind in ['bow','cannon','boomerang'] and typ!='towers':continue
         asset=elemental/f'{kind}-{typ}-v1.webp'
         with Image.open(asset) as image:
             image.load()
@@ -56,3 +56,12 @@ for kind in ['mage','rift','bow','cannon']:
                     for edge in [(0,0,cell,4),(0,cell-4,cell,cell),(0,0,4,cell),(cell-4,0,cell,cell)]:
                         assert alpha.crop(edge).getextrema()[1]==0,(asset.name,col,row,'clipped alpha edge')
         print(f'{asset.name}: decoded, equal cells, transparent gutters verified')
+with Image.open(elemental/'enemies-v1.webp') as image:
+    image.load()
+    assert image.mode=='RGBA' and image.size==(1024,768)
+    assert (elemental/'enemies-v1.webp').stat().st_size<1500000
+    for i in range(11):
+        a=image.getchannel('A').crop(((i%4)*256,(i//4)*256,(i%4+1)*256,(i//4+1)*256))
+        assert a.getbbox() and a.getbbox()[3]==240
+        for edge in [(0,0,256,4),(0,252,256,256),(0,0,4,256),(252,0,256,256)]:assert a.crop(edge).getextrema()[1]==0
+print('Eleven enemy sprites: decode, populated cells, foot anchors and transparent borders verified')

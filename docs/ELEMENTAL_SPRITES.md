@@ -20,3 +20,8 @@ Three generated bow tower tiers now use the same fixed-cell renderer. Only tower
 
 ## Cannon follow-up
 Three generated cannon tower tiers use the fixed-cell image renderer through Style2Cannon, retaining procedural fallback and existing projectile/impact behavior. Bow and cannon image atlases are now included in automated decode, size and transparent-border checks. All 22 Node test files pass. Cannon sheet inspected over opaque terrain. Actual Android playthrough remains pending.
+
+## Physical towers and enemy follow-up
+Bumerang tower now has three fixed-footprint generated tiers: wood, orange plastic and steel sawblade. The projectile renderer shows the same material progression; outbound/return damage and targeting are unchanged. Eleven existing enemy types have individual generated silhouettes, mirrored toward the monument while retaining existing hit, slow, armor, boss and health overlays. Image load failure retains the previous art.
+
+Sources, checksums and enemy crop rectangles are in the manifest. Rebuild with `python tools/prepare-physical-followup.py <generated_images>`. Both atlases total about 1 MiB. Automated checks cover transparent cell borders, enemy foot anchors, all eleven crops, unknown-type fallback and independence of tower upgrades from image readiness. All 22 Node test files and image decode checks pass. Real Android performance and full browser playthrough remain open; no claim of final visual parity with concept images.

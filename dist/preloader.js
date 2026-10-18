@@ -4,6 +4,8 @@
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
+    'assets/elemental/enemies-v1.webp?v=enemies1',
+    'assets/elemental/boomerang-towers-v1.webp?v=elemental1',
     'assets/elemental/bow-towers-v1.webp?v=elemental1',
     'assets/elemental/cannon-towers-v1.webp?v=elemental1',
     ...['mage','rift'].flatMap(kind=>['towers','projectiles','impacts'].map(type=>'assets/elemental/'+kind+'-'+type+'-v1.webp?v=elemental1')),

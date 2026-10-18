@@ -26,3 +26,18 @@ const warm=images.length;for(let i=0;i<20;i++)art.drawTower(ctx,'rift',100,200,2
 assert.equal(art.drawImpact(ctx,{...p,life:0}),true);assert.equal(ctx.globalAlpha,0,'final phase fades completely');
 const source=fs.readFileSync('dist/style2-towers.js','utf8');for(const fn of ['drawTower','drawProjectile','drawImpact'])assert.ok(source.includes('ElementalSprites?.'+fn),'renderer routes '+fn+' to generated assets');
 console.log('Generated elemental assets: loading fallback, tier crops, projectile direction, six chronological impact frames and warm reuse passed.');
+assert.equal(art.drawTower(ctx,'boomerang',0,0,1),false);
+images.at(-1).complete=true;images.at(-1).naturalWidth=1536;
+assert.equal(art.drawTower(ctx,'boomerang',0,0,2),true);
+assert.deepEqual(draws.at(-1).slice(1,5),[512,0,512,512]);
+assert.equal(box.Style2Enemies.draw(ctx,{type:'unknown'}),false);
+assert.equal(box.Style2Enemies.draw(ctx,{type:'wraith',x:1,y:2}),false);
+images.at(-1).complete=true;images.at(-1).naturalWidth=1024;ctx.scale=()=>{};
+for(const [i,type] of ['wraith','runner','brute','archer','guardian','sapper','rootrunner','stoneguard','mistcaller','boss','uprooted'].entries()){
+ assert.equal(box.Style2Enemies.draw(ctx,{type,x:1,y:2},-1),true);
+ assert.deepEqual(draws.at(-1).slice(1,5),[(i%4)*256,Math.floor(i/4)*256,256,256]);
+}
+
+const gameSource=fs.readFileSync('dist/game.js','utf8');
+assert.ok(!gameSource.slice(gameSource.indexOf('function upgradeTower('),gameSource.indexOf('function sellTower(')).includes('ElementalSprites'),'tower upgrades never depend on image readiness');
+assert.ok(gameSource.slice(gameSource.indexOf('function drawTower('),gameSource.indexOf('function drawBoomerangProjectile(')).includes("drawTower(ctx,'boomerang'"),'boomerang rendering uses atlas');

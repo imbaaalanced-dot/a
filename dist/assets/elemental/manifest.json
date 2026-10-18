@@ -42,5 +42,100 @@
     },
     "towerCell": 512,
     "tiers": 3
+  },
+  "boomerang": {
+    "sources": {
+      "exec-0f949974-24f9-4293-8d2b-706205d80b04.png": "4a8d7a4e54535df766602ca1772491d1ca42a8bac8c2c7b04299d1eaacda66a6"
+    },
+    "towerCell": 512,
+    "tiers": 3
+  },
+  "enemies": {
+    "sources": {
+      "exec-1bab93bb-8d43-4fc2-8934-1c6df748443c.png": "7bb28458ca6bf304d1c3e9976035c881ee8fd262c788e27b0b4b32f457b3fb29"
+    },
+    "cell": 256,
+    "columns": 4,
+    "types": [
+      "wraith",
+      "runner",
+      "brute",
+      "archer",
+      "guardian",
+      "sapper",
+      "rootrunner",
+      "stoneguard",
+      "mistcaller",
+      "boss",
+      "uprooted"
+    ],
+    "sourceBoxes": [
+      [
+        0,
+        0,
+        380,
+        365
+      ],
+      [
+        390,
+        0,
+        720,
+        350
+      ],
+      [
+        724,
+        0,
+        1095,
+        360
+      ],
+      [
+        1100,
+        0,
+        1448,
+        365
+      ],
+      [
+        0,
+        365,
+        330,
+        705
+      ],
+      [
+        390,
+        370,
+        722,
+        687
+      ],
+      [
+        745,
+        375,
+        1085,
+        690
+      ],
+      [
+        1100,
+        370,
+        1448,
+        705
+      ],
+      [
+        0,
+        707,
+        320,
+        1086
+      ],
+      [
+        330,
+        688,
+        725,
+        1086
+      ],
+      [
+        725,
+        685,
+        1210,
+        1086
+      ]
+    ]
   }
 }

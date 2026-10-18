@@ -4,7 +4,7 @@
 const supported=new Set(['mage','rift']),images=new Map();
 const tier=value=>Math.max(1,Math.min(3,Math.floor(Number(value)||1)));
 function image(kind,type){
- if((!supported.has(kind)&&!(['bow','cannon'].includes(kind)&&type==='towers'))||typeof Image==='undefined')return null;
+ if((!supported.has(kind)&&!(['bow','cannon','boomerang'].includes(kind)&&type==='towers'))||typeof Image==='undefined')return null;
  const key=kind+'-'+type;
  if(!images.has(key)){
   const entry={img:new Image(),failed:false,retryAt:0};images.set(key,entry);
@@ -33,3 +33,15 @@ function drawImpact(ctx,p){
 }
 globalThis.ElementalSprites={drawTower,drawProjectile,drawImpact};
 })();
+
+/* Shared enemy atlas: stable feet and type-specific silhouette sizes. */
+(()=>{'use strict';
+const types=['wraith','runner','brute','archer','guardian','sapper','rootrunner','stoneguard','mistcaller','boss','uprooted'];
+const heights=[62,54,80,62,80,64,60,86,72,116,140];let img=null,failed=false,retryAt=0;
+function draw(ctx,e,face=1){const i=types.indexOf(e.type);if(i<0||typeof Image==='undefined')return false;
+ if(failed&&Date.now()>=retryAt){img=null;failed=false;}
+ if(!img){img=new Image();img.decoding='async';img.onerror=()=>{failed=true;retryAt=Date.now()+5000;};img.src='assets/elemental/enemies-v1.webp?v=enemies1';}
+ if(failed||!img.complete||!img.naturalWidth)return false;
+ const size=heights[i];ctx.save();try{ctx.translate(e.x,e.y);ctx.scale(face<0?-1:1,1);ctx.drawImage(img,(i%4)*256,Math.floor(i/4)*256,256,256,-size/2,-size*240/256,size,size);}finally{ctx.restore();}return true;
+}
+globalThis.Style2Enemies={draw};})();
