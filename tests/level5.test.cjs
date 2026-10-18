@@ -9,6 +9,13 @@ assert.match(level.name,/KAISER-WILHELM/);
 assert.equal(level.firstWave,17);assert.equal(level.lastWave,20);
 assert.equal(level.startEssence,300);assert.equal(level.maxTowers,11);
 assert.equal(level.paths.length,3);assert.equal(level.gates.length,3);
+const terrace=level.syburgTerrace;
+assert.ok(terrace,'the two-level photographed terrace is part of the game map');
+assert.ok(terrace.forecourt.right-terrace.forecourt.left>terrace.raised.right-terrace.raised.left,'public forecourt is wider than the pylon deck');
+assert.ok(terrace.forecourt.top<terrace.raised.bottom&&terrace.forecourt.bottom>terrace.raised.bottom,'two planes meet at stairs');
+assert.equal(terrace.stairs.length,2,'two independently modeled public stair flights');
+assert.ok(level.paths[0][0].x<center.x&&level.paths[1][0].x>center.x&&level.paths[2][0].y>center.y,'woodland arms and front approach stay asymmetric');
+assert.ok(level.paths[2].some(p=>Math.hypot(p.x-(center.x+218),p.y-(center.y+325))<5),'the lower approach actually crosses its stairway');
 assert.ok(level.slots.length>=12&&level.slots.length<=20);
 assert.ok(level.airGate.y>center.y+850,'flight spawns over the south-side hillside');
 for(const [i,route] of level.paths.entries()){
@@ -19,6 +26,9 @@ for(const pad of level.slots){
  assert.ok(level.paths.every(route=>lib.pathDistance(pad,route)>=90),'safe pads stay off approach lanes');
  assert.ok(Math.hypot(pad.x-center.x,pad.y-center.y)>=200,'memorial footprint stays empty');
  assert.ok(pad.y<center.y+690,'no towers on the southern ravine');
+ const x=pad.x-center.x,y=pad.y-center.y,r=terrace.raised;
+ assert.ok(x<r.left-45||x>r.right+45||y<r.top-45||y>r.bottom+45,'tower pad never intersects the elevated retaining wall');
+ assert.ok(terrace.stairs.every(stair=>Math.abs(x-stair.x)>=stair.width/2+65||y<=stair.top-65||y>=stair.bottom+65),'tower pad never blocks visitor stairways');
 }
 assert.deepEqual(Array.from(lib.getWaveGates(5,17)),[0,1]);
 assert.deepEqual(Array.from(lib.getWaveGates(5,18)),[0,1,2]);
@@ -52,7 +62,8 @@ assert.equal(creations,n,'draw calls reuse their pre-rendered caches');assert.eq
 assert.ok(images>=4,'painted terrain and upright memorial are rendered');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
-for(const script of ['hohensyburg.js','hohensyburg-art.js'])assert.ok(html.includes(script+'?v=syburg1'));
+assert.ok(html.includes('hohensyburg.js?v=syburg1'));
+for(const script of ['levels.js','hohensyburg-art.js'])assert.ok(html.includes(script+'?v=syburg2'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));
