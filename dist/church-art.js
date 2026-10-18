@@ -244,48 +244,37 @@
     polygon(g,[[-110,-222],[-92,-237],[97,-237],[111,-223]],'#bfb094','#6e7466');
     g.fillStyle='#d4c8a7';g.fillRect(-113,-229,223,9);
     g.fillStyle='#767d69';g.fillRect(-110,-219,220,7);
-    // Sleeping lion silhouette: paws forward, lowered head, calm expression,
-    // long mane, reclining shoulders, haunches and curled tail.
-    const fur=grad(-72,-298,160,90,[[0,'#e1d3b0'],[.26,'#c1b28d'],[.65,'#a39979'],[1,'#777d69']]);
-    g.fillStyle=fur;g.beginPath();g.moveTo(-52,-257);
-    g.bezierCurveTo(-47,-278,-24,-292,0,-289);
-    g.bezierCurveTo(32,-302,66,-277,84,-255);
-    g.bezierCurveTo(94,-240,74,-229,55,-234);
-    g.bezierCurveTo(20,-239,-2,-235,-33,-238);
-    g.quadraticCurveTo(-64,-234,-52,-257);g.fill();
-    // Haunches rise above the back rather than round blobs.
-    g.fillStyle='#b6a986';g.beginPath();g.ellipse(67,-267,27,21,-.43,0,7);g.fill();
-    g.strokeStyle='#e1d2b0';g.lineWidth=5;g.beginPath();
-    g.moveTo(81,-254);g.bezierCurveTo(115,-264,121,-229,88,-228);
-    g.bezierCurveTo(75,-226,75,-238,83,-237);g.stroke();
-    // Mane with a cohesive outline; strands are sculpted curved grooves.
-    g.fillStyle=grad(-79,-294,85,80,[[0,'#e0d0ac'],[.47,'#b2a17f'],[1,'#6b7462']]);
-    g.beginPath();g.moveTo(-35,-291);
-    g.bezierCurveTo(-58,-319,-87,-300,-79,-268);
-    g.bezierCurveTo(-90,-253,-74,-241,-77,-229);
-    g.bezierCurveTo(-63,-230,-53,-222,-40,-227);
-    g.bezierCurveTo(-16,-226,-13,-245,-23,-265);
-    g.bezierCurveTo(-12,-285,-25,-290,-35,-291);g.fill();
+    // Quarter-turn in ground space: west-facing profile becomes south-facing.
+    // Redraw the foreshortened sculpture; rotating its bitmap would tip it sideways.
+    const fur=grad(-65,-312,130,90,[[0,'#e1d3b0'],[.4,'#bcae89'],[1,'#737b68']]);
+    // Reclining body recedes north behind the lowered head.
+    g.fillStyle=fur;g.beginPath();g.ellipse(7,-282,48,32,0,0,Math.PI*2);g.fill();
+    g.fillStyle='#b5a784';g.beginPath();g.ellipse(9,-302,35,16,0,0,Math.PI*2);g.fill();
+    g.strokeStyle='#ddd0ad';g.lineWidth=4;g.beginPath();
+    g.moveTo(39,-293);g.bezierCurveTo(66,-310,73,-279,49,-274);g.stroke();
+    // Paired forelegs point south, resting on the front cornice.
+    for(const x of [-31,31]){
+      g.fillStyle=fur;g.beginPath();g.ellipse(x,-246,16,24,0,0,Math.PI*2);g.fill();
+      g.fillStyle='#d0c09a';g.beginPath();g.ellipse(x,-229,21,9,0,0,Math.PI*2);g.fill();
+      g.strokeStyle='#827c65';g.lineWidth=1.5;
+      for(let toe=-1;toe<=1;toe++){g.beginPath();g.moveTo(x+toe*7,-232);g.lineTo(x+toe*7,-225);g.stroke();}
+    }
+    // Symmetrical mane, ears and closed eyes establish the new frontal view.
+    g.fillStyle=grad(-47,-295,94,70,[[0,'#e0d0ac'],[.5,'#b2a17f'],[1,'#6b7462']]);
+    g.beginPath();g.ellipse(0,-265,45,35,0,0,Math.PI*2);g.fill();
     const rand=seeded(1879);
     for(let i=0;i<26;i++){
-      const x=-76+rand()*55,y=-290+rand()*55;
-      g.strokeStyle=i%3?'#7d806eaa':'#ecdec2bb';g.lineWidth=1.7+rand()*1.1;
-      g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x-9,y+12,x+2,y+19);g.stroke();
+      const angle=i*Math.PI*2/26,x=Math.cos(angle)*35,y=-265+Math.sin(angle)*26;
+      g.strokeStyle=i%3?'#7d806eaa':'#ecdec2bb';g.lineWidth=1.5;
+      g.beginPath();g.moveTo(x*.8,-265+(y+265)*.8);g.quadraticCurveTo(x+4,y+5,x,y+10);g.stroke();
     }
-    // Lion's sleeping muzzle points to the west.
-    g.fillStyle='#d7c5a1';g.beginPath();
-    g.moveTo(-70,-281);g.quadraticCurveTo(-100,-287,-102,-266);
-    g.quadraticCurveTo(-103,-253,-84,-251);g.quadraticCurveTo(-67,-250,-60,-267);g.closePath();g.fill();
-    g.strokeStyle='#504b3f';g.lineWidth=2;
-    g.beginPath();g.moveTo(-93,-270);g.quadraticCurveTo(-86,-265,-80,-270);g.stroke(); // closed eye
-    g.fillStyle='#444a43';g.beginPath();g.ellipse(-102,-259,7,5,.2,0,7);g.fill(); // nose
-    g.strokeStyle='#535548';g.lineWidth=1;g.beginPath();g.moveTo(-99,-254);g.quadraticCurveTo(-88,-248,-78,-254);g.stroke();
-    // Broad forepaws reach the lion's front ledge.
-    for(const [x,y] of [[-32,-237],[17,-239]]){
-      g.fillStyle='#bdb08c';g.beginPath();g.ellipse(x,y,28,10,.03,0,7);g.fill();
-      g.strokeStyle='#847b64';g.lineWidth=1.7;
-      for(let i=0;i<3;i++){g.beginPath();g.moveTo(x+8+i*6,y-4);g.lineTo(x+8+i*6,y+5);g.stroke();}
-    }
+    for(const x of [-26,26]){g.fillStyle='#b7a580';g.beginPath();g.ellipse(x,-284,10,9,0,0,Math.PI*2);g.fill();}
+    g.fillStyle='#d7c5a1';g.beginPath();g.ellipse(0,-266,28,23,0,0,Math.PI*2);g.fill();
+    g.strokeStyle='#615c49';g.lineWidth=2;
+    for(const x of [-13,13]){g.beginPath();g.moveTo(x-6,-270);g.quadraticCurveTo(x,-266,x+6,-270);g.stroke();}
+    g.fillStyle='#c2b18b';g.beginPath();g.ellipse(-9,-253,13,9,0,0,Math.PI*2);g.ellipse(9,-253,13,9,0,0,Math.PI*2);g.fill();
+    polygon(g,[[-7,-260],[7,-260],[0,-253]],'#555849');
+    g.strokeStyle='#6c6651';g.lineWidth=1.5;g.beginPath();g.moveTo(0,-253);g.lineTo(0,-248);g.stroke();
     // Lichen and patina, retained within carved limestone and pedestal.
     for(let i=0;i<170;i++){
       const x=-108+rand()*212,y=-214+rand()*208;

@@ -60,3 +60,6 @@ Replaced the previous illustrative radial churchyard lanes using the user's 18 O
 
 ### Final readability polish
 Ground-contact shadows now use two soft, restrained layers near each object's foot instead of a single offset black ellipse. Build-pad centers are less dark while retaining their bronze outline. Kirchende and church canopy transparency now considers towers and the monument as well as the hero/enemies, preventing foliage from hiding defensive assets. Existing church paths, build coordinates, combat and progression remain unchanged. All 22 Node test files and the coarse-pointer gameplay suite pass. The user's preceding mobile feedback reported no issue in the portion played; a full four-chapter device playthrough is not claimed.
+
+### Lion orientation correction
+Per the user's on-site direction information, the reclining lion now faces south (toward screen bottom) instead of west. The sculpture was redrawn with body receding north, lowered frontal head and paired south-facing forepaws; the monument bitmap is not rotated sideways. Pedestal, plaque, 1879 inscription, collision anchor and target behavior remain unchanged. Native Canvas preview inspected; all 22 Node test files pass. Orientation follows user reference, not an independently measured survey.

@@ -38,7 +38,7 @@ const expectedVersions = new Map([
   ['kirchende-art.js', 'v400a6s2polish5'],
   ['terrain-polish.js', 'v400a6s2ground3'],
   ['forest-crowns.js', 'v400a6s2foliage4'],
-  ['church-art.js', 'v400a6s2p6b'],
+  ['church-art.js', 'v400a6lionsouth1'],
 ]);
 
 const resources = [
