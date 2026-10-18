@@ -2,6 +2,12 @@
 (()=>{'use strict';
   const C={x:1536,y:1536},SIZE=3072;
   let ground=null,memorial=null,allocations=0;
+  // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
+  const monumentSprite=typeof Image==='function'?new Image():null;
+  if(monumentSprite){
+    monumentSprite.decoding='async';
+    monumentSprite.src='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
+  }
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -208,7 +214,17 @@
     q.fillText('1871',0,-76);
     return canvas;
   }
-  function drawMonument(ctx,m){if(!memorial)memorial=createMemorial();ctx.drawImage(memorial,m.x-240,m.y-500,480,540);}
+  function drawMonument(ctx,m){
+    if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
+      // Foot anchor is on the existing upper terrace, not on the lower plaza.
+      // Canvas already applies the oblique camera's upright-sprite correction.
+      const height=570,width=height*monumentSprite.naturalWidth/monumentSprite.naturalHeight;
+      ctx.drawImage(monumentSprite,m.x-width/2,m.y-height+40,width,height);
+      return;
+    }
+    if(!memorial)memorial=createMemorial();
+    ctx.drawImage(memorial,m.x-240,m.y-500,480,540);
+  }
   function drawAirLane(ctx,level,active){
     if(!active)return;
     const a=level.airGate;ctx.save();try{
