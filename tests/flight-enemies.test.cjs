@@ -1,0 +1,5 @@
+const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');const b={Math};vm.createContext(b);vm.runInContext(fs.readFileSync('dist/flight-enemies.js','utf8'),b);const f=b.FlightEnemies;
+for(const type of ['shadowwing','gargoyle','stormwing']){const e={...f.specs[type],x:0,y:0};assert.equal(e.flying,true);for(const kind of ['bow','mage','rift'])assert.equal(f.canHit({kind},e),true);for(const kind of ['cannon','boomerang','mortar'])assert.equal(f.canHit({kind},e),false);assert.equal(f.canHit({heroShot:true},e),true);const target={x:100,y:100,r:30};for(let i=0;i<100;i++)f.advance(e,target,.1);assert.ok(Math.abs(Math.hypot(e.x-100,e.y-100)-(e.r+30))<.001);assert.equal(f.advance(e,target,1),true);}
+assert.equal(f.canHit({kind:'cannon'},{flying:false}),true);
+const a={...f.specs.shadowwing,x:0,y:0,slow:1,slowFactor:.5};f.advance(a,{x:1000,y:0,r:30},1);assert.equal(a.x,47);
+console.log('Flight enemies: three specs, air targeting, direct movement, contact bounds and slowing passed');

@@ -18,6 +18,7 @@ vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.j
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
@@ -395,4 +396,17 @@ assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
 for(const tower of ['bow','cannon','mage','rift'])assert.ok(html.includes(`data-tower="${tower}"`));
+check('Flying enemies bypass ground lanes and reject cannon targeting and collisions',()=>{
+  t.game.enemies=[];t.game.towers=[];t.game.bullets=[];
+  sandbox.DenkmalTestHooks.spawnEnemy('shadowwing');
+  const e=t.game.enemies[0],hp=e.hp,m=t.game.monument;
+  assert.equal(e.flying,true);
+  const tower={x:e.x,y:e.y,range:1000,kind:'cannon'};
+  assert.equal(t.towerTarget(tower),null);
+  assert.equal(t.towerTarget({...tower,kind:'bow'}),e);
+  t.game.bullets.push({kind:'cannon',x:e.x,y:e.y,vx:0,vy:0,r:60,damage:999,splash:150,life:1});
+  const before=Math.hypot(e.x-m.x,e.y-m.y);t.update(.01);
+  assert.equal(e.hp,hp,'cannon cannot collide with airborne targets');
+  assert.ok(Math.hypot(e.x-m.x,e.y-m.y)<before,'flight approaches monument directly');
+});
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));

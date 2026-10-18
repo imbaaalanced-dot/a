@@ -50,7 +50,7 @@ check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
   assert.ok(gameSource.includes('frameWidth*(level-1)'));
   assert.ok(gameSource.includes('v400a5combined1'));
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.ok(html.includes('game.js?v=v400a6finish1'));
+  assert.ok(html.includes('game.js?v=v400a6flight1'));
   assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');
 });
 check('Thorn and lantern towers are no longer available',()=>{

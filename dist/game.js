@@ -106,6 +106,7 @@
   };
   // Enemy pressure pass: stronger archetypes instead of indiscriminate tower nerfs.
   const enemySpecs={
+    ...globalThis.FlightEnemies?.specs,
     rootrunner:{hp:40.5,speed:89.1,damage:10,r:11,bounty:3},
     stoneguard:{hp:175,speed:34.5,damage:27,r:20,bounty:5,armor:.35},
     mistcaller:{hp:54,speed:56.1,damage:11,r:14,bounty:5},
@@ -368,13 +369,13 @@
     const el=$('waveBanner');if(!el)return;setText(el,label);el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
     clearTimeout(showWaveBanner.timer);showWaveBanner.timer=setTimeout(()=>el.classList.remove('show'),1250);
   }
-  function spawnEnemy(){
+  function spawnEnemy(typeOverride){
     const level=campaign.levels[game.level],activeGates=campaign.getWaveGates(game.level,game.wave),gateIndex=activeGates[game.waveSpawned%activeGates.length];
-    const {x,y}=level.gates[gateIndex],type=enemyTypeForSpawn(game.wave,game.waveSpawned),base=enemySpecs[type],plan=applyWavePlan(type,base,game.wave);
+    const {x,y}=level.gates[gateIndex],type=enemySpecs[typeOverride]?typeOverride:enemyTypeForSpawn(game.wave,game.waveSpawned),base=enemySpecs[type],plan=applyWavePlan(type,base,game.wave);
     const hpScale=(1+Math.max(0,game.wave-1)*.17)*plan.hp,damageScale=(1+Math.max(0,game.wave-1)*.07)*plan.damage,speedScale=(game.level===2?1.16:1)*plan.speed;
     const maxHp=base.hp*hpScale;
     const enemy={x,y,prevX:x,prevY:y,velX:0,velY:0,gateIndex,waypoint:1,type,hit:0,hitKick:0,slow:0,slowFactor:1,enraged:false,shieldBroken:false,phase:(type==='boss'||type==='uprooted')?1:0,
-      r:base.r,hp:maxHp,maxHp,speed:base.speed*speedScale,damage:base.damage*damageScale,
+      flying:!!base.flying,r:base.r,hp:maxHp,maxHp,speed:base.speed*speedScale,damage:base.damage*damageScale,
       attackCd:0,attackRange:base.attackRange||0,attackCooldown:(base.attackCooldown||.85)*plan.cooldown,armor:clamp((base.armor||0)+plan.armor,0,.7),focusMonument:!!base.focusMonument,miniBoss:!!wavePlan(game.wave).miniBoss};
     if(game.waveSpawned===0)showWaveBanner(type==='boss'?`BOSSWELLE ${game.wave} · ${wavePlan(game.wave).name}`:`WELLE ${game.wave} · ${wavePlan(game.wave).name}`);
     game.enemies.push(enemy);game.waveSpawned++;
@@ -423,9 +424,9 @@
     }
     b.life-=dt;
   }
-  function remainingRoute(e){const path=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];if(game.level===1)return dist(e,game.monument);let remaining=dist(e,path[Math.min(e.waypoint,path.length-1)]);for(let i=e.waypoint;i<path.length-1;i++)remaining+=dist(path[i],path[i+1]);return remaining;}
+  function remainingRoute(e){const path=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];if(e.flying||game.level===1)return dist(e,game.monument);let remaining=dist(e,path[Math.min(e.waypoint,path.length-1)]);for(let i=e.waypoint;i<path.length-1;i++)remaining+=dist(path[i],path[i+1]);return remaining;}
   function towerTarget(t){
-    const candidates=game.enemies.filter(e=>!e.dead&&dist(t,e)<=t.range);
+    const candidates=game.enemies.filter(e=>!e.dead&&(!e.flying||globalThis.FlightEnemies?.canHit(t,e))&&dist(t,e)<=t.range);
     if(!candidates.length)return null;
     const mode=t.targetMode||'first';
     if(mode==='boss'){const boss=candidates.find(isBoss);if(boss)return boss;}
@@ -525,6 +526,10 @@
     for(const e of game.enemies){
       if(e.dead)continue;e.hit-=dt;e.hitKick=Math.max(0,(e.hitKick||0)-dt*5);e.attackCd-=dt;e.slow=Math.max(0,(e.slow||0)-dt);
       const speedMul=e.slow>0?(e.slowFactor||.58):1;
+      if(e.flying){
+        if(globalThis.FlightEnemies.advance(e,m,dt)&&e.attackCd<=0){m.hp-=e.damage;e.attackCd=e.attackCooldown||.85;spark(m.x,m.y,'#8cbfc9',8);}
+        continue;
+      }
       const route=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];
       // Aggro starts before melee contact, but pursuers stay near the route.
       // The corridor check prevents archers shooting through maze corners.
@@ -571,15 +576,15 @@
       const hitOrder=b.pierce?[...game.enemies].sort((a,c)=>segmentProjection(a,b)-segmentProjection(c,b)):game.enemies;
       const hitSet=b.boomerang?(b.collisionPhase==='out'?b.hitOut:b.hitBack):b.hitTargets;
       for(const e of hitOrder){
-        if(e.dead||hitSet?.has(e)||segmentDistance(e,b)>=e.r+b.r)continue;
+        if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(b,e))||hitSet?.has(e)||segmentDistance(e,b)>=e.r+b.r)continue;
         const synergy=projectileSynergy(b,e);
         const shotDamage=b.boomerang?b.damage:b.damage;
         const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,fixedDamage:!!b.boomerang});
         if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));
         if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}
         fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());
-        if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor);}spark(e.x,e.y,b.color,18);}
-        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<108&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}
+        if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor);}spark(e.x,e.y,b.color,18);}
+        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))&&dist(e,other)<108&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}
         if(b.boomerang){hitSet.add(e);continue;}
         if(b.pierce){(b.hitTargets||(b.hitTargets=new Set())).add(e);if(b.hitTargets.size>=b.pierce){b.life=0;break;}}
         else{b.life=0;break;}
@@ -654,7 +659,7 @@
     else if(e.type==='guardian')ctx.filter='grayscale(.4) contrast(1.25) brightness(.9)';
     else if(e.type==='sapper')ctx.filter='sepia(.6) saturate(1.6)';
     else if(e.slow>0)ctx.filter='hue-rotate(155deg) brightness(1.15)';
-    const newMob=['rootrunner','stoneguard','mistcaller','uprooted'].includes(e.type);const drawn=globalThis.Style2Enemies?.draw(ctx,e,e.x<game.monument.x?1:-1)||(newMob?globalThis.KirchendeArt?.draw(ctx,e.type,e.x,e.y,e.type==='uprooted'?135:e.type==='stoneguard'?82:65,{face:e.x<game.monument.x?1:-1}):globalThis.DenkmalArt?.draw(ctx,key,e.x,e.y,height,e.x<game.monument.x?1:-1));if(newMob&&!drawn){ctx.fillStyle=e.type==='stoneguard'?'#92907b':e.type==='mistcaller'?'#7a915c':'#79634a';ctx.beginPath();ctx.arc(e.x,e.y-e.r,e.r,0,7);ctx.fill();}
+    const newMob=['rootrunner','stoneguard','mistcaller','uprooted'].includes(e.type);const drawn=globalThis.FlightEnemies?.draw(ctx,e,time,lowFX())||globalThis.Style2Enemies?.draw(ctx,e,e.x<game.monument.x?1:-1)||(newMob?globalThis.KirchendeArt?.draw(ctx,e.type,e.x,e.y,e.type==='uprooted'?135:e.type==='stoneguard'?82:65,{face:e.x<game.monument.x?1:-1}):globalThis.DenkmalArt?.draw(ctx,key,e.x,e.y,height,e.x<game.monument.x?1:-1));if(newMob&&!drawn){ctx.fillStyle=e.type==='stoneguard'?'#92907b':e.type==='mistcaller'?'#7a915c':'#79634a';ctx.beginPath();ctx.arc(e.x,e.y-e.r,e.r,0,7);ctx.fill();}
     if(!drawn){const sprite=art[key];if(sprite)ctx.drawImage(sprite,e.x-height/2,e.y+12-height,height,height);}
     ctx.restore();
     if(e.shield>0){ctx.strokeStyle='#e8c574';ctx.lineWidth=3;ctx.beginPath();ctx.arc(e.x,e.y-e.r,e.r+6,0,7);ctx.stroke();}if(e.type==='uprooted'&&e.charge>0){ctx.strokeStyle='#ef9a57';ctx.lineWidth=5;ctx.beginPath();ctx.arc(e.x,e.y,60,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-e.charge/2));ctx.stroke();}
