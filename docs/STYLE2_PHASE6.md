@@ -48,3 +48,6 @@ The renderer-caching regression verifies both building buffers are reused on sub
 
 ### Browser follow-up, 18 October 2026
 Live desktop inspection confirmed Kirchende and church/lion rendering and found an unnecessarily narrow 180px wave preview. At landscape widths of at least 900px, the preview now expands up to 420px while keeping space for the side HUD; the boss panel moves beneath it. Portrait and narrow landscape rules remain in effect. All 22 Node test files and the coarse-pointer gameplay suite pass. These checks do not establish actual Android FPS or a complete playthrough of all four chapters.
+
+### Ground detail follow-up
+Reduced isolated decoration anchors from 650 candidates to 380, adding softly blended moss/soil patches, flattened leaf clusters and short grass blades within the existing exclusion zones. The cached 1536px atlas and viewport crop remain unchanged. All four level layouts passed deterministic clearance/immutability tests; terrain-and-route samples for all four were rendered with native Canvas and inspected. This is a terrain-layer check, not a complete four-map browser playthrough.
