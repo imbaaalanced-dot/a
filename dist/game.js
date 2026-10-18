@@ -79,7 +79,7 @@
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
-  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/');
+  const style2Preview=!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/')||!!globalThis.location?.pathname?.includes('/v4-style2-phase7/')||!!globalThis.location?.pathname?.includes('/v4-style2-reference/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const enabledTowers=new Set(['bow','cannon','mage','rift']);
   const towerRoles={
@@ -360,7 +360,7 @@
     if(game.level===1){campaign.unlock();lootModel.unlockLevel();}
     else if(game.level===2)lootModel.unlockLevel3();
     else if(game.level===3&&!style2Preview)lootModel.claimKirchendeReward();
-    else if(game.level===4&&(!level4Preview||lootModel.profile.kirchendeCompleted))campaign.completeLevel4();
+    else if(game.level===4&&!level4Preview)campaign.completeLevel4();
     else if(game.level===6&&!style2Preview)campaign.completeLevel6();
     saga.stopVoice();state='levelcomplete';clearInput();game.enemies=[];game.bullets=[];game.loot=[];
     $('levelCompleteTitle').textContent=game.level===6?'DIE GOETHESTRASSE IST SICHER':game.level===1?'DAS LABYRINTH IST OFFEN':game.level===2?'KIRCHENDE IST OFFEN':game.level===3?'DIE DORFKIRCHE IST OFFEN':'DER SCHLAFENDE LÖWE IST SICHER';
