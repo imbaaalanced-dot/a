@@ -38,6 +38,9 @@ jobs:
           node tests/flight-enemies.test.cjs
           node tests/goethestrasse.test.cjs
           node tests/goethestrasse-preview.test.cjs
+          node tests/level5.test.cjs
+          node tests/level5-preview.test.cjs
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-phase6.test.cjs
           node tests/style2-ground.test.cjs
