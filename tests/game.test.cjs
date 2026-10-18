@@ -19,6 +19,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
@@ -408,5 +409,21 @@ check('Flying enemies bypass ground lanes and reject cannon targeting and collis
   const before=Math.hypot(e.x-m.x,e.y-m.y);t.update(.01);
   assert.equal(e.hp,hp,'cannon cannot collide with airborne targets');
   assert.ok(Math.hypot(e.x-m.x,e.y-m.y)<before,'flight approaches monument directly');
+});
+check('Goethestraße gates, mixed waves, air origin, completion and endless unlock',()=>{
+  t.startGame(6);assert.equal(t.game.level,1,'locked chapter stays locked');
+  sandbox.DenkmalLevels.completeLevel4();t.startGame(6);assert.equal(t.game.level,6);assert.equal(t.game.wave,17);assert.equal(t.game.maxTowers,12);
+  assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);assert.match(element('wavePreview').textContent,/LUFTANGRIFF/);
+  t.launchWave();const heroY=t.game.hero.y;t.game.hero.y=200;t.resize(false);t.game.waveSpawned=2;assert.ok(t.threatIndicators().some(p=>p.label==='LUFTZULAUF'),'next offscreen airborne spawn points to the air corridor');t.game.hero.y=heroY;t.resize(false);t.game.waveSpawned=0;for(let i=0;i<16;i++)t.spawnEnemy();
+  const definition=sandbox.DenkmalLevels.levels[6];
+  for(const e of t.game.enemies){const p=e.flying?definition.airGate:definition.gates[e.gateIndex];assert.equal(e.x,p.x);assert.equal(e.y,p.y);}
+  assert.equal(t.game.enemies.filter(e=>e.flying).length,4);
+  assert.equal(new Set(t.game.enemies.filter(e=>!e.flying).map(e=>e.gateIndex)).size,3);
+  t.mainMenu();t.startGame(6,'endless');assert.equal(t.state,'start','endless locked until completion');
+  t.startGame(6);t.game.wave=20;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level6Completed,true);
+  assert.match(element('levelCompleteTitle').textContent,/GOETHESTRASSE/);
+  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
+  t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,21);assert.ok(t.wavePreview(21).includes('STURMGEIST'));
+  t.mainMenu();t.startGame(6,'endless');assert.equal(t.game.level,6);assert.equal(t.game.mode,'endless');
 });
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));

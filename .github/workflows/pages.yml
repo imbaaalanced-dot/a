@@ -42,6 +42,8 @@ jobs:
           node tests/style2-towers.test.cjs
           node tests/elemental-sprites.test.cjs
           node tests/flight-enemies.test.cjs
+          node tests/goethestrasse.test.cjs
+          node tests/goethestrasse-preview.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-phase6.test.cjs
           node tests/style2-ground.test.cjs

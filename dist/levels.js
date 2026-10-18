@@ -64,6 +64,18 @@
     if(clear&&outsideChurch(x,y,40)&&churchSlots.every(other=>Math.hypot(pad.x-other.x,pad.y-other.y)>95))
       churchSlots.push(pad);
   }
+  // Annotated Goethestraße map: asymmetric park approaches and a separate air corridor.
+  const goethePaths=[
+    [[-900,720],[-600,570],[-770,340],[-660,70],[-440,-70],[-230,-50],[0,0]],
+    [[730,-650],[730,-240],[750,130],[560,110],[290,50],[0,0]],
+    [[1000,690],[760,490],[750,130],[560,110],[290,50],[0,0]]
+  ].map(route=>route.map(([x,y])=>point(x,y)));
+  const goetheSlots=[];
+  for(const [x,y] of [[-600,-240],[-300,-280],[600,-240],[-450,60],[-300,60],[-600,210],[-450,510],[-450,660],[-150,210],[150,210],[450,210],[600,360],[600,660],[450,-90]]){
+    const p=point(x,y);
+    if(Math.hypot(x,y)>=190&&goethePaths.every(path=>pathDistance(p,path)>=92)&&
+      goethePaths.some(path=>pathDistance(p,path)<245)&&goetheSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>120))goetheSlots.push(p);
+  }
   function getWaveGates(level,wave){
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
     if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
@@ -73,6 +85,7 @@
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
+    6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:17,lastWave:20,startEssence:320,maxTowers:12,approximate:true},
     4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const saveKey='denkmal-level2-unlocked-v1';
@@ -86,7 +99,11 @@
     level4Completed=true;try{localStorage.setItem(level4Key,'true');storageAvailable=true;}catch{storageAvailable=false;}
     return storageAvailable;
   }
+  const level6Key='denkmal-level6-completed-v1';
+  let level6Completed=false;
+  try{level6Completed=localStorage.getItem(level6Key)==='true';}catch{}
+  function completeLevel6(){level6Completed=true;try{localStorage.setItem(level6Key,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
   function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
-  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
+  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel6,get level6Completed(){return level6Completed;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
 })();

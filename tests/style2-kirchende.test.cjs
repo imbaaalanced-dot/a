@@ -53,7 +53,7 @@ assert.equal(canvases,cached,'canopy translucency must not allocate more buffers
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish5'),'updated renderer must invalidate browser cache');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-assert.ok(html.includes('game.js?v=v400a6flight1'),'preview logic must bypass old browser cache');
+assert.ok(html.includes('game.js?v=v400a6goethe1'),'preview logic must bypass old browser cache');
 assert.ok(game.includes("location?.pathname?.includes('/v4-style2/')"),'style2 branch has a dedicated test-only route');
 assert.ok(game.includes('lootModel.profile.level3||style2Preview'),'Level 3 must be available to testers');
 assert.ok(game.includes('lootModel.profile.kirchendeCompleted||level4Preview'),'Level 4 preview must still be accessible');

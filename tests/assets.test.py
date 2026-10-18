@@ -75,3 +75,10 @@ for kind in ['shadowwing','gargoyle','stormwing']:
         assert a.getbbox() and a.getextrema()[1]>200
         for edge in [(0,0,512,8),(0,504,512,512),(0,0,8,512),(504,0,512,512)]:assert a.crop(edge).getextrema()[1]==0
 print('Three flying sprites: decode, alpha, size budget and padded borders verified')
+with Image.open(elemental/'goethestrasse-memorial-v1.webp') as image:
+    image.load()
+    assert image.mode=='RGBA' and image.size==(768,768)
+    a=image.getchannel('A')
+    assert a.getbbox() and a.getbbox()[3]<=752
+    for edge in [(0,0,768,8),(0,760,768,768),(0,0,8,768),(760,0,768,768)]:assert a.crop(edge).getextrema()[1]==0
+print('Goethestraße memorial: decode, alpha and ground anchor verified')
