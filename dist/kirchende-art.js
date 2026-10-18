@@ -167,8 +167,25 @@
         q.moveTo((w-side)/2,wallTop+9);q.lineTo((w-side)/2,h-10);
         q.moveTo(0,h*.68);q.lineTo(w-side,h*.68);q.stroke();
       }
+      // Roof overhang and recessed entry give the facade depth at game scale.
+      q.fillStyle='#162b2a55';q.fillRect(0,wallTop+7,w-side,7);
+      const doorX=Math.round((w-side)*.52),doorY=h-54;
+      q.fillStyle='#a49c82';q.fillRect(doorX-4,doorY-4,32,43);
+      q.fillStyle='#26372f';q.fillRect(doorX,doorY,24,39);
+      q.strokeStyle='#665e46';q.lineWidth=2;q.beginPath();
+      for(let plank=6;plank<24;plank+=6){q.moveTo(doorX+plank,doorY+2);q.lineTo(doorX+plank,h-18);}q.stroke();
+      q.fillStyle='#baa373';q.fillRect(doorX+18,doorY+22,3,3);
       q.fillStyle='#4c5749';q.fillRect(-3,h-18,w-side+6,12);
       q.fillStyle='#a49d8177';q.fillRect(-3,h-18,w-side+6,2);
+      // Low stone steps and moss join the original foundation to the soil.
+      q.fillStyle='#3b463a';q.fillRect(doorX-9,h-7,42,6);
+      q.fillStyle='#8d8c72';q.fillRect(doorX-6,h-10,36,5);
+      q.fillStyle='#b3ab8d77';q.fillRect(doorX-6,h-10,36,1);
+      for(let patch=0;patch<7;patch++){
+        const mx=8+patch*(w-side-12)/7;
+        q.fillStyle=patch%2?'#627b4555':'#425c3e88';q.beginPath();
+        q.ellipse(mx,h-6+(patch%3),12+(patch%2)*5,4,0,0,Math.PI*2);q.fill();
+      }
       buildingCache.set(key,sprite);
     }
     ctx.drawImage(sprite,x-30,y-30);

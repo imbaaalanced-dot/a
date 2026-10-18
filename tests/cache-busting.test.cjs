@@ -35,7 +35,7 @@ const expectedVersions = new Map([
   ['game.js', 'v400a6graphics1'],
   ['style2-phase6.js', 'phase6-3'],
   ['kirchende-combat.js', 'v400a5combined1'],
-  ['kirchende-art.js', 'v400a6s2polish4'],
+  ['kirchende-art.js', 'v400a6s2polish5'],
   ['terrain-polish.js', 'v400a6s2ground3'],
   ['forest-crowns.js', 'v400a6s2foliage4'],
   ['church-art.js', 'v400a6s2p6b'],

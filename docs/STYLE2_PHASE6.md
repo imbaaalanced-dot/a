@@ -51,3 +51,6 @@ Live desktop inspection confirmed Kirchende and church/lion rendering and found 
 
 ### Ground detail follow-up
 Reduced isolated decoration anchors from 650 candidates to 380, adding softly blended moss/soil patches, flattened leaf clusters and short grass blades within the existing exclusion zones. The cached 1536px atlas and viewport crop remain unchanged. All four level layouts passed deterministic clearance/immutability tests; terrain-and-route samples for all four were rendered with native Canvas and inspected. This is a terrain-layer check, not a complete four-map browser playthrough.
+
+### Village facade follow-up
+Kirchende's two cached village buildings now include recessed plank doors, a roof-overhang shadow, low stone entry steps and moss along the foundation. Existing building bounds, routes and slots remain unchanged. Native Canvas output was inspected; all 22 Node test files pass, including warm-cache reuse and building render checks.

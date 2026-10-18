@@ -51,7 +51,7 @@ assert.equal(drawn-images,14,'repeat render reuses the site, eleven roots and bo
 art.drawScenery(output,center,[{x:center.x,y:center.y}],{crowns:true});
 assert.equal(canvases,cached,'canopy translucency must not allocate more buffers');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish4'),'updated renderer must invalidate browser cache');
+assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish5'),'updated renderer must invalidate browser cache');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.ok(html.includes('game.js?v=v400a6graphics1'),'preview logic must bypass old browser cache');
 assert.ok(game.includes("location?.pathname?.includes('/v4-style2/')"),'style2 branch has a dedicated test-only route');
