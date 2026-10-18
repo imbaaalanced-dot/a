@@ -632,7 +632,6 @@
 
   function drawLevel(){
     const level=campaign.levels[game.level];
-    if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
     if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,...game.enemies],{low:lowFX()});ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     for(const [pathIndex,path] of level.paths.entries()){
       // The cached Style 2 atlas already paints existing Level 1/2 routes.
@@ -646,6 +645,8 @@
       ctx.setLineDash([12,22]);ctx.strokeStyle='#d8bb7755';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
     }
     if(game.level===3)globalThis.KirchendeArt?.drawSite(ctx,campaign.center);
+    // Buildings cover their cobbled approach edges, not the other way around.
+    if(game.level===4)globalThis.DenkmalChurch?.drawBackdrop(ctx,campaign.center);
     if(game.level===4)globalThis.DenkmalChurch?.drawSite(ctx,campaign.center);
     if(game.level===6)globalThis.DenkmalGoetheArt?.drawAirLane(ctx,level,game.intermission>0);
     for(const p of level.slots){if(!visible(p,35))continue;if(game.towers.some(t=>dist(t,p)<20))continue;if(globalThis.Style2Markers?.drawPad(ctx,p))continue;ctx.strokeStyle='#d6c38c';ctx.fillStyle='#14201fdd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#e1cc8d';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText('+',p.x,p.y+8);}
