@@ -76,12 +76,22 @@
     if(Math.hypot(x,y)>=190&&goethePaths.every(path=>pathDistance(p,path)>=92)&&
       goethePaths.some(path=>pathDistance(p,path)<245)&&goetheSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>120))goetheSlots.push(p);
   }
-  // Plateau paths represent three tactical entries, not exact surveyed walking routes.
-  // Southern ravine and overlook stay decorative; flying enemies use the separate air gate.
+  // Aerial & oblique visitor references (18 Oct 2026): the pylon stands on an
+  // elevated masonry plinth; a much broader lower forecourt faces the drop.
+  // Rectangles and routes are GAMEPLAY approximations, not surveyed boundaries.
+  // Offsets are relative to the monument objective at (0,0).
+  const syburgTerrace={
+    raised:{left:-380,right:300,top:-330,bottom:320},
+    forecourt:{left:-800,right:900,top:280,bottom:690},
+    stairs:[{x:-245,top:320,bottom:520,width:132},{x:218,top:320,bottom:525,width:136}],
+    cliffY:740
+  };
+  // Two trails from the forest converge on the raised platform, while the
+  // forecourt approach enters by the SE stairway. No imaginary fourth land gate.
   const syburgPaths=[
-    [[-1100,-630],[-800,-500],[-560,-280],[-340,-120],[-140,-20],[0,0]],
-    [[1000,-650],[780,-460],[560,-220],[310,-80],[0,0]],
-    [[980,360],[740,340],[600,180],[360,110],[150,50],[0,0]]
+    [[-1080,-760],[-790,-600],[-565,-420],[-400,-250],[-180,-100],[0,0]],
+    [[810,-840],[680,-630],[485,-440],[320,-260],[140,-100],[0,0]],
+    [[1050,595],[795,545],[560,480],[345,430],[218,325],[135,155],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
   const syburgSlots=[];
   const syburgCandidates=[
@@ -92,8 +102,11 @@
   ];
   for(const [x,y] of syburgCandidates){
     const p=point(x,y);
-    if(Math.hypot(x,y)>=200&&Math.abs(x)<710&&Math.abs(y)<700&&
-      syburgPaths.every(path=>pathDistance(p,path)>=90)&&
+    const raised=syburgTerrace.raised;
+    const onRaised=x>=raised.left-45&&x<=raised.right+45&&y>=raised.top-45&&y<=raised.bottom+45;
+    const onStairs=syburgTerrace.stairs.some(stair=>Math.abs(x-stair.x)<stair.width/2+65&&y>stair.top-65&&y<stair.bottom+65);
+    if(Math.hypot(x,y)>=200&&Math.abs(x)<890&&y<syburgTerrace.cliffY-60&&
+      !onRaised&&!onStairs&&syburgPaths.every(path=>pathDistance(p,path)>=90)&&
       syburgSlots.every(other=>Math.hypot(other.x-p.x,other.y-p.y)>115))syburgSlots.push(p);
   }
   function getWaveGates(level,wave){
@@ -106,7 +119,7 @@
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
     3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
-    5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
+    5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,syburgTerrace,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
     6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
     4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
