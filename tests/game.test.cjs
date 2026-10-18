@@ -422,13 +422,13 @@ check('Hohensyburg has gated campaign, ground/air waves and persistent unlock',(
   assert.ok(t.game.enemies.some(e=>!e.flying));
   for(const e of t.game.enemies)if(e.flying)assert.equal(e.y,layout.airGate.y);
   t.mainMenu();t.startGame(5,'endless');assert.equal(t.state,'start');
+  t.startGame(6);assert.equal(t.state,'start','chapter VI remains locked before Hohensyburg completion');
   t.startGame(5);t.game.wave=20;t.endWave();
   assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level5Completed,true);
   element('nextLevelBtn').onclick();assert.equal(t.game.level,6,'regular story continues with Level 6');
 });
 check('Goethestraße gates, mixed waves, air origin, completion and endless unlock',()=>{
-  t.startGame(6);assert.equal(t.game.level,1,'locked chapter stays locked');
-  sandbox.DenkmalLevels.completeLevel5();t.startGame(6);assert.equal(t.game.level,6);assert.equal(t.game.wave,21);assert.equal(t.game.maxTowers,12);
+  t.mainMenu();t.startGame(6);assert.equal(t.game.level,6,'chapter VI unlock survives the preceding Level 5 test');assert.equal(t.game.wave,21);assert.equal(t.game.maxTowers,12);
   assert.match(t.wavePreview(21),/SCHATTENFLÜGLER/);assert.match(element('wavePreview').textContent,/LUFTANGRIFF/);
   t.launchWave();const heroY=t.game.hero.y;t.game.hero.y=200;t.resize(false);t.game.waveSpawned=2;assert.ok(t.threatIndicators().some(p=>p.label==='LUFTZULAUF'),'next offscreen airborne spawn points to the air corridor');t.game.hero.y=heroY;t.resize(false);t.game.waveSpawned=0;for(let i=0;i<16;i++)t.spawnEnemy();
   const definition=sandbox.DenkmalLevels.levels[6];
