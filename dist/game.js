@@ -30,23 +30,11 @@
     cannon:[[202,185,877,937],[156,55,977,1155],[123,30,1009,1205]],
     ballista:[[195,67,916,1127],[134,10,1026,1234],[57,44,1169,1190]]
   };
-  for(const kind of ['bow','cannon']){
-    towerLevelArt[kind].forEach((image,index)=>{image.src=`assets/tower-${kind}-l${index+1}-v2.png`;});
-  }
-  // Three distinct alpha.5 gameplay sprites (stars are drawn separately in world space).
+  // Large legacy PNGs are fallback art, requested only if their renderer is needed.
+  const legacyTowerFiles={bow:'tower-bow-infernal-v1.png',cannon:'tower-cannon-ash-v1.png',ballista:'tower-ballista-rift-v1.png',mage:'tower-mage-hellfire-v1.png',mortar:'tower-mortar-volcanic-v1.png',rift:'tower-rift-lance-v1.png',shrine:'tower-warden-shrine-v1.png'};
   towerLevelArt.boomerang[0].src='assets/tower-boomerang-atlas.webp?v=v400a5combined1';
   atlas.src = 'assets/asset-atlas.png';
   hellscape.src = 'assets/stone-terrain-v27.png';
-  towerArt.bow.src = 'assets/tower-bow-infernal-v1.png';
-  towerArt.cannon.src = 'assets/tower-cannon-ash-v1.png';
-  towerArt.ballista.src = 'assets/tower-ballista-rift-v1.png';
-  towerArt.mage.src = 'assets/tower-mage-hellfire-v1.png';
-  towerArt.mortar.src = 'assets/tower-mortar-volcanic-v1.png';
-  towerArt.rift.src = 'assets/tower-rift-lance-v1.png';
-  towerLevelArt.rift[0].src = 'assets/tower-rift-lance-l1.png';
-  towerLevelArt.rift[1].src = 'assets/tower-rift-lance-l2.png';
-  towerLevelArt.rift[2].src = 'assets/tower-rift-lance-l3.png';
-  towerArt.shrine.src = 'assets/tower-warden-shrine-v1.png';
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
   function portraitLayout(){return H>W;}
@@ -710,10 +698,11 @@
     const kind=t.kind||'bow',level=Math.max(1,Math.min(3,t.level||1)),index=level-1;
     // Disabled ballista assets load only if this tower is actually rendered.
     const levelSprite=towerLevelArt[kind]?.[index];
-    if(kind==='ballista'&&levelSprite&&!levelSprite.src){
-      levelSprite.src=`assets/tower-ballista-l${level}-v2.png`;
+    if(levelSprite&&!levelSprite.src){
+      levelSprite.src=kind==='rift'?`assets/tower-rift-lance-l${level}.png`:`assets/tower-${kind}-l${level}-v2.png`;
     }
     const premium=towerArt[kind];
+    if(premium&&!premium.src&&legacyTowerFiles[kind])premium.src='assets/'+legacyTowerFiles[kind];
     const sprite=levelSprite?.complete&&levelSprite.naturalWidth?levelSprite:
       (premium?.complete&&premium.naturalWidth?premium:art[kind]);
     if(sprite){
@@ -878,7 +867,7 @@
   $('chooseMarcel').onclick=()=>chooseCharacter('marcel');$('chooseKim').onclick=()=>chooseCharacter('kim');
   $('tutorialNext').onclick=nextIntroTutorial;$('tutorialSkip').onclick=finishIntroTutorial;
   $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
-  atlas.onerror=()=>showToast('GRAFIK KONNTE NICHT GELADEN WERDEN');
+  atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);
   globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,startGame,spawnEnemy,endWave,update,getState:()=>state,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks};

@@ -21,3 +21,9 @@ Run `node --test tests/*.test.cjs`, `TEST_MOBILE=1 node tests/game.test.cjs`, `T
 The original Alpha 8 branch had five broken PNG streams. These are removed and replaced with fully decoded RGBA WebP exports. The image gate verifies the actual decoder, populated frame cells and transparent edges, not just file headers. Runtime canvas rendering of all six maps is checked locally.
 
 The buildings are illustrated interpretations of approved reference images, not a measured architectural survey. Historical dimensions are not newly claimed. This is an incremental graphical pass: full concept-painted terrain, every enemy animation and real-device Android FPS remain further work. A successful automated gate does not establish pixel-for-pixel concept parity or Android performance.
+
+## Startup/menu hotfix
+
+The loader previously started many large legacy PNG downloads in parallel and classified a 3.5-second delay as missing graphics. Critical startup now requests lightweight WebP atlases through a four-request queue; a global 15-second soft deadline releases the menu while the same queue continues in the background. Timeouts are no longer reported as missing files. Legacy tower fallbacks download only when rendered.
+
+Phone menu cards use wrapping text, a separate status row and full available width. Explicit start-screen flow/scroll rules override generic modal alignment. Asset cache keys are refreshed. New fake-network regression checks cover slow completion, queue limits and background continuation; existing tower fallback and gameplay tests remain mandatory.

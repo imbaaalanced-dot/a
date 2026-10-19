@@ -21,6 +21,7 @@ jobs:
           node-version: "22"
       - name: Alpha 8 preview preserves campaign flags
         run: |
+          node tests/startup-loading.test.cjs
           node tests/alpha8-preview.test.cjs
           TEST_MOBILE=1 node tests/alpha8-preview.test.cjs
       - name: Main menu structure and unlock routes
