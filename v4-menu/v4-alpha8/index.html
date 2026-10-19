@@ -33,7 +33,7 @@
     </header>
 
     <section class="left-hud">
-      <div class="hero-hud-name"><span class="hud-portrait" aria-hidden="true"></span><div><strong id="heroDisplayName">MARCEL</strong><small id="heroGearLabel">Abendrot · Erinnerungslicht</small></div></div>
+      <div class="hero-hud-name"><span id="heroHudPortrait" class="hud-portrait" aria-hidden="true"></span><div><strong id="heroDisplayName">MARCEL</strong><small id="heroGearLabel">Abendrot · Erinnerungslicht</small></div></div>
       <div class="hud-label"><span>LEBEN</span><b id="playerHpText">100 / 100</b></div>
       <div class="meter"><i id="playerHp"></i></div>
       <div class="hud-label soul-label"><span>SEELENRUF</span><b id="soulValue">100 / 100</b></div>
@@ -171,8 +171,8 @@
             <span class="channel-play" aria-hidden="true">▶</span><span class="channel-copy"><small>VOM SPIEL ZUM GEDANKEN · YOUTUBE</small><strong>denk mal <em>nach.</em></strong><span>Denk mal drüber nach.</span></span><span class="channel-arrow" aria-hidden="true">↗</span>
           </a>
           <details class="menu-help"><summary id="menuHelpToggle">SO SPIELST DU <span>Steuerung &amp; Spielstand</span></summary><div>
-            <p class="desktop-help"><b>WASD / Pfeile</b> bewegen · Marcel feuert automatisch.<br><b>1–4</b> Turm wählen · <b>E</b> bauen · <b>Q</b> aufwerten · <b>X</b> verkaufen.<br><b>Leertaste</b> ausweichen · <b>F</b> Seelenruf · <b>I</b> Beute · <b>H</b> Held/Chronik.</p>
-            <p class="touch-help">Links mit dem Stick bewegen. Marcel feuert automatisch. Turm auswählen und auf einem Bauplatz <b>BAUEN</b> antippen. Ausweichen und Seelenruf findest du rechts.</p>
+            <p class="desktop-help"><b>WASD / Pfeile</b> bewegen · Dein Held feuert automatisch.<br><b>1–4</b> Turm wählen · <b>E</b> bauen · <b>Q</b> aufwerten · <b>X</b> verkaufen.<br><b>Leertaste</b> ausweichen · <b>F</b> Seelenruf · <b>I</b> Beute · <b>H</b> Held/Chronik.</p>
+            <p class="touch-help">Links mit dem Stick bewegen. Dein Held feuert automatisch. Turm auswählen und auf einem Bauplatz <b>BAUEN</b> antippen. Ausweichen und Seelenruf findest du rechts.</p>
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
@@ -210,7 +210,7 @@
 
     <section id="characterScreen" class="modal character-screen hidden" role="dialog" aria-modal="true" aria-labelledby="characterTitle">
       <div class="character-shell"><header class="character-header"><div><p class="eyebrow" id="characterLevel"></p><h2 id="characterTitle">MARCEL</h2></div><button id="characterClose" class="icon-btn">ZURÜCK <kbd>H / ESC</kbd></button></header>
-        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel der Denkmalschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
+        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
           <div class="character-detail"><div class="character-tabs" role="tablist" aria-label="Heldendetails"><button id="equipmentTab" role="tab" aria-controls="equipmentPanel" aria-selected="true">KAMPFPROFIL</button><button id="journalTab" role="tab" aria-controls="journalPanel" aria-selected="false">CHRONIK</button></div>
             <div id="equipmentPanel" role="tabpanel" aria-labelledby="equipmentTab"><p class="gear-hint">Kampfwerte und Chronik werden hier angezeigt. Beute und Ausrüstung findest du im Hauptmenü unter BEUTE &amp; AUSRÜSTUNG.</p><div id="gearGrid"></div></div>
             <div id="journalPanel" class="hidden" role="tabpanel" aria-labelledby="journalTab"><div id="journalEntries"></div></div>
@@ -255,7 +255,7 @@
   <script src="visuals.js?v=v400a4merge1"></script>
   <script src="loot.js?v=v400a4merge1"></script>
   <script src="loot-ui.js?v=alpha8polish2"></script>
-  <script src="hero-saga.js?v=alpha8a2"></script>
+  <script src="hero-saga.js?v=alpha8polish3"></script>
   <script src="combat-fx.js?v=v400a6s2t4"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
   <script src="elemental-sprites.js?v=alpha8a2"></script>
@@ -275,6 +275,6 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha8syburg2"></script>
-  <script src="game.js?v=alpha8polish1"></script>
+  <script src="game.js?v=alpha8polish3"></script>
 </body>
 </html>

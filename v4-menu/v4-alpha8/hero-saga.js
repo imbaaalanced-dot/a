@@ -104,8 +104,13 @@
   }
   function renderCharacter() {
     const h=getHero(), g=api.getGame(), s=stats(h);
+    const kim=(api.getCharacter?.()||h.character)==='kim';
+    $('characterTitle').textContent=kim?'KIM':'MARCEL';
+    const portrait=$('characterPortrait');
+    portrait.src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2';
+    portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
     $('characterStats').textContent=`${Math.round(s.damage)} Schaden · ${(1/s.rate).toFixed(1)} Angriffe/s · ${Math.round(s.speed)} Tempo`;
-    $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?'HÜTER DER ERINNERUNG':'DER DENKMALSCHÜTZER'}`;
+    $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?(kim?'HÜTERIN DER ERINNERUNG':'HÜTER DER ERINNERUNG'):(kim?'DIE BEWAHRERIN':'DER BESCHÜTZER')}`;
     $('equippedNames').textContent=Object.keys(equipment).map(slot=>item(h,slot).name).join(' · ');
     const display=$('characterPreview');display.dataset.armor=h.equipment.armor;display.dataset.weapon=h.equipment.weapon;
     display.dataset.relic=h.equipment.relic;
@@ -116,7 +121,7 @@
     profile.textContent=`Lebenspunkte: ${Math.ceil(h.hp)} / ${h.maxHp} · Schaden: ${Math.round(s.damage)} · Tempo: ${Math.round(s.speed)} · Angriffe/s: ${(1/s.rate).toFixed(1)}. Deine Beute und angelegte Ausrüstung verwaltest du ausschließlich im BEUTE-Menü des Hauptmenüs.`;
     grid.appendChild(profile);
     const journal=$('journalEntries');journal.innerHTML='';
-    for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze Marcels Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
+    for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze deine Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
   }
   function equip(){return false;} // Legacy wardrobe is read-only; management lives in the main-menu inventory.
   function openCharacter() {
