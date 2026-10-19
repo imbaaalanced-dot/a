@@ -78,6 +78,17 @@ check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.h
 check('Lost focus pauses',()=>{listeners.blur();assert.equal(t.state,'paused');});
 check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.endWave();assert.equal(t.game.essence,78);let n=0;const perk={name:'Test',apply(){n++;}};t.selectPerk(perk);t.selectPerk(perk);assert.equal(t.game.wave,2);assert.equal(n,1);assert.equal(t.game.loot.length,0);});
 check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x:0,y:0,hp:1};t.game.enemies=[e];t.game.hero.soul=0;t.hurtEnemy(e,5);t.hurtEnemy(e,5);assert.equal(t.game.kills,1);assert.equal(t.game.hero.soul,8);assert.equal(t.nearest({x:0,y:0},100),null);});
+check('Enemy attacks start a cosmetic cue and kills leave a short-lived corpse effect',()=>{
+  t.game.level=2;t.game.intermission=0;t.game.waveSpawned=t.game.waveTotal=0;t.launchWave();t.spawnEnemy();
+  const attacker=t.game.enemies[0],hero=t.game.hero;attacker.attackRange=100;attacker.attackCd=0;attacker.speed=0;
+  hero.x=attacker.x+30;hero.y=attacker.y;const hp=hero.hp;t.update(.02);
+  assert.ok(hero.hp<hp,'the existing attack still applies its normal damage');assert.ok(attacker.attackAnim>0,'attacking enemy starts a visual attack cue');
+  const victim={x:400,y:400,hp:1,maxHp:1,r:12,type:'wraith',armor:0,dead:false,visualVariant:2,flying:false};
+  t.game.enemies.push(victim);t.hurtEnemy(victim,10);assert.equal(t.game.kills,1);
+  assert.equal(t.game.deathFx.length,1,'death visuals are kept separately from active enemies');
+  t.game.enemies=t.game.enemies.filter(e=>!e.dead);assert.equal(t.game.enemies.includes(victim),false,'corpse does not stay in the combat collection');
+  t.update(.1);assert.ok(t.game.deathFx[0].life< t.game.deathFx[0].maxLife,'death animation advances on simulation time');
+});
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});
 check('Arsenal exposes four production tower roles while experimental towers stay disabled',()=>{

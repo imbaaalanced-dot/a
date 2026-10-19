@@ -36,8 +36,11 @@ The integration gameplay check exercises every existing ground/air/boss type
 through the actual game draw path and verifies enemy state is unchanged.
 
 Limitations: four generated movement phases, one facing mirrored left/right.
-No separate directional back views, attack, hurt or death cycles. Some pose
-and armor-detail variation remains. Native Canvas validation is not an actual
+No separate directional back views or hand-painted action cycles. Attacks use
+a brief lunge, hits use the existing flash plus recoil, and deaths use a short
+squash/fade effect. These cues read simulation time and never retain a corpse
+in the combat collection. Reduced motion suppresses displacement. Some pose and
+armor-detail variation remains. Native Canvas validation is not an actual
 Android touch/FPS playtest. Low-end devices still need a real horde playtest.
 
 Stacked on PR #47's Alpha-8 branch. Isolated tester publication:

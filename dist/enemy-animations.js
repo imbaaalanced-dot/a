@@ -38,10 +38,21 @@ function draw(ctx,e,face=1,time=0,options={}){
  const size=(heights[e.type]||62)*cell/136;
  const airborne=e.flying?12+(e.r||13)*.35:0;
  ctx.save();try{
-  ctx.translate(e.x,e.y-airborne);ctx.scale(face<0?-1:1,1);
+  ctx.translate(e.x,e.y-airborne);
+  const reduced=options.reduced||options.low;
+  const attack=clamp(options.attack||0,0,1),hit=clamp(options.hitKick||0,0,1);
+  if(!reduced&&attack>0)ctx.translate((face<0?-1:1)*6*attack,0);
+  if(!reduced&&hit>0)ctx.translate((face<0?1:-1)*Math.min(5,hit*5),0);
+  if(options.deathProgress!=null){
+   const death=clamp(options.deathProgress,0,1);
+   if(!options.alphaApplied)ctx.globalAlpha=(ctx.globalAlpha==null?1:ctx.globalAlpha)*(1-death);
+   if(!reduced&&death>0)ctx.scale(1,1-death*.78);
+  }else if(attack>0)ctx.scale(1+attack*.07,1-attack*.025);
+  ctx.scale(face<0?-1:1,1);
   ctx.drawImage(img,frame*cell,row*cell,cell,cell,-size/2,-size*148/cell,size,size);
  }finally{ctx.restore();}
  return true;
 }
+function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
 globalThis.DenkmalEnemyAnimations={draw,select};
 })();
