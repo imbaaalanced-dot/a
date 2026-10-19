@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v400a5combined1" />
   <link rel="stylesheet" href="loot.css?v=v400a4merge1" />
-  <link rel="stylesheet" href="menu.css?v=alpha8marcel1" />
+  <link rel="stylesheet" href="menu.css?v=alpha8menuhero1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=alpha8a2" />
@@ -92,14 +92,18 @@
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
         <div class="menu-content">
-          <img class="marcel-menu-banner" src="assets/menu/marcel-reference-banner-v1.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" />
+          <img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/marcel-reference-banner-v1.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" />
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sechs spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
-          <div class="hero-choice" role="group" aria-label="Spielfigur wählen">
-            <span>DEINE WACHT</span><button id="chooseMarcel" type="button" aria-pressed="true">MARCEL · DER BESCHÜTZER</button><button id="chooseKim" type="button" aria-pressed="false">KIM · DIE BEWAHRERIN</button>
-          </div>
+          <nav id="menuHomeActions" class="menu-home-actions" aria-label="Hauptmenü">
+            <button id="menuCampaignBtn" class="menu-art-button" type="button" aria-controls="campaignMenu" aria-label="Kampagne"><img src="assets/menu/button-campaign-v1.webp" alt="" width="1024" height="264"/><span>Kampagne</span></button>
+            <button id="menuArcadeBtn" class="menu-art-button" type="button" aria-controls="endlessMenu" aria-label="Arcade – Endlos"><img src="assets/menu/button-arcade-v1.webp" alt="" width="1024" height="264"/><span>Arcade – Endlos</span></button>
+            <button id="menuCharacterBtn" class="menu-art-button" type="button" aria-controls="heroMenu" aria-label="Held wechseln / Inventar"><img src="assets/menu/button-hero-v1.webp" alt="" width="1024" height="264"/><span>Held wechseln / Inventar</span></button>
+            <button id="menuOptionsBtn" class="menu-art-button" type="button" aria-controls="optionsMenu" aria-label="Optionen"><img src="assets/menu/button-options-v1.webp" alt="" width="1024" height="264"/><span>Optionen</span></button>
+          </nav>
+          <button id="menuBackBtn" class="menu-back" type="button" hidden>‹ Zurück zum Hauptmenü</button>
           <div class="menu-actions" aria-label="Spielmodi">
-            <section class="menu-section campaign-menu" id="campaignMenu" aria-labelledby="campaignTitle">
+            <section class="menu-section campaign-menu" id="campaignMenu" hidden aria-labelledby="campaignTitle">
               <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–VI</span></div>
               <div class="map-card-list">
                 <button id="startBtn" class="map-card map-card-primary" type="button">
@@ -122,7 +126,7 @@
                 </button>
               </div>
             </section>
-            <section class="menu-section endless-menu" id="endlessMenu" aria-labelledby="endlessTitle">
+            <section class="menu-section endless-menu" id="endlessMenu" hidden aria-labelledby="endlessTitle">
               <div class="menu-section-heading"><div><p class="menu-kicker">SPIELE FREIGESCHALTETE KARTEN WEITER</p><h2 id="endlessTitle">ENDLOSSPIEL</h2></div><span class="menu-section-mark" aria-hidden="true">∞</span></div>
               <div class="endless-map-list">
                 <button id="endless1Btn" class="map-card map-card-endless" type="button" disabled>
@@ -146,10 +150,23 @@
               </div>
             </section>
           </div>
+          <section id="heroMenu" class="menu-section" hidden aria-labelledby="heroMenuTitle">
+            <h2 id="heroMenuTitle">Held wechseln / Inventar</h2>
+          <div class="hero-choice" role="group" aria-label="Spielfigur wählen">
+            <span>DEINE WACHT</span><button id="chooseMarcel" type="button" aria-pressed="true">MARCEL · DER BESCHÜTZER</button><button id="chooseKim" type="button" aria-pressed="false">KIM · DIE BEWAHRERIN</button>
+          </div>
           <div class="menu-utility" aria-label="Held und Spielstand">
             <button id="collectionBtn" class="menu-inventory"><span aria-hidden="true">◈</span><span><strong>BEUTE &amp; AUSRÜSTUNG</strong><small>Rucksack, Gegenstände und Ausrüsten.</small></span><span aria-hidden="true">›</span></button>
-            <button id="menuHeroBtn" class="menu-inventory menu-hero" type="button"><span aria-hidden="true">♜</span><span><strong>HELD &amp; CHRONIK</strong><small>Marcels Werte und Geschichte ansehen.</small></span><span aria-hidden="true">›</span></button>
+            <button id="menuHeroBtn" class="menu-inventory menu-hero" type="button"><span aria-hidden="true">♜</span><span><strong>HELD &amp; CHRONIK</strong><small>Kampfwerte und Chronik ansehen.</small></span><span aria-hidden="true">›</span></button>
           </div>
+          </section>
+          <section id="optionsMenu" class="menu-section menu-options" hidden aria-labelledby="optionsMenuTitle">
+            <h2 id="optionsMenuTitle">Optionen</h2>
+            <button id="menuSoundBtn" class="icon-btn" type="button" aria-pressed="true">TON: AN</button>
+            <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
+            <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
+            <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+          </section>
           <p id="levelProgress" class="menu-progress"></p>
           <p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p>
           <a id="channelLink" class="channel-card" href="https://www.youtube.com/@denk-malnach" target="_blank" rel="noopener noreferrer" aria-label="denk mal nach auf YouTube öffnen (neuer Tab)">
@@ -161,7 +178,7 @@
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
-        <footer class="menu-footer"><span>MARCEL · DER DENKMALSCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span></footer>
+        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span></footer>
       </div>
     </section>
 
@@ -255,6 +272,6 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha8syburg2"></script>
-  <script src="game.js?v=alpha8load3"></script>
+  <script src="game.js?v=alpha8menuhero1"></script>
 </body>
 </html>

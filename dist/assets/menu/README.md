@@ -5,3 +5,9 @@
 - `crest-v2.webp`: komprimiertes Wappen aus dem vorhandenen TD2-Grafikpaket (`logo.png`).
 
 Generierung über integriertes ImageGen. Brief: breites dunkles Fantasy-Menüpanorama; derselbe Marcel mit schwarzer Cap, kurzem Bart, dunklem Umhang und blau leuchtender Laterne rechts; verfallener Denkmalhof mit Steinbögen, Nebel und warmem Abendlicht; links ruhige dunkle Fläche für HTML-Menü. Keine Schrift, Logos oder eingebrannten Schaltflächen. WebP-Ausgaben für kurze Ladezeiten. Das Menü selbst ist HTML/CSS und bleibt unabhängig von der Grafik bedienbar.
+
+## Hero menu navigation (19 October 2026)
+
+`kim-menu-banner-v1.webp` is the generated Kim banner, encoded as WebP for the game. `marcel-reference-banner-v1.webp` remains the existing Marcel reference banner. The saved `denkmal-character` choice selects both the top banner and the next gameplay character.
+
+The four `button-*-v1.webp` assets are individual 1024×264 crops from the approved four-button sheet (top coordinates 190, 489, 784 and 1074). They are displayed inside native buttons with accessible labels; each opens its own submenu. All six campaign and endless map controls retain their existing unlock behavior. Settings use the existing sound, graphics, camera and FPS handlers.

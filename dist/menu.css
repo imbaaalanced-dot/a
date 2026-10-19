@@ -138,4 +138,29 @@
  #startScreen .menu-shell{gap:16px;padding-inline:max(16px,env(safe-area-inset-left)) max(16px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
 }
 
-.marcel-menu-banner{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain;margin:0 0 18px;border-radius:3px}
+.hero-menu-banner{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain;margin:0 0 18px;border-radius:3px}
+
+/* Four main entries; map cards, hero selection and settings live in submenus. */
+#startScreen [hidden]{display:none!important}
+#startScreen .menu-content{width:min(900px,100%);max-width:900px;margin:0 auto}
+#startScreen .menu-shell{gap:20px}
+#startScreen .hero-menu-banner{width:100%;aspect-ratio:3/1;object-fit:cover;margin:0 0 14px}
+#startScreen .menu-heading,#startScreen .menu-intro{display:none}
+.menu-home-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 auto;width:100%}
+#startScreen .menu-art-button{position:relative;display:block;width:100%;min-height:64px;margin:0;padding:0;border:0;border-radius:8px;background:#18140f;cursor:pointer;touch-action:manipulation;overflow:hidden}
+.menu-art-button img{display:block;width:100%;height:auto;aspect-ratio:1024/264;object-fit:contain}
+.menu-art-button span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.menu-art-button:hover{filter:brightness(1.15)}
+.menu-art-button:active{filter:brightness(.85)}
+#startScreen .menu-back{min-height:48px;padding:10px 16px;margin:0 0 12px;border:1px solid #ad8d53;border-radius:5px;background:#191d1e;color:#f0d7a2;font:600 14px system-ui;cursor:pointer}
+#startScreen .menu-section h2{margin:0;color:#e9deca;font:700 20px/1.4 Georgia,serif}
+#startScreen .menu-options button{min-height:48px;margin:0}
+#startScreen .menu-save,#startScreen .menu-progress{margin-top:10px}
+#startScreen .menu-utility{grid-template-columns:1fr}
+@media(max-width:700px){
+ #startScreen .menu-shell{padding-top:max(12px,env(safe-area-inset-top));gap:12px}
+ #startScreen .menu-content{margin:0 auto}
+ #startScreen .menu-home-actions{grid-template-columns:1fr;gap:10px;max-width:480px}
+ #startScreen .hero-menu-banner{min-height:110px;object-fit:cover;object-position:75% center}
+ #startScreen .menu-art-button{min-height:72px}
+}

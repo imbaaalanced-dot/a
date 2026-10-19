@@ -34,6 +34,8 @@ jobs:
 
       - name: Verify gameplay before publish
         run: |
+          node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
           node tests/startup-loading.test.cjs
           node tests/alpha8-preview.test.cjs
           node tests/preloader.test.cjs
