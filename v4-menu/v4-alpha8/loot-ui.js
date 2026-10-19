@@ -129,6 +129,7 @@
       core.append(button(i.favorite?'★ FAVORIT ENTFERNEN':'☆ FAVORISIEREN',()=>act(()=>model.favorite(i.id)),!can()));
       const locked=!can()||worn||i.favorite;
       core.append(button(`RECYCELN · +${model.salvageValue(i)}`,()=>{pending={message:`${i.name} unwiderruflich für ${model.salvageValue(i)} Schmiedessenz recyceln?`,run:()=>model.salvage(i.id)};render();$('lootConfirm').scrollIntoView({block:'nearest'});},locked));
+      ['lootEquipAction','lootFavoriteAction','lootRecycleAction'].forEach((id,index)=>core.children[index].id=id);
       actions.append(core);detail.append(actions);
       const forge=el('details','loot-forge');forge.append(el('summary','','Neuschmieden'),button('WERTE NEU WÜRFELN · 50 ESSENZ',()=>{pending={message:'Werte neu würfeln? Sie können besser oder schlechter werden. Seltenheit und Spezialeffekt bleiben erhalten.',run:()=>model.reforge(i.id)};render();$('lootConfirm').scrollIntoView({block:'nearest'});},locked||p.essence<50));
       detail.append(forge,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':i.favorite?'Favoriten sind vor Recycling und Neuschmieden geschützt.':'Schmiedessenz bleibt dauerhaft. Sie ist getrennt von der Turmbau-Essenz im Kampf.'));
