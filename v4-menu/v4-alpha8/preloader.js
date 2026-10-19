@@ -11,7 +11,7 @@
     'assets/monument-level1-v2.webp',
     'assets/hero/marcel-walk-alpha8.webp?v=alpha8a2','assets/hero/kim-walk-alpha8.webp?v=alpha8a2',
     'assets/hero/marcel-lantern-sprite-v1.webp','assets/scenery-alpha8.webp?v=alpha8a2',
-    window.matchMedia('(max-width:700px)').matches?'assets/menu/warden-mobile-v2.webp':'assets/menu/warden-desktop-v2.webp',
+    'assets/menu/churchyard-quiet-v1.webp',
     'assets/menu/crest-v2.webp','assets/hero/marcel-lantern-portrait-v1.webp'
   ];
   const screen=document.getElementById('td2Loading');
