@@ -17,7 +17,7 @@ const expectedVersions = new Map([
   ['hero.css', 'v400a4merge1'],
   ['polish.css', 'v400a5combined1'],
   ['loot.css', 'v400a4merge1'],
-  ['menu.css', 'alpha8menu3'],
+  ['menu.css', 'alpha8marcel1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a6hud2'],
   ['preloader.js', 'alpha8load3'],
