@@ -54,3 +54,16 @@
 .loot-upgrade{position:absolute;right:5px;top:5px;z-index:2;display:grid;place-items:center;width:24px;height:24px;border-radius:4px;border:1px solid #e0b176;background:linear-gradient(145deg,#8f532c,#cb8650 45%,#65371f);color:#fff0cf;font:bold 22px/1 system-ui,sans-serif;text-shadow:0 1px 3px #30170a;box-shadow:0 2px 7px #0009;pointer-events:none}
 
 .loot-icon[data-power]::before,.loot-icon[data-power]::after{display:none}.arsenal button[hidden]{display:none!important}
+
+/* Inventory refresh: independently filter type/rarity and compare exact values. */
+.loot-toolbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
+#inventoryScreen .loot-toolbar select{width:100%}
+.loot-toolbar>button{grid-column:1/-1}
+.loot-stat-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;margin:18px 0}
+.loot-stat-table caption{text-align:left;color:#d1ba8d;font-size:11px;margin-bottom:8px}
+.loot-stat-table th,.loot-stat-table td{padding:9px 3px;border-bottom:1px solid #aabdaa22;text-align:right;overflow-wrap:anywhere;vertical-align:top}
+.loot-stat-table th:first-child{text-align:left;width:35%;font-weight:500;color:#bbc6c2}
+.loot-stat-table thead th{font-size:10px;color:#d1ba8d}
+@media(min-width:1060px){.loot-columns{grid-template-columns:230px minmax(310px,1fr) 330px}}
+@media(min-width:761px) and (max-width:900px){.loot-columns{grid-template-columns:180px minmax(0,1fr)}#lootDetail{grid-column:1/-1;position:static;min-height:0}}
+@media(max-width:480px){.loot-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.loot-toolbar>button{grid-column:auto}.loot-stat-table{font-size:11px}}

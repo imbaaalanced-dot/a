@@ -6,7 +6,7 @@
   function icon(slot,large=false,power){const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;if(['bark','roots','splinter','wardlight','grove'].includes(power)){n.dataset.power=power;n.style.backgroundImage=`url(assets/kirchende/item-${power}.webp?v=v400a1)`;n.style.backgroundSize='contain';n.style.backgroundRepeat='no-repeat';n.style.backgroundPosition='center';}n.setAttribute('aria-hidden','true');return n;}
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
   function create(model,{editable,onClose,onImport}){
-    let selected=null,filter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1';
+    let selected=null,filter='all',slotFilter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1';
     const $=id=>document.getElementById(id),root=$('inventoryScreen');
     const can=()=>editable()&&!model.readOnly;
     function button(text,fn,disabled=false,cls='loot-action'){const b=el('button',cls,text);b.type='button';b.disabled=disabled;b.onclick=fn;return b;}
@@ -31,6 +31,11 @@
       if(!equipped&&isStrictUpgrade(item,slot)){const up=el('span','loot-upgrade','↑');up.setAttribute('aria-label','Garantierte Verbesserung gegenüber angelegter Ausrüstung');up.title='Bessere Werte ohne Nachteile gegenüber der angelegten Ausrüstung';b.append(up);}
       if(item.favorite)b.append(el('span','loot-star','★'));return b;
     }
+    function visibleItems(items){
+      return items.filter(i=>(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite)&&
+        (slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter))
+        .sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+    }
     function render(){
       const previousFocus=document.activeElement,hadFocus=root.contains(previousFocus),focusId=previousFocus?.id,focusItem=previousFocus?.dataset?.itemId,focusLabel=previousFocus?.textContent;
       const p=model.profile,all=[...p.items,...p.bag,...p.overflow],item=all.find(i=>i.id===selected);
@@ -43,17 +48,17 @@
       const stats=L.totals(p.items),summary=$('loadoutStats');summary.replaceChildren();
       for(const [k,v] of Object.entries(stats)){if(k==='powers'||!v)continue;summary.append(el('span','',`+${fmt(k,v)} ${L.statInfo[k].label}`));}
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
-      $('backpackCount').textContent=`RUCKSACK ${p.bag.length} / 30`;
+      $('backpackCount').textContent=`RUCKSACK ${p.bag.length} / 30 · ${visibleItems(p.bag).length} ANGEZEIGT`;
       const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
       bulkBtn.textContent=`ALLES RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
-      const visible=p.bag.filter(i=>filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      const visible=visibleItems(p.bag),visibleOverflow=visibleItems(p.overflow);
       for(const i of visible)grid.append(card(i));
-      for(let n=visible.length;n<30;n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
-      $('lootEmptyHint').textContent=p.bag.length?(visible.length?'':'Keine Gegenstände für diesen Filter.'):'Deine Sammlung beginnt hier. Nach jeder Welle erhältst du Beute; Bosse lassen mindestens epische Ausrüstung fallen.';
+      for(let n=visible.length;n<Math.max(6,Math.ceil(visible.length/6)*6);n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
+      $('lootEmptyHint').textContent=p.bag.length?(visible.length?'':'Keine Gegenstände für diesen Filter.'):'Seltene Funde: 2 % Itemchance bei Gegnern, Beute alle drei Wellen und mindestens epische Bossausrüstung. Einmalige Geschichtenbelohnungen bleiben erhalten.';
       const overflow=$('lootOverflow');overflow.replaceChildren();overflow.hidden=!p.overflow.length;
-      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GESICHERT`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));const list=el('div','loot-overflow-grid');for(const i of p.overflow.slice(0,60))list.append(card(i));overflow.append(list);if(p.overflow.length>60)overflow.append(el('p','','Die nächsten Funde erscheinen, sobald Plätze frei werden.'))}
+      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${visibleOverflow.length} / ${p.overflow.length} FÜR DIESEN FILTER`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));const list=el('div','loot-overflow-grid');for(const i of visibleOverflow.slice(0,60))list.append(card(i));overflow.append(list);if(visibleOverflow.length>60)overflow.append(el('p','','Die nächsten Funde erscheinen, sobald Plätze frei werden.'))}
       const detail=$('lootDetail');detail.replaceChildren();
       if(item)renderDetail(detail,item,p);else detail.append(el('p','eyebrow','GEGENSTANDSDETAILS'),el('div','loot-detail-empty','◈'),el('h3','','Wähle einen Fund'),el('p','','Vergleiche seine Werte mit deiner Ausrüstung. Neue Beute wirkt erst, wenn du sie im Hauptmenü anlegst.'));
       $('lootImportBtn').disabled=!editable();$('lootRecoveryBtn').hidden=!model.readOnly;
@@ -71,7 +76,18 @@
       detail.append(el('p','loot-rarity',`${L.rarities[i.rarity].label} · ${L.slots[i.slot]} · STUFE ${i.level}`),icon(i.slot,true,i.power),el('h3','loot-item-title',i.name));
       if(worn)detail.append(el('p','loot-tag','ANGELEGT'));
       if(i.slot.startsWith('ring')&&!worn){const group=el('div','loot-ring-choice');for(const target of ['ring1','ring2']){const b=button(L.slots[target],()=>{ringTarget=target;render();},false);b.setAttribute('aria-pressed',String(slot===target));group.append(b);}detail.append(group);}
-      const lines=el('dl','loot-stat-list');for(const k of Object.keys(L.statInfo)){const value=i.stats[k]||0,previous=old?.stats[k]||0;if(!value&&!previous)continue;const row=el('div','');row.append(el('dt','',L.statInfo[k].label),el('dd','',fmt(k,value)));if(!worn){const diff=Math.round((value-previous)*1000)/1000;row.append(el('span',diff>0?'positive':diff<0?'negative':'neutral',`${diff>0?'+':''}${fmt(k,diff)}`));}lines.append(row);}detail.append(lines);
+      const base=L.catalogue.find(t=>t.id===i.baseId);
+      if(base)detail.append(el('p','loot-compare',`Schwerpunkt: ${base.stats.map(k=>L.statInfo[k].label).join(' + ')}${base.region?' · Fundort: '+L.regions[base.region]:''}`));
+      const lines=el('table','loot-stat-table');lines.append(el('caption','','Wertevergleich · '+L.slots[slot]));
+      const head=el('thead',''),header=el('tr','');
+      for(const label of ['Wert','Angelegt','Fund','Änderung']){const th=el('th','',label);th.setAttribute('scope','col');header.append(th);}head.append(header);lines.append(head);
+      const body=el('tbody','');
+      for(const k of Object.keys(L.statInfo)){
+        const value=i.stats[k]||0,previous=old?.stats[k]||0;if(!value&&!previous)continue;
+        const diff=Math.round((value-previous)*1000)/1000,row=el('tr',''),label=el('th','',L.statInfo[k].label);label.setAttribute('scope','row');
+        const delta=worn?'—':`${diff>0?'+':''}${fmt(k,diff)}${L.statInfo[k].percent?' Pkt.':''}`;
+        row.append(label,el('td','',fmt(k,previous)),el('td','',fmt(k,value)),el('td',worn?'neutral':diff>0?'positive':diff<0?'negative':'neutral',delta));body.append(row);
+      }lines.append(body);detail.append(lines);
       if(i.power)detail.append(el('p','loot-special',`${L.powers[i.power].name}: ${L.powers[i.power].desc}`));
       if(!worn&&old){detail.append(el('p','loot-compare',`Vergleich mit ${old.name}`));if(old.power&&old.power!==i.power)detail.append(el('p','negative',`Entfällt: ${L.powers[old.power].desc}`));}
       const actions=el('div','loot-detail-actions');
@@ -83,11 +99,12 @@
       detail.append(actions,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':i.favorite?'Favoriten sind vor Zerlegen und Neuschmieden geschützt.':'Schmiedessenz bleibt dauerhaft. Sie ist getrennt von der Turmbau-Essenz im Kampf.'));
     }
     function download(text,name){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a','');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    $('lootSlotFilter').onchange=e=>{slotFilter=e.target.value;render();};
     $('lootFilter').onchange=e=>{filter=e.target.value;render();};$('lootSort').onchange=e=>{sort=e.target.value;render();};
     $('lootSalvageAllBtn').onclick=()=>{
       if(!can())return;
       const preview=model.salvagePreview();if(!preview.count)return;
-      pending={message:`${preview.count} nicht favorisierte Gegenstände aus Rucksack und Überlauf unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
+      pending={message:`${preview.count} nicht favorisierte Gegenstände aus dem gesamten Rucksack und Überlauf (unabhängig vom Filter) unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
       render();$('lootConfirm').scrollIntoView({block:'nearest'});
     };
     $('lootExportBtn').onclick=()=>download(model.exportJSON(),'Denkmal-TD-Spielstand.json');

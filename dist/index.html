@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta name="application-version" content="v4.0.0-alpha.8" />
-  <meta name="application-build" content="environment-character-alpha8-load3" />
+  <meta name="application-build" content="inventory-overhaul-test2" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#080b0c" />
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v400a5combined1" />
-  <link rel="stylesheet" href="loot.css?v=v400a4merge1" />
+  <link rel="stylesheet" href="loot.css?v=inventory1" />
   <link rel="stylesheet" href="menu.css?v=alpha8menu3" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
@@ -170,7 +170,7 @@
         <div class="loot-meta"><span id="lootSaveState" role="status"></span><strong id="forgeEssence"></strong></div>
         <div class="loot-columns">
           <section class="loot-panel loot-equipment" aria-label="Angelegte Ausrüstung"><h3>MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel der Denkmalschützer"/><span>DER HÜTER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
-          <section class="loot-panel loot-bag" aria-label="Rucksack"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Zum Durchsehen im Rucksack scrollen · Gegenstand antippen zum Vergleichen</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
+          <section class="loot-panel loot-bag" aria-label="Rucksack"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSlotFilter" aria-label="Ausrüstungsplatz filtern"><option value="all">Alle Plätze</option><option value="weapon">Waffen</option><option value="head">Kopf</option><option value="armor">Rüstungen</option><option value="gloves">Handschuhe</option><option value="boots">Stiefel</option><option value="amulet">Amulette</option><option value="rings">Beide Ringplätze</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Seltenheit und Platz kombinieren · Fund antippen zum Vergleichen · Recycling umfasst alle ungeschützten Funde</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
           <aside class="loot-panel" id="lootDetail" aria-label="Gegenstandsvergleich"></aside>
         </div>
         <p id="lootNotice" role="status" aria-live="polite"></p><div id="lootConfirm" class="loot-confirm" role="group" aria-label="Aktion bestätigen" hidden></div>
@@ -232,8 +232,8 @@
   </main>
   <script src="levels.js?v=syburg2"></script>
   <script src="visuals.js?v=v400a4merge1"></script>
-  <script src="loot.js?v=v400a4merge1"></script>
-  <script src="loot-ui.js?v=v400a4merge1"></script>
+  <script src="loot.js?v=inventory1"></script>
+  <script src="loot-ui.js?v=inventory1"></script>
   <script src="hero-saga.js?v=alpha8a2"></script>
   <script src="combat-fx.js?v=v400a6s2t4"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
@@ -254,6 +254,6 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha8syburg2"></script>
-  <script src="game.js?v=alpha8load3"></script>
+  <script src="game.js?v=inventory2"></script>
 </body>
 </html>
