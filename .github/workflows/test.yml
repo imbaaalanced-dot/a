@@ -21,6 +21,7 @@ jobs:
           node-version: "22"
       - name: Alpha 8 preview preserves campaign flags
         run: |
+          node tests/loot-ui.test.cjs
           node tests/menu-navigation.test.cjs
           TEST_MOBILE=1 node tests/menu-navigation.test.cjs
           node tests/startup-loading.test.cjs

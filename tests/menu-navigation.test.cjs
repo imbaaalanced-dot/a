@@ -40,6 +40,8 @@ assert.equal(element('heroMenu').hidden,false);
 element('chooseKim').onclick();
 assert.match(element('menuHeroBanner').src,/kim-menu-banner/);
 assert.match(element('menuHeroBanner').alt,/Kim/);
+assert.match(element('menuHeroCaption').textContent,/Kim · Die Bewahrerin/);
+assert.match(element('menuCompactStatus').textContent,/Rucksack 0\/30/);
 assert.equal(element('chooseKim')['aria-pressed'],'true');
 assert.equal(sandbox.localStorage.getItem('denkmal-character'),'kim');
 element('collectionBtn').onclick();

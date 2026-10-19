@@ -83,7 +83,7 @@
   const lootModel=globalThis.DenkmalLoot.create({storage,canManage:()=>state==='inventory'&&inventoryReturn==='start'});
   if(lootModel.profile.level2&&!campaign.unlocked)campaign.unlock();
   if(campaign.unlocked&&!lootModel.profile.level2)lootModel.unlockLevel();
-  const lootUI=globalThis.DenkmalLootUI?.create(lootModel,{editable:()=>inventoryReturn==='start',onClose:()=>closeInventory(),onImport:()=>{if(lootModel.profile.level2)campaign.unlock();menuStatus();}});
+  const lootUI=globalThis.DenkmalLootUI?.create(lootModel,{editable:()=>inventoryReturn==='start',getHero:()=>inventoryReturn==='start'?selectedCharacter:game?.hero.character,onClose:()=>closeInventory(),onImport:()=>{if(lootModel.profile.level2)campaign.unlock();menuStatus();}});
   const towerSpecs={
     boomerang:{name:'BUMERANGTURM',cost:48,damage:8,rate:1.75,range:265,color:'#d9b976'},
     bow:{name:'BOGENTURM',cost:25,damage:12,rate:.50,range:300,color:'#d4b879'},
@@ -248,6 +248,10 @@
     setMapStatus('endlessBtn',lootModel.profile.level3);
     setMapStatus('endless3Btn',lootModel.profile.kirchendeCompleted);
     setMapStatus('endless4Btn',campaign.level4Completed);
+    const chapter=campaign.level6Completed?'Kampagne abgeschlossen':`Kampagne · Level ${campaign.level5Completed?6:campaign.level4Completed?5:lootModel.profile.kirchendeCompleted?4:lootModel.profile.level3?3:campaign.unlocked?2:1}`;
+    $('menuCompactStatus').textContent=`${chapter} · Rucksack ${lootModel.profile.bag.length}/30${lootModel.profile.overflow.length?' · +'+lootModel.profile.overflow.length+' Überlauf':''}`;
+    $('menuStorageWarning').textContent=lootModel.status;
+    $('menuStorageWarning').hidden=!lootModel.status;
     if($('collectionSummary'))$('collectionSummary').textContent=`${lootModel.profile.bag.length}/30 im Rucksack · ${lootModel.profile.overflow.length} im Überlauf · Ausrüstung nur hier wechseln`;
     if($('saveStatus'))$('saveStatus').textContent=lootModel.status||'Beute und Ausrüstung werden auf diesem Gerät gespeichert.';
     $('levelProgress').textContent=campaign.level6Completed?'Goethestraße verteidigt · Endlosmodus Level 6 verfügbar':campaign.level5Completed?'Hohensyburg verteidigt · Goethestraße und Endlosmodus Level 5 verfügbar':campaign.level4Completed?'Dorfkirche verteidigt · Hohensyburg und Endlosmodus Level 4 verfügbar':lootModel.profile.kirchendeCompleted?'Level 4 Dorfkirche freigeschaltet · verteidige den schlafenden Löwen':lootModel.profile.level3?'Kirchende freigeschaltet · Level 3 und Endlosmodus verfügbar':campaign.unlocked?(campaign.storageAvailable?'Level 2 freigeschaltet · jederzeit hier starten':'Level 2 freigeschaltet · Speichern blockiert, nur für diese Sitzung'):'Level 2 wird nach Welle 5 freigeschaltet.';
@@ -792,12 +796,12 @@
   addEventListener('keydown',e=>{
     const active=document.querySelector('.modal:not(.hidden)');
     if(tutorialActive){if(e.code==='Escape'){e.preventDefault();finishIntroTutorial();return;}if(e.code==='Tab'){}else if(e.code==='Enter'||e.code==='Space')return;else{e.preventDefault();return;}}
-    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input,a[href],summary,[tabindex="0"]')].filter(b=>!b.disabled&&!b.hidden&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
+    if(e.code==='Tab'&&active){const buttons=[...active.querySelectorAll('button,select,input,a[href],summary,[tabindex="0"]')].filter(b=>!b.disabled&&!b.hidden&&!b.closest?.('[inert]')&&b.getClientRects().length);if(buttons.length){const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}return;}
     if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)&&state==='playing')e.preventDefault();
     if(e.code==='KeyI'&&!e.repeat){e.preventDefault();if(state==='inventory')closeInventory();else openInventory();return;}
     if(e.code==='KeyH'&&!e.repeat){e.preventDefault();if(state==='character')saga.closeCharacter();else saga.openCharacter();return;}
     if(e.code==='Escape'&&state==='start'&&menuPanel!=='home'){e.preventDefault();showMenuPanel('home');return;}
-    if(e.code==='Escape'&&state==='inventory'){closeInventory();return;}
+    if(e.code==='Escape'&&state==='inventory'){if(!lootUI?.closeDetail?.())closeInventory();return;}
     if(e.code==='Escape'&&state==='character'){saga.closeCharacter();return;}
     if(e.code==='Escape'||e.code==='KeyP'){if(!e.repeat){e.preventDefault();state==='paused'?resumeGame():pauseGame();}return;}
     if(state==='playing')keys[e.code]=true;
@@ -884,6 +888,7 @@
     const banner=$('menuHeroBanner');
     banner.src=kim?'assets/menu/kim-menu-banner-v1.webp':'assets/menu/marcel-reference-banner-v1.webp';
     banner.alt=(kim?'Kim':'Marcel')+' vor Kirche und Löwendenkmal';
+    $('menuHeroCaption').textContent=kim?'Kim · Die Bewahrerin':'Marcel · Der Beschützer';
     $('menuHeroName').textContent=kim?'KIM · DIE BEWAHRERIN':'MARCEL · DER BESCHÜTZER';
     try{localStorage.setItem('denkmal-character',selectedCharacter);}catch{}
   }

@@ -164,3 +164,34 @@
  #startScreen .hero-menu-banner{min-height:110px;object-fit:cover;object-position:75% center}
  #startScreen .menu-art-button{min-height:72px}
 }
+
+/* Refined menu: quiet scenery, a single hero banner and compact status. */
+#startScreen{background:#090f13}
+#startScreen>.menu-scene{position:fixed;inset:0;height:100%;opacity:.4}
+#startScreen .menu-scene img{object-fit:cover;object-position:center 45%}
+#startScreen:after{position:fixed;inset:0;height:auto;background:linear-gradient(180deg,#08101438,#080e14cc 74%)}
+#startScreen .menu-shell{width:min(1120px,100%);padding:18px clamp(12px,3vw,36px) 20px;gap:12px}
+#startScreen .menu-masthead{padding-bottom:8px;border-bottom:1px solid #bba06a22}
+.menu-hero-figure{margin:0 0 12px}
+#startScreen .hero-menu-banner{display:block;width:100%;height:auto;min-height:0;aspect-ratio:3/1;object-fit:cover;margin:0;border:1px solid #aa8a4a55;border-radius:5px}
+#menuHeroCaption{padding:8px 2px 0;color:#d9c69f;font:500 12px/1.4 system-ui;letter-spacing:.08em}
+#startScreen .menu-home-actions{gap:9px;max-width:760px}
+#startScreen .menu-art-button{min-height:56px;aspect-ratio:5/1;background:#12171a;border-radius:5px}
+#startScreen .menu-art-button img{height:100%;aspect-ratio:auto;object-fit:fill;filter:saturate(.7) brightness(.92)}
+#startScreen .menu-art-button:hover img{filter:saturate(.8) brightness(1.05)}
+.menu-compact-status{margin:14px 0 8px;color:#bbc6c4;font:500 12px/1.5 system-ui;font-variant-numeric:tabular-nums}
+.menu-storage-warning{margin:8px 0;padding:10px 12px;color:#f1c69e;background:#35271e;border:1px solid #ac845a55;font:12px/1.5 system-ui}
+.menu-save-details{font:12px/1.7 system-ui;color:#b7c5c3;border-top:1px solid #b9a06a33;margin-top:8px;padding-top:8px}
+.menu-save-details summary{padding:10px 0;min-height:44px;cursor:pointer}
+#startScreen .channel-card{min-height:72px;margin:14px 0 8px;padding:12px 16px}
+#startScreen .channel-copy strong{font-size:23px}
+#startScreen .menu-footer{padding-top:10px}
+@media(max-width:700px){
+ #startScreen .menu-shell{padding:12px max(12px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));gap:10px}
+ #startScreen .menu-home-actions{max-width:none;gap:8px}
+ #startScreen .menu-art-button{min-height:54px;aspect-ratio:5/1}
+ #startScreen .hero-menu-banner{min-height:0;aspect-ratio:3/1;object-position:center}
+ #menuHeroCaption{font-size:11px}
+ #startScreen .menu-wordmark{font-size:12px}
+ .menu-compact-status{font-size:11px}
+}

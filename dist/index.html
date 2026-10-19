@@ -11,15 +11,15 @@
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v400a5combined1" />
-  <link rel="stylesheet" href="loot.css?v=v400a4merge1" />
-  <link rel="stylesheet" href="menu.css?v=alpha8menuhero1" />
+  <link rel="stylesheet" href="loot.css?v=alpha8polish1" />
+  <link rel="stylesheet" href="menu.css?v=alpha8polish1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=alpha8a2" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
-  <script src="preloader.js?v=alpha8load3"></script>
+  <script src="preloader.js?v=alpha8polish1"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal 3D. WASD oder Pfeiltasten bewegen, Leertaste ausweichen, E Turm bauen, Escape pausieren."></canvas>
 
@@ -85,14 +85,11 @@
     <div id="joystick" class="joystick" aria-label="Touch-Steuerung: zum Bewegen ziehen"><span></span></div>
 
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-      <picture class="menu-scene" aria-hidden="true">
-        <source media="(max-width:700px)" srcset="assets/menu/warden-mobile-v2.webp" />
-        <img src="assets/menu/warden-desktop-v2.webp" alt="" width="1672" height="941" fetchpriority="high" />
-      </picture>
+      <div class="menu-scene" aria-hidden="true"><img src="assets/menu/churchyard-quiet-v1.webp" alt="" width="768" height="1152" decoding="async" /></div>
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
         <div class="menu-content">
-          <img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/marcel-reference-banner-v1.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" />
+          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/marcel-reference-banner-v1.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sechs spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
           <nav id="menuHomeActions" class="menu-home-actions" aria-label="Hauptmenü">
@@ -166,9 +163,10 @@
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+            <details class="menu-save-details"><summary>Spielstand &amp; Speicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Deine Sammlung wird auf diesem Gerät gespeichert. Export und Import findest du in der Rüstkammer.</p></details>
           </section>
-          <p id="levelProgress" class="menu-progress"></p>
-          <p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p>
+          <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
+          <p id="menuStorageWarning" class="menu-storage-warning" role="status" hidden></p>
           <a id="channelLink" class="channel-card" href="https://www.youtube.com/@denk-malnach" target="_blank" rel="noopener noreferrer" aria-label="denk mal nach auf YouTube öffnen (neuer Tab)">
             <span class="channel-play" aria-hidden="true">▶</span><span class="channel-copy"><small>VOM SPIEL ZUM GEDANKEN · YOUTUBE</small><strong>denk mal <em>nach.</em></strong><span>Denk mal drüber nach.</span></span><span class="channel-arrow" aria-hidden="true">↗</span>
           </a>
@@ -186,10 +184,15 @@
       <div class="loot-shell">
         <header class="loot-header"><div><p class="eyebrow" id="inventoryMode"></p><h2 id="inventoryTitle">DIE RÜSTKAMMER</h2></div><button id="inventoryClose" class="loot-action">ZURÜCK</button></header>
         <div class="loot-meta"><span id="lootSaveState" role="status"></span><strong id="forgeEssence"></strong></div>
+        <div class="loot-tabs" role="tablist" aria-label="Inventaransicht">
+          <button id="lootEquipmentTab" type="button" role="tab" aria-selected="false" aria-controls="lootEquipmentPanel">Ausrüstung</button>
+          <button id="lootBagTab" type="button" role="tab" aria-selected="true" aria-controls="lootBagPanel">Rucksack</button>
+        </div>
+        <button id="lootDetailBackdrop" class="loot-detail-backdrop" type="button" aria-label="Gegenstandsvergleich schließen" hidden></button>
         <div class="loot-columns">
-          <section class="loot-panel loot-equipment" aria-label="Angelegte Ausrüstung"><h3>MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel der Denkmalschützer"/><span>DER HÜTER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
-          <section class="loot-panel loot-bag" aria-label="Rucksack"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Zum Durchsehen im Rucksack scrollen · Gegenstand antippen zum Vergleichen</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
-          <aside class="loot-panel" id="lootDetail" aria-label="Gegenstandsvergleich"></aside>
+          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
+          <section id="lootBagPanel" class="loot-panel loot-bag" role="tabpanel" aria-labelledby="lootBagTab"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Zum Durchsehen im Rucksack scrollen · Gegenstand antippen zum Vergleichen</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
+          <aside class="loot-panel" id="lootDetail" role="region" tabindex="-1" aria-label="Gegenstandsvergleich"></aside>
         </div>
         <p id="lootNotice" role="status" aria-live="polite"></p><div id="lootConfirm" class="loot-confirm" role="group" aria-label="Aktion bestätigen" hidden></div>
         <footer class="loot-footer"><button id="lootExportBtn" class="loot-action">SPIELSTAND EXPORTIEREN</button><button id="lootImportBtn" class="loot-action">IMPORTIEREN</button><button id="lootRecoveryBtn" class="loot-action" hidden>ROHSICHERUNG EXPORTIEREN</button><input id="lootImportFile" type="file" accept="application/json,.json" hidden/><p>Beute bleibt nach Niederlagen erhalten. Ausrüstung nur im Hauptmenü wechseln. Exportiere eine Sicherung für einen Gerätewechsel. I / Esc: schließen.</p></footer>
@@ -251,7 +254,7 @@
   <script src="levels.js?v=syburg2"></script>
   <script src="visuals.js?v=v400a4merge1"></script>
   <script src="loot.js?v=v400a4merge1"></script>
-  <script src="loot-ui.js?v=v400a4merge1"></script>
+  <script src="loot-ui.js?v=alpha8polish1"></script>
   <script src="hero-saga.js?v=alpha8a2"></script>
   <script src="combat-fx.js?v=v400a6s2t4"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
@@ -272,6 +275,6 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha8syburg2"></script>
-  <script src="game.js?v=alpha8menuhero1"></script>
+  <script src="game.js?v=alpha8polish1"></script>
 </body>
 </html>
