@@ -137,3 +137,5 @@
  #startScreen .map-arrow{display:none}
  #startScreen .menu-shell{gap:16px;padding-inline:max(16px,env(safe-area-inset-left)) max(16px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
 }
+
+.marcel-menu-banner{display:block;width:100%;height:auto;aspect-ratio:2048/683;object-fit:contain;margin:0 0 18px;border-radius:3px}
