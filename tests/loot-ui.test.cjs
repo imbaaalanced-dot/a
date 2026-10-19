@@ -14,6 +14,7 @@ const elements=new Map(),get=id=>{for(const parent of elements.values()){const c
 const document={getElementById:get,createElement:tag=>new Element(tag),activeElement:null};
 let mobile=true,hero='kim',editable=true;const events={};
 const box={document,console,matchMedia:()=>({matches:mobile}),addEventListener:(n,fn)=>events[n]=fn,setTimeout:fn=>fn()};
+get('inventoryScreen').append(get('loadoutSlots'),get('inventoryGrid'),get('lootDetail'));
 vm.createContext(box);const dist=path.join(__dirname,'../dist');
 for(const f of ['loot.js','loot-ui.js'])vm.runInContext(fs.readFileSync(path.join(dist,f),'utf8'),box);
 const data=new Map(),model=box.DenkmalLoot.create({storage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)},canManage:()=>editable});
@@ -32,7 +33,7 @@ assert.ok(find(get('lootDetail'),e=>e.className==='positive'&&e.textContent.incl
 assert.ok(find(get('lootDetail'),e=>e.className==='negative'&&e.textContent.includes('Entfällt')),'lost power is visible');
 const actions=()=>find(get('lootDetail'),e=>e.className==='loot-core-actions').children;
 assert.match(actions()[0].textContent,/ANLEGEN/);assert.match(actions()[1].textContent,/FAVORISIEREN/);assert.match(actions()[2].textContent,/RECYCELN/);
-actions()[1].onclick();assert.equal(model.profile.bag[0].favorite,true);assert.equal(actions()[2].disabled,true,'favorites cannot be recycled');
+actions()[1].focus();actions()[1].onclick();assert.equal(document.activeElement.id,'lootFavoriteAction','favorite action retains keyboard focus after rendering');assert.equal(model.profile.bag[0].favorite,true);assert.equal(actions()[2].disabled,true,'favorites cannot be recycled');
 actions()[1].onclick();actions()[0].onclick();assert.equal(model.profile.equipped.weapon,item.id);
 get('lootDetailClose').onclick();assert.equal(get('inventoryScreen').dataset.detailOpen,'false');
 const disposable=model.generate(2);disposable.favorite=false;model.add(disposable);ui.render();

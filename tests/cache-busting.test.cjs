@@ -24,7 +24,7 @@ const expectedVersions = new Map([
   ['levels.js', 'syburg2'],
   ['visuals.js', 'v400a4merge1'],
   ['loot.js', 'v400a4merge1'],
-  ['loot-ui.js', 'alpha8polish1'],
+  ['loot-ui.js', 'alpha8polish2'],
   ['hero-saga.js', 'alpha8a2'],
   ['combat-fx.js', 'v400a6s2t4'],
   ['style2-cannon.js', 'alpha8cannon2'],
