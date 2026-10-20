@@ -1,7 +1,8 @@
 # Denkmal TD2 – Ausrüstung als Mischsystem, Bossbeute V1
 
-Stand: 20.10.2026. Status: schriftliche Spezifikation zur Nutzerprüfung;
-noch keine Freigabe dieser Schriftfassung oder eines Implementierungsplans.
+Stand: 20.10.2026. Status: Schriftfassung vom Nutzer mit
+„Spezifikationen freigegeben“ bestätigt. Der Implementierungsplan ist separat
+zu prüfen; Produktcode ist noch nicht geändert.
 
 Repository: `imbaaalanced-dot/a`. Technische Ausgangsbasis:
 `3503717a1c60bb98b17623d05c97c2205a2a4403` (Alpha 9 mit Style-2-Turmassets).
@@ -23,7 +24,8 @@ Malle möchte das Ausrüstungssystem neu durchdenken. Bereits bestätigt sind:
 
 Die Zustimmung zum Gesamtentwurf erfolgte am 20.10.2026 mit
 „OK erlauben und Genehmigung“. Konkrete Zahlen, Katalog und Datenmodell in
-dieser Schriftfassung sind jetzt zur Prüfung vorgelegt, noch nicht implementiert.
+dieser Schriftfassung wurden anschließend mit „Spezifikationen freigegeben“
+bestätigt; sie sind noch nicht implementiert.
 
 Erfolg bedeutet: Ein Bossfund bietet eine verständliche Ausrüstungsentscheidung;
 große Horden erzeugen keine Itemflut; Heldenwechsel und Aktualisierung verlieren
