@@ -3,10 +3,12 @@
 (()=>{'use strict';
   const kinds=new Set(['bow','cannon','mage','rift','boomerang']);
   const enabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2UserTowers')==='1';
-  const known=new Set();
+  // The normal game has DenkmalAssets; standalone previews use Image.
+  // BOTH paths must stay bounded instead of retaining every variant visited.
+  const known=new Map();
   const fallbackImages=new Map();
-  const fallbackLimit=12;
-  const maxConcurrentFallbackLoads=4;
+  const cacheLimit=12;
+  const maxConcurrentLoads=4;
   const retryDelayMs=10000;
   const diagnostics={towerFallbacks:0,projectileFallbacks:0,drawErrors:0};
   const debug=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2Style2Debug')==='1';
@@ -20,20 +22,52 @@
     const url=`assets/style2-user-towers-v${version}/runtime-webp/${type}s/${id}.webp?v=${version===1?'user-towers-1':'cleanup-'+version}`;
     const assets=globalThis.DenkmalAssets;
     if(assets?.retain&&assets?.ready){
-      if(!known.has(url)){
-        known.add(url);
-        // The preview keeps only visited tower/level variants in this small group.
-        void assets.retain('td2-user-towers', [url]);
+      let current=known.get(url);
+      if(current){
+        const status=assets.status?.(url);
+        if(status==='failed'){
+          if(!current.failedAt)current.failedAt=Date.now();
+          current.loading=false;
+          if(Date.now()-current.failedAt>=retryDelayMs){
+            assets.release?.(current.group);
+            known.delete(url);
+          }
+          return null;
+        }
+        const img=assets.ready(url);
+        if(img){
+          current.loading=false;
+          // LRU: keep recently drawn variants decoded.
+          known.delete(url);known.set(url,current);
+        }
+        return img||null;
       }
-      return assets.ready(url);
+      // Never evict a pending image, which could restart requests every frame.
+      if([...known.values()].filter(e=>e.loading).length>=maxConcurrentLoads)return null;
+      if(known.size>=cacheLimit){
+        const victim=[...known].find(([,e])=>!e.loading);
+        if(!victim)return null;
+        known.delete(victim[0]);
+        assets.release?.(victim[1].group);
+      }
+      // Independently releasable group per sprite, not an ever-growing group.
+      current={group:'td2-user-tower:'+url,loading:true,failedAt:0};
+      known.set(url,current);
+      try{
+        Promise.resolve(assets.retain(current.group,[url])).then(
+          ()=>{current.loading=false;},
+          ()=>{current.loading=false;current.failedAt=Date.now();}
+        );
+      }catch{current.loading=false;current.failedAt=Date.now();}
+      return assets.ready(url)||null;
     }
     let entry=fallbackImages.get(url);
     if(!entry){
       if(typeof Image!=='function')return null;
       // Do not evict in-flight requests: doing so can restart downloads every frame.
       const loading=[...fallbackImages.values()].filter(e=>!e.ready&&!e.failed).length;
-      if(loading>=maxConcurrentFallbackLoads)return null;
-      if(fallbackImages.size>=fallbackLimit){
+      if(loading>=maxConcurrentLoads)return null;
+      if(fallbackImages.size>=cacheLimit){
         const evict=[...fallbackImages].find(([,e])=>e.ready||e.failed);
         if(!evict)return null;
         fallbackImages.delete(evict[0]);
@@ -42,7 +76,7 @@
       fallbackImages.set(url,entry);
       entry.img.decoding='async';
       entry.img.onload=async()=>{
-        try{if(typeof entry.img.decode==='function')await entry.img.decode();entry.ready=entry.img.naturalWidth>0;}
+        try{if(typeof entry.img.decode==='function')await entry.img.decode();if(entry.img.naturalWidth>0)entry.ready=true;else{entry.failed=true;entry.failedAt=Date.now();}}
         catch{entry.failed=true;entry.failedAt=Date.now();}
       };
       entry.img.onerror=()=>{entry.failed=true;entry.failedAt=Date.now();};
@@ -80,5 +114,5 @@
     ctx.save();try{ctx.translate(b.x,b.y);ctx.rotate(angle);ctx.drawImage(img,-size/2,-size/2,size,size);}catch{if(debug)diagnostics.drawErrors++;return false;}finally{ctx.restore();}
     return true;
   }
-  globalThis.UserStyle2Towers={enabled,drawTower,drawProjectile,getDiagnostics:()=>({enabled,debug,...diagnostics,requested:known.size,fallbackLoaded:[...fallbackImages.values()].filter(e=>e.ready).length,fallbackFailed:[...fallbackImages.values()].filter(e=>e.failed).length})};
+  globalThis.UserStyle2Towers={enabled,drawTower,drawProjectile,getDiagnostics:()=>({enabled,debug,...diagnostics,requested:known.size,managerPending:[...known.values()].filter(e=>e.loading).length,fallbackLoaded:[...fallbackImages.values()].filter(e=>e.ready).length,fallbackFailed:[...fallbackImages.values()].filter(e=>e.failed).length})};
 })();
