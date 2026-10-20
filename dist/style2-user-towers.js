@@ -5,6 +5,8 @@
   const enabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2UserTowers')==='1';
   const known=new Set();
   const fallbackImages=new Map();
+  const fallbackLimit=12;
+  const retryDelayMs=10000;
   const diagnostics={towerFallbacks:0,projectileFallbacks:0,drawErrors:0};
   const debug=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2Style2Debug')==='1';
   const level=n=>Math.max(1,Math.min(3,Math.floor(Number(n)||1)));
@@ -27,15 +29,24 @@
     let entry=fallbackImages.get(url);
     if(!entry){
       if(typeof Image!=='function')return null;
-      entry={img:new Image(),ready:false,failed:false};
+      // Bound the non-managed image cache to prevent endless growth on long runs.
+      if(fallbackImages.size>=fallbackLimit){
+        const oldest=fallbackImages.keys().next().value;
+        if(oldest!==undefined)fallbackImages.delete(oldest);
+      }
+      entry={img:new Image(),ready:false,failed:false,failedAt:0};
       fallbackImages.set(url,entry);
       entry.img.decoding='async';
       entry.img.onload=async()=>{
         try{if(typeof entry.img.decode==='function')await entry.img.decode();entry.ready=entry.img.naturalWidth>0;}
-        catch{entry.failed=true;}
+        catch{entry.failed=true;entry.failedAt=Date.now();}
       };
-      entry.img.onerror=()=>{entry.failed=true;};
+      entry.img.onerror=()=>{entry.failed=true;entry.failedAt=Date.now();};
       entry.img.src=url;
+    }
+    if(entry.failed&&Date.now()-entry.failedAt>=retryDelayMs){
+      fallbackImages.delete(url);
+      return null; // Next request retries; legacy drawing remains available.
     }
     return entry.ready&&!entry.failed?entry.img:null;
   }
