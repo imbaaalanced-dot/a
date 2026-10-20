@@ -32,3 +32,15 @@ Pass 3 hat elf Turmvarianten bereinigt. Drei Rift-Türme bleiben V1. Die aktive 
 ## Release-Regel
 
 PR #51 bleibt Draft und wird nicht gemergt oder live veröffentlicht, bevor die Bildprüfung und Android-Abnahme nachvollziehbar dokumentiert sind. Ergebnisse mit Datum, Gerät, Browser/WebView-Version, Build-SHA, Screenshots und Fehlerbeschreibung ergänzen.
+
+## Zwischenpatch: Asset-Manager-Kapazitätsgrenze (20.10.2026)
+
+Der Opt-in-Renderer `dist/style2-user-towers.js` begrenzt jetzt **beide** Bildladepfade: den tatsächlich im Spiel vorhandenen `DenkmalAssets`-Pfad und den eigenständigen `Image`-Fallback.
+
+- Statt der dauerhaft wachsenden Sammelgruppe `td2-user-towers` erhält jede Sprite-URL eine eigene, freigebbare Gruppe `td2-user-tower:<url>`.
+- Höchstens 4 gleichzeitig laufende Ladevorgänge und 12 referenzierte Varianten im lokalen Style-2-Manager; laufende Bilder werden nicht zur Platzbeschaffung abgebrochen.
+- Fertig geladene, selten verwendete Gruppen werden per `release` freigegeben; beim nächsten Sichtkontakt dürfen sie erneut geladen werden. Vorübergehend zeichnet weiterhin der alte Renderer.
+- `tests/style2-manager-pressure.cjs` prüft 30 angeforderte Varianten mit einem asynchronen `DenkmalAssets`-Mock, maximal vier gleichzeitigen Ladevorgängen und LRU-Freigaben. Der Test wurde vor dem GitHub-Commit lokal erfolgreich ausgeführt; die komplette GitHub-CI-Abnahme steht separat.
+- Der opt-in-JavaScript-Cache-Key ist `user-towers-5`. Keine Änderungen an Grafikpixeln, Kampf- und Save-Keys oder an den alten Builds.
+
+**Achtung:** Cache-Limits sind noch kein Nachweis der Flackerfreiheit. Die echte Android-/WebView-Abnahme aus Gate C bleibt erforderlich.
