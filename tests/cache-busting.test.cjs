@@ -31,7 +31,7 @@ const expectedVersions = new Map([
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
   ['elemental-sprites.js', 'alpha8a2'],
-  ['style2-user-towers.js', 'user-towers-1'],
+  ['style2-user-towers.js', 'user-towers-2'],
   ['enemy-animations.js', 'alpha9a3'],
   ['style2-markers.js', 'markers2'],
   ['style2-maps.js', 'v400a6markers1'],

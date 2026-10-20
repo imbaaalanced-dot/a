@@ -20,7 +20,7 @@ const run=search=>{
   const {api,ready,seen}=run('?td2UserTowers=1');
   const c=ctx();
   assert.equal(api.drawTower(c,'cannon',120,250,2),false,'cold image must fall back');
-  assert.equal(seen.size,1);
+  assert.equal(seen.size,2,'a visible tower warms its matching projectile before its first shot');
   assert.equal(c.ops.length,0,'cold draw must not touch Canvas');
   const url='assets/style2-user-towers-v1/runtime-webp/towers/tower_cannon_lv2.webp?v=user-towers-1';
   ready.set(url,{width:512});
@@ -36,4 +36,24 @@ const run=search=>{
   assert.equal(c2.ops.filter(x=>x==='restore').length,1);
   assert.equal(api.drawTower(c2,'ballista',0,0,1),false,'unapproved tower types remain on legacy path');
 }
-console.log('Style-2 user tower preview adapter: 2 test scenarios passed');
+{
+  const {api,ready}=run('?td2UserTowers=1');
+  ready.set('assets/style2-user-towers-v1/runtime-webp/projectiles/projectile_bow_lv1.webp?v=user-towers-1',{width:256});
+  // The source arrow points 30 degrees clockwise from +x. Its nose must
+  // follow the velocity, including a true zero horizontal component.
+  for(const [vx,vy,want] of [[1,0,-Math.PI/6],[0,1,Math.PI/3],[-1,0,5*Math.PI/6],[0,-1,-2*Math.PI/3]]){
+    const c=ctx();
+    assert.equal(api.drawProjectile(c,{kind:'bow',level:1,x:0,y:0,vx,vy}),true);
+    const angle=c.ops.find(op=>op[0]==='rotate')[1][0];
+    assert.ok(Math.abs(angle-want)<1e-10,`arrow velocity (${vx},${vy}): ${angle} instead of ${want}`);
+  }
+  ready.set('assets/style2-user-towers-v1/runtime-webp/projectiles/projectile_rift_lv1.webp?v=user-towers-1',{width:256});
+  const c=ctx();
+  api.drawProjectile(c,{kind:'rift',level:1,x:0,y:0,vx:0,vy:1});
+  assert.equal(c.ops.find(op=>op[0]==='rotate')[1][0],3*Math.PI/4,'rift source heading is -45 degrees; zero vx must remain vertical');
+  ready.set('assets/style2-user-towers-v1/runtime-webp/projectiles/projectile_mage_lv2.webp?v=user-towers-1',{width:256});
+  const ice=ctx();
+  api.drawProjectile(ice,{kind:'mage',level:2,x:0,y:0,vx:1,vy:0});
+  assert.equal(ice.ops.find(op=>op[0]==='rotate')[1][0],Math.PI/4,'ice lance must point along +x');
+}
+console.log('Style-2 user tower preview adapter: cold fallback, projectile warmup and heading passed');

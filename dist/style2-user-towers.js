@@ -34,7 +34,10 @@
     return entry.ready&&!entry.failed?entry.img:null;
   }
   function drawTower(ctx,kind,x,y,tier){
-    const img=get(kind,tier,'tower');if(!img)return false;
+    const img=get(kind,tier,'tower');
+    // Warm only this visible variant, not the full 18.75 MiB decoded pack.
+    get(kind,tier,'projectile');
+    if(!img)return false;
     const size=112,pivotY=488/512;
     ctx.save();try{ctx.drawImage(img,x-size/2,y+13-size*pivotY,size,size);}finally{ctx.restore();}
     return true;
@@ -43,7 +46,10 @@
     if(!b)return false;
     const img=get(b.kind,b.level,'projectile');if(!img)return false;
     const tier=level(b.level),size=[52,60,68][tier-1];
-    const angle=b.kind==='boomerang'?now*13:Math.atan2(b.vy||0,b.vx||1);
+    // Match each elongated source sprite's axis before applying velocity.
+    const sourceHeading=b.kind==='bow'?Math.PI/6:
+      tier<3&&(b.kind==='mage'||b.kind==='rift')?-Math.PI/4:0;
+    const angle=b.kind==='boomerang'?now*13:Math.atan2(b.vy??0,b.vx??1)-sourceHeading;
     ctx.save();try{ctx.translate(b.x,b.y);ctx.rotate(angle);ctx.drawImage(img,-size/2,-size/2,size,size);}finally{ctx.restore();}
     return true;
   }

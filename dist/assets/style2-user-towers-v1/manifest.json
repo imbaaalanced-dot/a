@@ -15,7 +15,7 @@
     2,
     3
   ],
-  "production_status": "exported, NOT yet integrated or verified on Android",
+  "production_status": "integrated behind ?td2UserTowers=1; Android verification pending",
   "note": "Alpha edges and imperfect original source crops retained. Images are not gameplay wiring.",
   "assets": [
     {
@@ -1278,5 +1278,30 @@
       "export_quality": "isolated; visual/manual QA still required",
       "note": "Source graphic is preserved. No VFX baked or retouched."
     }
-  ]
+  ],
+  "runtime_notes": {
+    "tower_pivot": [
+      256,
+      488
+    ],
+    "projectile_warmup": "Only the matching projectile for each visible tower tier is retained.",
+    "known_art_defect": "Source magenta fringes and a stray fragment in projectile_mage_lv2 remain; no PNG/WebP source pixels were modified.",
+    "projectile_source_heading_degrees": {
+      "bow": [
+        30,
+        30,
+        30
+      ],
+      "mage": [
+        -45,
+        -45,
+        0
+      ],
+      "rift": [
+        -45,
+        -45,
+        0
+      ]
+    }
+  }
 }

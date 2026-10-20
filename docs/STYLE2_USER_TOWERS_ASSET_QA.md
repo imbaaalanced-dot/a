@@ -1,46 +1,58 @@
-# TD2 Style 2 – Nutzer-Turmset 1–5: reproduzierbare QA
+# TD2 Style 2 – Turmset 1–5: Asset- und Browser-QA
 
-**Stand:** 2026-10-20 · **Branch:** `assets/style2-user-towers-1to5-20261020` · **PR:** #51 (Draft).
-**Grundlage:** Vom Nutzer freigegebene Original-Atlanten `86485.png` und `86488.png` und das archivierte Exportpaket `TD2_Style2_Towers_1to5_Export_V1.zip`.
+Stand: 20.10.2026. Branch `assets/style2-user-towers-1to5-20261020`, Draft PR #51 auf Alpha 9. Opt-in: `?td2UserTowers=1`. Kein Merge oder Live-Publishing.
 
-## Lokal tatsächlich geprüft
+## Geprüfter Bestand
 
-1. Das ZIP wurde geöffnet und **30 Sprite-Definitionen** im `manifest.json` gezählt: 15 `tower`, 15 `projectile`.
-2. **15 Turm-PNGs** sind 512×512 Pixel in RGBA. **15 Projektil-PNGs** sind 256×256 Pixel in RGBA. Die gleichnamigen **30 WebP** wurden dekodiert und sind **pixelidentisch** zu den PNG-Mastern.
-3. Für **alle 30 Sprites** wurden mittels Alpha-Bounding-Box alle Außenränder geprüft: Kein Sprite besitzt einen sichtbaren Pixel am äußeren 512×512- bzw. 256×256-Canvasrand (>16 Alpha).
-4. Die Originalquellen und das im ZIP liegende Python-Exportskript wurden erneut ausgeführt: **Alle 60 exportierten PNG-/WebP-Dateien sind bytegenau identisch** zum vom Nutzer akzeptierten ZIP. Lauf: `python tools/export_td2_towers.py --source /mnt/data --output /mnt/data/td2_validation/rebuild`, anschließend SHA-/Byte-Vergleich aller Dateipaare. Achtung: Das im ZIP verwendete Skript heißt `export_td2_towers.py`; auf dem GitHub-Branch liegt eine kompakte Reproduktion als `tools/export_user_style2_towers.py`. Für diese kompakte Fassung wurde **keine** eigene bytegenaue Reproduktionsprüfung durchgeführt.
-5. Die 60 Einzeldateien umfassen **2.249.599 Bytes PNG** plus **1.476.344 Bytes WebP** (ohne die Originalatlanten). Die gesamte gleichzeitige RGBA-Decodierung der 30 Runtime-Sprites würde ca. **18,75 MiB** Bilddaten beanspruchen, ohne GPU-Overhead. Im Spiel nur benötigte Bilder verwenden.
+- 15 Türme (5 Familien × 3 Stufen), 512×512 RGBA; 15 Projektile, 256×256 RGBA.
+- 30 PNG-Master und 30 verlustfreie WebPs; alle Dateipfade vorhanden.
+- `python tests/alpha9-user-towers.test.py`: alle 60 SHA-256-Werte, Abmessungen, Pivots, transparente Außenränder und PNG-/WebP-Pixelgleichheit bestanden.
+- Bildpixel und Prüfsummen des freigegebenen Exports bleiben unverändert. Ein transparenter Außenrand beweist keine vollständige Ursprungssilhouette.
+- Runtime-Dateien zusammen 1.476.344 Bytes. Alle 30 Bilder gleichzeitig entsprechen rechnerisch 18,75 MiB RGBA, ohne Browser-/GPU-Overhead. Der Spielrenderer hält nur besuchte Turm-/Stufenvarianten und ihre Projektile; der Sichttest lädt ausdrücklich alle Varianten.
 
-## Beobachtete Qualitätsgrenzen
+## Renderer-Korrekturen
 
-- Das exportierte Quellmaterial enthält farblich stark magentafarbene Pixel, insbesondere in Rift-Sprites. Da die Riftmagie absichtlich violett ist, kann ein Farbfilter diese Pixel **nicht** pauschal als Artefakte behandeln.
-- Die Transparenz an Zell- und Atlasübergängen ist maschinell geprüft; eine optische Sichtprüfung im **bewegten** Canvas-Spiel sowie auf Android steht weiter aus.
-- Aus den Originalgrafiken können bereits vor dem Export abgeschnittene Partikel/Glows nicht rekonstruiert werden.
-- Die Zuordnung Magie/Eisoptik zu der existierenden `mage`-Verlangsamungsmechanik muss im Spiel auf Verständlichkeit geprüft werden.
-- **Keine neuen Einschlag-Animationsframes** wurden durch diesen Export erstellt. Die bisherigen Impacts bleiben zunächst zuständig.
+1. Ein sichtbarer Turm lädt sein passendes Projektil bereits vor dem ersten Schuss. Kein pauschales Vorladen des ganzen Sets im Spiel.
+2. Der Ausgangswinkel der Quellkunst wird vor der Flugrichtung abgezogen: Bogen L1–3 ungefähr +30°, längliche Magie-/Riftgeschosse L1–2 ungefähr −45°. Runde L3-Geschosse bleiben ohne zusätzliche Winkelkorrektur; Bumerangs behalten ihre Rotation.
+3. Eine horizontale Geschwindigkeit von exakt null bleibt null (`??` statt `||`). Dadurch bleiben senkrechte Schüsse auch bei kleinen Geschwindigkeitswerten korrekt ausgerichtet.
+4. Der Adapter gibt bei noch ladenden Bildern weiterhin `false` zurück, ohne Canvas-Operationen. `game.js` zeichnet dann über die vorhandenen Fallbacks weiter. Transformationszustand bleibt ausgeglichen.
+5. JavaScript-Cache-Key `user-towers-2`; die unveränderten Bilddateien behalten ihren bisherigen Key. Bodenanker `[256, 488]`, Upgrade-Sterne und Spielstände bleiben erhalten.
 
-## GitHub-/Rendererstatus
+## Tatsächlich ausgeführte Prüfungen
 
-- **GitHub-Abgleich 20.10.2026:** PR #51 enthält 30 PNG-Master, 30 verlustfreie WebPs und `manifest.json` unter `dist/assets/style2-user-towers-v1/`. Der rekursive Git-Baum wurde abgefragt: **61 Dateien, 0 fehlende Sollpfade**. Die vom Connector bestätigten Blob-SHAs der Einzelbilder entsprechen den zuvor lokal berechneten Git-SHAs.
-- Der aktive `dist/game.js` zeichnet in `drawTower` zuerst `Style2Cannon` (Kanone), dann `Style2Towers`, danach `ElementalSprites` und Legacy-Fallbacks. Die Bumerang-Projektile laufen über den separaten `drawBoomerangProjectile`-Pfad. `dist/elemental-sprites.js` hat aktuell zusätzliche Projektile für Kanone, Magie und Rift.
-- **Preview-Integration im Branch:** `dist/style2-user-towers.js` ist in `dist/index.html` registriert und in `dist/game.js` vor den bisherigen Sprite-Fallbacks eingehängt. **Nur mit `?td2UserTowers=1` aktiv**. Ist die Grafik noch nicht `ready`, greift der bisherige Renderer. Boomerang-Projektile verwenden bei aktivem Flag die neue Grafik; bestehende Impacts, Sterne, Kampfwerte und Spielstände bleiben unverändert. Sichtprüfung und Android-Abnahme offen.
-- Kein Auto-Merge. Keine Bestätigung für Android-Flackerfreiheit, Speicherverbrauch oder FPS. Ein isolierter Preview-Build sowie ein echter Android-Gerätetest sind Abnahmekriterien.
+- **48 Projekt-Prüfkommandos aus `.github/workflows/test.yml`: 0 Fehler**, einschließlich der mobilen Gameplay-Variante und aller fünf Pillow-Prüfungen.
+- Ergänzte Node-Regressionen wurden zunächst gegen die fehlende Korrektur rot, anschließend grün ausgeführt: Vorladen, vier Pfeilrichtungen, senkrechte Riftgeschosse und Eisprojektilausrichtung.
+- **Chromium 133.0.6943.0**, lokal mit Software-Rendering: Desktop 1280×900 und Touch-Emulation 412×915. Kein realer Android-Browser.
+- In beiden Browserfällen: Opt-out erzeugt keine Requests für dieses Runtime-Set; Kaltstart gibt an den alten Renderer zurück; **30/30 echte WebP-Decodes und 30/30 sichtbare Canvas-Ausgaben**; keine beobachteten JavaScript-Ausnahmen oder HTTP-Fehlerantworten.
+- Alle sechs Level im Alpha-9-Testpfad geöffnet. Die Screenshots zeigen anschließend eine **synthetische Anordnung aller 15 Turmstufen in Kirchende**. Das höhere Turmlimit gilt ausschließlich in der Test-Fixture; Produktions-Balancing wird nicht geändert.
+- Miniaturen bei 64 und 128 Pixeln visuell geprüft. Die 128-Pixel-Ansichten zeigen Holz/Metall/Eismagie/Rift und Stufenunterschiede klarer; schmale Türme verlieren bei 64 Pixeln erwartungsgemäß Mikrodetaillierung.
 
-## Ergänzter automatisierter Asset-Test
+Nachweise:
 
-- `tests/alpha9-user-towers.test.py` prüft 30 PNG/WebP-Paare: 60 SHA-256-Prüfsummen, je 512×512/256×256 Pixel, RGBA, transparenten Außenrand und bitgenau identische Pixel. **Lokal am unveränderten Exportpaket erfolgreich**.
-- `.github/workflows/test.yml` wurde für Pushes auf den PR-Branch und Pull Requests gegen Alpha 9 ergänzt. Der bestehende Node-Preview-Test ist nun Teil der CI-Jobs.
-- Ein GitHub-Actions-Lauf wurde ausgelöst. CI-Gesamtergebnis und ein echter Geräte-/Browser-Playtest müssen getrennt bestätigt werden.
+- [Miniaturvergleich 64/128 px](qa/style2-towers-20261020/towers-64-128.png)
+- [Desktop-Spielszene](qa/style2-towers-20261020/game-desktop.png)
+- [Touch-Emulation im Hochformat](qa/style2-towers-20261020/game-touch-portrait.png)
+- [Maschinenlesbarer Browserbericht mit Renderer-SHA-256](qa/style2-towers-20261020/report.json)
 
-## Upload-Abnahmeliste
+Optional reproduzieren, wenn Playwright mit Chromium installiert ist:
 
-| Prüfschritt | Status |
-|---|---|
-| 30 PNG-Master + 30 verlustfreie WebP exportiert | **lokal bestanden** |
-| 60 Dateien reproduzierbar byteidentisch zum ZIP | **lokal bestanden** |
-| RGBA, Pixelgleichheit, Bildränder | **lokal bestanden** |
-| 60 Binärdateien und Manifest auf GitHub | **61/61 Dateien im Git-Baum verifiziert** |
-| Canvas-Renderer und Projectile-Mapping integriert | **nur im Opt-in-Preview, Browserprüfung offen** |
-| Automated Playtests auf Basis des integrierten Builds | **CI-Workflow ergänzt; Ergebnis bei Abfassung ausstehend** |
-| Echter Android-Sicht-/Flackertest | **offen** |
+```bash
+node tools/verify-user-style2-browser.cjs
+```
 
+`CHROMIUM_EXECUTABLE` setzt bei Bedarf den Browserpfad, `TD2_QA_OUT` den Ausgabeordner. Standardausgabe liegt unter `/tmp/td2-style2-browser-qa`. Playwright ist eine Prüfabhängigkeit, keine Spielabhängigkeit.
+
+## Offene Grafikmängel und Abnahme
+
+- Dünne magentafarbene Säume sind unter anderem an `tower_cannon_lv1` sichtbar. Rift-Violett darf nicht pauschal herausgefiltert werden.
+- `projectile_mage_lv2` enthält rechts unten einen abgesetzten Fremdpartikel aus dem Quellzuschnitt. Er wurde dokumentiert und nicht unbemerkt retuschiert.
+- Bereits im Original abgeschnittene Partikel/Glows können durch den Export nicht rekonstruiert werden.
+- Die Eisoptik des `mage` passt zur vorhandenen Verlangsamung; eine darüber hinausgehende Änderung der Rolle ist nicht Teil dieses Patches.
+- Echte Android-/WebView-Prüfung, lange Arcade-Runs, FPS-/Framezeitmessung und GPU-Speicher sind **offen bzw. nicht gemessen**. Dieser Browser-Smoke-Test beweist keine vollständige Flackerfreiheit.
+- Bestehende Impact-Effekte werden weiterverwendet; neue Einschlaganimationen wurden nicht erzeugt. PR bleibt Draft.
+
+## Nächster gezielter Produktionsprompt (noch nicht generiert)
+
+Referenz: `projectile_mage_lv2.png`, PNG-Master 256×256. Entferne ausschließlich den abgesetzten Fremdpartikel rechts unten und offensichtlich magentafarbene Freistellungsreste. Erhalte den blau leuchtenden Eiskristall, die Bronzeeinfassung, die bestehende diagonale Ansicht, Silhouette, Größe, Lichtführung und das Zentrum bei `[128,128]`. Ausgabe: derselbe 256×256-RGBA-Canvas mit echter Transparenz; Lesbarkeit bei 64/128 px prüfen. **Nicht** den Kristall neu gestalten, **nicht** Ausrüstung oder Material ändern, **nicht** Zoom/Kamera/Pivot verschieben, **nicht** legitime blaue Magie entfernen. Erst nach eigenständiger Sichtprüfung PNG-/WebP-Paar und Prüfsummen versioniert ersetzen.
+
+Ergebnisstufe dieses Schrittes: **integrierter, lokal im Browser geprüfter Rendererpatch**; Quellkunst mit dokumentierten Mängeln, reale Geräteabnahme ausstehend.
