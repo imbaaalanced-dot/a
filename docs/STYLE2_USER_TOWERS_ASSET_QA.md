@@ -21,10 +21,16 @@
 
 ## GitHub-/Rendererstatus
 
-- Auf GitHub PR #51 liegen derzeit nur `tools/export_user_style2_towers.py`, die Übergabedokumentation und **dieses QA-Protokoll**. Die 30 PNGs, 30 WebP-Dateien und das generierte JSON-Manifest existieren **noch nicht im Repository**.
+- **GitHub-Abgleich 20.10.2026:** PR #51 enthält 30 PNG-Master, 30 verlustfreie WebPs und `manifest.json` unter `dist/assets/style2-user-towers-v1/`. Der rekursive Git-Baum wurde abgefragt: **61 Dateien, 0 fehlende Sollpfade**. Die vom Connector bestätigten Blob-SHAs der Einzelbilder entsprechen den zuvor lokal berechneten Git-SHAs.
 - Der aktive `dist/game.js` zeichnet in `drawTower` zuerst `Style2Cannon` (Kanone), dann `Style2Towers`, danach `ElementalSprites` und Legacy-Fallbacks. Die Bumerang-Projektile laufen über den separaten `drawBoomerangProjectile`-Pfad. `dist/elemental-sprites.js` hat aktuell zusätzliche Projektile für Kanone, Magie und Rift.
-- **Integration erst nach Binär-Upload:** Die neue Spritequelle in `drawTower` vor den bisherigen Style-2-Renderer als bevorzugte, vollständig dekodierte Quelle schalten. Wenn sie kalt/fehlgeschlagen ist, ohne Leerframe auf den alten Renderer fallen. Für Projektile den richtigen Pfad einschließlich Bumerang auswählen. Existing Impacts, Stars, Combat und Save-Keys unangetastet lassen.
+- **Preview-Integration im Branch:** `dist/style2-user-towers.js` ist in `dist/index.html` registriert und in `dist/game.js` vor den bisherigen Sprite-Fallbacks eingehängt. **Nur mit `?td2UserTowers=1` aktiv**. Ist die Grafik noch nicht `ready`, greift der bisherige Renderer. Boomerang-Projektile verwenden bei aktivem Flag die neue Grafik; bestehende Impacts, Sterne, Kampfwerte und Spielstände bleiben unverändert. Sichtprüfung und Android-Abnahme offen.
 - Kein Auto-Merge. Keine Bestätigung für Android-Flackerfreiheit, Speicherverbrauch oder FPS. Ein isolierter Preview-Build sowie ein echter Android-Gerätetest sind Abnahmekriterien.
+
+## Ergänzter automatisierter Asset-Test
+
+- `tests/alpha9-user-towers.test.py` prüft 30 PNG/WebP-Paare: 60 SHA-256-Prüfsummen, je 512×512/256×256 Pixel, RGBA, transparenten Außenrand und bitgenau identische Pixel. **Lokal am unveränderten Exportpaket erfolgreich**.
+- `.github/workflows/test.yml` wurde für Pushes auf den PR-Branch und Pull Requests gegen Alpha 9 ergänzt. Der bestehende Node-Preview-Test ist nun Teil der CI-Jobs.
+- Ein GitHub-Actions-Lauf wurde ausgelöst. CI-Gesamtergebnis und ein echter Geräte-/Browser-Playtest müssen getrennt bestätigt werden.
 
 ## Upload-Abnahmeliste
 
@@ -33,8 +39,8 @@
 | 30 PNG-Master + 30 verlustfreie WebP exportiert | **lokal bestanden** |
 | 60 Dateien reproduzierbar byteidentisch zum ZIP | **lokal bestanden** |
 | RGBA, Pixelgleichheit, Bildränder | **lokal bestanden** |
-| 60 Binärdateien und Manifest auf GitHub | **offen** |
-| Canvas-Renderer und Projectile-Mapping integriert | **offen** |
-| Automated Playtests auf Basis des integrierten Builds | **offen** |
+| 60 Binärdateien und Manifest auf GitHub | **61/61 Dateien im Git-Baum verifiziert** |
+| Canvas-Renderer und Projectile-Mapping integriert | **nur im Opt-in-Preview, Browserprüfung offen** |
+| Automated Playtests auf Basis des integrierten Builds | **CI-Workflow ergänzt; Ergebnis bei Abfassung ausstehend** |
 | Echter Android-Sicht-/Flackertest | **offen** |
 
