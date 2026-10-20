@@ -24,7 +24,7 @@ function refreshEnvironment(){
   }
   image=standaloneImage;
  }
- if(image.complete&&image.naturalWidth>0&&image!==environment){
+ if(image?.complete&&image.naturalWidth>0&&image!==environment){
   environment=image;environmentReady=true;cache=null;
  }
 }

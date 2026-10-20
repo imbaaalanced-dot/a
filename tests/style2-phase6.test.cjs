@@ -44,6 +44,11 @@ const paint=new Proxy({createRadialGradient:()=>({addColorStop(){}}),createLinea
 box.document={createElement(){allocations++;return {getContext:()=>paint};}};
 const target={drawImage(...args){copies.push(args);}};
 const layout={...box.DenkmalLevels.levels[3],center:box.DenkmalLevels.center};
+box.DenkmalAssets={ready:()=>null};
+p.draw(target,3,layout,{x:1000,y:1200},600,800);
+assert.equal(copies.length,1,'pending shared scenery leaves the level renderer usable');
+delete box.DenkmalAssets;
+copies.length=0;
 p.draw(target,3,layout,{x:1000,y:1200},600,800);
 assert.deepEqual(copies[0].slice(1),[500,600,300,400,1000,1200,600,800]);
 for(let i=0;i<10;i++)p.draw(target,3,layout,{x:1000+i,y:1200},600,800);

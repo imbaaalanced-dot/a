@@ -42,7 +42,7 @@ const expectedVersions = new Map([
   ['hohensyburg-art.js', 'alpha9a3'],
   ['style2-ambience.js', 'alpha9a2'],
   ['style2-ui-polish.css', 'alpha8a2'],
-  ['style2-phase6.js', 'alpha9a3'],
+  ['style2-phase6.js', 'alpha9a5'],
   ['kirchende-combat.js', 'v400a5combined1'],
   ['kirchende-art.js', 'v400a6s2polish5'],
   ['terrain-polish.js', 'v400a6s2ground3'],
