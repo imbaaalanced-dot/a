@@ -32,6 +32,24 @@ Andere Tabs sperren veraltete Schreibzugriffe, statt fremden Fortschritt zu erse
 Katalog, Migration, Heldenreferenzen, Schmieden, Recycling und Bossvergabe sind
 mit Verhaltensprüfungen abgedeckt. Ein harter Grenztest verwendet 100.046 echte
 Iteminstanzen. Die Browserprüfung führt Desktop-/Touchabläufe und eine simulierte
-Quota-Ausnahme aus. Der abschließende Ergebnisbericht und öffentliche Testlink
-werden nach der tatsächlichen Abnahme ergänzt. Echte Android-/WebView-Prüfung
+Quota-Ausnahme aus. Die Ergebnisse stehen unten; echte Android-/WebView-Prüfung
 ist noch offen.
+
+## Abnahme vom 20. Oktober 2026
+
+Geprüfte Produktrevision: `92591758a770bd2a2005ed48eec34e8ad4db76c9`.
+Gestapelt auf Style-2-Grafikrevision `5a4b368`; bestehender Grafiktest bleibt
+getrennt. [Draft-PR #53](https://github.com/imbaaalanced-dot/a/pull/53).
+
+Alle 59 Workflowbefehle lokal erfolgreich. Chromium 133 prüfte 1280×900 und
+412×915: v2→v3 samt Sicherung, getrennte Heldenzuordnungen, geteilte Instanz,
+Schutz des anderen Helden, gezieltes Schmieden, tatsächlicher Bosskill,
+Speicherung/Reload sowie Quota-Warnung und Export. Alle sechs Karten starteten;
+30 Style-2-WebPs decodierten. Keine beobachteten JS- oder HTTP-Fehler.
+[Bericht](qa/equipment-hybrid-20261020/local-report.json),
+[Testbefehle](qa/equipment-hybrid-20261020/suite-results.json) und
+[unabhängiges Review samt Befundbehebung](qa/equipment-hybrid-20261020/review.md).
+
+Die Prüfung verwendet niedrige Grafikqualität und reduzierte Bewegung sowie
+DOM-Klicks nach Geometrie-/Hit-Test. Physisches Android/WebView, natives
+Touch-Timing und FPS sind damit nicht abgenommen.
