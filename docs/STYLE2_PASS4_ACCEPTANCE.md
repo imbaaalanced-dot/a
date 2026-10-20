@@ -44,3 +44,17 @@ Der Opt-in-Renderer `dist/style2-user-towers.js` begrenzt jetzt **beide** Bildla
 - Der opt-in-JavaScript-Cache-Key ist `user-towers-5`. Keine Änderungen an Grafikpixeln, Kampf- und Save-Keys oder an den alten Builds.
 
 **Achtung:** Cache-Limits sind noch kein Nachweis der Flackerfreiheit. Die echte Android-/WebView-Abnahme aus Gate C bleibt erforderlich.
+
+## Zwischenpatch: fünf prozedurale Trefferfamilien
+
+**Stand: 20.10.2026, vor Android-Abnahme.** Der opt-in `UserStyle2Towers`-Adapter zeichnet jetzt getrennte Canvas-Einschläge für `bow`, `cannon`, `mage`, `rift` und `boomerang`:
+Bogen-Funken, Kanonen-Druckwelle, Eis-Kristallsplitter, violette Rift-Arcs und Bumerang-Schnittbögen.
+
+- Alle Effekte berücksichtigen L1–L3 und die reduzierte Grafikqualität; keine neuen Grafikdownloads oder zusätzlichen Sprite-Caches.
+- `DenkmalCombatFX.burst` legt bei aktivem Opt-in höchstens **einen** neuen Treffer-Particle pro Einschlag an, statt den entsprechenden älteren Spezialeffekt zusätzlich zu erzeugen. Die bisherigen Partikelringe/Funken, Schadenswerte und Geschossbewegungen bleiben erhalten.
+- Bei abgeschaltetem Opt-in sind der bisherige Trefferpfad und die alten Grafiken unverändert aktiv.
+- `tests/style2-impact-pass4.test.cjs` umfasst fünf Familien, je drei Level und zwei Grafikmodi sowie Canvas-Restore bei Zeichenfehlern und die bestehende 240-Partikel-Grenze. Der Test ist im GitHub-Workflow enthalten.
+- `combat-fx.js` hat Cache-Key `v400a6s2t5`, `style2-user-towers.js` `user-towers-6`; Cache-Key- und Renderer-Regressionen wurden angepasst.
+- GitHub-CI für Commit `c2c4e8c703b62cb031a4fb69c0e6492012f4a62b`: [Push-Test bestanden](https://github.com/imbaaalanced-dot/a/actions/runs/39449848562) und [PR-Test bestanden](https://github.com/imbaaalanced-dot/a/actions/runs/39449853440).
+
+**Nicht erledigt:** Die drei originalen Rift-Turmgrafiken wurden noch nicht bildlich korrigiert. Die neuen Treffer sind prozedural, keine bearbeiteten PNG-/WebP-Master. Vor Freigabe fehlen visuelle Abnahme auf echten Screens sowie realer Android-Browser-/WebView-Test bei vielen Gegnern.
