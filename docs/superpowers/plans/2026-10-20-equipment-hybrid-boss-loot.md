@@ -221,8 +221,8 @@ Subagent-driven verwendet deren Skill für Taskreviews plus Abschlussreview.
 - [x] **Step 1: Gesamtdiff prüfen lassen.** Reviewer erhält Spec, Plan, tatsächlichen Basis-/Head-Commit und Testnachweise. Fokus: ausschließlich Bossquellen, Verlust-/Duplikationsfreiheit, konkurrierende Tabs, Schutz des inaktiven Helden und Modell-/UI-Prüfung beim Bestätigen. Subagent nur im Umfang der gewählten Methode beziehungsweise des Review-Skills einsetzen. Blockierende Befunde beheben und betroffene Tests erneut ausführen.
 - [x] **Step 2: Prüfbaren Draft-PR erstellen.** Aktuellen remote Basiszweig inspizieren. Wenn der Grafikpatch noch separat ist, PR zunächst gegen dessen Zweig stapeln; falls bereits integriert, gegen den passenden aktuellen Integrationszweig. Keine ungeprüften Mergeveränderungen und kein Merge in main. Prüfbefehle im PR beschreiben; sicherstellen, dass CI für das tatsächliche PR-Ziel läuft. Sourcecommit und Teststand müssen dieselbe Produktdateiversion enthalten.
 - [x] **Step 3: Teststand separat veröffentlichen.** Nach grünen Prüfungen und Review die geprüfte `dist`-Tree unter `v4-style2-towers/equipment/v4-alpha9/` im aktuellen `gh-pages`-Tree einhängen. Vorher aktuelles gh-pages-Head lesen; Commit mit diesem Parent und Refupdate mit erwarteter SHA, niemals Force. Restlichen Tree unverändert lassen. Dieser Unterpfad liegt in einem bereits erhaltenen Top-Level-Ordner und enthält `/v4-alpha9/` für die vorhandene Kartentestfreigabe. Nur Testveröffentlichung, kein main-Merge.
-- [ ] **Step 4: Öffentlichen Teststand prüfen.** Pages-Deployment muss erfolgreich sein. Öffentlichen Katalog und Lootrenderer mit der freigegebenen Quelle hashvergleichen. Browserprüfer erneut mit `TD2_TEST_URL='https://imbaaalanced-dot.github.io/a/v4-style2-towers/equipment/v4-alpha9/?td2UserTowers=1'` ausführen; Script muss Query/relativen Assetpfad korrekt behandeln. Erst bei tatsächlich erreichbarem Spiel einen Link als spielbereit melden. Echte Androidprüfung bleibt offen, bis Malle auf dem Gerät testet.
-- [ ] **Step 5: Abschluss.** Kurzen Bericht mit geändertem Verhalten, Prüfungen, Testlink, Draft-PR und offenen Geräteprüfungen liefern. Alte Grafik-Testversion und Hauptzweig unverändert erhalten. Plancheckboxen nur für tatsächlich abgeschlossene Aufgaben markieren.
+- [x] **Step 4: Öffentlichen Teststand prüfen.** Pages-Deployment muss erfolgreich sein. Öffentlichen Katalog und Lootrenderer mit der freigegebenen Quelle hashvergleichen. Browserprüfer erneut mit `TD2_TEST_URL='https://imbaaalanced-dot.github.io/a/v4-style2-towers/equipment/v4-alpha9/?td2UserTowers=1'` ausführen; Script muss Query/relativen Assetpfad korrekt behandeln. Erst bei tatsächlich erreichbarem Spiel einen Link als spielbereit melden. Echte Androidprüfung bleibt offen, bis Malle auf dem Gerät testet.
+- [x] **Step 5: Abschluss.** Kurzen Bericht mit geändertem Verhalten, Prüfungen, Testlink, Draft-PR und offenen Geräteprüfungen liefern. Alte Grafik-Testversion und Hauptzweig unverändert erhalten. Plancheckboxen nur für tatsächlich abgeschlossene Aufgaben markieren.
 
 ## Selbstprüfung und Ausführungshandoff
 
@@ -230,7 +230,7 @@ Subagent-driven verwendet deren Skill für Taskreviews plus Abschlussreview.
 - Alle fünf Review-Focus-Fälle haben oben benannte Verhaltensprüfungen.
 - Öffentliche Methodennamen, Hero-/Slotparameter und kanonische/abgeleitete Daten sind durchgehend gleich benannt.
 - Jeder Implementierungstask enthält Rotprüfung, konkrete Umsetzung, Grünprüfung und Commit; Review/Veröffentlichung ist ein eigener Abschluss mit realen Nachweisen.
-- Noch kein Produktschritt oder neuer Funktionstest aus diesem Plan wurde ausgeführt.
+- Ausführung abgeschlossen: Produktrevision, Review, CI und öffentliche Browsernachweise stehen in `docs/EQUIPMENT_HYBRID_BOSS_LOOT.md`.
 
 **Empfehlung: Native.** Die Schritte hängen eng am selben Lootmodell und denselben
 VM-Harnesses; Umsetzung durch einen Agenten vermeidet Übergaben an diesen Grenzen.

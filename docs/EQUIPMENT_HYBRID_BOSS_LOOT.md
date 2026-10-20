@@ -53,3 +53,16 @@ Speicherung/Reload sowie Quota-Warnung und Export. Alle sechs Karten starteten;
 Die Prüfung verwendet niedrige Grafikqualität und reduzierte Bewegung sowie
 DOM-Klicks nach Geometrie-/Hit-Test. Physisches Android/WebView, natives
 Touch-Timing und FPS sind damit nicht abgenommen.
+
+## Öffentlicher Teststand
+
+[Equipment und Style 2 spielen](https://imbaaalanced-dot.github.io/a/v4-style2-towers/equipment/v4-alpha9/?td2UserTowers=1&qa=92591758).
+Nur der freigegebene separate Unterpfad wurde veröffentlicht; main und der
+vorhandene Grafiktest bleiben erhalten.
+
+[Pages-Deployment erfolgreich](https://github.com/imbaaalanced-dot/a/actions/runs/39503711332),
+[GitHub-CI erfolgreich](https://github.com/imbaaalanced-dot/a/actions/runs/39504048804).
+Die vier Produktdateien stimmen per SHA-256 mit der Quelle überein. Derselbe
+Browserablauf bestand auch öffentlich auf Desktop und Touch samt Quota/Export,
+allen sechs Karten und 30 WebP-Decodes ohne beobachtete JS-/HTTP-Fehler.
+[Öffentlicher Prüfbericht](qa/equipment-hybrid-20261020/report.json).
