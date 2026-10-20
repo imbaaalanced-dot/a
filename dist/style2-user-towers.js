@@ -6,6 +6,7 @@
   const known=new Set();
   const fallbackImages=new Map();
   const fallbackLimit=12;
+  const maxConcurrentFallbackLoads=4;
   const retryDelayMs=10000;
   const diagnostics={towerFallbacks:0,projectileFallbacks:0,drawErrors:0};
   const debug=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2Style2Debug')==='1';
@@ -29,10 +30,13 @@
     let entry=fallbackImages.get(url);
     if(!entry){
       if(typeof Image!=='function')return null;
-      // Bound the non-managed image cache to prevent endless growth on long runs.
+      // Do not evict in-flight requests: doing so can restart downloads every frame.
+      const loading=[...fallbackImages.values()].filter(e=>!e.ready&&!e.failed).length;
+      if(loading>=maxConcurrentFallbackLoads)return null;
       if(fallbackImages.size>=fallbackLimit){
-        const oldest=fallbackImages.keys().next().value;
-        if(oldest!==undefined)fallbackImages.delete(oldest);
+        const evict=[...fallbackImages].find(([,e])=>e.ready||e.failed);
+        if(!evict)return null;
+        fallbackImages.delete(evict[0]);
       }
       entry={img:new Image(),ready:false,failed:false,failedAt:0};
       fallbackImages.set(url,entry);
@@ -48,7 +52,13 @@
       fallbackImages.delete(url);
       return null; // Next request retries; legacy drawing remains available.
     }
-    return entry.ready&&!entry.failed?entry.img:null;
+    if(entry.ready&&!entry.failed){
+      // LRU: keep recently drawn variants warm during frequent tower switching.
+      fallbackImages.delete(url);
+      fallbackImages.set(url,entry);
+      return entry.img;
+    }
+    return null;
   }
   function drawTower(ctx,kind,x,y,tier){
     const img=get(kind,tier,'tower');
