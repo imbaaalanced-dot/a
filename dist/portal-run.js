@@ -23,7 +23,7 @@
     return {
       version: 1, revision: 0, runId, heroId, startBudget, maxSections,
       section: 1, waveInSection: 0, phase: 'build', heroHp,
-      gold: startBudget, perkRanks: {}, rngState: seed, checkpoint: null, rewardIds: []
+      gold: startBudget, perkRanks: {}, rngState: seed, checkpoint: null, rewardIds: [], towers: [], offerIds: null
     };
   }
   /**
@@ -62,24 +62,24 @@
         let investment;
         try { investment = refund(event.towers); } catch (_) { return unchanged; }
         if (!amount(event.gold + investment + run.startBudget * .25)) return unchanged;
-        changes = {phase: 'loading', checkpoint: {gold: event.gold, investment}};
+        changes = {phase: 'loading', pendingTransition: {gold: event.gold, investment, towers: JSON.parse(JSON.stringify(event.towers))}};
         effects = [{type: 'LOAD_SECTION', section: run.section + 1}];
         break;
       }
       case 'SECTION_LOAD_FAILED':
         if (run.phase !== 'loading') return unchanged;
-        changes = {phase: 'exit', checkpoint: null};
+        changes = {phase: 'exit', pendingTransition: null};
         break;
       case 'SECTION_LOADED': {
-        if (run.phase !== 'loading' || run.section >= run.maxSections || !run.checkpoint) return unchanged;
+        if (run.phase !== 'loading' || run.section >= run.maxSections || !run.pendingTransition) return unchanged;
         const rewardId = run.runId + ':' + run.section + ':settlement';
         if (run.rewardIds.includes(rewardId)) return unchanged;
-        const {gold, investment} = run.checkpoint;
+        const {gold, investment} = run.pendingTransition;
         const total = gold + investment + run.startBudget * .25;
         if (!amount(gold) || !amount(investment) || !amount(total)) return unchanged;
         changes = {
           phase: 'build', section: run.section + 1, waveInSection: 0,
-          gold: total, checkpoint: null, rewardIds: [...run.rewardIds, rewardId]
+          gold: total, checkpoint: null, pendingTransition: null, towers: [], offerIds: null, rewardIds: [...run.rewardIds, rewardId]
         };
         effects = [{type: 'CLEAR_TOWERS_AND_PROJECTILES'}, {type: 'RESET_PROTECTION', integrity: 100}];
         break;
@@ -92,7 +92,82 @@
     }
     return {run: {...run, ...changes, revision: run.revision + 1}, effects};
   }
-  const api = Object.freeze({create, reduce, refund});
+  const KEY = 'denkmal-portal-run-v1', BACKUP = KEY + '-backup';
+  const perkIds = new Set(['kraft','ausdauer','schritt','erholung','praezision','reichweite','taktung','engpass','zielmarkierung','deckung','gegenstoss','waechterkreis']);
+  const clone = value => JSON.parse(JSON.stringify(value));
+  function validateRun(run, nested = false) {
+    requireValid(run && run.version === 1 && id(run.runId) && id(run.heroId));
+    requireValid(integer(run.revision) && integer(run.section) && run.section >= 1 && integer(run.maxSections) && run.section <= run.maxSections);
+    requireValid(integer(run.waveInSection) && run.waveInSection <= 2 && ['build','combat','perk','exit','loading','finished','failed'].includes(run.phase));
+    requireValid(amount(run.gold) && amount(run.startBudget) && amount(run.heroHp) && integer(run.rngState) && run.rngState <= 0xffffffff);
+    requireValid(run.perkRanks && typeof run.perkRanks === 'object' && !Array.isArray(run.perkRanks));
+    for (const [key, rank] of Object.entries(run.perkRanks)) requireValid(perkIds.has(key) && integer(rank) && rank <= 3);
+    requireValid(Array.isArray(run.rewardIds) && run.rewardIds.length <= 100000 && new Set(run.rewardIds).size === run.rewardIds.length && run.rewardIds.every(id));
+    refund(run.towers);
+    requireValid(run.offerIds === null || Array.isArray(run.offerIds) && run.offerIds.length <= 3 && new Set(run.offerIds).size === run.offerIds.length && run.offerIds.every(key => perkIds.has(key) && (run.perkRanks[key] || 0) < 3));
+    if (run.phase === 'combat') requireValid(run.waveInSection >= 1 && run.checkpoint && ['build','exit'].includes(run.checkpoint.phase));
+    if (run.phase === 'loading') {
+      requireValid(run.pendingTransition && amount(run.pendingTransition.gold) && amount(run.pendingTransition.investment));
+      requireValid(refund(run.pendingTransition.towers) === run.pendingTransition.investment);
+    }
+    if (run.checkpoint != null) {
+      requireValid(!nested && run.checkpoint.checkpoint == null);
+      validateRun(run.checkpoint, true);
+      requireValid(run.checkpoint.runId === run.runId && run.checkpoint.section === run.section);
+    }
+    return run;
+  }
+  /** Capture a safe state before START_WAVE or after a confirmed selection. */
+  function withCheckpoint(run) {
+    validateRun(run);
+    requireValid(['build','exit'].includes(run.phase));
+    const safe = clone({...run, checkpoint: null, pendingTransition: null});
+    return {...clone(run), checkpoint: safe};
+  }
+  function createStore(storage) {
+    let observed, observedRun = null, incompatible = false;
+    function decode(raw) {
+      const run = JSON.parse(raw);
+      if (run?.version !== 1) return {status:'incompatible'};
+      validateRun(run);
+      return {status:'ok', run};
+    }
+    function load() {
+      observedRun = null; incompatible = false;
+      try {
+        observed = storage.getItem(KEY) || null;
+        if (!observed) return {status:'missing'};
+        let result;
+        try { result = decode(observed); } catch (_) { result = {status:'corrupt'}; }
+        if (result.status === 'incompatible') { incompatible = true; return result; }
+        if (result.status === 'corrupt') {
+          try { result = decode(storage.getItem(BACKUP)); if (result.status === 'ok') result.recovered = true; } catch (_) {}
+        }
+        if (result.status !== 'ok') return {status:'corrupt'};
+        observedRun = clone(result.run);
+        if (result.run.phase === 'combat') result.run = {...clone(result.run.checkpoint), revision:result.run.revision};
+        if (result.run.phase === 'loading') result.run = {...result.run, phase:'exit', gold:result.run.pendingTransition.gold, towers:clone(result.run.pendingTransition.towers), pendingTransition:null};
+        return result;
+      } catch (_) { return {status:'error'}; }
+    }
+    function save(run, expectedRevision) {
+      try { validateRun(run); } catch (_) { return {status:'invalid'}; }
+      try {
+        const current = storage.getItem(KEY) || null;
+        if (incompatible || (observed === undefined ? current !== null : current !== observed)) return {status:'conflict'};
+        if (current && !observedRun || (observedRun ? observedRun.revision !== expectedRevision : expectedRevision !== null)) return {status:'conflict'};
+        if (observedRun && run.runId === observedRun.runId && run.revision < observedRun.revision) return {status:'conflict'};
+        const next = JSON.stringify(run);
+        if (observedRun) { try { storage.setItem(BACKUP, JSON.stringify(observedRun)); } catch (_) {} }
+        if ((storage.getItem(KEY) || null) !== current) return {status:'conflict'};
+        storage.setItem(KEY, next);
+        observed = next; observedRun = clone(run);
+        return {status:'saved'};
+      } catch (_) { return {status:'error'}; }
+    }
+    return Object.freeze({load, save});
+  }
+  const api = Object.freeze({create, reduce, refund, withCheckpoint, createStore, KEY, BACKUP});
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.PortalRun = api;
 })(globalThis);

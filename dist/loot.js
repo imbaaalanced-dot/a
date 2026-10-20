@@ -17,11 +17,14 @@
     return s;
   }
   function starter(id,slot,power){return {id,slot,power,name:powers[power].name,rarity:'magic',level:1,stats:{},favorite:true};}
-  function fresh(){const items=[starter('starter-ember','weapon','ember'),starter('starter-oath','armor','oath'),starter('starter-lantern','amulet','lantern')];return {version:2,level3:false,kirchendeCompleted:false,nextId:1,essence:0,items,bag:[],overflow:[],equipped:{weapon:'starter-ember',head:null,armor:'starter-oath',gloves:null,boots:null,amulet:'starter-lantern',ring1:null,ring2:null},milestones:[],level2:false};}
+  function fresh(){const items=[starter('starter-ember','weapon','ember'),starter('starter-oath','armor','oath'),starter('starter-lantern','amulet','lantern')];return {version:3,claimedBossRewards:{},level3:false,kirchendeCompleted:false,nextId:1,essence:0,items,bag:[],overflow:[],equipped:{weapon:'starter-ember',head:null,armor:'starter-oath',gloves:null,boots:null,amulet:'starter-lantern',ring1:null,ring2:null},milestones:[],level2:false};}
+  function validRewardId(id){return typeof id==='string'&&id.length<=200&&/^.+:[1-9][0-9]*:boss$/.test(id);}
   function validate(p){
     const fail=()=>{throw Error('Ungültiger Spielstand');};
-    if(!p||p.version!==2||typeof p.level3!=='boolean'||typeof p.kirchendeCompleted!=='boolean'||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||typeof p.level2!=='boolean')fail();
+    if(!p||p.version!==3||typeof p.level3!=='boolean'||typeof p.kirchendeCompleted!=='boolean'||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||typeof p.level2!=='boolean')fail();
     if(!Array.isArray(p.items)||p.items.length>8||!Array.isArray(p.bag)||p.bag.length>30||!Array.isArray(p.overflow)||p.overflow.length>100000||!p.equipped||Object.keys(p.equipped).length!==8||!Array.isArray(p.milestones)||p.milestones.some(x=>![3,4,8,12].includes(x))||new Set(p.milestones).size!==p.milestones.length)fail();
+    if(!p.claimedBossRewards||typeof p.claimedBossRewards!=='object'||Array.isArray(p.claimedBossRewards)||Object.keys(p.claimedBossRewards).length>100000)fail();
+    for(const [key,itemId] of Object.entries(p.claimedBossRewards))if(!validRewardId(key)||typeof itemId!=='string'||!itemId||itemId.length>100)fail();
     const ids=new Set();
     for(const i of [...p.items,...p.bag,...p.overflow]){
       if(!i||typeof i.id!=='string'||!i.id||i.id.length>100||ids.has(i.id)||!Object.hasOwn(slots,i.slot)||!Object.hasOwn(rarities,i.rarity)||typeof i.name!=='string'||!i.name.trim()||i.name.length>100||!Number.isInteger(i.level)||i.level<1||i.level>30||typeof i.favorite!=='boolean'||!i.stats||Array.isArray(i.stats)||Object.keys(i.stats).length>8)fail();
@@ -38,19 +41,19 @@
   function create({storage,rng=Math.random,canManage=()=>true}={}){
     if(storage===undefined){try{storage=globalThis.localStorage;}catch{}}
     let profile=fresh(),status='',readOnly=false,lastRaw=null;
-    function decode(env){if(![1,2].includes(env.version)||env.profile?.version!==env.version)throw Error('version');const p=copy(env.profile);if(env.version===1){p.version=2;p.level3=false;p.kirchendeCompleted=false;}return validate(p);}
+    function decode(env){if(![1,2,3].includes(env.version)||env.profile?.version!==env.version)throw Error('version');const p=copy(env.profile);if(env.version===1){p.version=2;p.level3=false;p.kirchendeCompleted=false;}if(env.version<3){p.version=3;p.claimedBossRewards={};}return validate(p);}
     function parse(raw){return decode(JSON.parse(raw));}
     try{
       lastRaw=storage?.getItem(KEY)||null;
       if(lastRaw){try{profile=parse(lastRaw);}catch(e){
         let parsed;try{parsed=JSON.parse(lastRaw);}catch{}
-        if(parsed?.version!==undefined&&![1,2].includes(parsed.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
+        if(parsed?.version!==undefined&&![1,2,3].includes(parsed.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
         else {try{profile=parse(storage?.getItem(BACKUP));status='Spielstand aus Sicherung wiederhergestellt.';}catch{readOnly=true;status='Spielstand beschädigt. Export sichern oder eine gültige Sicherung importieren.';}}
       }}
     }catch{status='Speichern blockiert: Fortschritt gilt nur für diese Sitzung. Bitte exportieren.';}
     const all=()=>[...profile.items,...profile.bag,...profile.overflow];
     const find=id=>all().find(i=>i.id===id);
-    const raw=()=>JSON.stringify({format:'denkmal-loot',version:2,profile});
+    const raw=()=>JSON.stringify({format:'denkmal-loot',version:3,profile});
     function save(){
       if(readOnly)return false;
       try{
@@ -81,6 +84,38 @@
       const suffix=['der Wacht','der Asche','des Echos','der Erinnerung'][Math.min(3,Math.floor(rng()*4))]||'der Wacht';
       return {id,slot,name:power?powers[power].name:bases[slot]+' '+suffix,rarity,level,stats,power,favorite:false};
     }
+    // Grant item and claim ID in ONE durable primary JSON write. Legacy add/save
+    // remain session-tolerant; this path never treats them as a storage receipt.
+    function grantBossRewardOnce(rewardId,wave,region){
+      const error=()=>({status:'error'});
+      if(!validRewardId(rewardId)||!Number.isSafeInteger(wave)||wave<1||typeof region!=='string'||readOnly)return error();
+      let current;
+      try{if(!storage)throw Error('storage');current=storage.getItem(KEY)||null;}
+      catch{status='Bossbeute konnte nicht gespeichert werden. Bitte erneut versuchen.';return error();}
+      if(current!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte neu laden.';return error();}
+      if(Object.hasOwn(profile.claimedBossRewards,rewardId))return {status:'alreadyGranted',itemId:profile.claimedBossRewards[rewardId]};
+      const previous=profile;
+      let next,item;
+      try{
+        // generate advances nextId; do so against a private candidate only.
+        profile=copy(previous);
+        item=region==='kirchende'?generateKirchende(wave,true):generate(wave,true);
+        next=profile;
+        (next.bag.length<CAPACITY?next.bag:next.overflow).push(item);
+        Object.defineProperty(next.claimedBossRewards,rewardId,{value:item.id,enumerable:true,writable:true,configurable:true});
+        next=validate(next);
+      }catch{ return error(); }
+      finally{profile=previous;}
+      try{
+        // Backup failure must not be mistaken for a successful primary grant.
+        if(lastRaw){try{parse(lastRaw);storage.setItem(BACKUP,lastRaw);}catch{}}
+        if((storage.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte neu laden.';return error();}
+        const nextRaw=JSON.stringify({format:'denkmal-loot',version:3,profile:next});
+        storage.setItem(KEY,nextRaw);
+        profile=next;lastRaw=nextRaw;status='';
+        return {status:'granted',itemId:item.id};
+      }catch{status='Bossbeute konnte nicht gespeichert werden. Bitte erneut versuchen.';return error();}
+    }
     function add(item){if(!writable()||find(item.id))return false;const candidate=copy(item),next=copy(profile);(next.bag.length<CAPACITY?next.bag:next.overflow).push(candidate);try{validate(next);}catch{return false;}profile=next;save();return true;}
     function equip(id,slot){if(!manage())return false;const i=find(id);slot=slot||i?.slot;if(!i||!Object.hasOwn(slots,slot)||!fits(i,slot)||profile.items.some(x=>x.id===id))return false;
       profile.bag=profile.bag.filter(x=>x.id!==id);profile.overflow=profile.overflow.filter(x=>x.id!==id);
@@ -110,13 +145,14 @@
     }
     function reforge(id){if(!manage()||profile.essence<50)return false;const i=[...profile.bag,...profile.overflow].find(x=>x.id===id);if(!i||i.favorite)return false;for(const k of Object.keys(i.stats)){const cap=statInfo[k].max,scale=(.18+i.level*.018)*(1+rarities[i.rarity].rank*.12)*(.7+rng()*.3);i.stats[k]=Math.round(Math.min(cap,cap*scale)*(statInfo[k].percent?1000:1))/(statInfo[k].percent?1000:1);}profile.essence-=50;save();return true;}
     function milestone(wave){const reward={3:['armor','ash'],4:['weapon','echo'],8:['amulet','bell']}[wave];if(!reward||profile.milestones.includes(wave)||!writable())return false;const i=starter('milestone-'+wave,...reward);i.level=wave;profile.milestones.push(wave);return add(i);}
-    function validateImport(text){if(typeof text!=='string'||text.length>15000000)throw Error('Datei zu groß');const e=JSON.parse(text);if(e.format!=='denkmal-loot'||![1,2].includes(e.version))throw Error('Falsches Format oder Version');return decode(e);}
+    function validateImport(text){if(typeof text!=='string'||text.length>15000000)throw Error('Datei zu groß');const e=JSON.parse(text);if(e.format!=='denkmal-loot'||![1,2,3].includes(e.version))throw Error('Falsches Format oder Version');return decode(e);}
     function importJSON(text){if(!canManage())return false;try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}let next;try{next=validateImport(text);}catch{return false;}if(readOnly&&status.includes('anderen Tab'))return false;profile=next;readOnly=false;try{lastRaw=storage?.getItem(KEY)||null;}catch{}save();return true;}
     function unlockLevel3(){if(!writable())return false;profile.level3=true;save();return true;}
     function claimKirchendeReward(){if(!writable()||profile.kirchendeCompleted)return null;const item=generate(12,true);Object.assign(item,{name:'Hainkern',power:'grove',slot:'ring1',rarity:'epic'});const next=copy(profile);(next.bag.length<CAPACITY?next.bag:next.overflow).push(item);next.kirchendeCompleted=true;if(!next.milestones.includes(12))next.milestones.push(12);try{validate(next);}catch{return null;}profile=next;save();return copy(item);}
     function generateKirchende(wave=9,boss=false){const item=generate(wave,boss);if(boss||rng()<.35){const variants=[['armor','bark'],['boots','roots'],['weapon','splinter'],['amulet','wardlight'],['ring1','grove']];const [slot,power]=variants[Math.min(4,Math.floor(rng()*5))]||variants[0];Object.assign(item,{slot,power,name:powers[power].name});}return item;}
     function unlockLevel(){if(!writable())return false;profile.level2=true;save();return true;}
-    return {storage,get count(){return profile.bag.length;},get overflowCount(){return profile.overflow.length;},get profile(){return copy(profile);},get readOnly(){return readOnly;},get status(){return status;},generate,generateKirchende,unlockLevel3,claimKirchendeReward,add,equip,unequip,favorite,salvage,salvagePreview,salvageAll,reforge,milestone,unlockLevel,save,salvageValue,find:id=>{const i=find(id);return i?copy(i):null;},snapshot:()=>copy(profile.items),exportJSON:raw,exportRecovery:()=>lastRaw||raw(),validateImport,importJSON};
+    return {storage,get count(){return profile.bag.length;},get overflowCount(){return profile.overflow.length;},get profile(){return copy(profile);},get readOnly(){return readOnly;},get status(){return status;},grantBossRewardOnce,generate,generateKirchende,unlockLevel3,claimKirchendeReward,add,equip,unequip,favorite,salvage,salvagePreview,salvageAll,reforge,milestone,unlockLevel,save,salvageValue,find:id=>{const i=find(id);return i?copy(i):null;},snapshot:()=>copy(profile.items),exportJSON:raw,exportRecovery:()=>lastRaw||raw(),validateImport,importJSON};
   }
   globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
 })();
+
