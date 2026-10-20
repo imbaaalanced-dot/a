@@ -55,7 +55,7 @@ assert.equal(copies.length,count,'fully off-map views skip bitmap copies');
 console.log('Decoration cache reuses its atlas and crops world-edge camera views.');
 
 assert.equal(loaded.length,1,'shared scenery atlas is requested once');
-loaded[0].naturalWidth=768;loaded[0].naturalHeight=512;loaded[0].onload();
+loaded[0].complete=true;loaded[0].naturalWidth=768;loaded[0].naturalHeight=512;
 p.draw(target,3,layout,{x:1000,y:1200},600,800);
 assert.equal(allocations,2,'newly decoded scenery invalidates the ground decoration cache once');
 p.draw(target,3,layout,{x:1000,y:1200},600,800);

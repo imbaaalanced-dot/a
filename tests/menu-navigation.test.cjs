@@ -62,13 +62,13 @@ assert.equal(sandbox.test.game.hero.character,'kim','restored selection is also 
 element('chooseMarcel').onclick();
 assert.equal(sandbox.test.game.hero.character,'kim','cannot switch heroes mid combat');
 sandbox.test.mainMenu();element('chooseMarcel').onclick();
-assert.match(element('menuHeroBanner').src,/marcel-reference-banner/);
+assert.match(element('menuHeroBanner').src,/marcel-banner-alpha9/);
 saga.openCharacter();
 assert.equal(element('characterTitle').textContent,'MARCEL');
-assert.match(element('characterPortrait').src,/marcel-lantern-portrait/);
+assert.match(element('characterPortrait').src,/marcel-portrait-alpha9/);
 assert.match(element('characterLevel').textContent,/DER BESCHÜTZER/);
 saga.closeCharacter();
-assert.match(element('heroHudPortrait').style.backgroundImage,/marcel-lantern-portrait/);
+assert.match(element('heroHudPortrait').style.backgroundImage,/marcel-portrait-alpha9/);
 element('menuOptionsBtn').onclick();
 assert.equal(element('optionsMenu').hidden,false);
 element('menuSoundBtn').onclick();
@@ -79,7 +79,7 @@ assert.equal(element('menuGraphicsBtn').textContent,element('graphicsBtn').textC
 element('menuZoomBtn').onclick();
 assert.equal(element('menuZoomBtn').textContent,element('zoomBtn').textContent);
 sandbox.localStorage.setItem('denkmal-character','unknown');vm.runInContext(source,sandbox);
-assert.match(element('menuHeroBanner').src,/marcel-reference-banner/,'invalid saved hero falls back to Marcel');
+assert.match(element('menuHeroBanner').src,/marcel-banner-alpha9/,'invalid saved hero falls back to Marcel');
 sandbox.localStorage.getItem=()=>{throw Error('storage blocked')};sandbox.localStorage.setItem=()=>{throw Error('storage blocked')};
 vm.runInContext(source,sandbox);element('chooseKim').onclick();
 assert.match(element('menuHeroBanner').src,/kim-menu-banner/,'hero switch works without storage');

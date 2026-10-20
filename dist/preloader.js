@@ -4,14 +4,9 @@
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
-    'assets/enemies/walk-v1.webp?v=enemymove1',
-    ...['boomerang','bow','cannon','mage','rift'].map(kind=>'assets/elemental/'+kind+'-towers-v1.webp?v=elemental1'),
-    ...['mage','rift','cannon'].flatMap(kind=>['projectiles','impacts'].map(type=>'assets/elemental/'+kind+'-'+type+'-v1.webp?v=elemental1')),
-    'assets/monument-level1-v2.webp',
-    'assets/hero/marcel-walk-alpha8.webp?v=alpha8a2','assets/hero/kim-walk-alpha8.webp?v=alpha8a2',
-    'assets/hero/marcel-lantern-sprite-v1.webp','assets/scenery-alpha8.webp?v=alpha8a2',
     'assets/menu/churchyard-quiet-v1.webp',
-    'assets/menu/crest-v2.webp','assets/hero/marcel-lantern-portrait-v1.webp'
+    'assets/menu/crest-v2.webp','assets/menu/marcel-banner-alpha9.webp',
+    'assets/menu/kim-menu-banner-v1.webp'
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;
@@ -31,6 +26,11 @@
     status.textContent=failed ? 'Grafiken laden · Ersatzdarstellung für '+failed+' Bilder' : pending?'Bilder laden weiter …':'Grafiken werden vorbereitet …';
   }
   function load(src){
+    if(globalThis.DenkmalAssets){
+      return globalThis.DenkmalAssets.load(src).then(img=>{
+        finished++;results.set(src,!!img);if(!img)failed++;progress();return !!img;
+      });
+    }
     return new Promise(resolve=>{
       const item=new Image();
       let settled=false;

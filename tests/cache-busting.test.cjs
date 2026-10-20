@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.8"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.9"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -15,33 +15,34 @@ assert.ok(html.includes('<meta name="application-version" content="v4.0.0-alpha.
 const expectedVersions = new Map([
   ['styles.css', 'v400a4merge1'],
   ['hero.css', 'v400a4merge1'],
-  ['polish.css', 'v400a5combined1'],
+  ['polish.css', 'alpha9a1'],
   ['loot.css', 'alpha8polish1'],
   ['menu.css', 'alpha8polish1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a6hud2'],
-  ['preloader.js', 'enemymove1'],
+  ['asset-manager.js', 'alpha9a1'],
+  ['preloader.js', 'alpha9a1'],
   ['levels.js', 'syburg2'],
-  ['visuals.js', 'v400a4merge1'],
+  ['visuals.js', 'alpha9a1'],
   ['loot.js', 'v400a4merge1'],
-  ['loot-ui.js', 'alpha8polish2'],
-  ['hero-saga.js', 'alpha8polish3'],
+  ['loot-ui.js', 'alpha9a1'],
+  ['hero-saga.js', 'alpha9a1'],
   ['combat-fx.js', 'v400a6s2t4'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
   ['elemental-sprites.js', 'alpha8a2'],
-  ['enemy-animations.js', 'enemystate1'],
+  ['enemy-animations.js', 'alpha9a1'],
   ['style2-markers.js', 'markers2'],
   ['style2-maps.js', 'v400a6markers1'],
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'enemystate2'],
+  ['game.js', 'alpha9a1'],
   ['hohensyburg.js', 'syburg1'],
-  ['hohensyburg-art.js', 'alpha8syburg2'],
+  ['hohensyburg-art.js', 'alpha9a1'],
   ['style2-ambience.js', 'alpha8a2'],
   ['style2-ui-polish.css', 'alpha8a2'],
-  ['style2-phase6.js', 'alpha8environment2'],
+  ['style2-phase6.js', 'alpha9a1'],
   ['kirchende-combat.js', 'v400a5combined1'],
   ['kirchende-art.js', 'v400a6s2polish5'],
   ['terrain-polish.js', 'v400a6s2ground3'],

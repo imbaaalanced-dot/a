@@ -31,10 +31,10 @@
     ballista:[[195,67,916,1127],[134,10,1026,1234],[57,44,1169,1190]]
   };
   // Large legacy PNGs are fallback art, requested only if their renderer is needed.
-  const legacyTowerFiles={bow:'tower-bow-infernal-v1.png',cannon:'tower-cannon-ash-v1.png',ballista:'tower-ballista-rift-v1.png',mage:'tower-mage-hellfire-v1.png',mortar:'tower-mortar-volcanic-v1.png',rift:'tower-rift-lance-v1.png',shrine:'tower-warden-shrine-v1.png'};
+  const legacyTowerFiles={bow:'tower-bow-infernal-v1.webp',cannon:'tower-cannon-ash-v1.webp',ballista:'tower-ballista-rift-v1.png',mage:'tower-mage-hellfire-v1.png',mortar:'tower-mortar-volcanic-v1.png',rift:'tower-rift-lance-v1.webp',shrine:'tower-warden-shrine-v1.png'};
   towerLevelArt.boomerang[0].src='assets/tower-boomerang-atlas.webp?v=v400a5combined1';
-  atlas.src = 'assets/asset-atlas.png';
-  hellscape.src = 'assets/stone-terrain-v27.png';
+  atlas.src = 'assets/asset-atlas.webp';
+  // All six maps render their own ground; do not decode the unused 1254px legacy terrain.
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
   function portraitLayout(){return H>W;}
@@ -67,7 +67,7 @@
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
-  const alpha8Preview=!!globalThis.location?.pathname?.includes('/v4-alpha8/');
+  const alpha8Preview=!!globalThis.location?.pathname?.includes('/v4-alpha8/')||!!globalThis.location?.pathname?.includes('/v4-alpha9/');
   const style2Preview=alpha8Preview||!!globalThis.location?.pathname?.includes('/v4-style2-phase6/')||!!globalThis.location?.pathname?.includes('/v4-style2/')||!!globalThis.location?.pathname?.includes('/v4-style2-cannon/')||!!globalThis.location?.pathname?.includes('/v4-style2-towers/')||!!globalThis.location?.pathname?.includes('/v4-style2-maps/')||!!globalThis.location?.pathname?.includes('/v4-style2-phase7/')||!!globalThis.location?.pathname?.includes('/v4-style2-reference/')||!!globalThis.location?.pathname?.includes('/v4-20261018/');
   const level4Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level4/');
   const level5Preview=style2Preview||!!globalThis.location?.pathname?.includes('/v4-level5/');
@@ -188,7 +188,7 @@
   function dodge(){if(state!=='playing'||tutorialActive||game.hero.dodgeCd>0)return;const h=game.hero;h.dodge=.18;h.dodgeCd=1.2*saga.stats(h).dodge;h.invuln=.35;h.dodgeX=facing.x;h.dodgeY=facing.y;spark(h.x,h.y,'#dbc07e',9);}
   const rand=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 
-  let game;
+  let game,assetLevel=0;
   let selectedCharacter='marcel';
   function reset(level=1,mode='campaign'){
     clearInput();speedMultiplier=1;time=0;shake=0;hitStop=0;facing={x:1,y:0};moveIntent={x:0,y:0};cameraLeadState={x:0,y:0};
@@ -217,7 +217,7 @@
     camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y-vh*focusY,0,WORLD_H-vh);
   }
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/(zoom*viewDepth)+camera.y};}
-  function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?1:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);if(canvas.width!==pixelWidth)canvas.width=pixelWidth;if(canvas.height!==pixelHeight)canvas.height=pixelHeight;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
+  function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?.85:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);if(canvas.width!==pixelWidth)canvas.width=pixelWidth;if(canvas.height!==pixelHeight)canvas.height=pixelHeight;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
   function setMapStatus(id,unlocked){
@@ -311,7 +311,15 @@
     if(tutorialStepIndex<introTutorialSteps.length-1){tutorialStepIndex++;renderIntroTutorialStep();$('tutorialNext').focus();}
     else finishIntroTutorial();
   }
-  function mainMenu(){levelLoadRequest++;if(game&&state!=='start')collectWaveLoot();closeScreens();clearInput();state='start';showMenuPanel('home',false);menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
+  function releaseLevelArt(level){
+    if(!level)return;
+    globalThis.DenkmalAssets?.release('level:'+level);
+    if(level<=2)globalThis.Style2Maps?.reset?.();
+    if(level===5)globalThis.DenkmalHohensyburgArt?.release?.();
+    if(level===6)globalThis.DenkmalGoetheArt?.release?.();
+    globalThis.Style2Phase6?.reset?.();
+  }
+  function mainMenu(){levelLoadRequest++;if(game&&state!=='start')collectWaveLoot();releaseLevelArt(assetLevel);globalThis.DenkmalAssets?.release('level:'+(assetLevel+1));assetLevel=0;closeScreens();clearInput();state='start';showMenuPanel('home',false);menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1,mode='campaign'){
     level=[1,2,3,4,5,6].includes(level)?level:1;
     if(level===5&&!campaign.level4Completed&&!level5Preview)return;
@@ -329,7 +337,13 @@
       return;
     }
     art?.load(level===3);
+    if(assetLevel!==level){
+      globalThis.DenkmalAssets?.level(level);
+      if(assetLevel)releaseLevelArt(assetLevel);
+      assetLevel=level;
+    }
     closeScreens();reset(level,mode);state='playing';focusGame();tone(220,.1);last=performance.now();
+    setTimeout(()=>{if(levelLoadRequest===request&&assetLevel===level)globalThis.DenkmalAssets?.next(level);},1800);
     if(level===1){const storyShown=saga.chapter(1);if(!storyShown)queueIntroTutorial();}else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
   }
   function renderInventory(){if(state==='inventory')lootUI?.render();}
@@ -436,13 +450,18 @@
   }
   function remainingRoute(e){const path=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];if(e.flying||game.level===1)return dist(e,game.monument);let remaining=dist(e,path[Math.min(e.waypoint,path.length-1)]);for(let i=e.waypoint;i<path.length-1;i++)remaining+=dist(path[i],path[i+1]);return remaining;}
   function towerTarget(t){
-    const candidates=game.enemies.filter(e=>!e.dead&&(!e.flying||globalThis.FlightEnemies?.canHit(t,e))&&dist(t,e)<=t.range);
-    if(!candidates.length)return null;
     const mode=t.targetMode||'first';
-    if(mode==='boss'){const boss=candidates.find(isBoss);if(boss)return boss;}
-    if(mode==='strongest')return candidates.reduce((a,b)=>b.hp>a.hp?b:a);
-    if(mode==='nearest')return candidates.reduce((a,b)=>dist(t,b)<dist(t,a)?b:a);
-    return candidates.reduce((a,b)=>remainingRoute(b)<remainingRoute(a)?b:a);
+    let best=null,boss=null,score=mode==='strongest'?-Infinity:Infinity;
+    const range2=t.range*t.range;
+    for(const e of game.enemies){
+      if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(t,e)))continue;
+      const dx=t.x-e.x,dy=t.y-e.y,d2=dx*dx+dy*dy;
+      if(d2>range2)continue;
+      if(mode==='boss'&&isBoss(e)&&!boss)boss=e;
+      const value=mode==='strongest'?e.hp:mode==='nearest'?d2:remainingRoute(e);
+      if(!best||(mode==='strongest'?value>score:value<score)){best=e;score=value;}
+    }
+    return boss||best;
   }
   function projectileSynergy(b,e){
     const slowed=(e.slow||0)>0,cannon=slowed&&b.kind==='cannon';
@@ -456,7 +475,7 @@
   function launchWave(){if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
   function collectWaveLoot(){for(const l of game.loot){if(l.kind==='item')pickupItem(l.item,true);else game.essence+=4;}game.loot=[];}
   function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
-  function spark(x,y,color,n=7){for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
+  function spark(x,y,color,n=7){if(lowFX())n=Math.min(n,4);for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
   function bossPhaseLabel(phase){return ['I','II','III'][clamp((phase||1)-1,0,2)];}
   function updateEnemyPressure(e){
     if(e.dead)return;
@@ -706,7 +725,7 @@
     // Disabled ballista assets load only if this tower is actually rendered.
     const levelSprite=towerLevelArt[kind]?.[index];
     if(levelSprite&&!levelSprite.src){
-      levelSprite.src=kind==='rift'?`assets/tower-rift-lance-l${level}.png`:`assets/tower-${kind}-l${level}-v2.png`;
+      levelSprite.src=kind==='rift'?`assets/tower-rift-lance-l${level}.webp`:`assets/tower-${kind}-l${level}-v2.${kind==='bow'||kind==='cannon'?'webp':'png'}`;
     }
     const premium=towerArt[kind];
     if(premium&&!premium.src&&legacyTowerFiles[kind])premium.src='assets/'+legacyTowerFiles[kind];
@@ -787,7 +806,7 @@
   function updateTelemetry(now){
     const overlay=$('fpsOverlay');if(!telemetryOn){telemetryFrames=0;telemetryLast=0;overlay.classList.add('hidden');return;}
     overlay.classList.remove('hidden');if(!telemetryLast)telemetryLast=now;telemetryFrames++;const span=now-telemetryLast;
-    if(span>=500){telemetryFps=Math.round(telemetryFrames*1000/span);telemetryFrames=0;telemetryLast=now;overlay.textContent=`FPS ${telemetryFps} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}`;}
+    if(span>=500){telemetryFps=Math.round(telemetryFrames*1000/span);telemetryFrames=0;telemetryLast=now;const heap=performance.memory?.usedJSHeapSize;overlay.textContent=`FPS ${telemetryFps} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;}
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
@@ -863,7 +882,7 @@
   canvas.addEventListener('pointerdown',e=>{if(document.querySelector('.modal:not(.hidden)'))return;const menu=$('hudMenu');if(menu?.open&&!menu.contains(e.target)){menu.open=false;}});
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   function lowFX(){return reducedMotion||graphicsMode==='low'||(graphicsMode==='auto'&&mobileRender);}
-  function graphicsLabel(){$('menuGraphicsBtn').textContent=$('graphicsBtn').textContent=`GRAFIK: ${graphicsMode.toUpperCase()}`;}
+  function graphicsLabel(){$('menuGraphicsBtn').textContent=$('graphicsBtn').textContent=`GRAFIK: ${{auto:'STANDARD',low:'SPARMODUS',high:'HOCH'}[graphicsMode]}`;}
   function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';try{localStorage.setItem('denkmal-graphics',graphicsMode);}catch{}graphicsLabel();resize(false);}
   function zoomLabel(){$('menuZoomBtn').textContent=$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
   function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();try{localStorage.setItem('denkmal-zoom',zoomMode);}catch{}zoomLabel();updateCamera();}
@@ -888,9 +907,19 @@
     const kim=selectedCharacter==='kim';
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
-    $('heroHudPortrait').style.backgroundImage=`url('${kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-lantern-portrait-v1.webp?v=portrait2'}')`;
+    const portraitUrl=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
+    globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
+      if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
+    });
+    if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     const banner=$('menuHeroBanner');
-    banner.src=kim?'assets/menu/kim-menu-banner-v1.webp':'assets/menu/marcel-reference-banner-v1.webp';
+    const bannerUrl=kim?'assets/menu/kim-menu-banner-v1.webp':'assets/menu/marcel-banner-alpha9.webp';
+    globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
+      if(!img||selectedCharacter!==(kim?'kim':'marcel'))return;
+      try{await img.decode?.();}catch{return;}
+      if(selectedCharacter===(kim?'kim':'marcel'))banner.src=bannerUrl;
+    });
+    if(!globalThis.DenkmalAssets)banner.src=bannerUrl;
     banner.alt=(kim?'Kim':'Marcel')+' vor Kirche und Löwendenkmal';
     $('menuHeroCaption').textContent=kim?'Kim · Die Bewahrerin':'Marcel · Der Beschützer';
     $('menuHeroName').textContent=kim?'KIM · DIE BEWAHRERIN':'MARCEL · DER BESCHÜTZER';

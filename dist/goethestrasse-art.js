@@ -36,4 +36,4 @@ function drawMonument(ctx,m){
  }finally{ctx.restore();}
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane};})();
+globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane,release(){ground=null;memorial=null;}};})();

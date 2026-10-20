@@ -1,7 +1,7 @@
 from pathlib import Path
 from PIL import Image
 assets = Path(__file__).resolve().parents[1] / 'dist' / 'assets'
-for name, rows, cols in [('church-ende-alpha8.webp',1,1),('lion-ende-alpha8.webp',1,1),('hero/marcel-walk-alpha8.webp',4,3),('hero/kim-walk-alpha8.webp',4,3),('elemental/enemies-walk-alpha8.webp',3,3)]:
+for name, rows, cols in [('church-ende-alpha8.webp',1,1),('lion-ende-alpha8.webp',1,1),('hero/kim-walk-alpha8.webp',4,3),('elemental/enemies-walk-alpha8.webp',3,3)]:
     with Image.open(assets/name) as image:
         image.verify()
     with Image.open(assets/name) as image:

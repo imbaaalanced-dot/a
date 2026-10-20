@@ -108,7 +108,7 @@ check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.
 check('Soul call has bounded range heal and resource use',()=>{const h=t.game.hero;h.hp=50;const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};t.game.enemies=[near,far];assert.equal(saga.unleash(),true);assert.ok(near.hp<1000);assert.equal(far.hp,1000);assert.equal(h.hp,75);assert.equal(h.soul,0);assert.equal(saga.unleash(),false);saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1);});
 check('Soul call cannot trigger in pause or wardrobe',()=>{t.pauseGame();assert.equal(saga.unleash(),false);assert.equal(t.game.hero.soul,100);t.resumeGame();saga.openCharacter();assert.equal(saga.unleash(),false);});
 check('Story milestones pause and never repeat; epilogue after wave 15',()=>{t.game.wave=3;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Siegel/);saga.continueStory();assert.equal(saga.chapter(4),false);t.game.wave=15;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Erinnerung/);saga.continueStory();assert.equal(t.state,'playing');assert.equal(element('sagaComplete').classList.contains('hidden'),false);});
-check('Lantern guardian animates the directional Alpha 8 atlas',()=>{const h=t.game.hero,asset='marcel-walk-alpha8.webp?v=alpha8a2';draws.length=0;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(h.direction,'down');assert.equal(draw[1],1280/3);draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],1280/4);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],3*1280/4);});
+check('Lantern guardian animates the directional Alpha 9 atlas',()=>{const h=t.game.hero,asset='marcel-walk-alpha9.webp?v=alpha9a1';draws.length=0;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(h.direction,'down');assert.equal(draw[1],1280/3);draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],1280/4);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],3*1280/4);});
 check('Marcels dialogue replaces the old character and respects mute',()=>{assert.match(saga.lines.intro,/Marcel/);assert.equal(Object.values(saga.lines).some(s=>s.includes('Kael')),false);t.startGame();element('soundBtn').onclick();element('voiceBtn').onclick();saga.continueStory();assert.equal(t.state,'playing');element('soundBtn').onclick();});
 check('Four fixed gates ignore hero position and viewport',()=>{
   t.game.hero.x=120;t.game.hero.y=200;
@@ -276,7 +276,7 @@ check('Walk camera ignores tiny analog jitter and scales lead with stick magnitu
   assert.ok(gentle>0&&gentle<full*.4);
 });
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
-  assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
+  assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: SPARMODUS');assert.equal(t.state,'playing');
   element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
 });
 check('Mobile joystick applies a deadzone, analog response and radius clamp',()=>{
@@ -354,7 +354,7 @@ check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu()
 check('Rift tower selects the matching level graphic',()=>{
   for(let level=1;level<=3;level++){
     draws.length=0;t.drawTower({kind:'rift',level,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.png`)));
+    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.webp`)));
   }
 });
 check('Tower upgrades select distinct sprites and preserve their base anchor',()=>{
@@ -362,7 +362,7 @@ check('Tower upgrades select distinct sprites and preserve their base anchor',()
     const sprites=new Set();
     for(let level=1;level<=3;level++){
       draws.length=0;t.drawTower({kind,level,x:250,y:350});
-      const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.png`));
+      const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.${kind==='ballista'?'png':'webp'}`));
       const rendered=draws.find(d=>d.length===5&&d[0].width===192);
       assert.ok(draw,`${kind} ${level} sprite missing`);sprites.add(draw[0].src);
       assert.equal(draw.length,9);assert.ok(draw[3]>0&&draw[4]>0);
@@ -381,7 +381,7 @@ check('Loading or failed tower upgrades retain a usable fallback sprite',()=>{
     const image=t.towerLevelArt[kind][1];
     const width=image.naturalWidth;image.complete=false;image.naturalWidth=0;
     draws.length=0;t.drawTower({kind,level:2,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-${kind}-${fallback}-v1.png`)));
+    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-${kind}-${fallback}-v1.${['bow','cannon','rift'].includes(kind)?'webp':'png'}`)));
     image.complete=true;image.naturalWidth=width;
   }
 });
@@ -390,6 +390,14 @@ check('Build pause is finite and can be skipped without duplicating waves',()=>{
 check('New loot never changes active hero stats and death retains ground items',()=>{const h=t.game.hero;const before=JSON.stringify(saga.stats(h));const i=t.lootModel.generate(8,true);t.pickupItem(i,true);assert.equal(JSON.stringify(saga.stats(h)),before);const floor=t.lootModel.generate(5,true);t.game.loot=[{kind:'item',item:floor}];t.gameOver();assert.ok(t.lootModel.find(floor.id));});
 check('Final wave retains boss loot before unlocking level 2',()=>{const i=t.lootModel.generate(5,true);t.game.wave=5;t.game.loot=[{kind:'item',item:i}];t.endWave();assert.ok(t.lootModel.find(i.id));assert.equal(t.state,'levelcomplete');});
 check('Towers choose the enemy closest to the monument within range',()=>{const m=t.game.monument,a={x:m.x+180,y:m.y},b={x:m.x+90,y:m.y},out={x:m.x+1,y:m.y};t.game.enemies=[a,b,out];const tower={x:m.x+190,y:m.y,range:150};assert.equal(t.towerTarget(tower),b);});
+check('Targeting remains deterministic with 20 to 200 active enemy objects',()=>{
+  const m=t.game.monument,tower={x:m.x+200,y:m.y,range:440,targetMode:'nearest'};
+  for(const count of [20,50,100,200]){
+    t.game.enemies=Array.from({length:count},(_,i)=>({x:m.x+50+i*2,y:m.y+(i%5)*3,type:'runner',hp:20+i,gateIndex:0,waypoint:1}));
+    assert.equal(t.towerTarget(tower),t.game.enemies[75]||t.game.enemies.at(-1));
+    tower.targetMode='strongest';assert.equal(t.towerTarget(tower),t.game.enemies.at(-1));tower.targetMode='nearest';
+  }
+});
 check('Cannon splash hits a nearby group while bow stays single-target',()=>{const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;t.launchWave();const h=t.game.hero;h.fireCd=100;const m=t.game.monument;t.game.towers=[{x:m.x+220,y:m.y+100,kind:'cannon',level:1,damage:34,fireRate:1.15,fireCd:-1,range:275}];const e={x:m.x+220,y:m.y+170,hp:1000,maxHp:1000,r:12,speed:0,damage:0,attackCd:5,hit:0,type:'wraith'},other={...e,x:e.x+30};t.game.enemies=[e,other];for(let i=0;i<12;i++)t.update(.02);assert.ok(e.hp<1000);assert.ok(other.hp<1000);assert.ok(e.hp<other.hp);sandbox.Math.random=oldRandom;});
 check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const m=t.game.monument,slot=sandbox.DenkmalLevels.levels[1].slots[0];assert.notEqual(t.placementError({x:m.x+200,y:m.y}),'');assert.equal(t.placementError(slot),'');for(const p of sandbox.DenkmalLevels.levels[1].slots)for(const path of sandbox.DenkmalLevels.levels[1].paths)assert.ok(sandbox.DenkmalLevels.pathDistance(p,path)>=64);});
 check('Rolled bonuses change derived stats without modifying base values',()=>{const h=t.game.hero;h.gear={damage:10,health:0,haste:.2,speed:.1,defense:.2,crit:.2,leech:.1,tower:.3,powers:{}};const before=h.damage;assert.equal(saga.stats(h).damage,35);assert.ok(Math.abs(saga.stats(h).rate-.47/1.2)<1e-9);assert.ok(Math.abs(saga.stats(h).armor-.6)<1e-9);assert.equal(h.damage,before);});
@@ -416,7 +424,7 @@ assert.ok(polish.includes('@media (orientation:portrait)'));
 assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));assert.ok(polish.includes('v3.1.0-alpha.3 — combat variety + boss escalation'));
 for(const m of html.matchAll(/(?:src|srcset|href)="([^"?#]+)(?:\?[^\"]*)?"/g))if(!/^https?:/.test(m[1]))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-assert.ok(html.includes('marcel-lantern-portrait-v1.webp'));
+assert.ok(html.includes('marcel-portrait-alpha9.webp'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));

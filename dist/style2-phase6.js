@@ -12,10 +12,21 @@ function upright(ctx,point,paint){
 }
 let active=0,cache=null;
 let environment=null,environmentReady=false;
-if(typeof Image==='function'){
- const image=new Image();image.decoding='async';
- image.onload=()=>{if(image.naturalWidth>0&&image.naturalHeight>0){environment=image;environmentReady=true;cache=null;}};
- image.src='assets/scenery-alpha8.webp?v=alpha8a2';
+let standaloneImage=null;
+function refreshEnvironment(){
+ if(typeof Image!=='function')return;
+ let image;
+ if(globalThis.DenkmalAssets)image=globalThis.DenkmalAssets.get('assets/scenery-alpha8.webp?v=alpha8a2');
+ else{
+  if(!standaloneImage){
+   standaloneImage=new Image();standaloneImage.decoding='async';
+   standaloneImage.src='assets/scenery-alpha8.webp?v=alpha8a2';
+  }
+  image=standaloneImage;
+ }
+ if(image.complete&&image.naturalWidth>0&&image!==environment){
+  environment=image;environmentReady=true;cache=null;
+ }
 }
 function details(level,layout){
  let seed=62917+level*7919;
@@ -35,6 +46,7 @@ function details(level,layout){
  return result;
 }
 function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
+ refreshEnvironment();
  if(!cache||active!==level){
   cache=document.createElement('canvas');cache.width=cache.height=1536;active=level;
   const g=cache.getContext('2d');g.scale(.5,.5);
@@ -113,5 +125,6 @@ function draw(ctx,level,layout,camera={x:0,y:0},viewWidth=3072,viewHeight=3072){
  const right=Math.min(3072,camera.x+viewWidth),bottom=Math.min(3072,camera.y+viewHeight);
  if(right>x&&bottom>y)ctx.drawImage(cache,x*.5,y*.5,(right-x)*.5,(bottom-y)*.5,x,y,right-x,bottom-y);
 }
-globalThis.Style2Phase6={depth,project,unproject,upright,details,draw};
+globalThis.Style2Phase6={depth,project,unproject,upright,details,draw,
+ reset(){cache=null;active=0;environment=null;environmentReady=false;standaloneImage=null;}};
 })();

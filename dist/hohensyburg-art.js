@@ -3,11 +3,14 @@
   const C={x:1536,y:1536},SIZE=3072;
   let ground=null,memorial=null,allocations=0;
   // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
-  const monumentSprite=typeof Image==='function'?new Image():null;
-  if(monumentSprite){
-    monumentSprite.decoding='async';
-    monumentSprite.src='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
-  }
+  let standaloneSprite=null;
+  const monumentImage=()=>{
+    const url='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
+    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.get(url);
+    if(typeof Image!=='function')return null;
+    if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
+    return standaloneSprite;
+  };
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -216,6 +219,7 @@
     return canvas;
   }
   function drawMonument(ctx,m){
+    const monumentSprite=monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
       // Canvas already applies the oblique camera's upright-sprite correction.
@@ -234,5 +238,7 @@
       ctx.fillText('LUFTANGRIFF ÜBER DEM HANG',a.x,a.y-40);
     }finally{ctx.restore();}
   }
-  globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,get allocations(){return allocations;}};
+  globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
+    release(){ground=null;memorial=null;standaloneSprite=null;},
+    get allocations(){return allocations;}};
 })();
