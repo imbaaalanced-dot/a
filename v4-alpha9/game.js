@@ -217,7 +217,20 @@
     camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y-vh*focusY,0,WORLD_H-vh);
   }
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/(zoom*viewDepth)+camera.y};}
-  function resize(pauseOnResize=true){const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?.85:mobileRender?1:1.5;dpr=Math.min(cap,devicePixelRatio||1);W=innerWidth;H=innerHeight;zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);if(canvas.width!==pixelWidth)canvas.width=pixelWidth;if(canvas.height!==pixelHeight)canvas.height=pixelHeight;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}}
+  function resize(pauseOnResize=true){
+    W=innerWidth;H=innerHeight;
+    const cap=graphicsMode==='high'?1.75:graphicsMode==='low'?.85:mobileRender?1:1.5;
+    // A tall phone can otherwise allocate several million canvas pixels even at DPR 1.
+    // Choose the buffer size when the viewport/mode changes; never resize it in the render loop.
+    const pixelBudget=mobileRender?(graphicsMode==='high'?2000000:graphicsMode==='low'?550000:900000):Infinity;
+    dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)));
+    zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());
+    const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);
+    if(canvas.width!==pixelWidth)canvas.width=pixelWidth;
+    if(canvas.height!==pixelHeight)canvas.height=pixelHeight;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';
+    if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}
+  }
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
   function setMapStatus(id,unlocked){

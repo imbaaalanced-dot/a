@@ -29,14 +29,12 @@ function drawGround(ctx,level,layout,time=0,{low=false}={}){
   // All coordinates are existing authored anchors; this cannot create a road.
   ctx.globalAlpha=low?.20:.34;
   ctx.drawImage(light('shadow'),center.x-105,center.y-35,210,92);
-  ctx.globalAlpha=low?.12:.22;
-  for(const gate of gates)ctx.drawImage(light('shadow'),gate.x-70,gate.y-16,140,56);
+  if(!low){ctx.globalAlpha=.22;for(const gate of gates)ctx.drawImage(light('shadow'),gate.x-70,gate.y-16,140,56);}
   // Monument light is a ground accent, not an ever-expanding combat aura.
   ctx.globalAlpha=low?.16:.24;
   ctx.drawImage(light(level===6?'blue':'amber'),center.x-165,center.y-138,330,270);
   // Smaller lantern spill at authored entrances. No invented lamp coordinates.
-  ctx.globalAlpha=low?.08:.12;
-  for(const gate of gates)ctx.drawImage(light('amber'),gate.x-122,gate.y-106,244,212);
+  if(!low){ctx.globalAlpha=.12;for(const gate of gates)ctx.drawImage(light('amber'),gate.x-122,gate.y-106,244,212);}
   if(level===6&&layout.airGate&&!low){
    ctx.globalAlpha=.11;
    ctx.drawImage(light('blue'),layout.airGate.x-118,layout.airGate.y-118,236,236);
