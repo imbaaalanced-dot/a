@@ -61,7 +61,7 @@
   const status=document.getElementById('status');
   const types=['bow','cannon','mage','rift','boomerang'];
   const labels={bow:'Bogen',cannon:'Kanone',mage:'Eis/Magie',rift:'Riftlanze',boomerang:'Bumerang'};
-  let mode='rift',loaded=0,failed=0,total=0;
+  let mode='rift',loaded=0,failed=0,total=0,generation=0;
   const src=(kind,tier,type)=>{
     const id=type+'_'+kind+'_lv'+tier;
     const version=type==='projectile'&&kind==='mage'&&tier===2?2:1;
@@ -87,8 +87,9 @@
   }
   function render(){
     gallery.replaceChildren();loaded=failed=total=0;
-    const samples=mode==='rift'?[64,128,512]:[64,128];
-    const variants=mode==='rift'?[1,2,3].map(tier=>['rift',tier]):
+    const currentMode=mode,reviewGeneration=++generation;
+    const samples=currentMode==='rift'?[64,128,512]:[64,128];
+    const variants=currentMode==='rift'?[1,2,3].map(tier=>['rift',tier]):
       types.flatMap(kind=>[1,2,3].map(tier=>[kind,tier]));
     total=variants.length*samples.length*2;
     showStatus();
@@ -105,11 +106,12 @@
         const label=document.createElement('small');label.textContent=size+' px · '+(backdrop==='dark'?'dunkel':'hell');
         const audit=document.createElement('div');audit.className='review';audit.textContent='…';
         img.onload=()=>{
-          loaded++;audit.textContent=imageAudit(img,mode==='rift'?512:256);showStatus();
+          if(reviewGeneration!==generation)return;
+          loaded++;audit.textContent=imageAudit(img,currentMode==='rift'?512:256);showStatus();
           if(audit.textContent!=='Größe/Alpharand OK')audit.classList.add('error');
         };
-        img.onerror=()=>{failed++;audit.textContent='Bild konnte nicht geladen werden';audit.classList.add('error');showStatus();};
-        img.src=src(kind,tier,mode==='rift'?'tower':'projectile');
+        img.onerror=()=>{if(reviewGeneration!==generation)return;failed++;audit.textContent='Bild konnte nicht geladen werden';audit.classList.add('error');showStatus();};
+        img.src=src(kind,tier,currentMode==='rift'?'tower':'projectile');
         well.appendChild(img);unit.append(well,label,audit);area.appendChild(unit);
       }
       gallery.appendChild(card);
