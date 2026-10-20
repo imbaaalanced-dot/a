@@ -226,10 +226,11 @@
     dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)));
     zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());
     const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);
+    const bufferChanged=canvas.width!==pixelWidth||canvas.height!==pixelHeight;
     if(canvas.width!==pixelWidth)canvas.width=pixelWidth;
     if(canvas.height!==pixelHeight)canvas.height=pixelHeight;
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingQuality=graphicsMode==='high'?'medium':'low';
-    if(game){updateCamera();if(pauseOnResize&&state==='playing')pauseGame();}
+    if(game){updateCamera();if(bufferChanged)draw();if(pauseOnResize&&state==='playing')pauseGame();}
   }
 
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}

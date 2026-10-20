@@ -109,7 +109,7 @@ check('Arsenal exposes four production tower roles while experimental towers sta
   t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.towers.length,0);
 });
 check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
-check('Resize preserves world positions without interrupting play',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize(false);assert.equal(t.state,'playing');assert.equal(t.game.towers[0].x,200);});
+check('Resize repaints a cleared buffer immediately without moving gameplay',()=>{const heroX=t.game.hero.x;t.game.hero.x=50;t.game.hero.y=50;sandbox.innerWidth=640;sandbox.innerHeight=400;draws.length=0;t.resize(false);assert.ok(draws.length>0,'the cleared canvas is redrawn before the next animation frame');assert.equal(t.state,'playing');t.game.hero.x=heroX;});
 check('Resize does not clear the canvas when pixel dimensions are unchanged',()=>{const canvas=element('game');let width=canvas.width,height=canvas.height,widthWrites=0,heightWrites=0;Object.defineProperties(canvas,{width:{configurable:true,get:()=>width,set(v){widthWrites++;width=v;}},height:{configurable:true,get:()=>height,set(v){heightWrites++;height=v;}}});t.resize(false);assert.equal(widthWrites,0,'same-width canvas assignment clears its drawing buffer');assert.equal(heightWrites,0,'same-height canvas assignment clears its drawing buffer');});
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Legacy wardrobe cannot change gear at any wave and stats do not stack',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++)assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();});
@@ -370,6 +370,7 @@ check('Tower upgrades select distinct sprites and preserve their base anchor',()
   for(const kind of ['bow','cannon','ballista']){
     const sprites=new Set();
     for(let level=1;level<=3;level++){
+      t.towerLevelArt[kind][level-1]=new sandbox.Image();
       draws.length=0;t.drawTower({kind,level,x:250,y:350});
       const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.${kind==='ballista'?'png':'webp'}`));
       const rendered=draws.find(d=>d.length===5&&d[0].width===192);

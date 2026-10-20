@@ -20,8 +20,8 @@ function select(e,level=1){
 function image(){
  if(typeof Image==='undefined')return null;
  if(globalThis.DenkmalAssets){
-  const img=globalThis.DenkmalAssets.get(url);
-  return img.complete&&img.naturalWidth===cell*4&&img.naturalHeight===cell*rows?img:null;
+  const img=globalThis.DenkmalAssets.ready(url);
+  return img&&img.naturalWidth===cell*4&&img.naturalHeight===cell*rows?img:null;
  }
  if(entry?.failed&&Date.now()>=entry.retryAt)entry=null;
  if(!entry){
