@@ -41,9 +41,15 @@ const server=http.createServer((req,res)=>{
       assert.deepEqual(cold,{drawn:false,alpha:0},'cold adapter must hand control to the previous renderer without touching Canvas');
       const assets=await page.evaluate(async()=>{
         const manifest=await (await fetch('assets/style2-user-towers-v1/manifest.json')).json();
-        const cleanup=await (await fetch('assets/style2-user-towers-v2/manifest.json')).json();
-        const overrides=new Map(cleanup.assets.map(e=>[e.id,e]));
-        const urls=manifest.assets.map(e=>overrides.has(e.id)?'assets/style2-user-towers-v2/'+overrides.get(e.id).webp_path+'?v=cleanup-2':'assets/style2-user-towers-v1/'+e.webp_path+'?v=user-towers-1');
+        const overrides=new Map();
+        for(const version of [2,3]){
+          const cleanup=await (await fetch(`assets/style2-user-towers-v${version}/manifest.json`)).json();
+          for(const e of cleanup.assets)overrides.set(e.id,{...e,version});
+        }
+        const urls=manifest.assets.map(e=>{
+          const o=overrides.get(e.id);
+          return o?`assets/style2-user-towers-v${o.version}/${o.webp_path}?v=cleanup-${o.version}`:'assets/style2-user-towers-v1/'+e.webp_path+'?v=user-towers-1';
+        });
         const images=await DenkmalAssets.retain('qa-user-towers',urls);
         return {decoded:images.filter(Boolean).length,total:urls.length,overrides:overrides.size};
       });

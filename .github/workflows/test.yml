@@ -88,4 +88,5 @@ jobs:
           python tests/alpha9-assets.test.py
           python tests/alpha9-user-towers.test.py
           python tests/style2-cleanup-assets.test.py
+          python tests/style2-cleanup-pass3.test.py
           python tests/enemy-animation-assets.test.py

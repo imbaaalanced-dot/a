@@ -22,7 +22,7 @@ const run=search=>{
   assert.equal(api.drawTower(c,'cannon',120,250,2),false,'cold image must fall back');
   assert.equal(seen.size,2,'a visible tower warms its matching projectile before its first shot');
   assert.equal(c.ops.length,0,'cold draw must not touch Canvas');
-  const url='assets/style2-user-towers-v1/runtime-webp/towers/tower_cannon_lv2.webp?v=user-towers-1';
+  const url='assets/style2-user-towers-v3/runtime-webp/towers/tower_cannon_lv2.webp?v=cleanup-3';
   ready.set(url,{width:512});
   assert.equal(api.drawTower(c,'cannon',120,250,2),true);
   assert.equal(c.ops.filter(x=>x==='save').length,1);

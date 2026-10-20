@@ -16,10 +16,10 @@ def visible_box(image):
     return image.getchannel('A').point(lambda a: 255 if a > 16 else 0).getbbox()
 
 
-def export(source, original, output, role, kind, level):
+def export(source, original, output, role, kind, level, reference_box=None):
     raw = Image.open(source).convert('RGBA')
     old = Image.open(original).convert('RGBA')
-    target = visible_box(old)
+    target = reference_box or visible_box(old)
     box = visible_box(raw)
     if not box:
         raise ValueError(f'Empty generated candidate: {source}')
