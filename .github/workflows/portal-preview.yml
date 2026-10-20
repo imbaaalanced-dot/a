@@ -1,0 +1,44 @@
+name: Publish Portalreise isolated tester
+on:
+  push:
+    branches: ["feature/td2-portalreise-pilot-20261020"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: portalreise-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify all gameplay tests
+        run: |
+          for test in tests/*.test.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/portal-gameplay.test.cjs
+      - name: Verify image assets
+        run: |
+          python -m pip install Pillow
+          for test in tests/*.test.py; do python "$test"; done
+      - name: Publish only v4-portalreise
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/portalreise-pages origin/gh-pages
+          mkdir -p /tmp/portalreise-pages/v4-portalreise
+          cp -R dist/. /tmp/portalreise-pages/v4-portalreise/
+          touch /tmp/portalreise-pages/.nojekyll
+          cd /tmp/portalreise-pages
+          git add v4-portalreise .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish isolated Portalreise tester ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
