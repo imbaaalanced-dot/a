@@ -62,6 +62,14 @@ jobs:
           node tests/style2-church-sprite.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: node tests/portrait-hud.test.cjs
+      - name: Portalreise and campaign pilot
+        run: |
+          node tests/portal-run.test.cjs
+          node tests/portal-perks.test.cjs
+          node tests/portal-storage.test.cjs
+          node tests/portal-gameplay.test.cjs
+          TEST_MOBILE=1 node tests/portal-gameplay.test.cjs
+          node tests/campaign-balance.test.cjs
       - name: Persistent loot regression suite
         run: node tests/loot.test.cjs
       - name: Gameplay regression suite

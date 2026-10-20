@@ -1,0 +1,6 @@
+#startScreen #portalNewBtn,#startScreen #portalResumeBtn,#startScreen #campaignPilotBtn{border:1px solid #957e4b;background:linear-gradient(120deg,#152d32,#111c21 60%,#35423a);min-height:60px;color:#eee0bb;box-shadow:inset 0 0 20px #80c4c417}
+#startScreen #portalNewBtn span,#startScreen #portalResumeBtn span,#startScreen #campaignPilotBtn span{position:static;width:auto;height:auto;margin:0;padding:12px;overflow:visible;clip-path:none;white-space:normal;font-size:clamp(14px,3.5vw,20px);font-weight:700;display:block}
+#startScreen #campaignPilotBtn[hidden]{display:none}
+#perkScreen{max-height:100dvh;overflow:auto;overscroll-behavior:contain}
+#perkScreen .perk{min-height:150px;touch-action:manipulation}
+#perkScreen .perk small{display:block;color:#91d7d0;margin-bottom:12px}

@@ -1,0 +1,22 @@
+const assert=require('node:assert/strict');
+const P=require('../dist/portal-run.js');
+let r=P.create({runId:'test',seed:1,heroId:'marcel',startBudget:75,maxSections:3});
+assert.equal(r.gold,75);assert.equal(r.phase,'build');
+assert.equal(P.refund([{spent:25},{spent:60}]),85);
+assert.throws(()=>P.refund([{spent:NaN}]));assert.throws(()=>P.refund([{spent:-1}]));
+r=P.reduce(r,{type:'START'}).run;assert.equal(r.phase,'combat');
+r=P.reduce(r,{type:'CLEAR'}).run;assert.equal(r.phase,'build');
+r=P.reduce(r,{type:'START'}).run;r=P.reduce(r,{type:'CLEAR'}).run;assert.equal(r.phase,'perk');
+r=P.reduce(r,{type:'CHOOSE',id:'power'}).run;assert.equal(r.phase,'exit');
+r=P.reduce(r,{type:'ENTER',gold:10,towers:[{spent:25},{spent:60}],hp:45,maxHp:100}).run;
+assert.equal(r.gold,113.75);assert.equal(r.heroHp,55);assert.equal(r.phase,'loading');
+assert.deepEqual(P.reduce(r,{type:'ENTER',gold:1000,towers:[],hp:100,maxHp:100}).run,r);
+r=P.reduce(r,{type:'READY'}).run;assert.equal(r.section,2);assert.equal(r.phase,'build');
+const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+const s=P.createStore(storage);assert.equal(s.load().status,'missing');assert.equal(s.save(r,null),true);
+assert.equal(s.load().run.section,2);assert.equal(s.save(r,-1),false);
+console.log('portal run: state, economics, checkpoint and duplicate transition checks passed');
+// Invalid checkpoints must be rejected before gameplay consumes them.
+data.set(P.KEY,JSON.stringify({...r,offers:['unknown']}));assert.equal(s.load().status,'corrupt');
+data.set(P.KEY,JSON.stringify({...r,perkRanks:{unknown:1}}));assert.equal(s.load().status,'corrupt');
+data.set(P.KEY,JSON.stringify({...r,checkpoint:{hero:{hp:-1},gold:0,towers:[],wave:1}}));assert.equal(s.load().status,'corrupt');

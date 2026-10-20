@@ -1,0 +1,10 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync('dist/loot.js','utf8'),ctx);
+const data=new Map();let blocked=false;const storage={getItem:k=>data.get(k)||null,setItem(k,v){if(blocked)throw Error('quota');data.set(k,v)}};
+let m=ctx.DenkmalLoot.create({storage});assert.equal(typeof m.grantBossRewardOnce,'function');
+assert.equal(m.grantBossRewardOnce('run:3:boss',6).status,'granted');assert.equal(m.count,1);
+assert.equal(m.grantBossRewardOnce('run:3:boss',6).status,'alreadyGranted');assert.equal(m.count,1);
+m=ctx.DenkmalLoot.create({storage});assert.equal(m.grantBossRewardOnce('run:3:boss',6).status,'alreadyGranted');
+const before=m.exportJSON();blocked=true;assert.equal(m.grantBossRewardOnce('run:4:boss',6).status,'error');assert.equal(m.exportJSON(),before);blocked=false;
+const stale=ctx.DenkmalLoot.create({storage});assert.equal(m.grantBossRewardOnce('run:5:boss',6).status,'granted');assert.equal(stale.grantBossRewardOnce('run:6:boss',6).status,'error');
+console.log('portal storage: durable idempotent rewards, rollback and concurrent-tab checks passed');
