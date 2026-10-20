@@ -66,15 +66,24 @@
       // White-hot core flash.
       const flashLife = reduced ? .07 : .12;
       push(game, {x:bullet.x,y:bullet.y,vx:0,vy:0,life:flashLife,max:flashLife,r:heavy?16:11,color:'#fff6df',flash:true});
-      if(bullet.kind==='cannon'&&globalThis.Style2Cannon?.drawImpact){
+      const userImpact=!!(globalThis.UserStyle2Towers?.enabled&&
+        globalThis.UserStyle2Towers?.drawImpact&&
+        ['bow','cannon','mage','rift','boomerang'].includes(bullet.kind));
+      if(userImpact){
+        const life=reduced?.16:.3;
+        push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,
+          color:bullet.color,kind:bullet.kind,level:bullet.level||1,
+          reduced:!!reduced,userStyle2Impact:true});
+      }
+      if(!userImpact&&bullet.kind==='cannon'&&globalThis.Style2Cannon?.drawImpact){
         const life=reduced?.17:.3;
         push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,cannonImpact:true,level:bullet.level||1});
       }
-      if(['bow','mage','rift'].includes(bullet.kind)&&globalThis.Style2Towers?.drawImpact){
+      if(!userImpact&&['bow','mage','rift'].includes(bullet.kind)&&globalThis.Style2Towers?.drawImpact){
         const life=reduced?.15:.25;
         push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,style2Impact:true,kind:bullet.kind,level:bullet.level||1});
       }
-      if (spriteRows[bullet.kind] !== undefined && (bullet.kind!=='cannon'||!globalThis.Style2Cannon?.drawImpact) && (!['bow','mage','rift'].includes(bullet.kind)||!globalThis.Style2Towers?.drawImpact) && game.particles.length < MAX_PARTICLES) {
+      if (!userImpact && spriteRows[bullet.kind] !== undefined && (bullet.kind!=='cannon'||!globalThis.Style2Cannon?.drawImpact) && (!['bow','mage','rift'].includes(bullet.kind)||!globalThis.Style2Towers?.drawImpact) && game.particles.length < MAX_PARTICLES) {
         const life = reduced ? .16 : .28;
         game.particles.push({x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:22,color:bullet.color,spriteFx:true,kind:bullet.kind});
       }
@@ -155,6 +164,7 @@
   }
   function drawParticle(ctx,p){
     if(!p)return false;
+    if(p.userStyle2Impact&&globalThis.UserStyle2Towers?.drawImpact?.(ctx,p))return true;
     if(p.cannonImpact&&globalThis.Style2Cannon?.drawImpact?.(ctx,p))return true;
     if(p.style2Impact&&globalThis.Style2Towers?.drawImpact?.(ctx,p))return true;
     if(p.spriteFx){
