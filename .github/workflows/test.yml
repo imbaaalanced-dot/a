@@ -2,7 +2,7 @@ name: Test Denkmal TD
 
 on:
   push:
-    branches: ["feature/td2-enemy-animation-pack", "feature/td2-menu-hero-banner", "main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat", "feature/v4-level4-church-lion", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018", "feature/td2-v4-alpha8-environment-character"]
+    branches: ["feature/td2-v4-alpha9-performance-style2", "feature/td2-enemy-animation-pack", "feature/td2-menu-hero-banner", "main", "release/v3.*", "feature/td2-v4-main-menu-refresh", "feature/td2-v4-alpha4-combat", "feature/v4-level4-church-lion", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018", "feature/td2-v4-alpha8-environment-character"]
   pull_request:
     branches: ["feature/td2-v4-alpha8-environment-character", "main", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/style2-churchyard-pass1-20261016", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-phase7-ambience-20261018"]
 
@@ -32,7 +32,9 @@ jobs:
       - name: Level 1 intro tutorial regression suite
         run: node tests/intro-tutorial.test.cjs
       - name: Preloader startup regression suite
-        run: node tests/preloader.test.cjs
+        run: |
+          node tests/preloader.test.cjs
+          node tests/asset-manager.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
       - name: Kirchende terrain and renderer caching
@@ -82,4 +84,5 @@ jobs:
           python -m pip install Pillow
           python tests/assets.test.py
           python tests/alpha8-assets.test.py
+          python tests/alpha9-assets.test.py
           python tests/enemy-animation-assets.test.py
