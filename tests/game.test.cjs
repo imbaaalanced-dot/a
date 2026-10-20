@@ -23,6 +23,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sa
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 if(process.env.TEST_MOBILE==='1'){
   sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
@@ -97,6 +98,18 @@ check('Enemy attacks start a cosmetic cue and kills leave a short-lived corpse e
   assert.equal(t.game.deathFx.length,1,'death visuals are kept separately from active enemies');
   t.game.enemies=t.game.enemies.filter(e=>!e.dead);assert.equal(t.game.enemies.includes(victim),false,'corpse does not stay in the combat collection');
   t.update(.1);assert.ok(t.game.deathFx[0].life< t.game.deathFx[0].maxLife,'death animation advances on simulation time');
+});
+check('Death animation balances the canvas state before drawing the next sprite',()=>{
+  let depth=0,minDepth=0;
+  const save=context.save,restore=context.restore;
+  context.save=()=>{depth++;};
+  context.restore=()=>{depth--;minDepth=Math.min(minDepth,depth);};
+  try{
+    const corpse={type:'infantry',x:500,y:500,r:14,hp:0,maxHp:10};
+    t.drawEnemy(corpse,.5);
+    assert.equal(depth,0,'all canvas saves from the death sprite must be restored');
+    assert.equal(minDepth,0,'the death sprite must not pop its caller camera state');
+  }finally{context.save=save;context.restore=restore;}
 });
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});

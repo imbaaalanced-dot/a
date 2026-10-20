@@ -37,7 +37,7 @@ const expectedVersions = new Map([
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'alpha9a3'],
+  ['game.js', 'alpha9a4'],
   ['hohensyburg.js', 'syburg1'],
   ['hohensyburg-art.js', 'alpha9a3'],
   ['style2-ambience.js', 'alpha9a2'],
