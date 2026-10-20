@@ -76,7 +76,7 @@ assert.ok(game.particles.length<=fx.MAX_PARTICLES,'cannon impacts respect the gl
 assert.ok(game.particles.every(p=>Number.isFinite(p.life)&&p.life===p.max),'particle lifecycle invariant stays intact');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.match(html,/style2-cannon\.js\?v=alpha8cannon2/);
-assert.match(html,/combat-fx\.js\?v=v400a6s2t4/);
+assert.match(html,/combat-fx\.js\?v=v400a6s2t5/);
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameplay,/Style2Cannon\?\.drawTower/,'cannon graphics must be used by gameplay');
 assert.match(gameplay,/location\?\.pathname\?\.includes\('\/v4-style2-cannon\/'\)/,'dedicated test preview must work');
