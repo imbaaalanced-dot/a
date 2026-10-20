@@ -34,8 +34,7 @@ function canvas(throwOnDraw=false){
   assert.equal(adapter.drawTower(first,'bow',0,0,1),false,'cold start uses legacy renderer');
   assert.equal(pending.length,2,'tower warms its projectile');
   pending.forEach(img=>img.succeed());
-  await Promise.resolve();
-  await Promise.resolve();
+  await new Promise(resolve=>setImmediate(resolve));
   const ready=canvas();
   assert.equal(adapter.drawTower(ready,'bow',0,0,1),true);
   assert.equal(ready.calls.draw,1);
