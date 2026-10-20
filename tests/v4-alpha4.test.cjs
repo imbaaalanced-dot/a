@@ -18,7 +18,7 @@ const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
@@ -143,9 +143,9 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   assert.ok(html.includes('name="application-version" content="v4.0.0-alpha.9"'),'metadata names alpha.9');
   assert.ok(html.includes('id="hudMenu"'),'the menu details element is addressable');
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
-  assert.ok(html.includes('game.js?v=alpha9-user-towers1'),'hero targeting fix has a fresh cache key');
+  assert.ok(html.includes('game.js?v=equipment-boss1'),'hero targeting fix has a fresh cache key');
   assert.ok(!html.includes('v400a3'),'no stale alpha.3 cache busts remain');
-  assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,3,'unchanged assets retain their cache keys');
+  assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,2,'unchanged assets retain their cache keys');
   assert.ok(polish.includes('.hud-menu-panel{z-index:8}'),'polish keeps the menu under modal overlays');
   assert.ok(/\.hud-menu-panel\{[^}]*z-index:8/.test(portrait.replace(/\s/g,'')),'portrait keeps the menu under modal overlays');
   assert.ok(portrait.includes('touch-action:manipulation'),'menu taps avoid double-tap zoom');

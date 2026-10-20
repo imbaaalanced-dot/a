@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),{load,memory,json}=require('./helpers/equipment.cjs');
+const {DenkmalLoot:L}=load(),storage=memory(),m=L.create({storage,rng:()=>0});
+assert.equal(typeof m.claimBoss,'function','model must provide atomic boss claims');
+const req={mapId:1,wave:5,bossType:'boss',runId:'run-one',spawnId:'1'};
+assert.equal(m.claimBoss(req).state,'granted');assert.equal(m.profile.owned.length,4);assert.equal(m.claimBoss(req).state,'duplicate');assert.equal(m.profile.owned.length,4);
+assert.equal(m.claimBoss({...req,spawnId:'2'}).state,'granted');assert.equal(m.claimBoss({...req,runId:'run-two'}).state,'granted');
+assert.equal(m.claimBoss({...req,bossType:'wraith'}).state,'rejected');assert.equal(m.claimBoss({...req,mapId:2}).state,'rejected');
+const original=storage.setItem;storage.setItem=()=>{throw Error('quota')};const quota=m.claimBoss({...req,runId:'quota'});assert.equal(quota.state,'granted');assert.equal(quota.persisted,false);assert.ok(m.find(quota.item.id));assert.match(m.status,/Sitzung/);storage.setItem=original;
+const stale=L.create({storage});m.save();const newer=storage.getItem(L.KEY);const pending=stale.claimBoss({...req,runId:'stale'});assert.equal(pending.state,'pending');assert.equal(storage.getItem(L.KEY),newer);assert.equal(JSON.parse(stale.exportJSON()).pendingRewards.length,1);
+const bad=JSON.parse(stale.exportJSON());bad.pendingRewards.push(bad.pendingRewards[0]);assert.equal(m.importJSON(JSON.stringify(bad)),false);
+const {t,saga,element}=require('./helpers/game.cjs')();t.startGame(1);saga.continueStory();let n=t.lootModel.profile.owned.length;
+for(let i=0;i<500;i++){t.spawnEnemy('wraith');const e=t.game.enemies.at(-1);t.hurtEnemy(e,1e7,{fixedDamage:true});}assert.equal(t.lootModel.profile.owned.length,n);
+t.spawnEnemy('boss');const e=t.game.enemies.at(-1);t.hurtEnemy(e,1e7,{fixedDamage:true});assert.equal(t.lootModel.profile.owned.length,n+1);assert.match(element('toast').textContent,/(Episch|Legendär)/,'boss toast includes rarity');assert.equal(t.game.loot.filter(x=>x.kind==='item').length,0);t.hurtEnemy(e,1e7,{fixedDamage:true});t.game.wave=5;t.endWave();assert.equal(t.lootModel.profile.owned.length,n+1);
+t.startGame(2);saga.continueStory();n=t.lootModel.profile.owned.length;t.game.wave=8;t.completeLevel();assert.equal(t.lootModel.profile.owned.length,n);
+t.startGame(3);saga.continueStory();n=t.lootModel.profile.owned.length;t.game.wave=12;t.spawnEnemy('uprooted');t.hurtEnemy(t.game.enemies.at(-1),1e7,{fixedDamage:true});assert.equal(t.lootModel.profile.owned.length,n+1);t.completeLevel();assert.equal(t.lootModel.profile.owned.length,n+1);assert.equal(t.lootModel.profile.kirchendeCompleted,true);
+console.log('Boss loot: immediate unique claims, no other sources, defeat/finish safety, quota and stale-tab pending passed');
+const recovered=L.create({storage:memory()});assert.equal(recovered.importJSON(stale.exportJSON()),true);assert.ok(recovered.find(pending.item.id));assert.equal(recovered.claimBoss({...req,runId:'stale'}).state,'duplicate');
+// Exercise the real hard boundary without a test-only limit in the model.
+const full=JSON.parse(L.create({storage:memory()}).exportJSON());
+for(let i=3;i<100046;i++)full.profile.owned.push({id:'full-'+i,slot:'weapon',name:'Alt',rarity:'common',level:1,power:null,favorite:false,legacy:true,stats:{},baseStats:{},upgradeRank:0});
+const fullModel=L.create({storage:memory({[L.KEY]:JSON.stringify(full)}),rng:()=>0});
+const waiting=fullModel.claimBoss({...req,runId:'full'});assert.equal(waiting.state,'pending');assert.equal(fullModel.claimBoss({...req,runId:'full'}).item.id,waiting.item.id);assert.equal(JSON.parse(fullModel.exportJSON()).pendingRewards.length,1);
+assert.equal(fullModel.salvage('full-3'),true);assert.ok(fullModel.find(waiting.item.id));assert.equal(fullModel.claimBoss({...req,runId:'full'}).state,'duplicate');
+console.log('Boss loot: hard collection limit preserves one candidate and retries it after recycling');

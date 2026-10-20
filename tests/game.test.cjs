@@ -14,7 +14,7 @@ let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
-vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
@@ -22,7 +22,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sand
 vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 if(process.env.TEST_MOBILE==='1'){
@@ -35,6 +35,7 @@ if(process.env.TEST_MOBILE==='1'){
   sandbox.innerWidth=1280;sandbox.innerHeight=800;sandbox.devicePixelRatio=1;t.resize(false);
 }
 for(const kind of ['bow','cannon','rift','ballista'])for(const image of t.towerLevelArt[kind])assert.ok(!image.src,'large legacy tower PNGs must not download at startup');
+let rewardSerial=0;function bossReward(){return t.lootModel.claimBoss({mapId:1,wave:5,bossType:'boss',runId:'inventory-fixture',spawnId:String(++rewardSerial)}).item;}
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Cosmetic hero choice switches Kim and Marcel without changing combat stats',()=>{
   t.mainMenu();
@@ -367,12 +368,12 @@ assert.equal(loadLevels(storage).unlocked,false);loadLevels(storage).unlock();as
 const blocked=loadLevels({getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}});assert.equal(blocked.unlock(),false);assert.equal(blocked.unlocked,true);
 // One canonical source tree; no duplicate dist folder required.
 check('Persistent loot survives restart and inventory is read-only in a run',()=>{
-  const i=t.lootModel.generate(2),before=t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length;
-  assert.equal(t.pickupItem(i,true),true);const damage=t.game.hero.damage;
+  const before=t.lootModel.profile.owned.length,i=bossReward();
+  assert.ok(t.lootModel.find(i.id));const damage=t.game.hero.damage;
   t.openInventory();assert.equal(t.state,'inventory');assert.equal(t.lootModel.equip(i.id,i.slot),false);t.update(1);assert.equal(t.game.elapsed,0);t.closeInventory();assert.equal(t.state,'playing');
-  t.startGame();saga.continueStory();assert.equal(t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length,before+1);assert.equal(t.game.hero.damage,damage);
+  t.startGame();saga.continueStory();assert.equal(t.lootModel.profile.owned.length,before+1);assert.equal(t.game.hero.damage,damage);
 });
-check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu();t.openInventory();assert.equal(t.state,'inventory');const i=t.lootModel.generate(3);t.lootModel.add(i);assert.equal(t.lootModel.equip(i.id,i.slot),true);t.closeInventory();assert.equal(t.state,'start');t.startGame();saga.continueStory();assert.ok(t.game.hero.loadout.some(x=>x.id===i.id));t.mainMenu();t.openInventory();t.lootModel.unequip(i.slot);const defaults={weapon:'starter-ember',armor:'starter-oath',amulet:'starter-lantern'};if(defaults[i.slot])t.lootModel.equip(defaults[i.slot],i.slot);t.closeInventory();});
+check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu();t.openInventory();assert.equal(t.state,'inventory');const i=bossReward();assert.equal(t.lootModel.equip(i.id,i.slot),true);t.closeInventory();assert.equal(t.state,'start');t.startGame();saga.continueStory();assert.ok(t.game.hero.loadout.some(x=>x.id===i.id));t.mainMenu();t.openInventory();t.lootModel.unequip(i.slot);const defaults={weapon:'starter-ember',armor:'starter-oath',amulet:'starter-lantern'};if(defaults[i.slot])t.lootModel.equip(defaults[i.slot],i.slot);t.closeInventory();});
 check('Rift tower selects the matching level graphic',()=>{
   for(let level=1;level<=3;level++){
     draws.length=0;t.drawTower({kind:'rift',level,x:250,y:350});
@@ -410,8 +411,8 @@ check('Loading or failed tower upgrades retain a usable fallback sprite',()=>{
 });
 check('Zoom maps screen coordinates back to world coordinates',()=>{const point=t.screenToWorld(sandbox.innerWidth/2,sandbox.innerHeight/2);assert.ok(Math.abs(point.x-t.game.hero.x)<1e-8);assert.ok(Math.abs(point.y-t.game.hero.y)<1e-8);t.game.hero.x=26;t.game.hero.y=26;t.resize();const corner=t.screenToWorld(0,0);assert.equal(corner.x,0);assert.equal(corner.y,0);});
 check('Build pause is finite and can be skipped without duplicating waves',()=>{t.update(2);assert.equal(t.game.waveSpawned,0);assert.equal(t.game.intermission,3);t.launchWave();t.launchWave();t.update(.5);assert.equal(t.game.waveSpawned,1);t.endWave();t.selectPerk({apply(){}});assert.equal(t.game.intermission,6);});
-check('New loot never changes active hero stats and death retains ground items',()=>{const h=t.game.hero;const before=JSON.stringify(saga.stats(h));const i=t.lootModel.generate(8,true);t.pickupItem(i,true);assert.equal(JSON.stringify(saga.stats(h)),before);const floor=t.lootModel.generate(5,true);t.game.loot=[{kind:'item',item:floor}];t.gameOver();assert.ok(t.lootModel.find(floor.id));});
-check('Final wave retains boss loot before unlocking level 2',()=>{const i=t.lootModel.generate(5,true);t.game.wave=5;t.game.loot=[{kind:'item',item:i}];t.endWave();assert.ok(t.lootModel.find(i.id));assert.equal(t.state,'levelcomplete');});
+check('New boss loot never changes active hero stats and survives defeat',()=>{const before=JSON.stringify(saga.stats(t.game.hero)),i=bossReward();assert.equal(JSON.stringify(saga.stats(t.game.hero)),before);t.gameOver();assert.ok(t.lootModel.find(i.id));});
+check('Final wave retains boss loot before unlocking level 2',()=>{const before=t.lootModel.profile.owned.length;t.game.wave=5;t.spawnEnemy('boss');t.hurtEnemy(t.game.enemies.at(-1),1e7,{fixedDamage:true});t.endWave();assert.equal(t.lootModel.profile.owned.length,before+1);assert.equal(t.state,'levelcomplete');});
 check('Towers choose the enemy closest to the monument within range',()=>{const m=t.game.monument,a={x:m.x+180,y:m.y},b={x:m.x+90,y:m.y},out={x:m.x+1,y:m.y};t.game.enemies=[a,b,out];const tower={x:m.x+190,y:m.y,range:150};assert.equal(t.towerTarget(tower),b);});
 check('Targeting remains deterministic with 20 to 200 active enemy objects',()=>{
   const m=t.game.monument,tower={x:m.x+200,y:m.y,range:440,targetMode:'nearest'};
@@ -426,7 +427,7 @@ check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const
 check('Rolled bonuses change derived stats without modifying base values',()=>{const h=t.game.hero;h.gear={damage:10,health:0,haste:.2,speed:.1,defense:.2,crit:.2,leech:.1,tower:.3,powers:{}};const before=h.damage;assert.equal(saga.stats(h).damage,35);assert.ok(Math.abs(saga.stats(h).rate-.47/1.2)<1e-9);assert.ok(Math.abs(saga.stats(h).armor-.6)<1e-9);assert.equal(h.damage,before);});
 check('Legendary chain and tower support apply to their intended projectiles',()=>{const h=t.game.hero,e={x:h.x+20,y:h.y};h.gear={powers:{chain:true},tower:.5};t.shoot(h,e,20);assert.equal(t.game.bullets.at(-1).chain,1);assert.equal(t.game.bullets.at(-1).damage,20);t.shoot({x:h.x,y:h.y,kind:'bow'},e,20);assert.equal(t.game.bullets.at(-1).damage,30);assert.equal(t.game.bullets.at(-1).heroShot,false);});
 check('Lifesteal heals only on hero projectile hits, bounded by actual damage',()=>{const h=t.game.hero;h.hp=50;h.fireCd=100;h.gear={powers:{},leech:.1,crit:0};const e={type:'wraith',x:h.x+10,y:h.y,hp:10,maxHp:10,r:12,speed:0,damage:0,attackCd:99,hit:0};t.game.enemies=[e];t.shoot(h,e,100);t.update(.02);assert.equal(h.hp,51);});
-check('Repeated endWave grants only one persistent reward',()=>{const count=()=>t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length;const n=count();t.endWave();t.endWave();assert.equal(count(),n+1);});
+check('Repeated endWave grants no equipment',()=>{const count=()=>t.lootModel.profile.owned.length;const n=count();t.endWave();t.endWave();assert.equal(count(),n);});
 check('Menu keyboard navigation reaches channel links and expandable help',()=>{
   t.mainMenu();
   const start=element('startBtn'),link=element('channelLink'),help=element('menuHelpToggle');

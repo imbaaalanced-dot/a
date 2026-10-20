@@ -159,3 +159,5 @@
  #inventoryScreen .loot-comparison-table{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){#inventoryScreen *{scroll-behavior:auto}}
+
+.loot-used-by,.loot-origin,.loot-rank{font-size:.75rem;color:#d4c39b;line-height:1.4}.loot-forge-value{font-variant-numeric:tabular-nums}.loot-footer{flex-wrap:wrap}.loot-forge button{min-height:48px}

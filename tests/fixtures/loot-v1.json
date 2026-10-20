@@ -1,0 +1,677 @@
+{
+  "format": "denkmal-loot",
+  "version": 1,
+  "profile": {
+    "version": 1,
+    "nextId": 44,
+    "essence": 777,
+    "level2": true,
+    "milestones": [
+      3,
+      4,
+      8,
+      12
+    ],
+    "items": [
+      {
+        "id": "fixture-0",
+        "slot": "weapon",
+        "name": "Erbst\u00fcck 0",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "damage": 12.5
+        },
+        "power": "ember",
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-1",
+        "slot": "head",
+        "name": "Erbst\u00fcck 1",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-2",
+        "slot": "armor",
+        "name": "Erbst\u00fcck 2",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-3",
+        "slot": "gloves",
+        "name": "Erbst\u00fcck 3",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-4",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 4",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-5",
+        "slot": "amulet",
+        "name": "Erbst\u00fcck 5",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-6",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 6",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-7",
+        "slot": "ring2",
+        "name": "Erbst\u00fcck 7",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      }
+    ],
+    "bag": [
+      {
+        "id": "fixture-8",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 8",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-9",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 9",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-10",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 10",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-11",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 11",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-12",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 12",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-13",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 13",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-14",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 14",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-15",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 15",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-16",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 16",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-17",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 17",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-18",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 18",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-19",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 19",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-20",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 20",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-21",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 21",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-22",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 22",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-23",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 23",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-24",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 24",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-25",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 25",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-26",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 26",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-27",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 27",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-28",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 28",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-29",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 29",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-30",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 30",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-31",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 31",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-32",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 32",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-33",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 33",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-34",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 34",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-35",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 35",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-36",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 36",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-37",
+        "slot": "ring1",
+        "name": "Erbst\u00fcck 37",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      }
+    ],
+    "overflow": [
+      {
+        "id": "fixture-38",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 38",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-39",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 39",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-40",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 40",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-41",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 41",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": false,
+        "notes": {
+          "origin": "synthetic"
+        }
+      },
+      {
+        "id": "fixture-42",
+        "slot": "boots",
+        "name": "Erbst\u00fcck 42",
+        "rarity": "rare",
+        "level": 5,
+        "stats": {
+          "health": 7
+        },
+        "power": null,
+        "favorite": true,
+        "notes": {
+          "origin": "synthetic"
+        }
+      }
+    ],
+    "equipped": {
+      "weapon": "fixture-0",
+      "head": "fixture-1",
+      "armor": "fixture-2",
+      "gloves": "fixture-3",
+      "boots": "fixture-4",
+      "amulet": "fixture-5",
+      "ring1": "fixture-6",
+      "ring2": "fixture-7"
+    }
+  }
+}
