@@ -68,7 +68,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.match(html,/style2-towers\.js\?v=v400a6elemental1/);
 assert.ok(html.indexOf('style2-towers.js')<html.indexOf('game.js?v='),
   'tower renderer loaded before main game');
-assert.match(html,/combat-fx\.js\?v=v400a6s2t4/);
+assert.match(html,/combat-fx\.js\?v=v400a6s2t5/);
 const gameCode=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameCode,/Style2Towers\?\.drawTower/,'tower game renderer integrated');
 assert.match(gameCode,/location\?\.pathname\?\.includes\('\/v4-style2-towers\/'\)/,'test-only campaign preview path');
