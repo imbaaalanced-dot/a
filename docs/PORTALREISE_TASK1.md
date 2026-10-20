@@ -1,7 +1,7 @@
 # Portalreise Task 1 – Umsetzung und Prüfung
 Stand: 20.10.2026
 Plan: TD2-Portalreise-Implementierungsplan.md, Task 1.
-Featurebranch: feature/td2-portalreise-task1-20261020
+Featurebranch: feature/td2-portalreise-state-economy-20261020
 Basis: 682451cc1b9f9e513881347566951be217e9ce3e (PR 51 ausschließlich gelesen).
 
 ## Umfang
@@ -20,6 +20,7 @@ Noch keine Einbindung ins Spiel; Perks, persistente Checkpoints, Bossbeute, Verk
 - checkpoint enthält hier nur die vorläufige Übergangsabrechnung; sichere persistente Abschnittsstände müssen in Task 3 gesondert ergänzt werden.
 - Der aktuelle Head ergänzt gegenüber dem Planstand Grafik-Adapter-Ladebegrenzung, Regressionstest und Abnahmedokument; keine Änderung der Task-1-Kostenbasis.
 - Git-Transport war nicht nutzbar. Quellen über GitHub-Verbindung anhand des festen Commit-Hashes geladen; Git-Objekte werden mit unverändertem Basistree und nur den drei neuen Dateien erstellt.
+- Der zuerst angelegte Branch feature/td2-portalreise-task1-20261020 wurde parallel auf c333bbf5ba828c0c32b779548722bc5830f43c17 fortgeschrieben. Dieser Stand wurde nicht überschrieben; die vorliegende Umsetzung liegt deshalb auf dem oben genannten separaten Branch. Die beiden Implementierungen müssen vor einer späteren Integration verglichen werden.
 
 ## Belege
 RED: node tests/portal-run.test.cjs -> MODULE_NOT_FOUND, vor Anlegen des Moduls.
