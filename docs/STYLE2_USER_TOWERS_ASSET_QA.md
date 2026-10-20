@@ -10,6 +10,10 @@ Stand: 20.10.2026. Branch `assets/style2-user-towers-1to5-20261020`, Draft PR #5
 - Bildpixel und Prüfsummen des freigegebenen Exports bleiben unverändert. Ein transparenter Außenrand beweist keine vollständige Ursprungssilhouette.
 - Runtime-Dateien zusammen 1.476.344 Bytes. Alle 30 Bilder gleichzeitig entsprechen rechnerisch 18,75 MiB RGBA, ohne Browser-/GPU-Overhead. Der Spielrenderer hält nur besuchte Turm-/Stufenvarianten und ihre Projektile; der Sichttest lädt ausdrücklich alle Varianten.
 
+## Ergänzung: Grafikbereinigung Pass 2
+
+Die nachstehenden ursprünglichen Quellmängel bleiben im unveränderten V1-Export dokumentiert. Im aktiven Opt-in werden Kanone L1 und Eisprojektil L2 inzwischen durch zwei versionierte Bereinigungen ersetzt. Details, Prüfungen und aktuelle Vorschau: [Cleanup Pass 2](STYLE2_CLEANUP_PASS2.md). Die ursprünglichen Browsernachweise unten beziehen sich auf den vorherigen Rendererstand.
+
 ## Renderer-Korrekturen
 
 1. Ein sichtbarer Turm lädt sein passendes Projektil bereits vor dem ersten Schuss. Kein pauschales Vorladen des ganzen Sets im Spiel.

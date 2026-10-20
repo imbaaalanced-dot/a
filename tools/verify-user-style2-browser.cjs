@@ -41,9 +41,11 @@ const server=http.createServer((req,res)=>{
       assert.deepEqual(cold,{drawn:false,alpha:0},'cold adapter must hand control to the previous renderer without touching Canvas');
       const assets=await page.evaluate(async()=>{
         const manifest=await (await fetch('assets/style2-user-towers-v1/manifest.json')).json();
-        const urls=manifest.assets.map(e=>'assets/style2-user-towers-v1/'+e.webp_path+'?v=user-towers-1');
+        const cleanup=await (await fetch('assets/style2-user-towers-v2/manifest.json')).json();
+        const overrides=new Map(cleanup.assets.map(e=>[e.id,e]));
+        const urls=manifest.assets.map(e=>overrides.has(e.id)?'assets/style2-user-towers-v2/'+overrides.get(e.id).webp_path+'?v=cleanup-2':'assets/style2-user-towers-v1/'+e.webp_path+'?v=user-towers-1');
         const images=await DenkmalAssets.retain('qa-user-towers',urls);
-        return {decoded:images.filter(Boolean).length,total:urls.length};
+        return {decoded:images.filter(Boolean).length,total:urls.length,overrides:overrides.size};
       });
       assert.equal(assets.decoded,30);
       // Real decoders, Canvas 2D and the production adapter, all 30 variants.
@@ -106,7 +108,7 @@ const server=http.createServer((req,res)=>{
       await page.screenshot({path:path.join(out,mobile?'game-touch-portrait.png':'game-desktop.png')});
       assert.deepEqual(errors,[],'no browser exceptions');
       assert.deepEqual(missing,[],'no failed asset responses');
-      report.scenarios.push({touchEmulation:mobile,levels,decoded:assets.decoded,rendered,coldFallbackPassed:true,errors,missing});
+      report.scenarios.push({touchEmulation:mobile,levels,decoded:assets.decoded,cleanupOverrides:assets.overrides,rendered,coldFallbackPassed:true,errors,missing});
       // Keep contexts until browser.close(): single-process test browsers can
       // terminate when their last context closes between desktop/touch runs.
     }

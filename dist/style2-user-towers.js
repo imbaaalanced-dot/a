@@ -6,9 +6,12 @@
   const known=new Set();
   const fallbackImages=new Map();
   const level=n=>Math.max(1,Math.min(3,Math.floor(Number(n)||1)));
+  const cleanupOverrides=new Set(['tower_cannon_lv1','projectile_mage_lv2']);
   function get(kind,tier,type){
     if(!enabled||!kinds.has(kind))return null;
-    const url=`assets/style2-user-towers-v1/runtime-webp/${type}s/${type}_${kind}_lv${level(tier)}.webp?v=user-towers-1`;
+    const id=`${type}_${kind}_lv${level(tier)}`;
+    const clean=cleanupOverrides.has(id);
+    const url=`assets/style2-user-towers-v${clean?2:1}/runtime-webp/${type}s/${id}.webp?v=${clean?'cleanup-2':'user-towers-1'}`;
     const assets=globalThis.DenkmalAssets;
     if(assets?.retain&&assets?.ready){
       if(!known.has(url)){

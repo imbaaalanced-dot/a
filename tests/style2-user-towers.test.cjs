@@ -51,9 +51,18 @@ const run=search=>{
   const c=ctx();
   api.drawProjectile(c,{kind:'rift',level:1,x:0,y:0,vx:0,vy:1});
   assert.equal(c.ops.find(op=>op[0]==='rotate')[1][0],3*Math.PI/4,'rift source heading is -45 degrees; zero vx must remain vertical');
-  ready.set('assets/style2-user-towers-v1/runtime-webp/projectiles/projectile_mage_lv2.webp?v=user-towers-1',{width:256});
+  ready.set('assets/style2-user-towers-v2/runtime-webp/projectiles/projectile_mage_lv2.webp?v=cleanup-2',{width:256});
   const ice=ctx();
-  api.drawProjectile(ice,{kind:'mage',level:2,x:0,y:0,vx:1,vy:0});
+  assert.equal(api.drawProjectile(ice,{kind:'mage',level:2,x:0,y:0,vx:1,vy:0}),true,'clean ice projectile uses the versioned override');
   assert.equal(ice.ops.find(op=>op[0]==='rotate')[1][0],Math.PI/4,'ice lance must point along +x');
+}
+{
+  const {api,ready,seen}=run('?td2UserTowers=1');
+  const c=ctx();
+  assert.equal(api.drawTower(c,'cannon',0,0,1),false);
+  const url='assets/style2-user-towers-v2/runtime-webp/towers/tower_cannon_lv1.webp?v=cleanup-2';
+  assert.ok(seen.has(url),'clean cannon uses a versioned path');
+  ready.set(url,{width:512});
+  assert.equal(api.drawTower(c,'cannon',0,0,1),true);
 }
 console.log('Style-2 user tower preview adapter: cold fallback, projectile warmup and heading passed');
