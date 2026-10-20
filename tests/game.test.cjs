@@ -12,13 +12,14 @@ element('heroVoice').play=function(){this.paused=false;return Promise.resolve();
 element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
-const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
+const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
@@ -77,6 +78,17 @@ check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.h
 check('Lost focus pauses',()=>{listeners.blur();assert.equal(t.state,'paused');});
 check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.endWave();assert.equal(t.game.essence,78);let n=0;const perk={name:'Test',apply(){n++;}};t.selectPerk(perk);t.selectPerk(perk);assert.equal(t.game.wave,2);assert.equal(n,1);assert.equal(t.game.loot.length,0);});
 check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x:0,y:0,hp:1};t.game.enemies=[e];t.game.hero.soul=0;t.hurtEnemy(e,5);t.hurtEnemy(e,5);assert.equal(t.game.kills,1);assert.equal(t.game.hero.soul,8);assert.equal(t.nearest({x:0,y:0},100),null);});
+check('Enemy attacks start a cosmetic cue and kills leave a short-lived corpse effect',()=>{
+  t.game.level=2;t.game.intermission=0;t.game.waveSpawned=t.game.waveTotal=0;t.launchWave();t.spawnEnemy();
+  const attacker=t.game.enemies[0],hero=t.game.hero;attacker.attackRange=100;attacker.attackCd=0;attacker.speed=0;
+  hero.x=attacker.x+30;hero.y=attacker.y;const hp=hero.hp;t.update(.02);
+  assert.ok(hero.hp<hp,'the existing attack still applies its normal damage');assert.ok(attacker.attackAnim>0,'attacking enemy starts a visual attack cue');
+  const victim={x:400,y:400,hp:1,maxHp:1,r:12,type:'wraith',armor:0,dead:false,visualVariant:2,flying:false};
+  t.game.enemies.push(victim);t.hurtEnemy(victim,10);assert.equal(t.game.kills,1);
+  assert.equal(t.game.deathFx.length,1,'death visuals are kept separately from active enemies');
+  t.game.enemies=t.game.enemies.filter(e=>!e.dead);assert.equal(t.game.enemies.includes(victim),false,'corpse does not stay in the combat collection');
+  t.update(.1);assert.ok(t.game.deathFx[0].life< t.game.deathFx[0].maxLife,'death animation advances on simulation time');
+});
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});
 check('Arsenal exposes four production tower roles while experimental towers stay disabled',()=>{
@@ -89,6 +101,7 @@ check('Arsenal exposes four production tower roles while experimental towers sta
 });
 check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
 check('Resize preserves world positions without interrupting play',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize(false);assert.equal(t.state,'playing');assert.equal(t.game.towers[0].x,200);});
+check('Resize does not clear the canvas when pixel dimensions are unchanged',()=>{const canvas=element('game');let width=canvas.width,height=canvas.height,widthWrites=0,heightWrites=0;Object.defineProperties(canvas,{width:{configurable:true,get:()=>width,set(v){widthWrites++;width=v;}},height:{configurable:true,get:()=>height,set(v){heightWrites++;height=v;}}});t.resize(false);assert.equal(widthWrites,0,'same-width canvas assignment clears its drawing buffer');assert.equal(heightWrites,0,'same-height canvas assignment clears its drawing buffer');});
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Legacy wardrobe cannot change gear at any wave and stats do not stack',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++)assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();});
 check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.game.hero;saga.damage(20);assert.equal(h.hp,85);t.game.wave=3;saga.openCharacter();saga.equip('armor','ash');saga.equip('armor','oath');assert.equal(h.hp,85);saga.closeCharacter();});
@@ -451,5 +464,14 @@ check('Goethestraße gates, mixed waves, air origin, completion and endless unlo
   element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
   t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,25);assert.ok(t.wavePreview(25).includes('STURMGEIST'));
   t.mainMenu();t.startGame(6,'endless');assert.equal(t.game.level,6);assert.equal(t.game.mode,'endless');
+});
+check('Painted animation renderer handles ground, flying and boss enemies without changing combat state',()=>{
+  for(const type of Object.keys(t.enemySpecs)){
+    t.game.enemies=[];t.spawnEnemy(type);const e=t.game.enemies[0];
+    assert.ok(Number.isInteger(e.visualVariant));e.x=t.game.hero.x+45;e.y=t.game.hero.y+20;e.velX=10;
+    const before=JSON.stringify(e);draws.length=0;t.draw();
+    assert.ok(draws.some(d=>d[0].src?.includes('assets/enemies/walk-v1.webp')),type+' uses the integrated atlas');
+    assert.equal(JSON.stringify(e),before,'drawing preserves enemy hp, position and abilities');
+  }
 });
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
