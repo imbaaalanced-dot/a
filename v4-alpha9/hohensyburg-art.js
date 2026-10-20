@@ -6,7 +6,7 @@
   let standaloneSprite=null;
   const monumentImage=()=>{
     const url='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
-    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.get(url);
+    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
     if(typeof Image!=='function')return null;
     if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
     return standaloneSprite;

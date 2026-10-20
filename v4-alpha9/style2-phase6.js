@@ -16,7 +16,7 @@ let standaloneImage=null;
 function refreshEnvironment(){
  if(typeof Image!=='function')return;
  let image;
- if(globalThis.DenkmalAssets)image=globalThis.DenkmalAssets.get('assets/scenery-alpha8.webp?v=alpha8a2');
+ if(globalThis.DenkmalAssets)image=globalThis.DenkmalAssets.ready('assets/scenery-alpha8.webp?v=alpha8a2');
  else{
   if(!standaloneImage){
    standaloneImage=new Image();standaloneImage.decoding='async';
