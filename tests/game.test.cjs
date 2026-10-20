@@ -24,6 +24,15 @@ vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandb
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
+if(process.env.TEST_MOBILE==='1'){
+  sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
+  t.resize(false);
+  const gameCanvas=element('game'),pixelCount=gameCanvas.width*gameCanvas.height;
+  assert.ok(pixelCount<=900000,'standard phone canvas stays within its pixel budget');
+  const width=gameCanvas.width,height=gameCanvas.height;t.resize(false);
+  assert.equal(gameCanvas.width,width);assert.equal(gameCanvas.height,height,'stable dimensions preserve the backing canvas');
+  sandbox.innerWidth=1280;sandbox.innerHeight=800;sandbox.devicePixelRatio=1;t.resize(false);
+}
 for(const kind of ['bow','cannon','rift','ballista'])for(const image of t.towerLevelArt[kind])assert.ok(!image.src,'large legacy tower PNGs must not download at startup');
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Cosmetic hero choice switches Kim and Marcel without changing combat stats',()=>{

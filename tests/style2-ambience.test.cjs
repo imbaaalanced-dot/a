@@ -16,6 +16,8 @@ a.drawGround(paint,6,layout,2,{low:false});
 const warm=creations;assert.equal(warm,3,'amber, blue and ground shadow gradients are cached');
 for(let frame=0;frame<120;frame++)a.drawGround(paint,6,layout,frame/60,{low:false});
 assert.equal(creations,warm,'no canvas allocations per frame');assert.ok(images>200);
+const beforeLow=images;a.drawGround(paint,6,layout,2,{low:true});
+assert.equal(images-beforeLow,2,'mobile low mode keeps monument contact/light but skips entrance overlays');
 const camera={x:1300,y:1240},camBefore=JSON.stringify(camera);
 const p1=a.motes(3,camera,700,550,1,{low:false}),p2=a.motes(3,camera,700,550,1,{low:false});
 assert.equal(JSON.stringify(p1),JSON.stringify(p2),'fixed coordinates and clock produce deterministic air particles');
