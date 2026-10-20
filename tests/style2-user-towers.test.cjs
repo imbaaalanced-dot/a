@@ -5,7 +5,7 @@ const source=fs.readFileSync(path.join(__dirname,'../dist/style2-user-towers.js'
 const ctx=()=>({ops:[], save(){this.ops.push('save')},restore(){this.ops.push('restore')},drawImage(...a){this.ops.push(['drawImage',a])},translate(...a){this.ops.push(['translate',a])},rotate(...a){this.ops.push(['rotate',a])}});
 const run=search=>{
   const ready=new Map(),seen=new Set();
-  const assets={retain(group,urls){assert.equal(group,'td2-user-towers');urls.forEach(u=>seen.add(u));return Promise.resolve([])},ready(url){return ready.get(url)||null}};
+  const assets={retain(group,urls){assert.ok(group.startsWith('td2-user-tower:'),'each image must have an independently releasable cache group');urls.forEach(u=>seen.add(u));return Promise.resolve([])},ready(url){return ready.get(url)||null}};
   const sandbox={URLSearchParams,location:{search},DenkmalAssets:assets,console};sandbox.globalThis=sandbox;
   vm.runInNewContext(source,sandbox);
   return {api:sandbox.UserStyle2Towers,ready,seen};
