@@ -49,6 +49,7 @@ jobs:
           node tests/style2-adapter-regression.cjs
           node tests/style2-cache-pressure.cjs
           node tests/style2-manager-pressure.cjs
+          node tests/style2-impact-pass4.test.cjs
           node tests/enemy-animations.test.cjs
           node tests/flight-enemies.test.cjs
           node tests/goethestrasse.test.cjs
