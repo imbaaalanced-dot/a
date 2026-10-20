@@ -111,8 +111,9 @@
   };
   const waveSizes=[0,9,12,15,18,21,23,26,29];
   // Avoid the old abrupt 8 -> 9 jump while increasing endless pressure.
-  function waveSize(wave){return waveSizes[wave]||Math.min(48,30+(wave-8)*3);}
+  function waveSize(wave){if(inPortal())return portalSection().waves[Math.min(1,portalRun.waveInSection)].count;return waveSizes[wave]||Math.min(48,30+(wave-8)*3);}
   function enemyTypeForSpawn(wave,index){
+    if(inPortal()){if(portalRun.section===3&&portalRun.waveInSection===2&&index===0)return 'boss';return ['wraith','runner','brute','archer','guardian'][(index+portalRun.section+portalRun.waveInSection)%5];}
     if(game?.level===6)return globalThis.DenkmalGoethe.enemyType(wave,index);
     if(game?.level===5)return globalThis.DenkmalHohensyburg.enemyType(wave,index);
     if(game?.level===4){
@@ -190,10 +191,98 @@
 
   let game,assetLevel=0;
   let selectedCharacter='marcel';
+  const portalRules=globalThis.PortalRun,portalPerks=globalThis.PortalPerks,portalWorld=globalThis.PortalGameplay;
+  const portalStore=portalRules?.createStore(localStorage);
+  let portalRun=null,portalSaveError='';
+  const inPortal=()=>game?.mode==='portal'&&!!portalRun;
+  const portalSection=()=>portalWorld.sections[portalRun.section-1];
+  function savePortal(next){
+    const result=portalStore.save(next,portalRun?portalRun.revision:null);
+    if(result.status!=='saved'){portalSaveError='Portalreise nicht gespeichert ('+result.status+')';showToast(portalSaveError);return false;}
+    portalRun=next;portalSaveError='';return true;
+  }
+  function portalSnapshot(){return {...portalRun,gold:game.essence,heroHp:Math.max(0,game.hero.hp),towers:game.towers.map(t=>({x:t.x,y:t.y,kind:t.kind,level:t.level,spent:t.spent,targetMode:t.targetMode}))};}
+  function portalEvent(type,extra={}){const next=portalRules.reduce(portalRun,{type,runId:portalRun.runId,section:portalRun.section,revision:portalRun.revision,...extra}).run;return next===portalRun?false:savePortal(next);}
+  function portalStats(){return portalPerks.derive({heroDamage:1,maxHp:100,moveSpeed:1,towerDamage:1,towerRange:1,towerAttackSpeed:1},portalRun.perkRanks);}
+  function portalBuild(run){
+    selectedCharacter=run.heroId;
+    if(assetLevel!==1){globalThis.DenkmalAssets?.level(1);if(assetLevel)releaseLevelArt(assetLevel);assetLevel=1;}
+    reset(1,'portal');portalRun=run;
+    const s=portalSection(),stats=portalStats();game.hero.x=s.spawn.x;game.hero.y=s.spawn.y;
+    game.hero.maxHp=stats.maxHp;game.hero.hp=Math.min(run.heroHp,stats.maxHp);game.essence=run.gold;
+    game.monument.maxHp=100;game.monument.hp=100;game.wave=run.waveInSection+1;
+    game.waveTotal=s.waves[Math.min(1,run.waveInSection)].count;game.intermission=3600;
+    game.towers=run.towers.map(t=>{const spec=towerSpecs[t.kind];return {...t,r:18,damage:spec.damage*Math.pow(1.32,t.level-1),fireRate:spec.rate*Math.pow(.92,t.level-1),fireCd:.1,range:(spec.range+18*(t.level-1))*stats.towerRange}});
+    state='playing';closeScreens();focusGame();updateCamera();updateUI();showToast(`ABSCHNITT ${run.section} · ${s.name}`);
+    if(run.phase==='perk')ensurePortalOffer();
+  }
+  function startPortal(resume=false){
+    if(!portalStore){showToast('Portalreise nicht verfügbar');return;}
+    const loaded=portalStore.load();
+    if(resume){if(loaded.status!=='ok'||['finished','failed'].includes(loaded.run.phase)){showToast('Keine fortsetzbare Reise');return;}portalRun=loaded.run;portalBuild(portalRun);return;}
+    if(['error','corrupt','incompatible'].includes(loaded.status)){showToast('Speicherstand prüfen · neue Reise blockiert');return;}
+    const id='portal-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+    const fresh=portalRules.create({runId:id,seed:(Date.now()>>>0),heroId:selectedCharacter,startBudget:75,maxSections:3});
+    portalRun=loaded.status==='ok'?loaded.run:null;
+    if(savePortal(fresh))portalBuild(fresh);
+  }
+  function portalNextWave(){
+    if(!inPortal()||portalRun.phase!=='build')return false;
+    const safe=portalRules.withCheckpoint(portalSnapshot());if(!savePortal(safe)||!portalEvent('START_WAVE'))return false;
+    game.intermission=0;game.spawnTimer=.4;return true;
+  }
+  function portalWaveComplete(){
+    if(!inPortal()||portalRun.phase!=='combat')return;
+    if(portalRun.section===3&&portalRun.waveInSection===2){
+      const reward=lootModel.grantBossRewardOnce(portalRun.runId+':3:boss',game.wave,'portal');
+      if(reward.status==='error'){showToast('Bossbeute konnte nicht gespeichert werden');return;}
+    }
+    if(!savePortal(portalSnapshot())||!portalEvent('WAVE_CLEARED'))return;
+    game.enemies.length=0;game.bullets.length=0;
+    if(portalRun.phase==='finished'){$('gameoverTitle').textContent='PORTALREISE ABGESCHLOSSEN';ui.gameoverStats.textContent='Drei Abschnitte verteidigt · Bossbeute gesichert';state='gameover';ui.gameover.classList.remove('hidden');focusModal(ui.gameover);return;}
+    if(portalRun.phase==='build'){game.wave=2;game.waveTotal=portalSection().waves[1].count;game.waveSpawned=0;game.waveKilled=0;game.intermission=3600;showToast('WELLE 1 ÜBERSTANDEN · NÄCHSTE WELLE STARTEN');updateUI();return;}
+    ensurePortalOffer();
+  }
+  function ensurePortalOffer(){
+    if(portalRun.phase!=='perk')return;
+    if(!portalRun.offerIds){
+      const offered=portalPerks.offer(portalRun.perkRanks,portalRun.rngState,{heroId:portalRun.heroId,turretKinds:game.towers.map(t=>t.kind)});
+      if(!savePortal({...portalRun,offerIds:offered.ids,rngState:offered.rngState}))return;
+    }
+    showPortalOffer();
+  }
+  function showPortalOffer(){
+    if(portalRun.phase!=='perk'||!portalRun.offerIds?.length)return;
+    state='perk';ui.perkGrid.innerHTML='';for(const [index,id] of portalRun.offerIds.entries()){
+      const p=portalPerks.catalog.find(x=>x.id===id),b=document.createElement('button');b.className='perk';b.textContent=`${index+1} · ${p.name} · Rang ${(portalRun.perkRanks[id]||0)+1}`;b.onclick=()=>selectPortalPerk(id);ui.perkGrid.appendChild(b);
+    }ui.perk.classList.remove('hidden');focusModal(ui.perk);
+  }
+  function selectPortalPerk(id){
+    if(!inPortal()||portalRun.phase!=='perk'||!portalRun.offerIds?.includes(id))return;
+    const oldRange=portalStats().towerRange;
+    const ranks=portalPerks.choose(portalRun.perkRanks,id);
+    const nextStats=portalPerks.derive({heroDamage:1,maxHp:100,moveSpeed:1,towerDamage:1,towerRange:1,towerAttackSpeed:1},ranks);
+    const nextHp=Math.min(nextStats.maxHp,game.hero.hp+nextStats.maxHp-game.hero.maxHp+nextStats.maxHp*nextStats.extraHealFraction);
+    const selected={...portalSnapshot(),perkRanks:ranks,offerIds:null,heroHp:nextHp};
+    const next=portalRules.reduce(selected,{type:'PERK_SELECTED',runId:selected.runId,section:selected.section,revision:selected.revision}).run;
+    if(next===selected||!savePortal(next))return;
+    game.hero.maxHp=nextStats.maxHp;
+    for(const tower of game.towers)tower.range*=nextStats.towerRange/oldRange;
+    game.hero.hp=nextHp;
+    if(!savePortal(portalRules.withCheckpoint(portalSnapshot())))return;
+    ui.perk.classList.add('hidden');state='playing';game.intermission=3600;focusGame();updateUI();showToast('GEHE ZUM NÖRDLICHEN PORTAL');
+  }
+  function enterPortal(){
+    if(!inPortal()||!portalWorld.atExit(game.hero,portalSection(),portalRun.phase)){showToast('GEHE ZUM NÖRDLICHEN PORTAL');return;}
+    if(!savePortal(portalSnapshot()))return;
+    if(!portalEvent('ENTER_PORTAL',{gold:game.essence,towers:portalSnapshot().towers}))return;
+    try{globalThis.DenkmalAssets?.level(1);if(!portalEvent('SECTION_LOADED'))return;portalBuild(portalRun);}
+    catch{portalEvent('SECTION_LOAD_FAILED');showToast('Abschnitt konnte nicht geladen werden · erneut versuchen');}
+  }
   function reset(level=1,mode='campaign'){
     clearInput();speedMultiplier=1;time=0;shake=0;hitStop=0;facing={x:1,y:0};moveIntent={x:0,y:0};cameraLeadState={x:0,y:0};
     const definition=campaign.levels[level];
-    game={level,mode,wave:definition.firstWave,elapsed:0,essence:definition.startEssence??(level===2?130:70),deathFx:[],selectedTower:'bow',kills:0,waveSpawned:0,waveKilled:0,waveTotal:waveSize(definition.firstWave),spawnTimer:1.2,intermission:5,
+    game={level,mode,runId:'campaign-'+Date.now()+'-'+Math.random().toString(36).slice(2),bossDefeated:false,wave:definition.firstWave,elapsed:0,essence:definition.startEssence??(level===2?130:70),deathFx:[],selectedTower:'bow',kills:0,waveSpawned:0,waveKilled:0,waveTotal:waveSize(definition.firstWave),spawnTimer:1.2,intermission:5,
       hero:{character:selectedCharacter,x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
       monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
       enemies:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:30,rewardedWaves:new Set(),towers:[],maxTowers:definition.maxTowers??(level===2?6:4)};
@@ -333,7 +422,7 @@
     if(level===6)globalThis.DenkmalGoetheArt?.release?.();
     globalThis.Style2Phase6?.reset?.();
   }
-  function mainMenu(){levelLoadRequest++;if(game&&state!=='start')collectWaveLoot();releaseLevelArt(assetLevel);globalThis.DenkmalAssets?.release('level:'+(assetLevel+1));assetLevel=0;closeScreens();clearInput();state='start';showMenuPanel('home',false);menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
+  function mainMenu(){setHidden($('portalExitBtn'),true);levelLoadRequest++;if(inPortal()&&portalRun.phase==='build')savePortal(portalSnapshot());if(game&&state!=='start'&&!inPortal())collectWaveLoot();portalRun=null;releaseLevelArt(assetLevel);globalThis.DenkmalAssets?.release('level:'+(assetLevel+1));assetLevel=0;closeScreens();clearInput();state='start';showMenuPanel('home',false);menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);updateUI();}
   function startGame(level=1,mode='campaign'){
     level=[1,2,3,4,5,6].includes(level)?level:1;
     if(level===5&&!campaign.level4Completed&&!level5Preview)return;
@@ -377,18 +466,15 @@
     if(state!=='inventory')return;lootUI?.close();$('inventoryScreen').classList.add('hidden');state=inventoryReturn;last=performance.now();
     if(state==='start'){menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);}else if(state==='paused'){$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));}else focusGame();updateUI();
   }
-  function lootFor(enemy,index){
-    if(isBoss(enemy)&&index===0)return {kind:'item',item:(game.level===3?lootModel.generateKirchende(game.wave,true):lootModel.generate(game.wave,true))};
-    if(!isBoss(enemy)&&Math.random()<.12)return {kind:'item',item:(game.level===3?lootModel.generateKirchende(game.wave):lootModel.generate(game.wave))};
-    return {kind:'essence'};
-  }
-  function rewardWave(){if(game.rewardedWaves.has(game.wave))return;game.rewardedWaves.add(game.wave);pickupItem((game.level===3?lootModel.generateKirchende(game.wave):lootModel.generate(game.wave)),true);lootModel.milestone(game.wave);}
+  function lootFor(){return {kind:'essence'};}
+  function rewardWave(){if(game.rewardedWaves.has(game.wave))return;game.rewardedWaves.add(game.wave);}
   function isBoss(e){return e.type==='boss'||e.type==='uprooted';}
   function completeLevel(){
+    if(game.bossDefeated&&game.level!==3){const reward=lootModel.grantBossRewardOnce(game.runId+':'+game.wave+':boss',game.wave,'campaign');if(reward.status==='error'){showToast('Bossbeute konnte nicht gespeichert werden');return;}}
+    if(game.level===3&&!style2Preview){const reward=lootModel.grantBossRewardOnce('campaign:kirchende:12:boss',game.wave,'kirchende');if(reward.status==='error'){showToast('Bossbeute konnte nicht gespeichert werden');return;}}
     collectWaveLoot();rewardWave();
     if(game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
     else if(game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
-    else if(game.level===3&&!style2Preview)lootModel.claimKirchendeReward();
     else if(game.level===4&&!level4Preview)campaign.completeLevel4();
     else if(game.level===5&&!level5Preview)campaign.completeLevel5();
     else if(game.level===6&&!style2Preview)campaign.completeLevel6();
@@ -407,12 +493,12 @@
     clearTimeout(showWaveBanner.timer);showWaveBanner.timer=setTimeout(()=>el.classList.remove('show'),1250);
   }
   function spawnEnemy(typeOverride){
-    const level=campaign.levels[game.level],activeGates=campaign.getWaveGates(game.level,game.wave),gateIndex=activeGates[game.waveSpawned%activeGates.length];
+    const level=campaign.levels[game.level],activeGates=inPortal()?portalSection().gates:campaign.getWaveGates(game.level,game.wave),gateIndex=activeGates[game.waveSpawned%activeGates.length];
     const type=enemySpecs[typeOverride]?typeOverride:enemyTypeForSpawn(game.wave,game.waveSpawned),base=enemySpecs[type],plan=applyWavePlan(type,base,game.wave);
     const spawn=base.flying&&level.airGate?level.airGate:level.gates[gateIndex],{x,y}=spawn;
     const hpScale=(1+Math.max(0,game.wave-1)*.17)*plan.hp,damageScale=(1+Math.max(0,game.wave-1)*.07)*plan.damage,speedScale=(game.level===2?1.16:1)*plan.speed;
     const maxHp=base.hp*hpScale;
-    const enemy={x,y,prevX:x,prevY:y,velX:0,velY:0,visualVariant:game.waveSpawned,gateIndex,waypoint:1,type,hit:0,hitKick:0,attackAnim:0,slow:0,slowFactor:1,enraged:false,shieldBroken:false,phase:(type==='boss'||type==='uprooted')?1:0,
+    const enemy={portalId:inPortal()?portalRun.section+':'+portalRun.waveInSection+':'+game.waveSpawned:'',x,y,prevX:x,prevY:y,velX:0,velY:0,visualVariant:game.waveSpawned,gateIndex,waypoint:1,type,hit:0,hitKick:0,attackAnim:0,slow:0,slowFactor:1,enraged:false,shieldBroken:false,phase:(type==='boss'||type==='uprooted')?1:0,
       flying:!!base.flying,r:base.r,hp:maxHp,maxHp,speed:base.speed*speedScale,damage:base.damage*damageScale,
       attackCd:0,attackRange:base.attackRange||0,attackCooldown:(base.attackCooldown||.85)*plan.cooldown,armor:clamp((base.armor||0)+plan.armor,0,.7),focusMonument:!!base.focusMonument,miniBoss:!!wavePlan(game.wave).miniBoss};
     if(game.waveSpawned===0)showWaveBanner(type==='boss'?`BOSSWELLE ${game.wave} · ${wavePlan(game.wave).name}`:`WELLE ${game.wave} · ${wavePlan(game.wave).name}`);
@@ -430,7 +516,7 @@
     return aim;
   }
   function shoot(from,target,damage,speed=520,color='#e9c477',effect={}){
-    const heroShot=from===game.hero,gear=game.hero.gear;
+    const heroShot=from===game.hero,gear=game.hero.gear;if(inPortal()&&!heroShot)damage*=portalStats().towerDamage;
     if(heroShot&&gear?.powers.chain)effect={...effect,chain:Math.max(1,effect.chain||0)};
     if(!heroShot&&towerSpecs[from.kind])damage*=1+(gear?.tower||0);
     const aim=interceptPoint(from,target,speed);const d=dist(from,aim)||1;const bullet={heroShot,kind:from.kind||'magic',level:from.level||1,x:from.x,y:from.y,vx:(aim.x-from.x)/d*speed,vy:(aim.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
@@ -486,7 +572,7 @@
       chain:(b.chain||0)+(slowed&&b.kind==='rift'?1:0)
     };
   }
-  function launchWave(){if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
+  function launchWave(){if(inPortal()){portalNextWave();updateUI();return;}if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
   function collectWaveLoot(){for(const l of game.loot){if(l.kind==='item')pickupItem(l.item,true);else game.essence+=4;}game.loot=[];}
   function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
   function spark(x,y,color,n=7){if(lowFX())n=Math.min(n,4);for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
@@ -505,8 +591,8 @@
     }
   }
   function spawnDeathFx(e){if(!game||e.deathFxEmitted)return;e.deathFxEmitted=true;game.deathFx.push({x:e.x,y:e.y,type:e.type,visualVariant:e.visualVariant||0,flying:!!e.flying,r:e.r||12,velX:0,velY:0,life:.28,maxLife:.28});}
-  function retireEnemy(e){if(e.dead)return;spawnDeathFx(e);e.dead=true;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
-  function hurtEnemy(e,dmg,impact={}){if(e.dead)return 0;const before=e.hp;const crit=!impact.fixedDamage&&Math.random()<(.09+(impact.heroShot?(game.hero.gear?.crit||0):0));dmg*=crit?2:1;if(impact.heroShot&&game.hero.gear?.powers.wardlight&&e.shield>0)dmg*=1.25;if(!impact.bypassShield&&kirchende&&e.shield>0)dmg=kirchende.applyShieldDamage(e,dmg).hpDamage;dmg*=impact.fixedDamage?1:1-Math.max(0,(e.armor||0)-(impact.heroShot&&game.hero.gear?.powers.splinter?.1:0));e.hp-=dmg;if(e.type==='uprooted')kirchende?.registerBossHit(e,dmg);fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=isBoss(e);const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(impact.heroShot&&game.hero.gear?.powers.grove){game.hero.groveHits=(game.hero.groveHits||0)+1;if(game.hero.groveHits%5===0)for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<=60)hurtEnemy(other,saga.stats(game.hero).damage*.2);}}if(e.hp<=0){game.kills++;game.waveKilled++;game.essence+=enemySpecs[e.type]?.bounty||2;spawnDeathFx(e);e.dead=true;saga.onKill(e);const drops=isBoss(e)?9:1;for(let i=0;i<drops;i++)game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:isBoss(e)?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,isBoss(e)?'#f5a14f':'#72d0c2',isBoss(e)?34:11);if(isBoss(e)){showToast('EPISCHE ODER LEGENDÄRE BEUTE GEFALLEN');tone(520,.45,.08)}}return Math.max(0,Math.min(before,dmg));}
+  function retireEnemy(e){if(e.dead)return;spawnDeathFx(e);e.dead=true;game.waveKilled++;if(!inPortal())game.essence+=enemySpecs[e.type]?.bounty||2;spark(e.x,e.y,'#d76b50',18);}
+  function hurtEnemy(e,dmg,impact={}){if(e.dead)return 0;const before=e.hp;if(inPortal()&&impact.baseHit){const result=portalPerks.hitEffects(game.portalHits||{}, {origin:'base',source:impact.heroShot?'hero':'tower',targetId:e.portalId||String(game.enemies.indexOf(e)),time:game.elapsed},portalRun.perkRanks);game.portalHits=result.state;dmg*=result.damageMultiplier;if(result.slowSeconds){e.slow=Math.max(e.slow||0,result.slowSeconds);e.slowFactor=Math.min(e.slowFactor||1,1-result.slowFraction);}}const crit=!impact.fixedDamage&&Math.random()<(.09+(impact.heroShot?(game.hero.gear?.crit||0):0));dmg*=crit?2:1;if(impact.heroShot&&game.hero.gear?.powers.wardlight&&e.shield>0)dmg*=1.25;if(!impact.bypassShield&&kirchende&&e.shield>0)dmg=kirchende.applyShieldDamage(e,dmg).hpDamage;dmg*=impact.fixedDamage?1:1-Math.max(0,(e.armor||0)-(impact.heroShot&&game.hero.gear?.powers.splinter?.1:0));e.hp-=dmg;if(e.type==='uprooted')kirchende?.registerBossHit(e,dmg);fx.damage?.(game,e.x,e.y-e.r-10,dmg,{crit,reduced:lowFX()});e.hit=.1;e.hitKick=Math.max(e.hitKick||0,crit?1:.55);spark(e.x,e.y,crit?'#fff1a6':'#e6c57b',crit?12:5);const bossHit=isBoss(e);const impactShake=bossHit?3:(impact.shake||0);if(impactShake>0)shake=Math.max(shake,impactShake);if(!reducedMotion&&(bossHit||impact.hitStop>0))hitStop=Math.max(hitStop,bossHit ? .045 : (impact.hitStop||0));if(e.hp>0)updateEnemyPressure(e);if(impact.heroShot&&game.hero.gear?.powers.grove){game.hero.groveHits=(game.hero.groveHits||0)+1;if(game.hero.groveHits%5===0)for(const other of game.enemies){if(other!==e&&!other.dead&&dist(e,other)<=60)hurtEnemy(other,saga.stats(game.hero).damage*.2);}}if(e.hp<=0){if(isBoss(e))game.bossDefeated=true;game.kills++;game.waveKilled++;if(!inPortal())game.essence+=enemySpecs[e.type]?.bounty||2;spawnDeathFx(e);e.dead=true;saga.onKill(e);const drops=inPortal()?0:isBoss(e)?9:1;for(let i=0;i<drops;i++ )game.loot.push({x:e.x+rand(-18,18),y:e.y+rand(-18,18),r:isBoss(e)?7:5,life:12,vx:rand(-20,20),vy:rand(-20,20),...lootFor(e,i)});spark(e.x,e.y,isBoss(e)?'#f5a14f':'#72d0c2',isBoss(e)?34:11);if(isBoss(e)){showToast(inPortal()?'BOSS BESIEGT':'BOSS BESIEGT · BEUTE AM WELLENENDE');tone(520,.45,.08)}}return Math.max(0,Math.min(before,dmg));}
   function towerPosition(){const h=game.hero,p={x:h.x+facing.x*58,y:h.y+facing.y*58};return campaign.nearestSlot(p,game.level)||p;}
   function placementPreview(){
     if(!game||state!=='playing')return null;
@@ -521,8 +607,9 @@
     if(state!=='playing')return;
     const spec=towerSpecs[game.selectedTower];if(game.essence<spec.cost)return showToast('NOCH '+(spec.cost-game.essence)+' ESSENZ NÖTIG');if(game.towers.length>=game.maxTowers)return showToast('TURMLIMIT ERREICHT');
     const p=towerPosition(),error=placementError(p);if(error)return showToast(error);
-    game.essence-=spec.cost;game.towers.push({...p,r:18,damage:spec.damage,fireRate:spec.rate,fireCd:.1,range:spec.range,kind:game.selectedTower,level:1,spent:spec.cost,targetMode:'first'});spark(p.x,p.y,'#d9b66b',18);showToast(spec.name.toUpperCase()+' ERRICHTET');tone(150,.12);updateUI();
+    game.essence-=spec.cost;game.towers.push({...p,r:18,damage:spec.damage,fireRate:spec.rate,fireCd:.1,range:spec.range*(inPortal()?portalStats().towerRange:1),kind:game.selectedTower,level:1,spent:spec.cost,targetMode:'first'});spark(p.x,p.y,'#d9b66b',18);showToast(spec.name.toUpperCase()+' ERRICHTET');tone(150,.12);updateUI();
   }
+  function towerWithinGuardian(t){return inPortal()&&dist(t,game.hero)<220;}
   function nearbyTower(){let best=null,bd=92;for(const t of game.towers){const d=dist(game.hero,t);if(d<bd){bd=d;best=t}}return best}
   function cycleTargetMode(){
     if(state!=='playing')return;
@@ -530,10 +617,10 @@
     const index=targetModes.indexOf(t.targetMode||'first');t.targetMode=targetModes[(index+1)%targetModes.length];
     showToast(`ZIELPRIORITÄT · ${targetLabels[t.targetMode]}`);updateUI();
   }
-  function upgradeTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;if(t.kind==='boomerang'){const spec=towerSpecs.boomerang;t.damage=[8,11,14][t.level-1];t.range=[265,285,305][t.level-1];t.fireRate=[1.75,1.65,1.55][t.level-1];}else{t.damage*=1.32;t.fireRate*=.92;t.range+=18;}spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);tone(360,.18)}
+  function upgradeTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;if(t.kind==='boomerang'){const spec=towerSpecs.boomerang;t.damage=[8,11,14][t.level-1];t.range=[265,285,305][t.level-1]*(inPortal()?portalStats().towerRange:1);t.fireRate=[1.75,1.65,1.55][t.level-1];}else{t.damage*=1.32;t.fireRate*=.92;t.range+=18*(inPortal()?portalStats().towerRange:1);}spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);tone(360,.18)}
   function sellTower(){if(state!=='playing')return;const t=nearbyTower();if(!t)return showToast('GEHE NÄHER AN EINEN TURM');const refund=Math.floor(t.spent*.6);game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);tone(220,.12)}
   function selectTower(kind){if(!towerSpecs[kind]||!(enabledTowers.has(kind)||game.level>=3&&kind==='boomerang'))return;game.selectedTower=kind;document.querySelectorAll('.arsenal button').forEach(b=>{b.classList.toggle('selected',b.dataset.tower===kind);b.setAttribute('aria-pressed',String(b.dataset.tower===kind));});$('buildText').textContent=`${towerSpecs[kind].name} BAUEN · ${towerSpecs[kind].cost}`;updateUI()}
-  function endWave(){if(state!=='playing')return;if(game.mode!=='endless'&&(game.level===1&&game.wave===5||game.level===2&&game.wave===8||game.level===3&&game.wave===12||game.level===4&&game.wave===16||game.level===5&&game.wave===20||game.level===6&&game.wave===24)){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();rewardWave();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
+  function endWave(){if(state!=='playing')return;if(inPortal()){portalWaveComplete();return;}if(game.mode==='endless'&&game.bossDefeated){const reward=lootModel.grantBossRewardOnce(game.runId+':'+game.wave+':boss',game.wave,'endless');if(reward.status==='error'){showToast('Bossbeute konnte nicht gespeichert werden');return;}game.bossDefeated=false;}if(game.mode!=='endless'&&(game.level===1&&game.wave===5||game.level===2&&game.wave===8||game.level===3&&game.wave===12||game.level===4&&game.wave===16||game.level===5&&game.wave===20||game.level===6&&game.wave===24)){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();rewardWave();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
   function getPerks(){const pool=[
     {name:'Eiserner Eid',icon:'✦',desc:'+25 maximale und aktuelle Hüter-LP.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
     {name:'Runenmeister',icon:'◆',desc:'+30 % Feuerrate des Hüters.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
@@ -543,7 +630,7 @@
     {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
   ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
   function selectPerk(p){if(state!=='perk')return;p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
-  function gameOver(){if(state==='gameover')return;collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
+  function gameOver(){if(state==='gameover')return;if(inPortal())portalEvent('FAIL');collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
 
 
   // The church blocks the player, even during a dodge. Movement resolves each
@@ -555,7 +642,7 @@
       y+r>c.y+q.top&&y-r<c.y+q.bottom;
   }
   function update(dt){
-    if(state!=='playing'||tutorialPending||tutorialActive)return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);time+=dt;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
+    if(state!=='playing'||tutorialPending||tutorialActive)return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);time+=dt;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);if(inPortal()){const stats=portalStats();heroStats.damage*=stats.heroDamage;heroStats.speed*=stats.moveSpeed;}
     h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
     let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed;if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};{const nx=clamp(h.x+dx*sp*dt,26,WORLD_W-26),ny=clamp(h.y+dy*sp*dt,26,WORLD_H-26);
       if(!churchBlocks(nx,h.y,h.r))h.x=nx;
@@ -563,8 +650,8 @@
     }updateCamera(dt);saga.update(dt,len>0||h.dodge>0,facing);
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage,560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack();h.fireCd=heroStats.rate}
-    if(game.intermission>0)game.intermission=Math.max(0,game.intermission-dt);
-    else if(game.waveSpawned<game.waveTotal){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=Math.max(.30,1.02-game.wave*.045)}}
+    if(game.intermission>0){if(!inPortal())game.intermission=Math.max(0,game.intermission-dt);}
+    else if(game.waveSpawned<game.waveTotal&&(!inPortal()||portalWorld.canSpawn(game.enemies.length,game.waveSpawned,game.waveTotal))){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=Math.max(.30,1.02-game.wave*.045)}}
     if(game.level===3)kirchende?.tickSupport(game.enemies,dt);
     let heroPursuers=0;
     for(const e of game.enemies){
@@ -592,7 +679,7 @@
       if(d<=attackRange+.5&&e.type==='uprooted'){const result=kirchende.tickBoss(e,dt);if(result.attackDamage){m.hp-=result.attackDamage;e.attackAnim=.22;shake=Math.max(shake,3);spark(m.x,m.y,'#b58d60',20);}if(result.phaseChanged)showWaveBanner(`DER ENTWURZELTE · PHASE ${bossPhaseLabel(e.phase)}`);if(e.interrupted){showToast('LADEANGRIFF UNTERBROCHEN');e.interrupted=false;}}
       else if(d<=attackRange+.5&&e.attackCd<=0){
         if(targetObj===m&&e.type==='sapper'){m.hp-=e.damage*1.65;retireEnemy(e);spark(m.x,m.y,'#e66f52',22);tone(72,.12,.07);continue;}
-        if(targetObj===h&&h.invuln<=0)saga.damage(e.damage*.72);else if(targetObj===m)m.hp-=e.damage;e.attackCd=e.attackCooldown||.85;e.attackAnim=.22;if(e.type==='boss'){shake=Math.max(shake,3);if(!reducedMotion)hitStop=Math.max(hitStop,.045);}spark(targetObj.x,targetObj.y,e.type==='archer'?'#d7c28a':'#b7533d',8);tone(e.type==='archer'?210:95,.05,.04);
+        if(targetObj===h&&h.invuln<=0){const covered=inPortal()&&game.towers.some(t=>dist(h,t)<=t.range);const area=inPortal()?portalPerks.areaModifiers(portalRun.perkRanks,{withinTowerRange:covered}):null;saga.damage(e.damage*.72*(area?.incomingDamageMultiplier||1));}else if(targetObj===m)m.hp-=e.damage;e.attackCd=e.attackCooldown||.85;e.attackAnim=.22;if(e.type==='boss'){shake=Math.max(shake,3);if(!reducedMotion)hitStop=Math.max(hitStop,.045);}spark(targetObj.x,targetObj.y,e.type==='archer'?'#d7c28a':'#b7533d',8);tone(e.type==='archer'?210:95,.05,.04);
       }
     }
     game.enemies=game.enemies.filter(e=>!e.dead);
@@ -611,7 +698,7 @@
           const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;
           shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
         }
-        t.fireCd=t.fireRate;
+        const guardian=towerWithinGuardian(t);const area=inPortal()?portalPerks.areaModifiers(portalRun.perkRanks,{towerWithinGuardianRadius:guardian}):null;t.fireCd=t.fireRate/(inPortal()?portalStats().towerAttackSpeed*area.towerAttackSpeedMultiplier:1);
       }
     }
     for(const b of game.bullets){
@@ -623,7 +710,7 @@
         if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(b,e))||hitSet?.has(e)||segmentDistance(e,b)>=e.r+b.r)continue;
         const synergy=projectileSynergy(b,e);
         const shotDamage=b.boomerang?b.damage:b.damage;
-        const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,fixedDamage:!!b.boomerang});
+        const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,baseHit:true,fixedDamage:!!b.boomerang});
         if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));
         if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}
         fx.burst(game,{...b,x:e.x,y:e.y},true,audioOn,lowFX());
@@ -637,11 +724,11 @@
     game.bullets=game.bullets.filter(b=>b.life>0);
     for(const l of game.loot){l.life-=dt;if(l.life<=0&&l.kind==='item'){pickupItem(l.item,true);continue;}const d=dist(l,h);if(d<170){l.x+=(h.x-l.x)*dt*7;l.y+=(h.y-l.y)*dt*7}if(l.life>0&&d<20){if(l.kind==='item')pickupItem(l.item);else game.essence+=4;l.life=0;tone(l.kind==='item'?760:640,.04,.03)}}game.loot=game.loot.filter(l=>l.life>0);
     for(const p of game.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}game.particles=game.particles.filter(p=>p.life>0);for(const d of game.deathFx)d.life-=dt;game.deathFx=game.deathFx.filter(d=>d.life>0);fx.updateDamage?.(game,dt);
-    if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
+    if(inPortal()){const near=portalWorld.atExit(h,portalSection(),portalRun.phase);setHidden($('portalExitBtn'),!near||state!=='playing');}if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
   }
   function segmentProjection(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;return ((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1);}
   function segmentDistance(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;const t=clamp(((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(e.x-(b.prevX+t*dx),e.y-(b.prevY+t*dy));}
-  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';const speedBtn=$('speedBtn'),speedAvailable=game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier===2));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreview(game.wave)}${game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,game.wave);setText($('levelLabel'),game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);setWidth(ui.playerHp,`${clamp(h.hp/h.maxHp*100,0,100)}%`);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setWidth(ui.monumentHp,`${clamp(m.hp/m.maxHp*100,0,100)}%`);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${game.wave}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===6?'GOETHESTRASSE · DREI WEGE + LUFTANGRIFF':game.level===4?'DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · FESTE BAUPLÄTZE':`VIER TORE · FESTE BAUPLÄTZE · WELLE ${game.wave} / 5`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);{const button=$('tower-boomerang');if(button){const available=game.level>=3;button.hidden=!available;button.disabled=!playing||!available;}}const buildContext=buildContextActive();setHidden($('arsenal'),!buildContext);setHidden($('buildBtn'),!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${Math.floor(nearby.spent*.6)}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');}
+  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';const speedBtn=$('speedBtn'),speedAvailable=game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier===2));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreview(game.wave)}${game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,game.wave);setText($('levelLabel'),game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);setWidth(ui.playerHp,`${clamp(h.hp/h.maxHp*100,0,100)}%`);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setWidth(ui.monumentHp,`${clamp(m.hp/m.maxHp*100,0,100)}%`);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${game.wave}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===6?'GOETHESTRASSE · DREI WEGE + LUFTANGRIFF':game.level===4?'DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · FESTE BAUPLÄTZE':`VIER TORE · FESTE BAUPLÄTZE · WELLE ${game.wave} / 5`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);{const button=$('tower-boomerang');if(button){const available=game.level>=3;button.hidden=!available;button.disabled=!playing||!available;}}const buildContext=buildContextActive();setHidden($('arsenal'),!buildContext);setHidden($('buildBtn'),!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${Math.floor(nearby.spent*.6)}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');if(inPortal()){setText($('levelLabel'),`PORTAL · ${portalRun.section} / 3`);setText(ui.storyText,`${portalSection().name.toUpperCase()} · WELLE ${Math.min(2,portalRun.waveInSection+1)} / 2`);setText(ui.objectiveText,portalRun.phase==='exit'?'NÖRDLICHES PORTAL ERREICHEN':portalRun.phase==='build'?'WELLE STARTEN':portalRun.phase==='perk'?'PERK WÄHLEN':`WELLE ${portalRun.waveInSection} / 2`);setHidden(nextWave,portalRun.phase!=='build'||!playing);setText(nextWave,'WELLE STARTEN');setText(preview,portalRun.phase==='build'?`${game.waveTotal} GEGNER${portalRun.section===3&&game.wave===2?' · BOSS':''}`:'');setHidden(preview,portalRun.phase!=='build');setText($('storageWarning'),portalSaveError||lootModel.status);setHidden($('storageWarning'),!(portalSaveError||lootModel.status));}}
 
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
@@ -687,7 +774,7 @@
     if(game.level===5)globalThis.DenkmalHohensyburgArt?.drawAirLane(ctx,level,game.intermission>0);
     if(game.level===6)globalThis.DenkmalGoetheArt?.drawAirLane(ctx,level,game.intermission>0);
     for(const p of level.slots){if(!visible(p,35))continue;if(game.towers.some(t=>dist(t,p)<20))continue;if(globalThis.Style2Markers?.drawPad(ctx,p))continue;ctx.strokeStyle='#d6c38c';ctx.fillStyle='#14201fdd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#e1cc8d';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText('+',p.x,p.y+8);}
-    level.gates.forEach((p,i)=>{if(!visible(p))return;const gates=campaign.getWaveGates(game.level,game.wave),active=game.intermission<=0&&game.waveSpawned<game.waveTotal&&i===gates[game.waveSpawned%gates.length]&&!(level.airGate&&enemySpecs[enemyTypeForSpawn(game.wave,game.waveSpawned)]?.flying);if(game.level===3||game.level===4||game.level===5||game.level===6){ctx.fillStyle=active?'#efce8a':'#bfb897';ctx.font='700 15px sans-serif';ctx.textAlign='center';ctx.fillText((level.gateLabels?level.gateLabels:['FUSSWEG','DORFWEG LINKS','DORFWEG RECHTS','KIRCHWEG'])[i],p.x,p.y-30);if(!globalThis.Style2Markers?.drawGate(ctx,p,level.paths[i]?.[1]||campaign.center,active)){ctx.strokeStyle=active?'#efce8a':'#bfb89755';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,35,0,7);ctx.stroke();}return;}ctx.strokeStyle=active?'#f0b873cc':'#bda66c55';ctx.lineWidth=active?4:2;ctx.beginPath();ctx.arc(p.x,p.y,54+(active?Math.sin(time*4)*5:0),0,Math.PI*2);ctx.stroke();ctx.fillStyle=active?'#f0c982':'#b9aa7a';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(game.level===1?`TOR ${i+1}`:'EINGANG',p.x,p.y+72);if(active){ctx.strokeStyle='#d6886388';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,48+Math.sin(time*4)*4,0,Math.PI*2);ctx.stroke();}if(globalThis.DenkmalArt?.draw(ctx,'gate',p.x,p.y,116)){ctx.fillStyle='#d7c8a1';ctx.textAlign='center';ctx.font='600 16px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-115);return;}ctx.fillStyle='#171719';ctx.strokeStyle='#cf8d52';ctx.lineWidth=5;ctx.fillRect(p.x-38,p.y-38,76,76);ctx.strokeRect(p.x-38,p.y-38,76,76);ctx.fillStyle='#a64b2b';ctx.fillRect(p.x-23,p.y-29,46,58);ctx.fillStyle='#ffe0a1';ctx.textAlign='center';ctx.font='bold 15px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-52);});
+    level.gates.forEach((p,i)=>{if(!visible(p))return;const gates=inPortal()?portalSection().gates:campaign.getWaveGates(game.level,game.wave),active=game.intermission<=0&&game.waveSpawned<game.waveTotal&&i===gates[game.waveSpawned%gates.length]&&!(level.airGate&&enemySpecs[enemyTypeForSpawn(game.wave,game.waveSpawned)]?.flying);if(game.level===3||game.level===4||game.level===5||game.level===6){ctx.fillStyle=active?'#efce8a':'#bfb897';ctx.font='700 15px sans-serif';ctx.textAlign='center';ctx.fillText((level.gateLabels?level.gateLabels:['FUSSWEG','DORFWEG LINKS','DORFWEG RECHTS','KIRCHWEG'])[i],p.x,p.y-30);if(!globalThis.Style2Markers?.drawGate(ctx,p,level.paths[i]?.[1]||campaign.center,active)){ctx.strokeStyle=active?'#efce8a':'#bfb89755';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,35,0,7);ctx.stroke();}return;}ctx.strokeStyle=active?'#f0b873cc':'#bda66c55';ctx.lineWidth=active?4:2;ctx.beginPath();ctx.arc(p.x,p.y,54+(active?Math.sin(time*4)*5:0),0,Math.PI*2);ctx.stroke();ctx.fillStyle=active?'#f0c982':'#b9aa7a';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(game.level===1?`TOR ${i+1}`:'EINGANG',p.x,p.y+72);if(active){ctx.strokeStyle='#d6886388';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,48+Math.sin(time*4)*4,0,Math.PI*2);ctx.stroke();}if(globalThis.DenkmalArt?.draw(ctx,'gate',p.x,p.y,116)){ctx.fillStyle='#d7c8a1';ctx.textAlign='center';ctx.font='600 16px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-115);return;}ctx.fillStyle='#171719';ctx.strokeStyle='#cf8d52';ctx.lineWidth=5;ctx.fillRect(p.x-38,p.y-38,76,76);ctx.strokeRect(p.x-38,p.y-38,76,76);ctx.fillStyle='#a64b2b';ctx.fillRect(p.x-23,p.y-29,46,58);ctx.fillStyle='#ffe0a1';ctx.textAlign='center';ctx.font='bold 15px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-52);});
     ctx.restore();
   }
   function shadow(x,y,r){ctx.save();ctx.fillStyle='#101b1c24';ctx.beginPath();ctx.ellipse(x+3,y+5,r*1.4,r*.45,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0a151b44';ctx.beginPath();ctx.ellipse(x,y+3,r,r*.27,0,0,Math.PI*2);ctx.fill();ctx.restore()}
@@ -817,7 +904,11 @@
       ctx.save();ctx.fillStyle='#eee2c8';ctx.font='700 10px sans-serif';ctx.textAlign='center';ctx.fillText(indicator.label,x,y+20);ctx.restore();
     }
   }
-  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();globalThis.Style2Phase6?.draw(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},camera,W/zoom,H/(zoom*viewDepth));drawLevel();globalThis.Style2Ambience?.drawGround(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},time,{low:lowFX()});const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),...game.deathFx.map(o=>({o,t:'d'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){const paint=()=>{if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='d')drawEnemy(a.o,1-a.o.life/a.o.maxLife);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)};if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,paint);else paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
+  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();if(inPortal()){ctx.fillStyle=portalSection().tint;ctx.fillRect(camera.x,camera.y,W/zoom,H/(zoom*viewDepth));}globalThis.Style2Phase6?.draw(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},camera,W/zoom,H/(zoom*viewDepth));drawLevel();globalThis.Style2Ambience?.drawGround(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},time,{low:lowFX()});const objs=[{o:game.monument,t:'m'},...game.towers.map(o=>({o,t:'t'})),...game.enemies.map(o=>({o,t:'e'})),...game.deathFx.map(o=>({o,t:'d'})),{o:game.hero,t:'h'}].filter(a=>visible(a.o,a.t==='t'?a.o.range:180)).sort((a,b)=>a.o.y-b.o.y);for(const a of objs){const paint=()=>{if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='d')drawEnemy(a.o,1-a.o.life/a.o.maxLife);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)};if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,paint);else paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
+    if(inPortal()&&portalRun.phase==='exit'){
+      const gate=portalSection().exit;ctx.save();ctx.strokeStyle='#74e3d4';ctx.fillStyle='#63b9c755';ctx.lineWidth=5;ctx.shadowColor='#8bf8e5';ctx.shadowBlur=25;
+      ctx.beginPath();ctx.ellipse(gate.x,gate.y,35,65,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+    }
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
   function updateTelemetry(now){
@@ -892,7 +983,7 @@
     stick.addEventListener('touchend',releaseTouch,{passive:false});
     stick.addEventListener('touchcancel',releaseTouch,{passive:false});
   }
-  $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>game.level===6||game.level===5&&level5Preview?continueEndless():startGame(game.level+1);$('continueEndlessBtn').onclick=continueEndless;$('level3Btn').onclick=()=>startGame(3);$('level4Btn').onclick=()=>startGame(4);$('level5Btn').onclick=()=>startGame(5);$('level6Btn').onclick=()=>startGame(6);$('endless6Btn').onclick=()=>startGame(6,'endless');$('endless1Btn').onclick=()=>startGame(1,'endless');$('endlessBtn').onclick=()=>startGame(2,'endless');$('endless3Btn').onclick=()=>startGame(3,'endless');$('endless4Btn').onclick=()=>startGame(4,'endless');$('endless5Btn').onclick=()=>startGame(5,'endless');$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level,game.mode);$('pauseBtn').onclick=pauseGame;$('speedBtn').onclick=toggleSpeed;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
+  $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>game.level===6||game.level===5&&level5Preview?continueEndless():startGame(game.level+1);$('continueEndlessBtn').onclick=continueEndless;$('level3Btn').onclick=()=>startGame(3);$('level4Btn').onclick=()=>startGame(4);$('level5Btn').onclick=()=>startGame(5);$('level6Btn').onclick=()=>startGame(6);$('endless6Btn').onclick=()=>startGame(6,'endless');$('endless1Btn').onclick=()=>startGame(1,'endless');$('endlessBtn').onclick=()=>startGame(2,'endless');$('endless3Btn').onclick=()=>startGame(3,'endless');$('endless4Btn').onclick=()=>startGame(4,'endless');$('endless5Btn').onclick=()=>startGame(5,'endless');$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>inPortal()?startPortal(false):startGame(game.level,game.mode);$('pauseBtn').onclick=pauseGame;$('speedBtn').onclick=toggleSpeed;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
   document.querySelectorAll('.arsenal button').forEach(b=>b.onclick=()=>{if(state==='playing'){selectTower(b.dataset.tower);canvas.focus();}});
   $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;$('menuPauseBtn').onclick=pauseGame;
   // V4 alpha.4 touch: tapping the playfield closes an open HUD menu; long-press menus stay off the canvas.
@@ -908,14 +999,15 @@
   function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;try{localStorage.setItem('denkmal-telemetry',telemetryOn?'on':'off');}catch{}telemetryLabel();}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
-  const menuEntries={campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
+  const menuEntries={campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',portal:'menuPortalBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
   function showMenuPanel(panel,moveFocus=true){
     if(state!=='start')return;
     const previous=menuPanel;
+    if(panel==='portal'){const saved=portalStore?.load();setText($('portalMenuStatus'),saved?.status==='ok'?`Abschnitt ${saved.run.section} · ${saved.run.phase==='combat'?'vor der Welle':saved.run.phase}`:saved?.status==='missing'?'Noch keine Reise gespeichert':`Speicherstand: ${saved?.status||'nicht verfügbar'}`);setDisabled($('portalResumeBtn'),saved?.status!=='ok'||['finished','failed'].includes(saved.run?.phase));}
     menuPanel=panel in menuEntries?panel:'home';
     $('menuHomeActions').hidden=menuPanel!=='home';
     $('menuBackBtn').hidden=menuPanel==='home';
-    for(const [name,id] of Object.entries({campaign:'campaignMenu',arcade:'endlessMenu',hero:'heroMenu',options:'optionsMenu'}))$(id).hidden=menuPanel!==name;
+    for(const [name,id] of Object.entries({campaign:'campaignMenu',arcade:'endlessMenu',portal:'portalMenu',hero:'heroMenu',options:'optionsMenu'}))$(id).hidden=menuPanel!==name;
     if(moveFocus)(menuPanel==='home'?$(menuEntries[previous]||'menuCampaignBtn'):$('menuBackBtn')).focus();
   }
   function chooseCharacter(character){
@@ -943,7 +1035,7 @@
     try{localStorage.setItem('denkmal-character',selectedCharacter);}catch{}
   }
   for(const [panel,id] of Object.entries(menuEntries))$(id).onclick=()=>showMenuPanel(panel);
-  $('menuBackBtn').onclick=()=>showMenuPanel('home');
+  $('menuBackBtn').onclick=()=>showMenuPanel('home');$('portalNewBtn').onclick=()=>startPortal(false);$('portalResumeBtn').onclick=()=>startPortal(true);$('portalExitBtn').onclick=enterPortal;
   $('chooseMarcel').onclick=()=>chooseCharacter('marcel');$('chooseKim').onclick=()=>chooseCharacter('kim');
   try{selectedCharacter=localStorage.getItem('denkmal-character')==='kim'?'kim':'marcel';}catch{}
   chooseCharacter(selectedCharacter);showMenuPanel('home',false);
@@ -953,6 +1045,7 @@
   atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({getCharacter:()=>selectedCharacter,openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);
-  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,startGame,spawnEnemy,endWave,update,getState:()=>state,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks};
+  globalThis.DenkmalTestHooks={projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,startGame,spawnEnemy,hurtEnemy,endWave,update,getState:()=>state,getPortalRun:()=>portalRun,startPortal,enterPortal,portalNextWave,portalWaveComplete,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();
+

@@ -24,7 +24,10 @@ const expectedVersions = new Map([
   ['preloader.js', 'alpha9a1'],
   ['levels.js', 'syburg2'],
   ['visuals.js', 'alpha9a1'],
-  ['loot.js', 'v400a4merge1'],
+  ['loot.js', 'portal4'],
+  ['portal-run.js', '1'],
+  ['portal-perks.js', '1'],
+  ['portal-gameplay.js', '1'],
   ['loot-ui.js', 'alpha9a1'],
   ['hero-saga.js', 'alpha9a1'],
   ['combat-fx.js', 'v400a6s2t4'],
@@ -38,7 +41,7 @@ const expectedVersions = new Map([
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'alpha9-user-towers1'],
+  ['game.js', 'portal4'],
   ['hohensyburg.js', 'syburg1'],
   ['hohensyburg-art.js', 'alpha9a3'],
   ['style2-ambience.js', 'alpha9a2'],
@@ -75,3 +78,4 @@ for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
 console.log('TD2 Alpha.5 metadata and ' + resources.length + ' static JS/CSS cache references verified.');
+

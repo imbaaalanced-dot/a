@@ -100,6 +100,11 @@
         // generate advances nextId; do so against a private candidate only.
         profile=copy(previous);
         item=region==='kirchende'?generateKirchende(wave,true):generate(wave,true);
+        if(rewardId==='campaign:kirchende:12:boss'){
+          Object.assign(item,{name:'Hainkern',power:'grove',slot:'ring1',rarity:'epic'});
+          profile.kirchendeCompleted=true;
+          if(!profile.milestones.includes(12))profile.milestones.push(12);
+        }
         next=profile;
         (next.bag.length<CAPACITY?next.bag:next.overflow).push(item);
         Object.defineProperty(next.claimedBossRewards,rewardId,{value:item.id,enumerable:true,writable:true,configurable:true});

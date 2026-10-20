@@ -53,7 +53,7 @@ assert.equal(canvases,cached,'canopy translucency must not allocate more buffers
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish5'),'updated renderer must invalidate browser cache');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-assert.ok(html.includes('game.js?v=alpha9-user-towers1'),'preview logic must bypass old browser cache');
+assert.ok(html.includes('game.js?v=portal4'),'preview logic must bypass old browser cache');
 assert.ok(game.includes("location?.pathname?.includes('/v4-style2/')"),'style2 branch has a dedicated test-only route');
 assert.ok(game.includes('lootModel.profile.level3||style2Preview'),'Level 3 must be available to testers');
 assert.ok(game.includes('lootModel.profile.kirchendeCompleted||level4Preview'),'Level 4 preview must still be accessible');
@@ -61,3 +61,4 @@ assert.ok(game.includes('game.level===3&&!style2Preview'),'preview must not pers
 const levels=fs.readFileSync(path.join(root,'levels.js'),'utf8');
 assert.ok(levels.includes('KIRCHENDE'),'existing Kirchende level remains available');
 console.log('Style 2 Kirchende: baked light, moss, roots, transparency, caching and cache-key checks passed.');
+

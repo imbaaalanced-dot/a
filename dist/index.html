@@ -96,11 +96,18 @@
           <nav id="menuHomeActions" class="menu-home-actions" aria-label="Hauptmenü">
             <button id="menuCampaignBtn" class="menu-art-button" type="button" aria-controls="campaignMenu" aria-label="Kampagne"><img src="assets/menu/button-campaign-v1.webp" alt="" width="1024" height="264"/><span>Kampagne</span></button>
             <button id="menuArcadeBtn" class="menu-art-button" type="button" aria-controls="endlessMenu" aria-label="Arcade – Endlos"><img src="assets/menu/button-arcade-v1.webp" alt="" width="1024" height="264"/><span>Arcade – Endlos</span></button>
+            <button id="menuPortalBtn" class="menu-art-button" type="button" aria-controls="portalMenu" aria-label="Portalreise"><span>✧ Portalreise</span></button>
             <button id="menuCharacterBtn" class="menu-art-button" type="button" aria-controls="heroMenu" aria-label="Held wechseln / Inventar"><img src="assets/menu/button-hero-v1.webp" alt="" width="1024" height="264"/><span>Held wechseln / Inventar</span></button>
             <button id="menuOptionsBtn" class="menu-art-button" type="button" aria-controls="optionsMenu" aria-label="Optionen"><img src="assets/menu/button-options-v1.webp" alt="" width="1024" height="264"/><span>Optionen</span></button>
           </nav>
           <button id="menuBackBtn" class="menu-back" type="button" hidden>‹ Zurück zum Hauptmenü</button>
           <div class="menu-actions" aria-label="Spielmodi">
+            <section class="menu-section" id="portalMenu" hidden aria-labelledby="portalTitle">
+              <h2 id="portalTitle">PORTALREISE</h2><p>Drei Abschnitte · Zwei Wellen je Abschnitt · Eine Bosswelle am Ende.</p>
+              <button id="portalNewBtn" class="primary" type="button">NEUE REISE</button>
+              <button id="portalResumeBtn" class="icon-btn" type="button">REISE FORTSETZEN</button>
+              <p id="portalMenuStatus" role="status"></p>
+            </section>
             <section class="menu-section campaign-menu" id="campaignMenu" hidden aria-labelledby="campaignTitle">
               <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–VI</span></div>
               <div class="map-card-list">
@@ -225,6 +232,7 @@
       <div class="perk-grid" id="perkGrid"></div>
       <small>Drücke 1, 2 oder 3</small>
     </section>
+    <button id="portalExitBtn" class="portal-exit hidden" type="button">NÖRDLICHES PORTAL BETRETEN</button>
 
     <section class="gameover modal hidden" id="gameover" role="dialog" aria-modal="true" aria-labelledby="gameoverTitle">
       <p class="eyebrow">DIE WACHT ENDET</p>
@@ -254,7 +262,10 @@
   </main>
   <script src="levels.js?v=syburg2"></script>
   <script src="visuals.js?v=alpha9a1"></script>
-  <script src="loot.js?v=v400a4merge1"></script>
+  <script src="loot.js?v=portal4"></script>
+  <script src="portal-run.js?v=1"></script>
+  <script src="portal-perks.js?v=1"></script>
+  <script src="portal-gameplay.js?v=1"></script>
   <script src="loot-ui.js?v=alpha9a1"></script>
   <script src="hero-saga.js?v=alpha9a1"></script>
   <script src="combat-fx.js?v=v400a6s2t4"></script>
@@ -278,6 +289,8 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha9a3"></script>
-  <script src="game.js?v=alpha9-user-towers1"></script>
+  <script src="game.js?v=portal4"></script>
+  <style>.portal-exit{position:fixed;left:50%;bottom:calc(7rem + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;background:#134d58;color:white;padding:.85rem 1.2rem;border:2px solid #a8e6d1;border-radius:.7rem;font-weight:700}.portal-exit.hidden{display:none}</style>
 </body>
 </html>
+
