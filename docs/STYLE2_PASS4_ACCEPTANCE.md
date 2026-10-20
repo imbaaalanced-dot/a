@@ -58,3 +58,11 @@ Bogen-Funken, Kanonen-Druckwelle, Eis-Kristallsplitter, violette Rift-Arcs und B
 - GitHub-CI für Commit `c2c4e8c703b62cb031a4fb69c0e6492012f4a62b`: [Push-Test bestanden](https://github.com/imbaaalanced-dot/a/actions/runs/39449848562) und [PR-Test bestanden](https://github.com/imbaaalanced-dot/a/actions/runs/39449853440).
 
 **Nicht erledigt:** Die drei originalen Rift-Turmgrafiken wurden noch nicht bildlich korrigiert. Die neuen Treffer sind prozedural, keine bearbeiteten PNG-/WebP-Master. Vor Freigabe fehlen visuelle Abnahme auf echten Screens sowie realer Android-Browser-/WebView-Test bei vielen Gegnern.
+
+## Isolierte Rift-/Projektil-Sichtprüfung
+
+Die neue Seite `dist/style2-sprite-review.html` dient nur der visuellen Abnahme, nicht als Spielmodus. Sie lädt drei **unveränderte** Rift-V1-Türme auf dunklem/hellem Hintergrund bei 64/128/512 px und auf der zweiten Registerkarte alle 15 Projektilvarianten bei 64/128 px. Eis/Magie L2 nutzt das schon vorhandene V2-Override.
+
+Die Galerie prüft technisch die nativen Abmessungen und transparente Außenkanten im Browser, zeigt HTTP-/Bildladefehler und ignoriert verspätete Ergebnisse einer zuvor geöffneten Registerkarte. Ein erfolgreicher Alphatest ist **keine** Aussage über die Qualität der gemalten Innen-/Außenkanten. Violette Rift-Strahlung bleibt ausdrücklich legitim.
+
+Test: `node tests/style2-review-page.test.cjs`. Die Seite benötigt einen statischen Webserver mit Basis `dist/`, wird im Produktions-Hauptmenü nicht verlinkt und öffnet keine Spielstände. Bilder sind noch nicht manuell abgenommen oder neu exportiert.
