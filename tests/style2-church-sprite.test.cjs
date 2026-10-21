@@ -4,12 +4,11 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm');
 const src=fs.readFileSync('dist/church-art.js','utf8');
 const html=fs.readFileSync('dist/index.html','utf8');
-const webp=fs.readFileSync('dist/assets/church-ende-style2.webp');
-assert.equal(webp.subarray(0,4).toString('ascii'),'RIFF');
-assert.equal(webp.subarray(8,12).toString('ascii'),'WEBP');
-assert.ok(webp.length>5000&&webp.length<120000,'sprite should remain mobile-sized');
-assert.match(html,/church-art\.js\?v=style2church3/);
-let canvases=0,draws=[],save=0,loadUrl='';
+const png=fs.readFileSync('dist/assets/church-ende-alpha8.webp');
+assert.equal(png.subarray(0,4).toString('ascii'),'RIFF');
+assert.equal(png.subarray(8,12).toString('ascii'),'WEBP');
+assert.match(html,/church-art\.js\?v=alpha8a2/);
+let canvases=0,draws=[],save=0,loadUrls=[];
 const grad=()=>({addColorStop(){}});
 const ctx=new Proxy({
   drawImage(...args){draws.push(args);},
@@ -22,18 +21,19 @@ const document={createElement(tag){
 }};
 let imageInstance=null;
 class ImageMock {
-  constructor(){this.naturalWidth=240;this.naturalHeight=180;imageInstance=this;}
-  set src(url){loadUrl=url;this.onload?.();}
+  constructor(){this.naturalWidth=1254;this.naturalHeight=1254;if(!imageInstance)imageInstance=this;}
+  set src(url){loadUrls.push(url);this.onload?.();}
 }
 const box={Math,document,Image:ImageMock};
 vm.createContext(box);vm.runInContext(src,box);
 const art=box.DenkmalChurch,center={x:1536,y:1536};
 assert.ok(art.churchSpriteReady&&!art.churchSpriteFailed);
-assert.match(loadUrl,/^assets\/church-ende-style2\.webp\?v=style2church3$/);
+assert.equal(loadUrls[0],'assets/church-ende-alpha8.webp?v=alpha8a2');
+assert.equal(loadUrls[1],'assets/lion-ende-alpha8.webp?v=alpha8a2');
 art.drawBackdrop(ctx,center);
 const first=draws.find(a=>a[0]===imageInstance);
 assert.ok(first,'the generated church WebP must be drawn, not only loaded');
-assert.deepEqual(first.slice(1),[-520,-910,760,570]);
+assert.deepEqual(first.slice(1),[-520,-1100,760,760]);
 assert.equal(canvases,0,'loaded asset should bypass procedural church rasterization');
 for(let i=0;i<70;i++)art.drawBackdrop(ctx,center);
 assert.equal(canvases,0,'no new architecture canvases per frame');

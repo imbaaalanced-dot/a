@@ -1,0 +1,14 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx={};vm.createContext(ctx);for(const file of ['equipment-catalog.js','loot.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),ctx);
+const data=new Map();let blocked=false;const storage={getItem:k=>data.get(k)||null,setItem(k,v){if(blocked)throw Error('quota');data.set(k,v)}};
+const request=n=>({mapId:1,wave:6,bossType:'boss',runId:'portal-test',spawnId:'section-'+n+'-boss'});
+let m=ctx.DenkmalLoot.create({storage});
+assert.equal(m.claimBoss(request(3)).state,'granted');assert.equal(m.count,1);
+assert.equal(m.claimBoss(request(3)).state,'duplicate');assert.equal(m.count,1);
+m=ctx.DenkmalLoot.create({storage});assert.equal(m.claimBoss(request(3)).state,'duplicate');
+const previous=data.get(ctx.DenkmalLoot.KEY);blocked=true;
+const reward=m.claimBoss(request(4));assert.equal(reward.persisted,false);assert.equal(data.get(ctx.DenkmalLoot.KEY),previous);
+assert(JSON.parse(m.exportJSON()).profile.owned.some(i=>i.id==='boss-portal-test-section-4-boss'));
+blocked=false;assert(m.save());m=ctx.DenkmalLoot.create({storage});assert.equal(m.claimBoss(request(4)).state,'duplicate');
+const stale=ctx.DenkmalLoot.create({storage});assert.equal(m.claimBoss(request(5)).state,'granted');assert.equal(stale.claimBoss(request(6)).persisted,false);
+console.log('portal storage: shared boss catalog, durable deduplication, session export and stale tabs passed');

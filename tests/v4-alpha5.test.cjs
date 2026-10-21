@@ -17,7 +17,7 @@ const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
@@ -50,7 +50,7 @@ check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
   assert.ok(gameSource.includes('frameWidth*(level-1)'));
   assert.ok(gameSource.includes('v400a5combined1'));
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.ok(html.includes('game.js?v=merge1810v1'));
+  assert.ok(html.includes('game.js?v=final-20261021'));
   assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');
 });
 check('Thorn and lantern towers are no longer available',()=>{
@@ -142,7 +142,7 @@ check('Low damage remains below single-target bow DPS at every stage',()=>{
 });
 check('Church level unlocks after Kirchende and persists completion of wave 16',()=>{
   t.startGame(4);assert.equal(t.game.level,3,'level 4 is locked before Kirchende reward');
-  t.lootModel.claimKirchendeReward();t.startGame(4);
+  t.lootModel.claimKirchendeCompletion();t.startGame(4);
   assert.equal(t.game.level,4);
   assert.equal(t.game.wave,13);
   assert.equal(t.game.maxTowers,10);

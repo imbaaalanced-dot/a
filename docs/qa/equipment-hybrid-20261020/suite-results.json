@@ -1,0 +1,301 @@
+{
+  "sourceCommit": "92591758a770bd2a2005ed48eec34e8ad4db76c9",
+  "commands": [
+    {
+      "command": "node tests/loot-ui.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-1.log"
+    },
+    {
+      "command": "node tests/menu-navigation.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-2.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/menu-navigation.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-3.log"
+    },
+    {
+      "command": "node tests/startup-loading.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-4.log"
+    },
+    {
+      "command": "node tests/alpha8-preview.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-5.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/alpha8-preview.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-6.log"
+    },
+    {
+      "command": "node tests/main-menu.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-7.log"
+    },
+    {
+      "command": "node tests/intro-tutorial.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-8.log"
+    },
+    {
+      "command": "node tests/preloader.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-9.log"
+    },
+    {
+      "command": "node tests/asset-manager.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-10.log"
+    },
+    {
+      "command": "node tests/cache-busting.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-11.log"
+    },
+    {
+      "command": "node tests/terrain-polish.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-12.log"
+    },
+    {
+      "command": "node tests/kirchende-loading.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-13.log"
+    },
+    {
+      "command": "node tests/style2-kirchende.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-14.log"
+    },
+    {
+      "command": "node tests/style2-cannon.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-15.log"
+    },
+    {
+      "command": "node tests/style2-towers.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-16.log"
+    },
+    {
+      "command": "node tests/elemental-sprites.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-17.log"
+    },
+    {
+      "command": "node tests/style2-user-towers.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-18.log"
+    },
+    {
+      "command": "node tests/style2-adapter-regression.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-19.log"
+    },
+    {
+      "command": "node tests/style2-cache-pressure.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-20.log"
+    },
+    {
+      "command": "node tests/style2-manager-pressure.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-21.log"
+    },
+    {
+      "command": "node tests/style2-impact-pass4.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-22.log"
+    },
+    {
+      "command": "node tests/style2-review-page.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-23.log"
+    },
+    {
+      "command": "node tests/enemy-animations.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-24.log"
+    },
+    {
+      "command": "node tests/flight-enemies.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-25.log"
+    },
+    {
+      "command": "node tests/goethestrasse.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-26.log"
+    },
+    {
+      "command": "node tests/goethestrasse-preview.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-27.log"
+    },
+    {
+      "command": "node tests/level5.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-28.log"
+    },
+    {
+      "command": "node tests/level5-preview.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-29.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/level5-preview.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-30.log"
+    },
+    {
+      "command": "node tests/style2-maps.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-31.log"
+    },
+    {
+      "command": "node tests/style2-phase6.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-32.log"
+    },
+    {
+      "command": "node tests/style2-ground.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-33.log"
+    },
+    {
+      "command": "node tests/style2-markers.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-34.log"
+    },
+    {
+      "command": "node tests/style2-ambience.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-35.log"
+    },
+    {
+      "command": "node tests/style2-level4-reference.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-36.log"
+    },
+    {
+      "command": "node tests/style2-church-sprite.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-37.log"
+    },
+    {
+      "command": "node tests/portrait-hud.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-38.log"
+    },
+    {
+      "command": "node tests/loot.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-39.log"
+    },
+    {
+      "command": "node tests/equipment-catalog.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-40.log"
+    },
+    {
+      "command": "node tests/equipment-migration.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-41.log"
+    },
+    {
+      "command": "node tests/boss-loot.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-42.log"
+    },
+    {
+      "command": "node tests/equipment-effects.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-43.log"
+    },
+    {
+      "command": "node tests/game.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-44.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/game.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-45.log"
+    },
+    {
+      "command": "node tests/combat-fx.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-46.log"
+    },
+    {
+      "command": "node tests/v4-alpha4.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-47.log"
+    },
+    {
+      "command": "node tests/v4-alpha5.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-48.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/v4-alpha5.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-49.log"
+    },
+    {
+      "command": "node tests/level4.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-50.log"
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/level4.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-51.log"
+    },
+    {
+      "command": "node tests/v3.1-features.test.cjs",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-52.log"
+    },
+    {
+      "command": "python tests/assets.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-53.log"
+    },
+    {
+      "command": "python tests/alpha8-assets.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-54.log"
+    },
+    {
+      "command": "python tests/alpha9-assets.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-55.log"
+    },
+    {
+      "command": "python tests/alpha9-user-towers.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-56.log"
+    },
+    {
+      "command": "python tests/style2-cleanup-assets.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-57.log"
+    },
+    {
+      "command": "python tests/style2-cleanup-pass3.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-58.log"
+    },
+    {
+      "command": "python tests/enemy-animation-assets.test.py",
+      "exitCode": 0,
+      "log": ".superpowers/sdd/2026-10-20-equipment-hybrid-boss-loot/suite-59.log"
+    }
+  ],
+  "failures": 0
+}

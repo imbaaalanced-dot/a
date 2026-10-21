@@ -12,18 +12,40 @@ element('heroVoice').play=function(){this.paused=false;return Promise.resolve();
 element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
-const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
+const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
-vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,pickupItem,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
+if(process.env.TEST_MOBILE==='1'){
+  sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
+  t.resize(false);
+  const gameCanvas=element('game'),pixelCount=gameCanvas.width*gameCanvas.height;
+  assert.ok(pixelCount<=900000,'standard phone canvas stays within its pixel budget');
+  const width=gameCanvas.width,height=gameCanvas.height;t.resize(false);
+  assert.equal(gameCanvas.width,width);assert.equal(gameCanvas.height,height,'stable dimensions preserve the backing canvas');
+  sandbox.innerWidth=1280;sandbox.innerHeight=800;sandbox.devicePixelRatio=1;t.resize(false);
+}
+for(const kind of ['bow','cannon','rift','ballista'])for(const image of t.towerLevelArt[kind])assert.ok(!image.src,'large legacy tower PNGs must not download at startup');
+let rewardSerial=0;function bossReward(){return t.lootModel.claimBoss({mapId:1,wave:5,bossType:'boss',runId:'inventory-fixture',spawnId:String(++rewardSerial)}).item;}
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
+check('Cosmetic hero choice switches Kim and Marcel without changing combat stats',()=>{
+  t.mainMenu();
+  const before={damage:t.game.hero.damage,speed:t.game.hero.speed,maxHp:t.game.hero.maxHp};
+  element('chooseKim').onclick();t.startGame();
+  assert.equal(t.game.hero.character,'kim');
+  assert.deepEqual({damage:t.game.hero.damage,speed:t.game.hero.speed,maxHp:t.game.hero.maxHp},before);
+  t.mainMenu();element('chooseMarcel').onclick();t.startGame();
+  assert.equal(t.game.hero.character,'marcel');saga.continueStory();
+});
 check('Kirchende integrates the photo-based paved approach and memorial ground without moving gameplay objects',()=>{
   for(const file of ['terrain-polish.js','forest-crowns.js','kirchende-art.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),sandbox);
   const terrain=sandbox.DenkmalTerrain,art=sandbox.KirchendeArt,forest=sandbox.DenkmalForest,roads=[],layers=[],shrubs=[];let sites=0;
@@ -67,6 +89,29 @@ check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.h
 check('Lost focus pauses',()=>{listeners.blur();assert.equal(t.state,'paused');});
 check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.endWave();assert.equal(t.game.essence,78);let n=0;const perk={name:'Test',apply(){n++;}};t.selectPerk(perk);t.selectPerk(perk);assert.equal(t.game.wave,2);assert.equal(n,1);assert.equal(t.game.loot.length,0);});
 check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x:0,y:0,hp:1};t.game.enemies=[e];t.game.hero.soul=0;t.hurtEnemy(e,5);t.hurtEnemy(e,5);assert.equal(t.game.kills,1);assert.equal(t.game.hero.soul,8);assert.equal(t.nearest({x:0,y:0},100),null);});
+check('Enemy attacks start a cosmetic cue and kills leave a short-lived corpse effect',()=>{
+  t.game.level=2;t.game.intermission=0;t.game.waveSpawned=t.game.waveTotal=0;t.launchWave();t.spawnEnemy();
+  const attacker=t.game.enemies[0],hero=t.game.hero;attacker.attackRange=100;attacker.attackCd=0;attacker.speed=0;
+  hero.x=attacker.x+30;hero.y=attacker.y;const hp=hero.hp;t.update(.02);
+  assert.ok(hero.hp<hp,'the existing attack still applies its normal damage');assert.ok(attacker.attackAnim>0,'attacking enemy starts a visual attack cue');
+  const victim={x:400,y:400,hp:1,maxHp:1,r:12,type:'wraith',armor:0,dead:false,visualVariant:2,flying:false};
+  t.game.enemies.push(victim);t.hurtEnemy(victim,10);assert.equal(t.game.kills,1);
+  assert.equal(t.game.deathFx.length,1,'death visuals are kept separately from active enemies');
+  t.game.enemies=t.game.enemies.filter(e=>!e.dead);assert.equal(t.game.enemies.includes(victim),false,'corpse does not stay in the combat collection');
+  t.update(.1);assert.ok(t.game.deathFx[0].life< t.game.deathFx[0].maxLife,'death animation advances on simulation time');
+});
+check('Death animation balances the canvas state before drawing the next sprite',()=>{
+  let depth=0,minDepth=0;
+  const save=context.save,restore=context.restore;
+  context.save=()=>{depth++;};
+  context.restore=()=>{depth--;minDepth=Math.min(minDepth,depth);};
+  try{
+    const corpse={type:'infantry',x:500,y:500,r:14,hp:0,maxHp:10};
+    t.drawEnemy(corpse,.5);
+    assert.equal(depth,0,'all canvas saves from the death sprite must be restored');
+    assert.equal(minDepth,0,'the death sprite must not pop its caller camera state');
+  }finally{context.save=save;context.restore=restore;}
+});
 check('Fast bullets detect targets between frames',()=>{assert.equal(t.segmentDistance({x:50,y:3},{prevX:0,prevY:0,x:100,y:0}),3);});
 check('Correct defeat cause and completed waves',()=>{t.game.hero.hp=0;t.gameOver();assert.equal(element('gameoverTitle').textContent,'DER HÜTER IST GEFALLEN');assert.match(element('gameoverStats').textContent,/0 Wellen überstanden/);});
 check('Arsenal exposes four production tower roles while experimental towers stay disabled',()=>{
@@ -78,14 +123,15 @@ check('Arsenal exposes four production tower roles while experimental towers sta
   t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.towers.length,0);
 });
 check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
-check('Resize preserves world positions without interrupting play',()=>{t.game.towers=[{x:200,y:300}];sandbox.innerWidth=640;sandbox.innerHeight=400;t.resize(false);assert.equal(t.state,'playing');assert.equal(t.game.towers[0].x,200);});
+check('Resize repaints a cleared buffer immediately without moving gameplay',()=>{const heroX=t.game.hero.x;t.game.hero.x=50;t.game.hero.y=50;sandbox.innerWidth=640;sandbox.innerHeight=400;draws.length=0;t.resize(false);assert.ok(draws.length>0,'the cleared canvas is redrawn before the next animation frame');assert.equal(t.state,'playing');t.game.hero.x=heroX;});
+check('Resize does not clear the canvas when pixel dimensions are unchanged',()=>{const canvas=element('game');let width=canvas.width,height=canvas.height,widthWrites=0,heightWrites=0;Object.defineProperties(canvas,{width:{configurable:true,get:()=>width,set(v){widthWrites++;width=v;}},height:{configurable:true,get:()=>height,set(v){heightWrites++;height=v;}}});t.resize(false);assert.equal(widthWrites,0,'same-width canvas assignment clears its drawing buffer');assert.equal(heightWrites,0,'same-height canvas assignment clears its drawing buffer');});
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Legacy wardrobe cannot change gear at any wave and stats do not stack',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++)assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();});
 check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.game.hero;saga.damage(20);assert.equal(h.hp,85);t.game.wave=3;saga.openCharacter();saga.equip('armor','ash');saga.equip('armor','oath');assert.equal(h.hp,85);saga.closeCharacter();});
 check('Soul call has bounded range heal and resource use',()=>{const h=t.game.hero;h.hp=50;const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};t.game.enemies=[near,far];assert.equal(saga.unleash(),true);assert.ok(near.hp<1000);assert.equal(far.hp,1000);assert.equal(h.hp,75);assert.equal(h.soul,0);assert.equal(saga.unleash(),false);saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1);});
 check('Soul call cannot trigger in pause or wardrobe',()=>{t.pauseGame();assert.equal(saga.unleash(),false);assert.equal(t.game.hero.soul,100);t.resumeGame();saga.openCharacter();assert.equal(saga.unleash(),false);});
 check('Story milestones pause and never repeat; epilogue after wave 15',()=>{t.game.wave=3;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Siegel/);saga.continueStory();assert.equal(saga.chapter(4),false);t.game.wave=15;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Erinnerung/);saga.continueStory();assert.equal(t.state,'playing');assert.equal(element('sagaComplete').classList.contains('hidden'),false);});
-check('Lantern guardian uses the directional sprite atlas',()=>{draws.length=0;const h=t.game.hero;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(h.direction,'down');draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(draw[1],0);assert.equal(draw[2],0);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith('marcel-lantern-sprite-v1.webp'));assert.ok(draw);assert.equal(draw[1],128);assert.equal(draw[2],128);});
+check('Lantern guardian animates the directional Alpha 9 atlas',()=>{const h=t.game.hero,asset='marcel-walk-alpha9.webp?v=alpha9a1';draws.length=0;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(h.direction,'down');assert.equal(draw[1],1280/3);draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],1280/4);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[2],3*1280/4);});
 check('Marcels dialogue replaces the old character and respects mute',()=>{assert.match(saga.lines.intro,/Marcel/);assert.equal(Object.values(saga.lines).some(s=>s.includes('Kael')),false);t.startGame();element('soundBtn').onclick();element('voiceBtn').onclick();saga.continueStory();assert.equal(t.state,'playing');element('soundBtn').onclick();});
 check('Four fixed gates ignore hero position and viewport',()=>{
   t.game.hero.x=120;t.game.hero.y=200;
@@ -253,7 +299,7 @@ check('Walk camera ignores tiny analog jitter and scales lead with stick magnitu
   assert.ok(gentle>0&&gentle<full*.4);
 });
 check('Graphics and camera settings cycle without pausing gameplay',()=>{
-  assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: LOW');assert.equal(t.state,'playing');
+  assert.equal(t.state,'playing');element('graphicsBtn').onclick();assert.equal(element('graphicsBtn').textContent,'GRAFIK: SPARMODUS');assert.equal(t.state,'playing');
   element('zoomBtn').onclick();assert.equal(element('zoomBtn').textContent,'KAMERA: STANDARD');assert.equal(t.state,'playing');
 });
 check('Mobile joystick applies a deadzone, analog response and radius clamp',()=>{
@@ -322,24 +368,25 @@ assert.equal(loadLevels(storage).unlocked,false);loadLevels(storage).unlock();as
 const blocked=loadLevels({getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}});assert.equal(blocked.unlock(),false);assert.equal(blocked.unlocked,true);
 // One canonical source tree; no duplicate dist folder required.
 check('Persistent loot survives restart and inventory is read-only in a run',()=>{
-  const i=t.lootModel.generate(2),before=t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length;
-  assert.equal(t.pickupItem(i,true),true);const damage=t.game.hero.damage;
+  const before=t.lootModel.profile.owned.length,i=bossReward();
+  assert.ok(t.lootModel.find(i.id));const damage=t.game.hero.damage;
   t.openInventory();assert.equal(t.state,'inventory');assert.equal(t.lootModel.equip(i.id,i.slot),false);t.update(1);assert.equal(t.game.elapsed,0);t.closeInventory();assert.equal(t.state,'playing');
-  t.startGame();saga.continueStory();assert.equal(t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length,before+1);assert.equal(t.game.hero.damage,damage);
+  t.startGame();saga.continueStory();assert.equal(t.lootModel.profile.owned.length,before+1);assert.equal(t.game.hero.damage,damage);
 });
-check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu();t.openInventory();assert.equal(t.state,'inventory');const i=t.lootModel.generate(3);t.lootModel.add(i);assert.equal(t.lootModel.equip(i.id,i.slot),true);t.closeInventory();assert.equal(t.state,'start');t.startGame();saga.continueStory();assert.ok(t.game.hero.loadout.some(x=>x.id===i.id));t.mainMenu();t.openInventory();t.lootModel.unequip(i.slot);const defaults={weapon:'starter-ember',armor:'starter-oath',amulet:'starter-lantern'};if(defaults[i.slot])t.lootModel.equip(defaults[i.slot],i.slot);t.closeInventory();});
+check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu();t.openInventory();assert.equal(t.state,'inventory');const i=bossReward();assert.equal(t.lootModel.equip(i.id,i.slot),true);t.closeInventory();assert.equal(t.state,'start');t.startGame();saga.continueStory();assert.ok(t.game.hero.loadout.some(x=>x.id===i.id));t.mainMenu();t.openInventory();t.lootModel.unequip(i.slot);const defaults={weapon:'starter-ember',armor:'starter-oath',amulet:'starter-lantern'};if(defaults[i.slot])t.lootModel.equip(defaults[i.slot],i.slot);t.closeInventory();});
 check('Rift tower selects the matching level graphic',()=>{
   for(let level=1;level<=3;level++){
     draws.length=0;t.drawTower({kind:'rift',level,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.png`)));
+    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.webp`)));
   }
 });
 check('Tower upgrades select distinct sprites and preserve their base anchor',()=>{
   for(const kind of ['bow','cannon','ballista']){
     const sprites=new Set();
     for(let level=1;level<=3;level++){
+      t.towerLevelArt[kind][level-1]=new sandbox.Image();
       draws.length=0;t.drawTower({kind,level,x:250,y:350});
-      const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.png`));
+      const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.${kind==='ballista'?'png':'webp'}`));
       const rendered=draws.find(d=>d.length===5&&d[0].width===192);
       assert.ok(draw,`${kind} ${level} sprite missing`);sprites.add(draw[0].src);
       assert.equal(draw.length,9);assert.ok(draw[3]>0&&draw[4]>0);
@@ -358,21 +405,29 @@ check('Loading or failed tower upgrades retain a usable fallback sprite',()=>{
     const image=t.towerLevelArt[kind][1];
     const width=image.naturalWidth;image.complete=false;image.naturalWidth=0;
     draws.length=0;t.drawTower({kind,level:2,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-${kind}-${fallback}-v1.png`)));
+    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-${kind}-${fallback}-v1.${['bow','cannon','rift'].includes(kind)?'webp':'png'}`)));
     image.complete=true;image.naturalWidth=width;
   }
 });
 check('Zoom maps screen coordinates back to world coordinates',()=>{const point=t.screenToWorld(sandbox.innerWidth/2,sandbox.innerHeight/2);assert.ok(Math.abs(point.x-t.game.hero.x)<1e-8);assert.ok(Math.abs(point.y-t.game.hero.y)<1e-8);t.game.hero.x=26;t.game.hero.y=26;t.resize();const corner=t.screenToWorld(0,0);assert.equal(corner.x,0);assert.equal(corner.y,0);});
 check('Build pause is finite and can be skipped without duplicating waves',()=>{t.update(2);assert.equal(t.game.waveSpawned,0);assert.equal(t.game.intermission,3);t.launchWave();t.launchWave();t.update(.5);assert.equal(t.game.waveSpawned,1);t.endWave();t.selectPerk({apply(){}});assert.equal(t.game.intermission,6);});
-check('New loot never changes active hero stats and death retains ground items',()=>{const h=t.game.hero;const before=JSON.stringify(saga.stats(h));const i=t.lootModel.generate(8,true);t.pickupItem(i,true);assert.equal(JSON.stringify(saga.stats(h)),before);const floor=t.lootModel.generate(5,true);t.game.loot=[{kind:'item',item:floor}];t.gameOver();assert.ok(t.lootModel.find(floor.id));});
-check('Final wave retains boss loot before unlocking level 2',()=>{const i=t.lootModel.generate(5,true);t.game.wave=5;t.game.loot=[{kind:'item',item:i}];t.endWave();assert.ok(t.lootModel.find(i.id));assert.equal(t.state,'levelcomplete');});
+check('New boss loot never changes active hero stats and survives defeat',()=>{const before=JSON.stringify(saga.stats(t.game.hero)),i=bossReward();assert.equal(JSON.stringify(saga.stats(t.game.hero)),before);t.gameOver();assert.ok(t.lootModel.find(i.id));});
+check('Final wave retains boss loot before unlocking level 2',()=>{const before=t.lootModel.profile.owned.length;t.game.wave=5;t.spawnEnemy('boss');t.hurtEnemy(t.game.enemies.at(-1),1e7,{fixedDamage:true});t.endWave();assert.equal(t.lootModel.profile.owned.length,before+1);assert.equal(t.state,'levelcomplete');});
 check('Towers choose the enemy closest to the monument within range',()=>{const m=t.game.monument,a={x:m.x+180,y:m.y},b={x:m.x+90,y:m.y},out={x:m.x+1,y:m.y};t.game.enemies=[a,b,out];const tower={x:m.x+190,y:m.y,range:150};assert.equal(t.towerTarget(tower),b);});
+check('Targeting remains deterministic with 20 to 200 active enemy objects',()=>{
+  const m=t.game.monument,tower={x:m.x+200,y:m.y,range:440,targetMode:'nearest'};
+  for(const count of [20,50,100,200]){
+    t.game.enemies=Array.from({length:count},(_,i)=>({x:m.x+50+i*2,y:m.y+(i%5)*3,type:'runner',hp:20+i,gateIndex:0,waypoint:1}));
+    assert.equal(t.towerTarget(tower),t.game.enemies[75]||t.game.enemies.at(-1));
+    tower.targetMode='strongest';assert.equal(t.towerTarget(tower),t.game.enemies.at(-1));tower.targetMode='nearest';
+  }
+});
 check('Cannon splash hits a nearby group while bow stays single-target',()=>{const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;t.launchWave();const h=t.game.hero;h.fireCd=100;const m=t.game.monument;t.game.towers=[{x:m.x+220,y:m.y+100,kind:'cannon',level:1,damage:34,fireRate:1.15,fireCd:-1,range:275}];const e={x:m.x+220,y:m.y+170,hp:1000,maxHp:1000,r:12,speed:0,damage:0,attackCd:5,hit:0,type:'wraith'},other={...e,x:e.x+30};t.game.enemies=[e,other];for(let i=0;i<12;i++)t.update(.02);assert.ok(e.hp<1000);assert.ok(other.hp<1000);assert.ok(e.hp<other.hp);sandbox.Math.random=oldRandom;});
 check('Roads and monument remain clear while Level 1 pads stay legal',()=>{const m=t.game.monument,slot=sandbox.DenkmalLevels.levels[1].slots[0];assert.notEqual(t.placementError({x:m.x+200,y:m.y}),'');assert.equal(t.placementError(slot),'');for(const p of sandbox.DenkmalLevels.levels[1].slots)for(const path of sandbox.DenkmalLevels.levels[1].paths)assert.ok(sandbox.DenkmalLevels.pathDistance(p,path)>=64);});
 check('Rolled bonuses change derived stats without modifying base values',()=>{const h=t.game.hero;h.gear={damage:10,health:0,haste:.2,speed:.1,defense:.2,crit:.2,leech:.1,tower:.3,powers:{}};const before=h.damage;assert.equal(saga.stats(h).damage,35);assert.ok(Math.abs(saga.stats(h).rate-.47/1.2)<1e-9);assert.ok(Math.abs(saga.stats(h).armor-.6)<1e-9);assert.equal(h.damage,before);});
 check('Legendary chain and tower support apply to their intended projectiles',()=>{const h=t.game.hero,e={x:h.x+20,y:h.y};h.gear={powers:{chain:true},tower:.5};t.shoot(h,e,20);assert.equal(t.game.bullets.at(-1).chain,1);assert.equal(t.game.bullets.at(-1).damage,20);t.shoot({x:h.x,y:h.y,kind:'bow'},e,20);assert.equal(t.game.bullets.at(-1).damage,30);assert.equal(t.game.bullets.at(-1).heroShot,false);});
 check('Lifesteal heals only on hero projectile hits, bounded by actual damage',()=>{const h=t.game.hero;h.hp=50;h.fireCd=100;h.gear={powers:{},leech:.1,crit:0};const e={type:'wraith',x:h.x+10,y:h.y,hp:10,maxHp:10,r:12,speed:0,damage:0,attackCd:99,hit:0};t.game.enemies=[e];t.shoot(h,e,100);t.update(.02);assert.equal(h.hp,51);});
-check('Repeated endWave grants only one persistent reward',()=>{const count=()=>t.lootModel.profile.bag.length+t.lootModel.profile.overflow.length;const n=count();t.endWave();t.endWave();assert.equal(count(),n+1);});
+check('Repeated endWave grants no equipment',()=>{const count=()=>t.lootModel.profile.owned.length;const n=count();t.endWave();t.endWave();assert.equal(count(),n);});
 check('Menu keyboard navigation reaches channel links and expandable help',()=>{
   t.mainMenu();
   const start=element('startBtn'),link=element('channelLink'),help=element('menuHelpToggle');
@@ -393,7 +448,7 @@ assert.ok(polish.includes('@media (orientation:portrait)'));
 assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));assert.ok(polish.includes('v3.1.0-alpha.3 — combat variety + boss escalation'));
 for(const m of html.matchAll(/(?:src|srcset|href)="([^"?#]+)(?:\?[^\"]*)?"/g))if(!/^https?:/.test(m[1]))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-assert.ok(html.includes('marcel-lantern-portrait-v1.webp'));
+assert.ok(html.includes('marcel-portrait-alpha9.webp'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
@@ -441,5 +496,14 @@ check('Goethestraße gates, mixed waves, air origin, completion and endless unlo
   element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
   t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,25);assert.ok(t.wavePreview(25).includes('STURMGEIST'));
   t.mainMenu();t.startGame(6,'endless');assert.equal(t.game.level,6);assert.equal(t.game.mode,'endless');
+});
+check('Painted animation renderer handles ground, flying and boss enemies without changing combat state',()=>{
+  for(const type of Object.keys(t.enemySpecs)){
+    t.game.enemies=[];t.spawnEnemy(type);const e=t.game.enemies[0];
+    assert.ok(Number.isInteger(e.visualVariant));e.x=t.game.hero.x+45;e.y=t.game.hero.y+20;e.velX=10;
+    const before=JSON.stringify(e);draws.length=0;t.draw();
+    assert.ok(draws.some(d=>d[0].src?.includes('assets/enemies/walk-v1.webp')),type+' uses the integrated atlas');
+    assert.equal(JSON.stringify(e),before,'drawing preserves enemy hp, position and abilities');
+  }
 });
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));

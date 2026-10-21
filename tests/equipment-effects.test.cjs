@@ -1,0 +1,21 @@
+'use strict';
+const assert=require('node:assert/strict'),{t,saga,box}=require('./helpers/game.cjs')();
+box.Math=Object.create(Math);box.Math.random=()=>.99;
+const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);
+function gear(...powers){t.startGame(1);saga.continueStory();const h=t.game.hero;h.maxHp=100;saga.reset(h,powers.map((power,n)=>({id:String(n),stats:{},power})));return h;}
+let h=gear('ember');close(saga.stats(h).damage,22.5);
+h=gear('echo','ember');close(saga.stats(h).damage,18);close(saga.stats(h).rate,.47*.7);
+h=gear('oath');saga.damage(20);close(h.hp,85);
+h=gear('ash','oath');close(saga.stats(h).speed,246);close(saga.stats(h).armor,1);close(saga.stats(h).dodge,.7);
+h=gear('bark');saga.damage(100);close(h.hp,8);
+h=gear('roots');close(saga.stats(h).speed,205*1.08);
+h=gear('lantern');h.hp=50;assert.equal(saga.unleash(),true);close(h.hp,75);
+h=gear('bell','lantern');h.hp=50;assert.equal(saga.unleash(),true);close(h.hp,50);h.soul=0;saga.onKill({type:'wraith'});close(h.soul,9);
+h=gear('sustain','sustain');close(h.gear.leech,.03);
+h=gear('bastion','bastion');t.shoot({x:h.x,y:h.y,kind:'bow'},{x:h.x+20,y:h.y},20);close(t.game.bullets.at(-1).damage,23);
+h=gear('chain');t.shoot(h,{x:h.x+20,y:h.y},20);assert.equal(t.game.bullets.at(-1).chain,1);
+h=gear('splinter');t.spawnEnemy('wraith');let e=t.game.enemies.at(-1);e.hp=1000;e.armor=.5;t.hurtEnemy(e,100,{heroShot:true});close(e.hp,940);
+h=gear('wardlight');t.spawnEnemy('wraith');e=t.game.enemies.at(-1);e.hp=1000;e.shield=100;t.hurtEnemy(e,100,{heroShot:true});close(e.shield,0);close(e.hp,975);
+h=gear('grove');t.spawnEnemy('wraith');e=t.game.enemies.at(-1);e.hp=1000;t.spawnEnemy('wraith');const other=t.game.enemies.at(-1);other.x=e.x+1;other.y=e.y;other.hp=1000;
+for(let n=0;n<5;n++)t.hurtEnemy(e,1,{heroShot:true});close(other.hp,996.4);assert.equal(h.groveHits,5,'secondary damage cannot retrigger grove');
+console.log('All 14 existing equipment powers, three precedence rules and duplicate-power limits passed');

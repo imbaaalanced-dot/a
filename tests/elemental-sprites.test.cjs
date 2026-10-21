@@ -37,7 +37,30 @@ for(const [i,type] of ['wraith','runner','brute','archer','guardian','sapper','r
  assert.equal(box.Style2Enemies.draw(ctx,{type,x:1,y:2},-1),true);
  assert.deepEqual(draws.at(-1).slice(1,5),[(i%4)*256,Math.floor(i/4)*256,256,256]);
 }
+const runner={type:'runner',x:100,y:200};
+assert.equal(box.Style2Enemies.draw(ctx,runner,1,0),true,'cold animation falls back to the original enemy atlas');
+const animation=images.at(-1);assert.match(animation.src,/enemies-walk-alpha8\.webp/);
+animation.complete=true;animation.naturalWidth=1448;animation.naturalHeight=1086;
+box.Style2Enemies.draw(ctx,runner,1,0);
+const first=draws.at(-1).slice(1,5);
+box.Style2Enemies.draw(ctx,runner,1,1/7);
+const second=draws.at(-1).slice(1,5);
+assert.equal(first[1],1086/3,'runner uses the middle row');
+assert.notEqual(first[0],second[0],'moving enemy changes walk frame');
 
 const gameSource=fs.readFileSync('dist/game.js','utf8');
 assert.ok(!gameSource.slice(gameSource.indexOf('function upgradeTower('),gameSource.indexOf('function sellTower(')).includes('ElementalSprites'),'tower upgrades never depend on image readiness');
 assert.ok(gameSource.slice(gameSource.indexOf('function drawTower('),gameSource.indexOf('function drawBoomerangProjectile(')).includes("drawTower(ctx,'boomerang'"),'boomerang rendering uses atlas');
+
+const cannon={kind:'cannon',level:3,x:10,y:20,vx:1,vy:0};
+assert.equal(art.drawProjectile(ctx,cannon),false);
+const shell=images.at(-1);assert.match(shell.src,/cannon-projectiles/);
+shell.complete=true;shell.naturalWidth=384;shell.naturalHeight=128;
+assert.equal(art.drawProjectile(ctx,cannon),true);assert.deepEqual(draws.at(-1).slice(1,5),[256,0,128,128]);
+vm.runInContext(fs.readFileSync('dist/style2-cannon.js','utf8'),box);
+assert.equal(box.Style2Cannon.drawProjectile(ctx,cannon),true,'live cannon delegates to painted shells');
+const impact={cannonImpact:true,kind:'cannon',level:2,x:10,y:20,life:.5,max:1};
+assert.equal(art.drawImpact(ctx,{...impact,style2Impact:true}),false);
+const hit=images.at(-1);assert.match(hit.src,/cannon-impacts/);hit.complete=true;hit.naturalWidth=768;hit.naturalHeight=384;
+assert.equal(box.Style2Cannon.drawImpact(ctx,impact),true,'live impacts delegate to painted six-frame animation');
+assert.deepEqual(draws.at(-1).slice(1,5),[384,128,128,128]);

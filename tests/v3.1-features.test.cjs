@@ -85,6 +85,7 @@ global.HTMLElement = class {};
 
 // --- Load modules under test ---
 require('../dist/levels.js');
+require('../dist/equipment-catalog.js');
 require('../dist/loot.js');
 require('../dist/hero-saga.js');
 require('../dist/combat-fx.js');

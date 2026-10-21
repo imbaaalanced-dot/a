@@ -91,7 +91,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 for(const id of ['level4Btn','endless4Btn'])
   assert.match(html,new RegExp('id="'+id+'"'),'new chapter navigation must be reachable');
-assert.ok(html.includes('church-art.js?v=style2church3'));
+assert.ok(html.includes('church-art.js?v=alpha8a2'));
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintChurchFinish(g)'),'reference pass 2 bakes masonry into the church sprite');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintLionFinish(g)'),'the south-facing lion gets the same cached material pass');
 assert.ok(html.includes('kirchende-art.js?v=v400a6s2polish5'))

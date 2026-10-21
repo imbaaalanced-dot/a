@@ -135,6 +135,7 @@
   }
   function projectile(ctx,bullet,reduced=false){
     if(bullet?.kind!=='cannon')return false;
+    if(globalThis.ElementalSprites?.drawProjectile(ctx,bullet))return true;
     const level=clampLevel(bullet.level);
     if(!shellCache.has(level))shellCache.set(level,makeShell(level));
     const art=shellCache.get(level),size=[20,23,27][level-1];
@@ -177,6 +178,7 @@
   }
   function impact(ctx,particle){
     if(!particle?.cannonImpact)return false;
+    if(globalThis.ElementalSprites?.drawImpact(ctx,{...particle,style2Impact:true,kind:'cannon'}))return true;
     const level=clampLevel(particle.level);
     const ratio=Math.max(0,Math.min(1,1-Math.max(0,particle.life)/Math.max(.001,particle.max)));
     const frame=Math.min(5,Math.floor(ratio*6));

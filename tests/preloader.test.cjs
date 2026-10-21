@@ -17,7 +17,7 @@ async function test(){
   assert.equal(elt('td2LoadBar').style.width,'100%');
   assert.equal(elt('td2Loading').removed,true);
   assert.equal(elt('startScreen').attrs.has('inert'),false);
-  assert.ok(created>=20);
+  assert.equal(created,7,'three loading images and four menu images load at startup');
   console.log('Preloader: success, progress 100%, game menu unlocked');
 }
 test().catch(err=>{console.error(err);process.exitCode=1;});

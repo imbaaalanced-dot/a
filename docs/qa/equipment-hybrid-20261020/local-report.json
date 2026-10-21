@@ -1,0 +1,71 @@
+{
+  "browser": "133.0.6943.0",
+  "sourceCommit": "49e68d5da74f13e59da0bf6387f16d91931b3d1b",
+  "url": "http://127.0.0.1:38403/v4-alpha9/?td2UserTowers=1",
+  "productHashes": {
+    "equipment-catalog.js": "ec6371208c0401dbecdea99c24a26e67d9056b0b4964b6f488e461db6c481f74",
+    "loot.js": "432745be7bf26769c85c7b1eabe7923a1cb84870989d32036a7edb714f7de2d5",
+    "loot-ui.js": "c3913255ef82e3303eebd62322128b7492c03551cf4b95f18028fcba61a31f05",
+    "game.js": "b0539083fd3087d208db147985b17e423fb26ab4eca555f49adf960697e248b2"
+  },
+  "androidDeviceTested": false,
+  "graphicsMode": "low",
+  "reducedMotion": true,
+  "interaction": "DOM click after visibility, size and hit-target checks; native pointer timing not asserted",
+  "scenarios": [
+    {
+      "mobile": false,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "migration": true,
+      "sharedOwnership": true,
+      "forge": true,
+      "bossPersisted": true,
+      "reload": true,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "decoded": 30,
+      "errors": [],
+      "missing": []
+    },
+    {
+      "mobile": true,
+      "viewport": {
+        "width": 412,
+        "height": 915
+      },
+      "migration": true,
+      "sharedOwnership": true,
+      "forge": true,
+      "bossPersisted": true,
+      "reload": true,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "decoded": 30,
+      "errors": [],
+      "missing": []
+    }
+  ],
+  "quota": {
+    "sessionWarning": true,
+    "exportContainsBoss": true,
+    "oldPrimaryPreserved": true
+  },
+  "verifiedSourceCommit": "92591758a770bd2a2005ed48eec34e8ad4db76c9",
+  "testedSourceTree": "3ca44a4ddfed307d151fd2314fbc3bdeb8fbe202",
+  "sourceVerification": "Local execution commit and remote source commit have identical complete Git trees."
+}

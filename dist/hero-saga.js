@@ -34,6 +34,10 @@
   ];
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
+  const walkAtlases={marcel:new Image(),kim:new Image()};
+  walkAtlases.marcel.src='assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
+  walkAtlases.kim.src='assets/hero/kim-walk-alpha8.webp?v=alpha8a2';
+  const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
     up:[0,0],
     down:[128,0],
@@ -100,8 +104,13 @@
   }
   function renderCharacter() {
     const h=getHero(), g=api.getGame(), s=stats(h);
+    const kim=(api.getCharacter?.()||h.character)==='kim';
+    $('characterTitle').textContent=kim?'KIM':'MARCEL';
+    const portrait=$('characterPortrait');
+    portrait.src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
+    portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
     $('characterStats').textContent=`${Math.round(s.damage)} Schaden · ${(1/s.rate).toFixed(1)} Angriffe/s · ${Math.round(s.speed)} Tempo`;
-    $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?'HÜTER DER ERINNERUNG':'DER DENKMALSCHÜTZER'}`;
+    $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?(kim?'HÜTERIN DER ERINNERUNG':'HÜTER DER ERINNERUNG'):(kim?'DIE BEWAHRERIN':'DER BESCHÜTZER')}`;
     $('equippedNames').textContent=Object.keys(equipment).map(slot=>item(h,slot).name).join(' · ');
     const display=$('characterPreview');display.dataset.armor=h.equipment.armor;display.dataset.weapon=h.equipment.weapon;
     display.dataset.relic=h.equipment.relic;
@@ -112,7 +121,7 @@
     profile.textContent=`Lebenspunkte: ${Math.ceil(h.hp)} / ${h.maxHp} · Schaden: ${Math.round(s.damage)} · Tempo: ${Math.round(s.speed)} · Angriffe/s: ${(1/s.rate).toFixed(1)}. Deine Beute und angelegte Ausrüstung verwaltest du ausschließlich im BEUTE-Menü des Hauptmenüs.`;
     grid.appendChild(profile);
     const journal=$('journalEntries');journal.innerHTML='';
-    for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze Marcels Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
+    for(const entry of story){const block=document.createElement('article');const known=storySeen.has(entry.id);block.className='journal-entry';block.innerHTML=`<small>${known?entry.kicker:`ERINNERUNG · AB WELLE ${entry.wave}`}</small><h3>${known?entry.title:'Noch unter Asche verborgen'}</h3><p>${known?entry.text:'Setze deine Wacht fort, um diese Erinnerung zu finden.'}</p>`;journal.appendChild(block);}
   }
   function equip(){return false;} // Legacy wardrobe is read-only; management lives in the main-menu inventory.
   function openCharacter() {
@@ -169,7 +178,15 @@
       if(enemy&&echo.fire<=0){api.shoot(from,enemy,14,520,'#94ffe1');echo.fire=.65;}
     }echoes=echoes.filter(e=>e.life>0);
   }
-  function drawSprite(ctx,x,y,direction='down',opacity=1,size=86) {
+  function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,actor='marcel') {
+    const walk=walkAtlases[actor]||walkAtlases.marcel;
+    if(ready(walk)){
+      const width=walk.naturalWidth/3,height=walk.naturalHeight/4;
+      const frame=walkTime>0&&!reduced?Math.floor(walkTime*9)%3:1;
+      ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
+      ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
+      ctx.restore();return true;
+    }
     if(ready(heroAtlas)){
       const [sx,sy]=heroCells[direction]||heroCells.down;
       ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
@@ -181,7 +198,7 @@
   }
   function draw(ctx,h) {
     const moving=h.moving&&!reduced,direction=h.direction||'down';
-    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28);
+    for(const t of trail)drawSprite(ctx,t.x,t.y,t.direction,t.life/.2*.28,86,h.character);
     ctx.save();ctx.translate(h.x,h.y);
     ctx.fillStyle='#0009';ctx.beginPath();ctx.ellipse(0,11,22,8,0,0,Math.PI*2);ctx.fill();
     const relicColor=h.equipment.relic==='bell'?'#f5c572':'#79dfff';
@@ -191,7 +208,7 @@
     ctx.translate(0,bob);if(!reduced&&h.dodge>0)ctx.rotate((h.faceX||0)*.14);
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
-    if(!drawSprite(ctx,0,0,direction,1,90)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    if(!drawSprite(ctx,0,0,direction,1,90,h.character)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;
