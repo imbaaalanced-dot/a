@@ -1,0 +1,61 @@
+{
+  "browser": "153.0.8010.0",
+  "physicalAndroid": false,
+  "fixture": "Real runtime VFX draw calls on a contact sheet; normal game and inventory also opened",
+  "scenarios": [
+    {
+      "mobile": false,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "background": "url(\"http://127.0.0.1:45593/v4-alpha9/assets/items/equipment-v2.webp?v=icons2\")",
+      "fixture": {
+        "drawn": 30,
+        "changed": 35172,
+        "iconSize": [
+          512,
+          256
+        ],
+        "atlas": {
+          "requested": true,
+          "pending": false,
+          "retryAt": 0
+        }
+      },
+      "errors": [],
+      "missing": []
+    },
+    {
+      "mobile": true,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "background": "url(\"http://127.0.0.1:45593/v4-alpha9/assets/items/equipment-v2.webp?v=icons2\")",
+      "fixture": {
+        "drawn": 30,
+        "changed": 35172,
+        "iconSize": [
+          512,
+          256
+        ],
+        "atlas": {
+          "requested": true,
+          "pending": false,
+          "retryAt": 0
+        }
+      },
+      "errors": [],
+      "missing": []
+    }
+  ]
+}

@@ -51,6 +51,7 @@ jobs:
           node tests/style2-cache-pressure.cjs
           node tests/style2-manager-pressure.cjs
           node tests/style2-impact-pass4.test.cjs
+          node tests/style2-impact-atlas.test.cjs
           node tests/style2-review-page.test.cjs
           node tests/enemy-animations.test.cjs
           node tests/flight-enemies.test.cjs
@@ -104,6 +105,7 @@ jobs:
         run: |
           python -m pip install Pillow
           python tests/assets.test.py
+          python tests/style2-v2-assets.test.py
           python tests/alpha8-assets.test.py
           python tests/alpha9-assets.test.py
           python tests/alpha9-user-towers.test.py

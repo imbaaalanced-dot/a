@@ -1,0 +1,274 @@
+[
+  {
+    "command": "node tests/alpha8-preview.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/asset-manager.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/boss-loot.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/cache-busting.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/campaign-balance.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/combat-fx.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/elemental-sprites.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/enemy-animations.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/equipment-catalog.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/equipment-effects.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/equipment-migration.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/flight-enemies.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/game.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/goethestrasse-preview.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/goethestrasse.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/intro-tutorial.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/kirchende-loading.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/level4.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/level5-preview.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/level5.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/loot-ui.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/loot.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/main-menu.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/menu-navigation.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/portal-gameplay.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/portal-perks.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/portal-run.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/portal-storage.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/portrait-hud.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/preloader.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/startup-loading.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-adapter-regression.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-ambience.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-cache-pressure.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-cannon.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-church-sprite.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-default.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-ground.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-impact-atlas.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-impact-pass4.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-kirchende.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-level4-reference.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-manager-pressure.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-maps.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-markers.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-phase6.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-review-page.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-towers.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/style2-user-towers.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/terrain-polish.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/v3.1-features.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/v4-alpha4.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "node tests/v4-alpha5.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "python tests/alpha8-assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/alpha9-assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/alpha9-user-towers.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/enemy-animation-assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/style2-cleanup-assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/style2-cleanup-pass3.test.py",
+    "exit": 0
+  },
+  {
+    "command": "python tests/style2-v2-assets.test.py",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/game.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/portal-gameplay.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/menu-navigation.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/alpha8-preview.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/level5-preview.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/level4.test.cjs",
+    "exit": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/v4-alpha5.test.cjs",
+    "exit": 0
+  }
+]

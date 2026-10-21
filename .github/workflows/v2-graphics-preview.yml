@@ -1,0 +1,42 @@
+name: Publish V2 impact and inventory graphics preview
+on:
+  push:
+    branches: ["assets/style2-impacts-icons-v2-20261021"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: v2-graphics-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify gameplay and assets
+        run: |
+          set -e
+          for test in tests/*.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/portal-gameplay.test.cjs
+          python -m pip install Pillow
+          for test in tests/*.test.py; do python "$test"; done
+      - name: Publish isolated graphics preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/v2-pages origin/gh-pages
+          mkdir -p /tmp/v2-pages/v4-style2-towers/v2-graphics/v4-alpha9
+          cp -R dist/. /tmp/v2-pages/v4-style2-towers/v2-graphics/v4-alpha9/
+          touch /tmp/v2-pages/.nojekyll
+          cd /tmp/v2-pages
+          git add v4-style2-towers/v2-graphics .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish V2 graphics preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
