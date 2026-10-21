@@ -3,11 +3,14 @@
   const C={x:1536,y:1536},SIZE=3072;
   let ground=null,memorial=null,allocations=0;
   // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
-  const monumentSprite=typeof Image==='function'?new Image():null;
-  if(monumentSprite){
-    monumentSprite.decoding='async';
-    monumentSprite.src='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
-  }
+  let standaloneSprite=null;
+  const monumentImage=()=>{
+    const url='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
+    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
+    if(typeof Image!=='function')return null;
+    if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
+    return standaloneSprite;
+  };
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -55,6 +58,7 @@
       if(level.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<rad+60))continue;
       if(level.slots.some(slot=>Math.hypot(slot.x-x,slot.y-y)<rad+50))continue;
       q.fillStyle='#0b1819a8';q.beginPath();q.ellipse(x+18,y+23,rad,rad*.62,0,0,Math.PI*2);q.fill();
+      if(globalThis.DenkmalForest?.drawCrown){globalThis.DenkmalForest.drawCrown(q,x,y,rad,i);continue;}
       q.fillStyle=['#38503b','#324a3a','#455945','#2c4238','#4c6247'][i%5];
       q.beginPath();q.arc(x,y,rad,0,Math.PI*2);q.fill();
       q.fillStyle='#b4b59020';q.beginPath();
@@ -215,6 +219,7 @@
     return canvas;
   }
   function drawMonument(ctx,m){
+    const monumentSprite=monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
       // Canvas already applies the oblique camera's upright-sprite correction.
@@ -233,5 +238,7 @@
       ctx.fillText('LUFTANGRIFF ÜBER DEM HANG',a.x,a.y-40);
     }finally{ctx.restore();}
   }
-  globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,get allocations(){return allocations;}};
+  globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
+    release(){ground=null;memorial=null;standaloneSprite=null;},
+    get allocations(){return allocations;}};
 })();

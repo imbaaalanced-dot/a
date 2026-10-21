@@ -108,3 +108,90 @@
   #introTutorial[data-step="4"] .tutorial-bubble{left:12px;right:12px;width:auto}
 }
 @media(prefers-reduced-motion:reduce){#introTutorial .tutorial-arrow{box-shadow:none}}
+
+.hero-choice{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;color:#dbc594;font-size:11px;letter-spacing:.08em}
+.hero-choice button{min-height:48px;padding:10px 14px;background:#152124e8;border:1px solid #74654c;border-radius:6px;color:#c8c7b9;font:inherit;cursor:pointer}
+.hero-choice button[aria-pressed="true"]{background:#343326;border-color:#e4be73;color:#ffe1a2;box-shadow:inset 0 1px #ffe4b033,0 0 16px #ddab4520}
+.hero-choice button:focus-visible{outline:3px solid #ffe4a0;outline-offset:3px}
+
+/* Alpha 8 startup hotfix: keep long phone menus in normal document flow. */
+#startScreen:not(.hidden){display:block;align-items:initial;justify-content:initial;padding:0;overflow-y:auto;overflow-x:hidden}
+#startScreen>.menu-scene{margin:0!important}
+#startScreen .menu-shell{min-width:0;max-width:100%;flex-shrink:0}
+#startScreen :is(.menu-content,.menu-actions,.menu-section,.map-card-list,.endless-map-list){min-width:0;max-width:100%}
+#startScreen .menu-content{flex-shrink:0}
+#startScreen .hero-choice{min-width:0;max-width:100%}
+#startScreen .hero-choice button{min-width:0;max-width:100%;flex:1 1 180px;white-space:normal;line-height:1.4;overflow-wrap:break-word}
+@media(max-width:1000px){
+ #startScreen .menu-content{width:100%;max-width:680px}
+}
+@media(max-width:700px){
+ #startScreen .menu-content{margin:110px 0 0}
+ #startScreen .hero-choice>span{flex-basis:100%}
+ #startScreen .map-card{grid-template-columns:32px minmax(0,1fr);gap:5px 9px;min-width:0}
+ #startScreen .map-number{grid-column:1;grid-row:1 / span 2}
+ #startScreen .map-copy{grid-column:2;grid-row:1}
+ #startScreen .map-copy strong,#startScreen .map-copy>span{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:break-word}
+ #startScreen .map-copy strong{font-size:12px;line-height:1.4}
+ #startScreen .map-status{grid-column:2;grid-row:2;justify-self:start;max-width:100%;white-space:normal;font-size:8px;line-height:1.4}
+ #startScreen .map-arrow{display:none}
+ #startScreen .menu-shell{gap:16px;padding-inline:max(16px,env(safe-area-inset-left)) max(16px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+}
+
+.hero-menu-banner{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain;margin:0 0 18px;border-radius:3px}
+
+/* Four main entries; map cards, hero selection and settings live in submenus. */
+#startScreen [hidden]{display:none!important}
+#startScreen .menu-content{width:min(900px,100%);max-width:900px;margin:0 auto}
+#startScreen .menu-shell{gap:20px}
+#startScreen .hero-menu-banner{width:100%;aspect-ratio:3/1;object-fit:cover;margin:0 0 14px}
+#startScreen .menu-heading,#startScreen .menu-intro{display:none}
+.menu-home-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 auto;width:100%}
+#startScreen .menu-art-button{position:relative;display:block;width:100%;min-height:64px;margin:0;padding:0;border:0;border-radius:8px;background:#18140f;cursor:pointer;touch-action:manipulation;overflow:hidden}
+.menu-art-button img{display:block;width:100%;height:auto;aspect-ratio:1024/264;object-fit:contain}
+.menu-art-button span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.menu-art-button:hover{filter:brightness(1.15)}
+.menu-art-button:active{filter:brightness(.85)}
+#startScreen .menu-back{min-height:48px;padding:10px 16px;margin:0 0 12px;border:1px solid #ad8d53;border-radius:5px;background:#191d1e;color:#f0d7a2;font:600 14px system-ui;cursor:pointer}
+#startScreen .menu-section h2{margin:0;color:#e9deca;font:700 20px/1.4 Georgia,serif}
+#startScreen .menu-options button{min-height:48px;margin:0}
+#startScreen .menu-save,#startScreen .menu-progress{margin-top:10px}
+#startScreen .menu-utility{grid-template-columns:1fr}
+@media(max-width:700px){
+ #startScreen .menu-shell{padding-top:max(12px,env(safe-area-inset-top));gap:12px}
+ #startScreen .menu-content{margin:0 auto}
+ #startScreen .menu-home-actions{grid-template-columns:1fr;gap:10px;max-width:480px}
+ #startScreen .hero-menu-banner{min-height:110px;object-fit:cover;object-position:75% center}
+ #startScreen .menu-art-button{min-height:72px}
+}
+
+/* Refined menu: quiet scenery, a single hero banner and compact status. */
+#startScreen{background:#090f13}
+#startScreen>.menu-scene{position:fixed;inset:0;height:100%;opacity:.4}
+#startScreen .menu-scene img{object-fit:cover;object-position:center 45%}
+#startScreen:after{position:fixed;inset:0;height:auto;background:linear-gradient(180deg,#08101438,#080e14cc 74%)}
+#startScreen .menu-shell{width:min(1120px,100%);padding:18px clamp(12px,3vw,36px) 20px;gap:12px}
+#startScreen .menu-masthead{padding-bottom:8px;border-bottom:1px solid #bba06a22}
+.menu-hero-figure{margin:0 0 12px}
+#startScreen .hero-menu-banner{display:block;width:100%;height:auto;min-height:0;aspect-ratio:3/1;object-fit:cover;margin:0;border:1px solid #aa8a4a55;border-radius:5px}
+#menuHeroCaption{padding:8px 2px 0;color:#d9c69f;font:500 12px/1.4 system-ui;letter-spacing:.08em}
+#startScreen .menu-home-actions{gap:9px;max-width:760px}
+#startScreen .menu-art-button{min-height:56px;aspect-ratio:5/1;background:#12171a;border-radius:5px}
+#startScreen .menu-art-button img{height:100%;aspect-ratio:auto;object-fit:fill;filter:saturate(.7) brightness(.92)}
+#startScreen .menu-art-button:hover img{filter:saturate(.8) brightness(1.05)}
+.menu-compact-status{margin:14px 0 8px;color:#bbc6c4;font:500 12px/1.5 system-ui;font-variant-numeric:tabular-nums}
+.menu-storage-warning{margin:8px 0;padding:10px 12px;color:#f1c69e;background:#35271e;border:1px solid #ac845a55;font:12px/1.5 system-ui}
+.menu-save-details{font:12px/1.7 system-ui;color:#b7c5c3;border-top:1px solid #b9a06a33;margin-top:8px;padding-top:8px}
+.menu-save-details summary{padding:10px 0;min-height:44px;cursor:pointer}
+#startScreen .channel-card{min-height:72px;margin:14px 0 8px;padding:12px 16px}
+#startScreen .channel-copy strong{font-size:23px}
+#startScreen .menu-footer{padding-top:10px}
+@media(max-width:700px){
+ #startScreen .menu-shell{padding:12px max(12px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));gap:10px}
+ #startScreen .menu-home-actions{max-width:none;gap:8px}
+ #startScreen .menu-art-button{min-height:54px;aspect-ratio:5/1}
+ #startScreen .hero-menu-banner{min-height:0;aspect-ratio:3/1;object-position:center}
+ #menuHeroCaption{font-size:11px}
+ #startScreen .menu-wordmark{font-size:12px}
+ .menu-compact-status{font-size:11px}
+}

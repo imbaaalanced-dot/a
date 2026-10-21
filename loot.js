@@ -18,7 +18,7 @@
   }
   function starter(id,slot,power){return {id,slot,power,name:powers[power].name,rarity:'magic',level:1,stats:{},favorite:true};}
   function fresh(){const items=[starter('starter-ember','weapon','ember'),starter('starter-oath','armor','oath'),starter('starter-lantern','amulet','lantern')];return {version:2,level3:false,kirchendeCompleted:false,nextId:1,essence:0,items,bag:[],overflow:[],equipped:{weapon:'starter-ember',head:null,armor:'starter-oath',gloves:null,boots:null,amulet:'starter-lantern',ring1:null,ring2:null},milestones:[],level2:false};}
-  function validate(p){
+  function validateLegacy(p){
     const fail=()=>{throw Error('Ungültiger Spielstand');};
     if(!p||p.version!==2||typeof p.level3!=='boolean'||typeof p.kirchendeCompleted!=='boolean'||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||typeof p.level2!=='boolean')fail();
     if(!Array.isArray(p.items)||p.items.length>8||!Array.isArray(p.bag)||p.bag.length>30||!Array.isArray(p.overflow)||p.overflow.length>100000||!p.equipped||Object.keys(p.equipped).length!==8||!Array.isArray(p.milestones)||p.milestones.some(x=>![3,4,8,12].includes(x))||new Set(p.milestones).size!==p.milestones.length)fail();
@@ -35,88 +35,184 @@
     return copy(p);
   }
   function fits(item,slot){return item.slot===slot||(item.slot.startsWith('ring')&&slot.startsWith('ring'));}
-  function create({storage,rng=Math.random,canManage=()=>true}={}){
+  const C=globalThis.DenkmalEquipmentCatalog;
+  const PRE_MIGRATION=KEY+'-pre-v3',MAX_OWNED=100046,heroes=['marcel','kim'];
+  const fail=()=>{throw Error('Ungültiger Spielstand');};
+  const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
+  function safeData(x,depth=0){
+    if(depth>64)fail();
+    if(x===null||typeof x==='string'||typeof x==='boolean')return;
+    if(typeof x==='number'){if(!Number.isFinite(x))fail();return;}
+    if(!object(x)&&!Array.isArray(x))fail();
+    // JSON metadata keys remain data. Never merge them through prototype setters;
+    // schema-owned fields below are checked with own-key validation.
+    for(const v of Object.values(x))safeData(v,depth+1);
+  }
+  function checkStats(stats){
+    if(!object(stats)||Object.keys(stats).length>8)fail();
+    for(const [k,v]of Object.entries(stats))if(!Object.hasOwn(statInfo,k)||typeof v!=='number'||!Number.isFinite(v)||v<0||v>statInfo[k].max)fail();
+  }
+  function checkItem(i){
+    if(!object(i)||typeof i.id!=='string'||!i.id||i.id.length>100||!Object.hasOwn(slots,i.slot)||!Object.hasOwn(rarities,i.rarity)||typeof i.name!=='string'||!i.name.trim()||i.name.length>100||!Number.isInteger(i.level)||i.level<1||i.level>30||typeof i.favorite!=='boolean')fail();
+    if(i.power!==null&&i.power!==undefined&&!Object.hasOwn(powers,i.power))fail();
+    checkStats(i.stats);checkStats(i.baseStats);
+    if(!Number.isInteger(i.upgradeRank)||i.upgradeRank<0||i.upgradeRank>3)fail();
+    const keys=Object.keys(i.stats).sort();if(keys.join()!==Object.keys(i.baseStats).sort().join())fail();
+    const expected=i.upgradeRank===0?i.baseStats:C.previewUpgrade({...i,stats:i.baseStats,upgradeRank:i.upgradeRank-1}).stats;
+    for(const k of keys)if(i.stats[k]!==expected[k])fail();
+    if(i.legacy!==true){
+      const t=C.templates[i.templateId];
+      if(!t||i.name!==t.name||i.slot!==t.slot||i.power!==t.power||keys.join()!==[...t.keys].sort().join()||!['epic','legendary'].includes(i.rarity))fail();
+      const source=i.source;
+      if(!object(source)||!Object.hasOwn(C.bossPools,source.mapId)||!Number.isInteger(source.mapId)||source.bossType!==(source.mapId===3?'uprooted':'boss')||!Number.isFinite(source.wave)||source.wave<1||i.level!==Math.min(30,Math.floor(source.wave)))fail();
+    }
+  }
+  function validateProfile(p){
+    safeData(p);
+    if(!object(p)||p.version!==3||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||!['level2','level3','kirchendeCompleted'].every(k=>typeof p[k]==='boolean'))fail();
+    if(!Array.isArray(p.owned)||p.owned.length>MAX_OWNED||!object(p.loadouts)||Object.keys(p.loadouts).sort().join()!=='kim,marcel'||!Array.isArray(p.milestones)||p.milestones.some(x=>![3,4,8,12].includes(x))||new Set(p.milestones).size!==p.milestones.length)fail();
+    const index=new Map();for(const i of p.owned){checkItem(i);if(index.has(i.id))fail();index.set(i.id,i);}
+    for(const hero of heroes){
+      const worn=p.loadouts[hero],used=new Set();if(!object(worn)||Object.keys(worn).sort().join()!==Object.keys(slots).sort().join())fail();
+      for(const [slot,id]of Object.entries(worn)){if(id===null)continue;const item=index.get(id);if(!item||used.has(id)||!fits(item,slot))fail();used.add(id);}
+    }
+    return copy(p);
+  }
+  function migrate(p){
+    if(p.version===1){p={...p,version:2,level3:false,kirchendeCompleted:false};}
+    const old=validateLegacy(p);
+    return validateProfile({version:3,nextId:old.nextId,essence:old.essence,level2:old.level2,level3:old.level3,kirchendeCompleted:old.kirchendeCompleted,milestones:old.milestones,
+      owned:[...old.items,...old.bag,...old.overflow].map(i=>({...i,legacy:true,baseStats:copy(i.stats),upgradeRank:0})),loadouts:{marcel:copy(old.equipped),kim:copy(old.equipped)}});
+  }
+  function decode(text){
+    const e=JSON.parse(text);safeData(e);
+    if(e.format!=='denkmal-loot'||![1,2,3].includes(e.version)||e.profile?.version!==e.version)fail();
+    const profile=e.version===3?validateProfile(e.profile):migrate(e.profile),pending=e.pendingRewards||[],ids=new Set(profile.owned.map(i=>i.id)),tokens=new Set();
+    if(!Array.isArray(pending))fail();
+    for(const reward of pending){
+      if(!object(reward)||!rewardIdentity(reward)||reward.item?.id!==rewardIdentity(reward)||ids.has(reward.item.id)||tokens.has(reward.item.id))fail();
+      checkItem(reward.item);tokens.add(reward.item.id);
+    }
+    return {profile,pending:copy(pending),old:e.version<3?text:null};
+  }
+  function rewardIdentity(r){
+    if(!r||!['runId','spawnId'].every(k=>typeof r[k]==='string'&&/^[a-zA-Z0-9_-]+$/.test(r[k])))return null;
+    const id='boss-'+r.runId+'-'+r.spawnId;return id.length<=100?id:null;
+  }
+  function create({storage,rng=Math.random,canManage=()=>true,getHero=()=>'marcel'}={}){
     if(storage===undefined){try{storage=globalThis.localStorage;}catch{}}
-    let profile=fresh(),status='',readOnly=false,lastRaw=null;
-    function decode(env){if(![1,2].includes(env.version)||env.profile?.version!==env.version)throw Error('version');const p=copy(env.profile);if(env.version===1){p.version=2;p.level3=false;p.kirchendeCompleted=false;}return validate(p);}
-    function parse(raw){return decode(JSON.parse(raw));}
+    let profile=migrate(fresh()),status='',readOnly=false,recoveryRequired=false,lastRaw=null,preSource=null,pending=[];
+    const claimed=new Set();
     try{
       lastRaw=storage?.getItem(KEY)||null;
-      if(lastRaw){try{profile=parse(lastRaw);}catch(e){
-        let parsed;try{parsed=JSON.parse(lastRaw);}catch{}
-        if(parsed?.version!==undefined&&![1,2].includes(parsed.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
-        else {try{profile=parse(storage?.getItem(BACKUP));status='Spielstand aus Sicherung wiederhergestellt.';}catch{readOnly=true;status='Spielstand beschädigt. Export sichern oder eine gültige Sicherung importieren.';}}
-      }}
+      if(lastRaw){
+        try{const d=decode(lastRaw);profile=d.profile;preSource=d.old;pending=d.pending;}
+        catch{
+          let e;try{e=JSON.parse(lastRaw);}catch{}
+          if(e?.version!==undefined&&![1,2,3].includes(e.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
+          else try{const d=decode(storage?.getItem(BACKUP));profile=d.profile;preSource=d.old;pending=d.pending;status='Spielstand aus Sicherung wiederhergestellt.';}catch{readOnly=true;status='Spielstand beschädigt. Rohsicherung exportieren oder gültige Sicherung importieren.';}
+        }
+      }
     }catch{status='Speichern blockiert: Fortschritt gilt nur für diese Sitzung. Bitte exportieren.';}
-    const all=()=>[...profile.items,...profile.bag,...profile.overflow];
-    const find=id=>all().find(i=>i.id===id);
-    const raw=()=>JSON.stringify({format:'denkmal-loot',version:2,profile});
-    function save(){
-      if(readOnly)return false;
-      try{
-        const current=storage?.getItem(KEY)||null;
-        if(current!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}
-        // Backup only a known valid previous state. Corrupt primary must not replace recovery.
-        if(lastRaw){try{parse(lastRaw);storage.setItem(BACKUP,lastRaw);}catch{}}
-        const next=raw();if(!storage)throw Error('storage');storage.setItem(KEY,next);lastRaw=next;
-        if(status.includes('Sitzung'))status='';return true;
-      }catch{status='Speichern nicht möglich: Fortschritt gilt nur für diese Sitzung. Bitte exportieren.';return false;}
-    }
+    const raw=()=>JSON.stringify({format:'denkmal-loot',version:3,profile,...(pending.length?{pendingRewards:pending}:{})});
+    const find=id=>profile.owned.find(i=>i.id===id);
+    const wornIds=()=>new Set(heroes.flatMap(h=>Object.values(profile.loadouts[h])).filter(Boolean));
     function writable(){
       if(readOnly)return false;
       try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}
       return true;
     }
+    function save(){
+      if(!writable())return false;
+      try{
+        if(!storage)throw Error('storage');
+        if(preSource){
+          const backup=storage.getItem(PRE_MIGRATION);
+          if(backup){try{const parsed=JSON.parse(backup);if(![1,2].includes(parsed.version))throw Error('pre-v3');decode(backup);}catch{recoveryRequired=true;status='Vorherige Versionssicherung ungültig. Bitte beide Rohsicherungen exportieren. Fortschritt gilt nur für diese Sitzung.';return false;}}
+          else storage.setItem(PRE_MIGRATION,preSource);
+        }
+        if(lastRaw){let valid=false;try{decode(lastRaw);valid=true;}catch{}if(valid)storage.setItem(BACKUP,lastRaw);}
+        const next=raw();storage.setItem(KEY,next);lastRaw=next;preSource=null;
+        recoveryRequired=false;status='';return true;
+      }catch{status='Speichern nicht möglich: Fortschritt gilt nur für diese Sitzung. Bitte exportieren.';return false;}
+    }
+    function view(hero=getHero()){
+      if(!heroes.includes(hero))return null;
+      const ids=wornIds(),free=profile.owned.filter(i=>!ids.has(i.id));
+      return copy({items:profile.owned.filter(i=>Object.values(profile.loadouts[hero]).includes(i.id)),bag:free.slice(0,CAPACITY),overflow:free.slice(CAPACITY),equipped:profile.loadouts[hero],all:profile.owned});
+    }
+    function validateImport(text){if(typeof text!=='string'||text.length>15000000)throw Error('Datei zu groß');return decode(text).profile;}
+    function importJSON(text){
+      if(!canManage())return false;
+      // An explicitly imported recovery may replace corrupt/future data, never a newer tab.
+      try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}
+      if(readOnly&&status.includes('anderen Tab'))return false;
+      let d;try{validateImport(text);d=decode(text);}catch{return false;}
+      profile=d.profile;pending=d.pending;preSource=preSource||d.old;readOnly=false;retryPending();save();return true;
+    }
+    function setFlag(key){if(!writable())return false;profile[key]=true;save();return true;}
+    function commit(next){try{next=validateProfile(next);}catch{return false;}profile=next;save();return true;}
     const manage=()=>canManage()&&writable();
-    function refill(){while(profile.bag.length<CAPACITY&&profile.overflow.length)profile.bag.push(profile.overflow.shift());}
-    function generate(wave=1,boss=false){
-      const level=Math.max(1,Math.min(30,Math.floor(Number(wave)||1))),r=Math.max(0,Math.min(.999999,rng()));
-      const rarity=boss?(r<.2?'legendary':'epic'):r<.45?'common':r<.73?'magic':r<.91?'rare':r<.985?'epic':'legendary';
-      const slot=Object.keys(slots)[Math.min(7,Math.floor(rng()*8))]||'weapon',rank=rarities[rarity].rank;
-      const primary={weapon:'damage',head:'health',armor:'defense',gloves:'haste',boots:'speed',amulet:'tower',ring1:'crit',ring2:'leech'}[slot];
-      const stats={},choices=[primary,...Object.keys(statInfo).filter(k=>k!==primary).sort(()=>rng()-.5)];
-      for(const k of choices.slice(0,Math.min(4,1+rank))){const scale=(.18+level*.018)*(1+rank*.12)*(.7+rng()*.3);stats[k]=Math.round(Math.min(statInfo[k].max,statInfo[k].max*scale)*(statInfo[k].percent?1000:1))/(statInfo[k].percent?1000:1);}
-      let id;do{id='loot-'+profile.nextId;profile.nextId=profile.nextId>=1e9?1:profile.nextId+1;}while(find(id));
-      const power=rarity==='legendary'?['chain','sustain','bastion'][Math.min(2,Math.floor(rng()*3))]:null;
-      const suffix=['der Wacht','der Asche','des Echos','der Erinnerung'][Math.min(3,Math.floor(rng()*4))]||'der Wacht';
-      return {id,slot,name:power?powers[power].name:bases[slot]+' '+suffix,rarity,level,stats,power,favorite:false};
+    function equip(id,slot,hero=getHero()){
+      if(!manage()||!heroes.includes(hero))return false;
+      const item=find(id);slot=slot||item?.slot;
+      if(!item||!Object.hasOwn(slots,slot)||!fits(item,slot)||Object.values(profile.loadouts[hero]).includes(id))return false;
+      const next=copy(profile);next.loadouts[hero][slot]=id;return commit(next);
     }
-    function add(item){if(!writable()||find(item.id))return false;const candidate=copy(item),next=copy(profile);(next.bag.length<CAPACITY?next.bag:next.overflow).push(candidate);try{validate(next);}catch{return false;}profile=next;save();return true;}
-    function equip(id,slot){if(!manage())return false;const i=find(id);slot=slot||i?.slot;if(!i||!Object.hasOwn(slots,slot)||!fits(i,slot)||profile.items.some(x=>x.id===id))return false;
-      profile.bag=profile.bag.filter(x=>x.id!==id);profile.overflow=profile.overflow.filter(x=>x.id!==id);
-      const old=profile.items.find(x=>x.id===profile.equipped[slot]);profile.items=profile.items.filter(x=>x.id!==old?.id);profile.items.push(i);profile.equipped[slot]=id;
-      if(old)(profile.bag.length<CAPACITY?profile.bag:profile.overflow).push(old);refill();save();return true;
+    function unequip(slot,hero=getHero()){
+      if(!manage()||!heroes.includes(hero)||!Object.hasOwn(slots,slot)||!profile.loadouts[hero][slot])return false;
+      const next=copy(profile);next.loadouts[hero][slot]=null;return commit(next);
     }
-    function unequip(slot){if(!manage()||!Object.hasOwn(slots,slot))return false;const i=profile.items.find(x=>x.id===profile.equipped[slot]);if(!i)return false;profile.items=profile.items.filter(x=>x.id!==i.id);profile.equipped[slot]=null;(profile.bag.length<CAPACITY?profile.bag:profile.overflow).push(i);refill();save();return true;}
-    function favorite(id){if(!manage())return false;const i=find(id);if(!i)return false;i.favorite=!i.favorite;save();return true;}
-    function salvageValue(i){return 5+rarities[i.rarity].rank*8+i.level;}
-    function salvage(id){if(!manage())return false;const i=[...profile.bag,...profile.overflow].find(x=>x.id===id);if(!i||i.favorite)return false;profile.essence=Math.min(1e9,profile.essence+salvageValue(i));profile.bag=profile.bag.filter(x=>x.id!==id);profile.overflow=profile.overflow.filter(x=>x.id!==id);refill();save();return true;}
-    function salvagePreview(){
-      const targets=[...profile.bag,...profile.overflow].filter(i=>!i.favorite);
-      return {count:targets.length,essence:targets.reduce((sum,i)=>sum+salvageValue(i),0)};
+    function favorite(id){if(!manage()||!find(id))return false;const next=copy(profile),item=next.owned.find(i=>i.id===id);item.favorite=!item.favorite;return commit(next);}
+    const salvageValue=i=>5+rarities[i.rarity].rank*8+i.level;
+    const removable=i=>!i.favorite&&!wornIds().has(i.id);
+    function salvagePreview(){const items=profile.owned.filter(removable);return {count:items.length,essence:items.reduce((n,i)=>n+salvageValue(i),0)};}
+    function salvage(id){
+      if(!manage())return false;const item=find(id);if(!item||!removable(item))return false;
+      const next=copy(profile);next.owned=next.owned.filter(i=>i.id!==id);next.essence=Math.min(1e9,next.essence+salvageValue(item));const ok=commit(next);if(ok)retryPending();return ok;
     }
     function salvageAll(){
-      if(!manage())return false;
-      const preview=salvagePreview();
-      if(!preview.count)return false;
-      // Commit once; equipped items and favorites never enter the candidate list.
-      const next=copy(profile);
-      next.bag=next.bag.filter(i=>i.favorite);
-      next.overflow=next.overflow.filter(i=>i.favorite);
-      while(next.bag.length<CAPACITY&&next.overflow.length)next.bag.push(next.overflow.shift());
-      next.essence=Math.min(1e9,next.essence+preview.essence);
-      try{validate(next);}catch{return false;}
-      profile=next;save();return true;
+      if(!manage())return false;const preview=salvagePreview();if(!preview.count)return false;
+      const next=copy(profile);next.owned=next.owned.filter(i=>!removable(i));next.essence=Math.min(1e9,next.essence+preview.essence);const ok=commit(next);if(ok)retryPending();return ok;
     }
-    function reforge(id){if(!manage()||profile.essence<50)return false;const i=[...profile.bag,...profile.overflow].find(x=>x.id===id);if(!i||i.favorite)return false;for(const k of Object.keys(i.stats)){const cap=statInfo[k].max,scale=(.18+i.level*.018)*(1+rarities[i.rarity].rank*.12)*(.7+rng()*.3);i.stats[k]=Math.round(Math.min(cap,cap*scale)*(statInfo[k].percent?1000:1))/(statInfo[k].percent?1000:1);}profile.essence-=50;save();return true;}
-    function milestone(wave){const reward={3:['armor','ash'],4:['weapon','echo'],8:['amulet','bell']}[wave];if(!reward||profile.milestones.includes(wave)||!writable())return false;const i=starter('milestone-'+wave,...reward);i.level=wave;profile.milestones.push(wave);return add(i);}
-    function validateImport(text){if(typeof text!=='string'||text.length>15000000)throw Error('Datei zu groß');const e=JSON.parse(text);if(e.format!=='denkmal-loot'||![1,2].includes(e.version))throw Error('Falsches Format oder Version');return decode(e);}
-    function importJSON(text){if(!canManage())return false;try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}let next;try{next=validateImport(text);}catch{return false;}if(readOnly&&status.includes('anderen Tab'))return false;profile=next;readOnly=false;try{lastRaw=storage?.getItem(KEY)||null;}catch{}save();return true;}
-    function unlockLevel3(){if(!writable())return false;profile.level3=true;save();return true;}
-    function claimKirchendeReward(){if(!writable()||profile.kirchendeCompleted)return null;const item=generate(12,true);Object.assign(item,{name:'Hainkern',power:'grove',slot:'ring1',rarity:'epic'});const next=copy(profile);(next.bag.length<CAPACITY?next.bag:next.overflow).push(item);next.kirchendeCompleted=true;if(!next.milestones.includes(12))next.milestones.push(12);try{validate(next);}catch{return null;}profile=next;save();return copy(item);}
-    function generateKirchende(wave=9,boss=false){const item=generate(wave,boss);if(boss||rng()<.35){const variants=[['armor','bark'],['boots','roots'],['weapon','splinter'],['amulet','wardlight'],['ring1','grove']];const [slot,power]=variants[Math.min(4,Math.floor(rng()*5))]||variants[0];Object.assign(item,{slot,power,name:powers[power].name});}return item;}
-    function unlockLevel(){if(!writable())return false;profile.level2=true;save();return true;}
-    return {storage,get count(){return profile.bag.length;},get overflowCount(){return profile.overflow.length;},get profile(){return copy(profile);},get readOnly(){return readOnly;},get status(){return status;},generate,generateKirchende,unlockLevel3,claimKirchendeReward,add,equip,unequip,favorite,salvage,salvagePreview,salvageAll,reforge,milestone,unlockLevel,save,salvageValue,find:id=>{const i=find(id);return i?copy(i):null;},snapshot:()=>copy(profile.items),exportJSON:raw,exportRecovery:()=>lastRaw||raw(),validateImport,importJSON};
+    function upgradePreview(id){
+      const item=find(id);if(!item)return {allowed:false,reason:'Gegenstand fehlt',cost:0,nextRank:0,stats:{}};
+      const p=C.previewUpgrade(item);
+      if(!removable(item))return {...p,allowed:false,reason:'Favorisiert oder bei einem Helden angelegt'};
+      if(profile.essence<p.cost)return {...p,allowed:false,reason:'Nicht genug Schmiedessenz'};
+      return p;
+    }
+    function upgrade(id){
+      if(!manage())return false;const p=upgradePreview(id);if(!p.allowed)return false;
+      const next=copy(profile),item=next.owned.find(i=>i.id===id);item.stats=p.stats;item.upgradeRank=p.nextRank;next.essence-=p.cost;return commit(next);
+    }
+    function retryPending(){
+      let granted=0,persisted=false;
+      if(!writable())return {granted,pending:pending.length,persisted};
+      while(pending.length&&profile.owned.length<MAX_OWNED){
+        const reward=pending[0];
+        if(find(reward.item.id)){claimed.add(reward.item.id);pending.shift();continue;}
+        const next=copy(profile);next.owned.push(copy(reward.item));
+        try{profile=validateProfile(next);}catch{break;}
+        pending.shift();claimed.add(reward.item.id);granted++;
+      }
+      if(granted)persisted=save();
+      return {granted,pending:pending.length,persisted};
+    }
+    function claimBoss(request){
+      const id=rewardIdentity(request);
+      if(!id||!Object.hasOwn(C.bossPools,request.mapId)||!Number.isInteger(request.mapId)||request.bossType!==(request.mapId===3?'uprooted':'boss')||!Number.isFinite(request.wave)||request.wave<1)return {state:'rejected',item:null,persisted:false};
+      if(claimed.has(id)||find(id))return {state:'duplicate',item:null,persisted:false};
+      let candidate=pending.find(r=>r.item.id===id);
+      if(!candidate){
+        const descriptor=C.rollBoss(request,rng);if(!descriptor)return {state:'rejected',item:null,persisted:false};
+        candidate={runId:request.runId,spawnId:request.spawnId,item:{...descriptor,id}};pending.push(candidate);
+      }
+      const result=retryPending(),granted=!!find(id);
+      if(!granted&&!status)status='Sammlung voll: Bossfund ausstehend. Im Menü Platz schaffen oder exportieren.';
+      return {state:granted?'granted':'pending',item:copy(candidate.item),persisted:granted&&result.persisted};
+    }
+    return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,claimBoss,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
   }
   globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
 })();

@@ -15,7 +15,7 @@
       if(x1>x0&&y1>y0){const sw=x1-x0+1,sh=y1-y0+1;const small=document.createElement('canvas');small.height=key==='monument'?356:232;small.width=Math.ceil(small.height*sw/sh);small.getContext('2d').drawImage(canvas,x0,y0,sw,sh,0,0,small.width,small.height);sprites[key]={canvas:small,bounds:[0,0,small.width,small.height]};}
     });
   };
-  sheet.src='assets/guardian-atlas-v27.png';
+  sheet.src='assets/guardian-atlas-v27.webp';
   function draw(ctx,key,x,y,height,face=1,opacity=1){
     const sprite=sprites[key];if(!sprite)return false;
     const [sx,sy,sw,sh]=sprite.bounds,width=height*sw/sh;
