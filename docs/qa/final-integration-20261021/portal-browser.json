@@ -1,0 +1,30 @@
+{
+  "browser": "153.0.8010.0",
+  "reports": [
+    {
+      "touchEmulation": false,
+      "heroes": [
+        "marcel",
+        "kim"
+      ],
+      "portalCollision": true,
+      "resume": true,
+      "campaignPilot": true,
+      "errors": [],
+      "missing": []
+    },
+    {
+      "touchEmulation": true,
+      "heroes": [
+        "marcel",
+        "kim"
+      ],
+      "portalCollision": true,
+      "resume": true,
+      "campaignPilot": true,
+      "errors": [],
+      "missing": []
+    }
+  ],
+  "realAndroidTested": false
+}

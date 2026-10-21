@@ -11,7 +11,7 @@ const run=search=>{
   return {api:sandbox.UserStyle2Towers,ready,seen};
 };
 {
-  const {api,seen}=run('');
+  const {api,seen}=run('?td2UserTowers=0');
   assert.equal(api.enabled,false);
   assert.equal(api.drawTower(ctx(),'bow',2,3,1),false);
   assert.equal(seen.size,0,'disabled mode must not request any WebP file');

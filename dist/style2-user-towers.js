@@ -1,8 +1,8 @@
-/* Optional, preview-only TD2 user-approved Style-2 tower/projectile sprites.
+/* User-approved Style-2 tower/projectile sprites.
  * Fallbacks remain active until the requested WebP image is fully decoded. */
 (()=>{'use strict';
   const kinds=new Set(['bow','cannon','mage','rift','boomerang']);
-  const enabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2UserTowers')==='1';
+  const enabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2UserTowers')!=='0';
   // The normal game has DenkmalAssets; standalone previews use Image.
   // BOTH paths must stay bounded instead of retaining every variant visited.
   const known=new Map();

@@ -11,11 +11,12 @@
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=alpha9a1" />
-  <link rel="stylesheet" href="loot.css?v=equipment-boss1" />
+  <link rel="stylesheet" href="loot.css?v=final-20261021" />
   <link rel="stylesheet" href="menu.css?v=alpha8polish1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=alpha8a2" />
+  <link rel="stylesheet" href="portal-ui.css?v=portal1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -96,6 +97,7 @@
           <nav id="menuHomeActions" class="menu-home-actions" aria-label="Hauptmenü">
             <button id="menuCampaignBtn" class="menu-art-button" type="button" aria-controls="campaignMenu" aria-label="Kampagne"><img src="assets/menu/button-campaign-v1.webp" alt="" width="1024" height="264"/><span>Kampagne</span></button>
             <button id="menuArcadeBtn" class="menu-art-button" type="button" aria-controls="endlessMenu" aria-label="Arcade – Endlos"><img src="assets/menu/button-arcade-v1.webp" alt="" width="1024" height="264"/><span>Arcade – Endlos</span></button>
+            <button id="campaignPilotBtn" class="menu-art-button" type="button" hidden><span>Kampagnenpilot · 8 Wellen</span></button><button id="portalNewBtn" class="menu-art-button" type="button"><span>Portalreise · Neuer Durchlauf</span></button><button id="portalResumeBtn" class="menu-art-button" type="button"><span>Portalreise · Fortsetzen</span></button>
             <button id="menuCharacterBtn" class="menu-art-button" type="button" aria-controls="heroMenu" aria-label="Held wechseln / Inventar"><img src="assets/menu/button-hero-v1.webp" alt="" width="1024" height="264"/><span>Held wechseln / Inventar</span></button>
             <button id="menuOptionsBtn" class="menu-art-button" type="button" aria-controls="optionsMenu" aria-label="Optionen"><img src="assets/menu/button-options-v1.webp" alt="" width="1024" height="264"/><span>Optionen</span></button>
           </nav>
@@ -254,14 +256,14 @@
   </main>
   <script src="levels.js?v=syburg2"></script>
   <script src="visuals.js?v=alpha9a1"></script>
-  <script src="equipment-catalog.js?v=equipment-boss1"></script>
-  <script src="loot.js?v=equipment-boss1"></script>
-  <script src="loot-ui.js?v=equipment-boss1"></script>
+  <script src="equipment-catalog.js?v=final-20261021"></script>
+  <script src="loot.js?v=final-20261021"></script>
+  <script src="loot-ui.js?v=final-20261021"></script>
   <script src="hero-saga.js?v=alpha9a1"></script>
   <script src="combat-fx.js?v=v400a6s2t5"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
   <script src="elemental-sprites.js?v=alpha8a2"></script>
-  <script src="style2-user-towers.js?v=user-towers-6"></script>
+  <script src="style2-user-towers.js?v=user-towers-final1"></script>
   <script src="enemy-animations.js?v=alpha9a3"></script>
   <script src="style2-towers.js?v=v400a6elemental1"></script>
   <script src="style2-maps.js?v=v400a6markers1"></script>
@@ -279,6 +281,9 @@
   <script src="goethestrasse-art.js?v=goethe1"></script>
   <script src="hohensyburg.js?v=syburg1"></script>
   <script src="hohensyburg-art.js?v=alpha9a3"></script>
-  <script src="game.js?v=equipment-boss1"></script>
+  <script src="campaign-balance.js?v=portal1"></script>
+  <script src="portal-run.js?v=portal1"></script>
+  <script src="portal-perks.js?v=portal1"></script>
+  <script src="game.js?v=final-20261021"></script>
 </body>
 </html>

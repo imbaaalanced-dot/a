@@ -21,7 +21,7 @@ function ctx(breakArc=false){
     stroke(){calls.strokes++;}};
 }
 for(const enabled of [false,true]){
-  const s=boot(enabled?'?td2UserTowers=1':'');
+  const s=boot(enabled?'?td2UserTowers=1':'?td2UserTowers=0');
   const api=s.UserStyle2Towers,fx=s.DenkmalCombatFX;
   assert.equal(api.enabled,enabled);
   for(const kind of families)for(const tier of [1,2,3])for(const reduced of [false,true]){

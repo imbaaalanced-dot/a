@@ -24,7 +24,7 @@ function canvas(throwOnDraw=false){
     translate(){},rotate(){},drawImage(){calls.draw++;if(throwOnDraw)throw Error('GPU draw failed');}};
 }
 (async()=>{
-  const off=boot('');
+  const off=boot('?td2UserTowers=0');
   assert.equal(off.adapter.enabled,false);
   assert.equal(off.adapter.drawTower(canvas(),'bow',0,0,1),false);
   assert.equal(off.pending.length,0,'opt-out must not load sprites');
