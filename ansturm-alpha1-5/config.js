@@ -3,7 +3,7 @@ export const TECH = {
  tempo:{name:'Tempo',base:35,growth:1.25,increment:.15,desc:'+0,15 Angriffe/s'},
  hp:{name:'Lebenspunkte',base:30,growth:1.25,increment:30,desc:'+30 Max-HP und Heilung'},
  regen:{name:'Regeneration',base:45,growth:1.3,increment:1,desc:'+1 HP/s'},
- range:{name:'Reichweite',base:40,growth:1.3,increment:.035,desc:'+3,5 % Arenaradius'},
+ range:{name:'Reichweite',base:40,growth:1.3,increment:.035,maxLevel:15,desc:'+3,5 % Arenaradius · maximal 15 Ränge'},
  gold:{name:'Goldbonus',base:60,growth:1.4,increment:.1,desc:'+10 % Gold'}
 };
 export const UPGRADES = {
