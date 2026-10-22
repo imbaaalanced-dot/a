@@ -1,4 +1,4 @@
-import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step} from './model.js';import {renderArena} from './render.js';import {readRecord,saveRecord} from './storage.js';import {sprite} from './sprites.js';
+import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step} from './model.js';import {renderArena} from './render.js?v=alpha15-3';import {readRecord,saveRecord} from './storage.js';import {sprite} from './sprites.js';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=false,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return {getItem:()=>null,setItem:()=>{}}}})();
 // Kaufkarten bleiben beim HUD-Refresh im DOM: laufende Touch-Gesten werden nicht unterbrochen.
 let renderedTab=null;const cardRefs=new Map();
