@@ -10,21 +10,13 @@ global.Image=class FakeImage{
 };
 (async()=>{
   const root=path.resolve(__dirname,'../dist/alpha1-5');
-  const {sprite,effectSprite,spriteStats}=await import(path.join(root,'sprites.js'));
+  const {sprite,spriteStats}=await import(path.join(root,'sprites.js'));
   const deadline=Date.now()+3000;
   while(spriteStats().decoded<spriteStats().total&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,5));
   const stats=spriteStats();
-  assert.equal(stats.total,59);
-  assert.equal(stats.decoded,59);
-  assert.equal(stats.failed,0);
-  assert.equal(stats.queued,0);
-  assert.equal(stats.loading,0);
-  assert.equal(requests,59);
+  assert.equal(stats.total,59);assert.equal(stats.decoded,59);assert.equal(stats.failed,0);assert.equal(stats.queued,0);assert.equal(stats.loading,0);assert.equal(requests,59);
   assert.ok(maxActive<=4,`cache exceeded its four-image concurrency limit: ${maxActive}`);
-  const calls=[];
-  const ctx={globalAlpha:1,save(){},restore(){},translate(){},rotate(){},drawImage(...args){calls.push(args);}};
-  assert.equal(sprite(ctx,'monument',10,20,40,50),true);
-  assert.equal(effectSprite(ctx,'effect_bolt',5,5,20,10),true);
-  assert.equal(calls.length,2);
-  console.log('Alpha 1.5 asset cache decoded all 59 images with a maximum of four concurrent loads.');
+  const calls=[],ctx={drawImage(...args){calls.push(args);}};
+  assert.equal(sprite(ctx,'monument',10,20,40,50),true);assert.equal(calls.length,1);
+  console.log('Alpha 1.5 asset cache decoded all 59 game images with a maximum of four concurrent loads.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

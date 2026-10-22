@@ -12,10 +12,17 @@ export const UPGRADES = {
  explosion:{name:'Explosion',prices:[250,550,900],desc:'Flächenschaden um Treffer'},
  frost:{name:'Frostfeld',prices:[180,420,700],desc:'Gegner werden verlangsamt'},
  shield:{name:'Energieschild',prices:[150,350,650],desc:'Schutzschild mit Regeneration'},
+ fire:{name:'Seelenbrand',prices:[300,600,1000],desc:'Treffer verbrennen Gegner über Zeit'},
+ pierce:{name:'Durchschlag',prices:[350,700,1100],desc:'Pro Schuss werden weitere Gegner in der Schusslinie getroffen'},
 };
 export const ENEMY = {
  normal:{hp:24,speed:.08,dps:5,gold:8,color:'#b45d55'},
  runner:{hp:16,speed:.13,dps:3,gold:10,color:'#d8a356'},
  armored:{hp:65,speed:.05,dps:10,gold:18,color:'#848c9f'},
+ cultist:{hp:30,speed:.075,dps:6,gold:12,color:'#9861a8'},
+ shieldbearer:{hp:78,speed:.045,dps:8,gold:20,color:'#5d91a0'},
+ bomber:{hp:42,speed:.09,dps:14,gold:17,color:'#c07845'},
+ gargoyle:{hp:48,speed:.11,dps:7,gold:22,color:'#7d7d9e'},
+ siege:{hp:135,speed:.035,dps:18,gold:35,color:'#a76c58'},
  boss:{hp:400,speed:.035,dps:18,gold:125,color:'#9b5ac8'}
 };

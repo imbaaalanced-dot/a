@@ -23,8 +23,8 @@ function pump(){
       pump();
     };
     img.onload=()=>{
-      if(typeof img.decode==='function')img.decode().then(()=>finish(true),()=>finish(false));
-      else finish(true);
+      if(typeof img.decode==='function')img.decode().then(()=>finish(true),()=>finish(img.naturalWidth>0));
+      else finish(img.naturalWidth>0);
     };
     img.onerror=()=>finish(false);
     img.src=item.url;
@@ -39,23 +39,8 @@ export function sprite(ctx,key,x,y,width,height){
   ctx.drawImage(item.img,x-width/2,y-height,width,height);
   return true;
 }
-const EFFECT_CROP={
-  effect_bolt:[12,43,104,37],
-  effect_fire:[9,20,116,60],
-  effect_ice:[12,22,100,56],
-  effect_lance:[5,7,100,60],
-  effect_lightning:[10,26,90,53],
-  effect_blast:[36,17,78,58]
-};
-export function effectSprite(ctx,key,x,y,width,height,angle=0,alpha=1){
-  const item=entries.get(key),crop=EFFECT_CROP[key];
-  if(item?.status!=='ready'||!item.img?.naturalWidth||!crop)return false;
-  const [sx,sy,sw,sh]=crop;
-  ctx.save();ctx.globalAlpha*=alpha;ctx.translate(x,y);ctx.rotate(angle);
-  ctx.drawImage(item.img,sx,sy,sw,sh,-width/2,-height/2,width,height);
-  ctx.restore();return true;
-}
 export function spriteStats(){
   const statuses=[...entries.values()].map(item=>item.status);
   return {decoded:statuses.filter(s=>s==='ready').length,total:entries.size,failed:statuses.filter(s=>s==='failed').length,loading:inflight,queued:queue.length};
 }
+export function spriteReady(key){const item=entries.get(key);return item?.status==='ready'&&!!item.img?.naturalWidth;}

@@ -20,6 +20,7 @@ jobs:
         run: |
           set -e
           for test in tests/*.test.cjs; do node "$test"; done
+          node --test dist/alpha1-5/tests/*.test.js
           TEST_MOBILE=1 node tests/game.test.cjs
           python -m pip install Pillow
           for test in tests/*.test.py; do python "$test"; done
@@ -38,12 +39,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/alpha15-pages origin/gh-pages
-          mkdir -p /tmp/alpha15-pages/alpha1-5
-          find /tmp/alpha15-pages/alpha1-5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-          cp -R dist/alpha1-5/. /tmp/alpha15-pages/alpha1-5/
+          mkdir -p /tmp/alpha15-pages/ansturm-alpha1-5
+          find /tmp/alpha15-pages/ansturm-alpha1-5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/alpha1-5/. /tmp/alpha15-pages/ansturm-alpha1-5/
+          rm -rf /tmp/alpha15-pages/alpha1-5
           touch /tmp/alpha15-pages/.nojekyll
           cd /tmp/alpha15-pages
-          git add alpha1-5 .nojekyll
+          git add ansturm-alpha1-5 alpha1-5 .nojekyll
           if git diff --cached --quiet; then
             echo "Alpha 1.5 preview already current."
             exit 0
