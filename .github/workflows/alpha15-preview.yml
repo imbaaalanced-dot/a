@@ -1,0 +1,53 @@
+name: Publish isolated Alpha 1.5 tester
+on:
+  push:
+    branches: ["feature/alpha15-portrait-upgrade-menu"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: alpha15-preview
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify repository tests
+        run: |
+          set -e
+          for test in tests/*.test.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          python -m pip install Pillow
+          for test in tests/*.test.py; do python "$test"; done
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish only the isolated Alpha 1.5 path
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/alpha15-pages origin/gh-pages
+          mkdir -p /tmp/alpha15-pages/alpha1-5
+          find /tmp/alpha15-pages/alpha1-5 -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/alpha1-5/. /tmp/alpha15-pages/alpha1-5/
+          touch /tmp/alpha15-pages/.nojekyll
+          cd /tmp/alpha15-pages
+          git add alpha1-5 .nojekyll
+          if git diff --cached --quiet; then
+            echo "Alpha 1.5 preview already current."
+            exit 0
+          fi
+          git commit -m "Publish isolated TD2 Alpha 1.5 tester ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
