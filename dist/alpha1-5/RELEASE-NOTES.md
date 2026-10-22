@@ -6,5 +6,8 @@
 - Projektil- und Trefferbilder sowie die Stufen aller sieben Waffen sind im Canvas sichtbar.
 - Neue Feuer- und Durchschlag-Upgrades nutzen die vorhandenen Style-2-Grafiken.
 - Browserlayout für Hoch- und Querformat wurde für 360×800 und 800×360 vorbereitet.
+- Die vier Gate-/Portalobjekte sind aus der Arena entfernt; Gegner erscheinen verteilt an den vier sichtbaren Bildschirmrändern.
+- Reichweiten-Ränge zoomen die Kamera stufenweise heraus und sind nach 15 wirksamen Stufen gedeckelt.
+- Die Bewegungsgeschwindigkeit bleibt beim Herauszoomen auf dem Bildschirm gleichmäßig.
 
 Die vorhandene Upload-ZIP enthielt keine automatischen Tests. Dieser Release-Zweig enthält daher 21 neu angelegte Modell-, Cache- und Manifestprüfungen.

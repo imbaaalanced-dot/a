@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,spawnEnemy,damageEnemy} from '../model.js';
+import {createGame,getStats,getViewMetrics,syncArenaViewport,quotePurchase,purchase,startGame,nextWave,step,spawnEnemy,damageEnemy} from '../model.js';
 import {TECH,UPGRADES,ENEMY} from '../config.js';
 
 test('01 new run starts with expected resources and no enemies',()=>{const s=createGame();assert.equal(s.gold,100);assert.equal(s.wave,0);assert.equal(s.enemies.length,0);});
@@ -15,6 +15,9 @@ test('09 all weapon upgrade families have three priced levels',()=>{for(const u 
 test('10 weapon purchase deducts its price and caps at level three',()=>{const s=createGame();s.gold=10000;assert.equal(purchase(s,'fire'),true);assert.equal(s.upgrades.fire,1);s.upgrades.fire=3;assert.equal(quotePurchase(s,'fire').reason,'Maximum');});
 test('11 unknown and unaffordable purchases leave state unchanged',()=>{const s=createGame();assert.equal(purchase(s,'missing'),false);assert.equal(purchase(s,'tesla'),false);assert.equal(s.gold,100);});
 test('12 first wave spawns from all four arena edges',()=>{const s=createGame({random:()=>.5});s.wave=1;s.planned=4;const es=Array.from({length:4},()=>spawnEnemy(s));assert.deepEqual(es.map(e=>[e.x,e.y]),[[-1,0],[1,0],[0,-1],[0,1]]);});
+test('12a spawns cover all four visible screen edges in portrait',()=>{const s=createGame({random:()=>.5});syncArenaViewport(s,360,800);s.wave=1;s.planned=4;const edges=Array.from({length:4},()=>spawnEnemy(s));const b=s.arenaBounds;assert.deepEqual(edges.map(e=>[e.x,e.y]),[[-b.halfWidth,0],[b.halfWidth,0],[0,-b.halfHeight],[0,b.halfHeight]]);assert.ok(b.halfHeight>b.halfWidth);});
+test('12b range ranks zoom the camera out and stop at their effective maximum',()=>{const s=createGame();const before=getViewMetrics(s,360,800);assert.equal(getStats(s).rangeRatio,.3);assert.equal(purchase(s,'range'),true);const afterOne=getViewMetrics(s,360,800);assert.ok(afterOne.unit<before.unit);assert.ok(afterOne.halfHeight>before.halfHeight);s.gold=1e9;while(s.tech.range<15)assert.equal(purchase(s,'range'),true);assert.equal(getStats(s).rangeRatio,.8);assert.equal(quotePurchase(s,'range').reason,'Maximum');const max=getViewMetrics(s,360,800);assert.ok(max.zoom<1);});
+test('12c renderer no longer draws portal or gate structures',async()=>{const fs=await import('node:fs');const render=fs.readFileSync(new URL('../render.js',import.meta.url),'utf8');assert.doesNotMatch(render,/gate_|gate_/);});
 test('13 each enemy uses its corresponding Style 2 sprite key',()=>{const s=createGame({random:()=>.5});s.wave=1;s.planned=9;for(let i=0;i<9;i++){const e=spawnEnemy(s);assert.ok(e.spriteKey.startsWith('enemy_'));assert.ok(ENEMY[e.type]);}});
 test('14 higher waves unlock all supplied regular enemy sprites',()=>{const expected=['enemy_normal','enemy_runner','enemy_armored','enemy_cultist','enemy_shieldbearer','enemy_bomber','enemy_gargoyle','enemy_siege'];const seen=new Set();for(let wave=1;wave<=8;wave++){const s=createGame({random:()=>.5});s.wave=wave;s.planned=8;for(let i=0;i<8;i++)seen.add(spawnEnemy(s).spriteKey);}for(const k of expected)assert.ok(seen.has(k),`missing ${k}`);});
 test('15 successive boss waves cycle through all four boss sprites',()=>{const seen=[];for(let wave=5;wave<=20;wave+=5){const s=createGame({random:()=>.5});s.wave=wave;s.planned=1;seen.push(spawnEnemy(s).spriteKey);}assert.deepEqual(seen,['boss_stonebreaker','boss_stormlord','boss_shieldwarden','boss_colossus']);});
