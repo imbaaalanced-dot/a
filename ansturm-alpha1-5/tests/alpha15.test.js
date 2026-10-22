@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,spawnEnemy,damageEnemy} from '../model.js';
+import {TECH,UPGRADES,ENEMY} from '../config.js';
+
+test('01 new run starts with expected resources and no enemies',()=>{const s=createGame();assert.equal(s.gold,100);assert.equal(s.wave,0);assert.equal(s.enemies.length,0);});
+test('02 start launches first wave exactly once',()=>{const s=createGame();startGame(s);assert.equal(s.wave,1);assert.equal(s.status,'running');startGame(s);assert.equal(s.wave,1);});
+test('03 wave planning scales and schedules every fifth boss',()=>{const s=createGame();nextWave(s);assert.equal(s.planned,13);s.wave=4;s.status='intermission';nextWave(s);assert.equal(s.planned,26);});
+test('04 next wave is blocked while combat is running',()=>{const s=createGame();startGame(s);assert.equal(nextWave(s),false);});
+test('05 tech quote uses expected first price and rejects unaffordable item',()=>{const s=createGame();assert.equal(quotePurchase(s,'attack').price,20);assert.equal(quotePurchase(s,'tesla').available,false);});
+test('06 tech purchase deducts gold and improves damage',()=>{const s=createGame();const before=getStats(s).damage;assert.equal(purchase(s,'attack'),true);assert.equal(s.gold,80);assert.equal(getStats(s).damage,before+3);});
+test('07 health research increases maximum and current health',()=>{const s=createGame();assert.equal(purchase(s,'hp'),true);assert.equal(getStats(s).maxHp,280);assert.equal(s.hp,280);});
+test('08 tech levels compound their costs',()=>{const s=createGame();purchase(s,'attack');s.gold=1000;assert.equal(quotePurchase(s,'attack').price,24);});
+test('09 all weapon upgrade families have three priced levels',()=>{for(const u of Object.values(UPGRADES))assert.equal(u.prices.length,3);});
+test('10 weapon purchase deducts its price and caps at level three',()=>{const s=createGame();s.gold=10000;assert.equal(purchase(s,'fire'),true);assert.equal(s.upgrades.fire,1);s.upgrades.fire=3;assert.equal(quotePurchase(s,'fire').reason,'Maximum');});
+test('11 unknown and unaffordable purchases leave state unchanged',()=>{const s=createGame();assert.equal(purchase(s,'missing'),false);assert.equal(purchase(s,'tesla'),false);assert.equal(s.gold,100);});
+test('12 first wave spawns from all four arena edges',()=>{const s=createGame({random:()=>.5});s.wave=1;s.planned=4;const es=Array.from({length:4},()=>spawnEnemy(s));assert.deepEqual(es.map(e=>[e.x,e.y]),[[-1,0],[1,0],[0,-1],[0,1]]);});
+test('13 each enemy uses its corresponding Style 2 sprite key',()=>{const s=createGame({random:()=>.5});s.wave=1;s.planned=9;for(let i=0;i<9;i++){const e=spawnEnemy(s);assert.ok(e.spriteKey.startsWith('enemy_'));assert.ok(ENEMY[e.type]);}});
+test('14 higher waves unlock all supplied regular enemy sprites',()=>{const expected=['enemy_normal','enemy_runner','enemy_armored','enemy_cultist','enemy_shieldbearer','enemy_bomber','enemy_gargoyle','enemy_siege'];const seen=new Set();for(let wave=1;wave<=8;wave++){const s=createGame({random:()=>.5});s.wave=wave;s.planned=8;for(let i=0;i<8;i++)seen.add(spawnEnemy(s).spriteKey);}for(const k of expected)assert.ok(seen.has(k),`missing ${k}`);});
+test('15 successive boss waves cycle through all four boss sprites',()=>{const seen=[];for(let wave=5;wave<=20;wave+=5){const s=createGame({random:()=>.5});s.wave=wave;s.planned=1;seen.push(spawnEnemy(s).spriteKey);}assert.deepEqual(seen,['boss_stonebreaker','boss_stormlord','boss_shieldwarden','boss_colossus']);});
+test('16 defeated enemy rewards gold once only',()=>{const s=createGame();s.wave=1;s.enemies=[{id:1,hp:10,maxHp:10,alive:true,x:0,y:0,gold:8}];damageEnemy(s,1,20);damageEnemy(s,1,20);assert.equal(s.kills,1);assert.equal(s.gold,108);});
+test('17 fire upgrade applies damage over time during its burn window',()=>{const s=createGame();s.status='running';s.upgrades.fire=1;s.enemies=[{id:1,hp:100,maxHp:100,alive:true,x:.1,y:.1,speed:.05,dps:1,gold:0,burnUntil:0,burnDps:0,slowUntil:0}];s.fireClock=1;step(s,1/30);assert.ok(s.enemies[0].burnUntil>s.elapsed);const hp=s.enemies[0].hp;for(let i=0;i<6;i++)step(s,1/30);assert.ok(s.enemies[0].hp<hp);});
+test('18 invalid and oversized time steps cannot advance combat',()=>{const s=createGame();startGame(s);step(s,0);step(s,1);assert.equal(s.elapsed,0);});
+test('19 paused or ready states do not simulate enemies',()=>{const s=createGame();s.enemies=[{id:1,x:1,y:0,hp:20,alive:true,speed:1,dps:1}];step(s,1/30);assert.equal(s.elapsed,0);});
+test('20 deterministic long simulation keeps resources and arrays finite',()=>{const s=createGame({random:()=>.5});startGame(s);for(let i=0;i<5000&&s.status!=='lost';i++)step(s,1/30);assert.ok(Number.isFinite(s.hp));assert.ok(Number.isFinite(s.gold));assert.ok(s.effects.length<=120);});
