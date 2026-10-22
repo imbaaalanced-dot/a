@@ -16,6 +16,7 @@
     return assets.ready(url)||null;
   }
   function draw(ctx,p){
+    if(globalThis.V2Expansion?.impact(ctx,p))return true;
     if(!p||p.reduced||!Object.hasOwn(rows,p.kind)||![p.x,p.y,p.life,p.max].every(Number.isFinite)||p.life<=0||p.max<=0)return false;
     const tier=Math.max(1,Math.min(3,Math.floor(Number(p.level)||1)));
     // The generated cannon/sawblade rows depict the explosive/steel third upgrade.
