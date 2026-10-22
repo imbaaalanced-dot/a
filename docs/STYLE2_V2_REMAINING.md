@@ -1,3 +1,5 @@
+> Aktualisierung 22.10.2026: Die folgende ursprüngliche Restliste ist durch den Einbau des Erweiterungspakets teilweise erledigt. Aktueller Stand: [STYLE2_V2_EXPANSION.md](STYLE2_V2_EXPANSION.md). Offen bleiben echte viergerichtete Aktionskunst, historische Feinabnahme und Tests auf physischem Android.
+
 # Denkmal TD2: V2-Grafikstand und offene Pakete
 
 Stand: 21.10.2026. Basis ist die gemeinsame Version aus PR #54. Die Dateiendung

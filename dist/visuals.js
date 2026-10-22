@@ -17,6 +17,7 @@
   };
   sheet.src='assets/guardian-atlas-v27.webp';
   function draw(ctx,key,x,y,height,face=1,opacity=1){
+    if(globalThis.V2Expansion?.legacy(ctx,key,x,y,height,face,opacity))return true;
     const sprite=sprites[key];if(!sprite)return false;
     const [sx,sy,sw,sh]=sprite.bounds,width=height*sw/sh;
     ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.globalAlpha*=opacity;

@@ -19,7 +19,7 @@ const server=http.createServer((req,res)=>{
   await page.goto('http://127.0.0.1:'+server.address().port+'/v4-alpha9/',{waitUntil:'networkidle'});
   await page.locator('#td2Loading').waitFor({state:'detached'});
   await page.locator('#menuCharacterBtn').click();await page.locator('#collectionBtn').click();
-  const background=await page.locator('.loot-icon').first().evaluate(e=>getComputedStyle(e).backgroundImage);assert(background.includes('equipment-v2.webp'));
+  const background=await page.locator('.loot-icon').first().evaluate(e=>getComputedStyle(e).backgroundImage);assert(background.includes('expansion-v2/items.webp'));
   await page.screenshot({path:path.join(out,(mobile?'touch':'desktop')+'-inventory.png')});
   await page.locator('#inventoryClose').click();
   for(const level of [1,2,3,4,5,6]){await page.evaluate(n=>DenkmalTestHooks.startGame(n),level);await page.waitForFunction(n=>DenkmalTestHooks.getGame()?.level===n,level);}

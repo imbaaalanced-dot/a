@@ -1,4 +1,4 @@
-name: Publish V2 impact and inventory graphics preview
+name: Publish V2 graphics expansion preview
 on:
   push:
     branches: ["assets/style2-impacts-icons-v2-20261021"]
