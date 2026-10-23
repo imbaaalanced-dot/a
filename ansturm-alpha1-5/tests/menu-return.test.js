@@ -19,3 +19,17 @@ test('Ansturm dialogs use the same primary and secondary command hierarchy',()=>
   assert.match(css,/\.defeat-actions/);
   assert.match(css,/\.secondary-command/);
 });
+
+test('intro presents Ansturm as the second shared play mode',()=>{
+  const intro=html.match(/<div class="overlay" id="intro">[\s\S]*?<\/div><\/div>/)?.[0]||'';
+  assert.match(intro,/SPIELEN · MODUS II/);
+  assert.match(intro,/id="introBest"/);
+  assert.match(intro,/class="intro-actions"[\s\S]*id="start"[\s\S]*class="secondary-command intro-menu-return"/);
+  assert.doesNotMatch(intro,/class="symbol">♜/);
+});
+
+test('intro record stays synchronized with persistent Ansturm progress',()=>{
+  assert.match(app,/el\('introBest'\)\.textContent=readRecord\(storage\)/);
+  assert.match(css,/\.mode-intro/);
+  assert.match(css,/\.intro-actions/);
+});
