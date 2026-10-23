@@ -11,5 +11,5 @@ const {spriteStats}=await import('../sprites.js');
 test('sprite loader caps concurrency and keeps drawable images when decode rejects',async()=>{
   const during=spriteStats();assert.ok(during.loading<=4);
   for(let i=0;i<30&&spriteStats().queued>0;i++)await new Promise(resolve=>setTimeout(resolve,0));
-  const final=spriteStats();assert.equal(final.total,59);assert.equal(final.decoded,59);assert.equal(final.failed,0);assert.equal(final.loading,0);assert.equal(final.queued,0);assert.ok(maximum<=4);
+  const final=spriteStats();assert.equal(final.total,55);assert.equal(final.decoded,55);assert.equal(final.failed,0);assert.equal(final.loading,0);assert.equal(final.queued,0);assert.ok(maximum<=4);
 });

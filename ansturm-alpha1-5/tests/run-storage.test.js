@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import * as store from '../storage.js';import {createGame,startGame} from '../model.js';
+const memory=()=>{const data=new Map();return {data,getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)}};
+test('save/read/clear affects only the run key',()=>{const m=memory(),s=createGame();startGame(s);m.setItem('campaign','unchanged');store.saveRecord(m,12);assert.equal(store.saveRun(m,s),true);const r=store.readRun(m);assert.equal(r.ok,true);assert.equal(r.state.wave,1);assert.equal(store.clearRun(m),true);assert.equal(store.readRun(m).reason,'missing');assert.equal(store.readRecord(m),12);assert.equal(m.getItem('campaign'),'unchanged');});
+test('blocked storage reports failure without throwing',()=>{const m={getItem(){throw Error()},setItem(){throw Error()},removeItem(){throw Error()}};const s=createGame();startGame(s);assert.equal(store.saveRun(m,s),false);assert.equal(store.readRun(m).reason,'storage');assert.equal(store.clearRun(m),false);});
+test('invalid new state does not destroy existing save',()=>{const m=memory(),s=createGame();startGame(s);store.saveRun(m,s);const raw=m.getItem(store.RUN_KEY);assert.equal(store.saveRun(m,createGame()),false);assert.equal(m.getItem(store.RUN_KEY),raw);});
+test('corrupt saved data is reported, not silently deleted',()=>{const m=memory();m.setItem(store.RUN_KEY,'bad');assert.equal(store.readRun(m).ok,false);assert.equal(m.getItem(store.RUN_KEY),'bad');});
