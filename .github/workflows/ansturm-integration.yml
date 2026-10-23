@@ -2,6 +2,8 @@ name: TD2 Ansturm integration preview
 on:
   push:
     branches: [feature/td2-ansturm-integration-20261023]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
@@ -10,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   preview:
+    if: github.event_name != 'pull_request' || github.head_ref == 'feature/td2-ansturm-integration-20261023'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
