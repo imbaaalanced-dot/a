@@ -25,6 +25,11 @@ let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.repla
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 
 assert.equal(element('campaignMenu').hidden,true,'campaign is a submenu, initially hidden');
+element('menuPlayBtn').onclick();
+assert.equal(element('playMenu').hidden,false,'play opens the two-mode selection');
+assert.equal(element('menuHomeActions').hidden,true);
+element('menuBackBtn').onclick();
+assert.equal(element('menuHomeActions').hidden,false);
 element('menuCampaignBtn').onclick();
 assert.equal(element('campaignMenu').hidden,false);
 assert.equal(element('menuHomeActions').hidden,true);
