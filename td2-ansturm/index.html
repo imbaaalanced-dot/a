@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=alpha9a1" />
   <link rel="stylesheet" href="loot.css?v=icons2" />
-  <link rel="stylesheet" href="menu.css?v=patch-a1" />
+  <link rel="stylesheet" href="menu.css?v=patch-a1-heroes-v2" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=alpha8a2" />
@@ -21,7 +21,7 @@
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="asset-manager.js?v=alpha9a3"></script>
-  <script src="preloader.js?v=alpha9a1"></script>
+  <script src="preloader.js?v=hero-selection-v2"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal 3D. WASD oder Pfeiltasten bewegen, Leertaste ausweichen, E Turm bauen, Escape pausieren."></canvas>
 
@@ -91,7 +91,7 @@
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
         <div class="menu-content">
-          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/marcel-banner-alpha9.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
+          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/heroes-marcel-selected-v2.svg" width="1800" height="300" alt="Marcel ausgewählt: farbig mit Goldkontur; Kim grau" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sechs spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
           <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
@@ -294,6 +294,6 @@
   <script src="campaign-balance.js?v=portal1"></script>
   <script src="portal-run.js?v=portal1"></script>
   <script src="portal-perks.js?v=portal1"></script>
-  <script src="game.js?v=patch-a1"></script>
+  <script src="game.js?v=patch-a1-heroes-v2"></script>
 </body>
 </html>
