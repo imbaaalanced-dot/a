@@ -186,7 +186,7 @@
     {name:'DIE VERGLASTE KRONE',note:'Der Aschenkönig hat deine Spur aufgenommen.',until:Infinity}
   ];
   function clearInput(){keys={};touch={x:0,y:0};if(pointerId!==null&&stick.hasPointerCapture?.(pointerId)){try{stick.releasePointerCapture(pointerId);}catch{}}pointerId=null;activeTouchId=null;$('joystick').firstElementChild.style.transform='translate(0,0)';}
-  function focusModal(el){clearInput();document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=true);if(el.id==='startScreen')$(menuPanel==='home'?'menuCampaignBtn':'menuBackBtn').focus();else el.querySelector('button')?.focus();}
+  function focusModal(el){clearInput();document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=true);if(el.id==='startScreen')$(menuPanel==='home'?'menuPlayBtn':'menuBackBtn').focus();else el.querySelector('button')?.focus();}
   function focusGame(){document.querySelectorAll('#app > :not(.modal)').forEach(n=>n.inert=false);canvas.focus({preventScroll:true});}
   function pauseGame(){if(state!=='playing'||tutorialActive)return;state='paused';clearInput();saga.stopVoice();$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));updateUI();}
   function resumeGame(){if(state!=='paused')return;state='playing';$('pauseScreen').classList.add('hidden');last=performance.now();focusGame();updateUI();}
@@ -995,15 +995,18 @@
   function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;try{localStorage.setItem('denkmal-telemetry',telemetryOn?'on':'off');}catch{}telemetryLabel();}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
-  const menuEntries={campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
+  const menuEntries={play:'menuPlayBtn',campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
+  let menuParent='home';
   function showMenuPanel(panel,moveFocus=true){
     if(state!=='start')return;
     const previous=menuPanel;
+    if(panel!=='home')menuParent=previous==='home'||previous==='play'?previous:'home';
     menuPanel=panel in menuEntries?panel:'home';
+    ui.start.dataset.menuPanel=menuPanel;
     $('menuHomeActions').hidden=menuPanel!=='home';
     $('menuBackBtn').hidden=menuPanel==='home';
-    for(const [name,id] of Object.entries({campaign:'campaignMenu',arcade:'endlessMenu',hero:'heroMenu',options:'optionsMenu'}))$(id).hidden=menuPanel!==name;
-    if(moveFocus)(menuPanel==='home'?$(menuEntries[previous]||'menuCampaignBtn'):$('menuBackBtn')).focus();
+    for(const [name,id] of Object.entries({play:'playMenu',campaign:'campaignMenu',arcade:'endlessMenu',hero:'heroMenu',options:'optionsMenu'}))$(id).hidden=menuPanel!==name;
+    if(moveFocus)(menuPanel==='home'?$(menuEntries[previous]||'menuPlayBtn'):$('menuBackBtn')).focus();
   }
   function chooseCharacter(character){
     if(state!=='start')return;
@@ -1030,7 +1033,7 @@
     try{localStorage.setItem('denkmal-character',selectedCharacter);}catch{}
   }
   for(const [panel,id] of Object.entries(menuEntries))$(id).onclick=()=>showMenuPanel(panel);
-  $('menuBackBtn').onclick=()=>showMenuPanel('home');
+  $('menuBackBtn').onclick=()=>showMenuPanel(menuPanel==='campaign'&&menuParent==='play'?'play':'home');
   $('chooseMarcel').onclick=()=>chooseCharacter('marcel');$('chooseKim').onclick=()=>chooseCharacter('kim');
   try{selectedCharacter=localStorage.getItem('denkmal-character')==='kim'?'kim':'marcel';}catch{}
   chooseCharacter(selectedCharacter);showMenuPanel('home',false);
