@@ -195,3 +195,5 @@
  #startScreen .menu-wordmark{font-size:12px}
  .menu-compact-status{font-size:11px}
 }
+
+a.menu-art-button{text-decoration:none;color:inherit}

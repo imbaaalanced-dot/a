@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const menu=fs.readFileSync('dist/index.html','utf8');
+assert.match(menu,/href="ansturm\/index.html"/);
+const page=fs.readFileSync('dist/ansturm/index.html','utf8');
+assert.match(page,/id="leave"/);
+assert.match(page,/id="leaveConfirm"/);
+const app=fs.readFileSync('dist/ansturm/app.js','utf8');
+assert.match(app,/!el\('leaveConfirm'\).open/);
+assert.match(app,/new URL\('\.\.\/index.html',location.href\)/);
+for(const file of ['model.js','render.js','sprites.js','styles.css','asset-manifest.js'])assert.ok(fs.existsSync('dist/ansturm/'+file));
+console.log('Ansturm integration paths and exit pause checks passed');

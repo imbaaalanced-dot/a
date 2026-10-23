@@ -1,0 +1,37 @@
+name: TD2 Ansturm integration preview
+on:
+  push:
+    branches: [feature/td2-ansturm-integration-20261023]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-ansturm-integration-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.test.cjs; do node "$test"; done
+      - name: Publish integrated tester
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/integrated-preview origin/gh-pages
+          mkdir -p /tmp/integrated-preview/td2-ansturm
+          cp -R dist/. /tmp/integrated-preview/td2-ansturm/
+          touch /tmp/integrated-preview/.nojekyll
+          cd /tmp/integrated-preview
+          git add td2-ansturm .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish integrated Ansturm preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
