@@ -4,3 +4,10 @@
 #perkScreen{max-height:100dvh;overflow:auto;overscroll-behavior:contain}
 #perkScreen .perk{min-height:150px;touch-action:manipulation}
 #perkScreen .perk small{display:block;color:#91d7d0;margin-bottom:12px}
+
+/* Text stays accessible HTML over the graphical V2 panel. */
+#startScreen #portalNewBtn{background-image:url(assets/expansion-v2/portal-new-normal.webp?v=expansion2);background-size:100% 100%;background-repeat:no-repeat}
+#startScreen #portalResumeBtn{background-image:url(assets/expansion-v2/portal-resume-normal.webp?v=expansion2);background-size:100% 100%;background-repeat:no-repeat}
+#startScreen #portalNewBtn:hover,#startScreen #portalNewBtn:focus-visible{background-image:url(assets/expansion-v2/portal-new-hover.webp?v=expansion2)}
+#startScreen #portalResumeBtn:hover,#startScreen #portalResumeBtn:focus-visible{background-image:url(assets/expansion-v2/portal-resume-hover.webp?v=expansion2)}
+#startScreen #portalNewBtn span,#startScreen #portalResumeBtn span{padding-left:15%;text-shadow:0 1px 3px #000}

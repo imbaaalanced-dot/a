@@ -33,6 +33,7 @@ function image(){
  return !entry.failed&&img.complete&&img.naturalWidth===cell*4&&img.naturalHeight===cell*rows?img:null;
 }
 function draw(ctx,e,face=1,time=0,options={}){
+ if(globalThis.V2Expansion?.enemy(ctx,e,face,options))return true;
  const row=select(e,options.level);if(row<0)return false;
  const img=image();if(!img)return false;
  const moving=Math.hypot(e.velX||0,e.velY||0)>.5;
