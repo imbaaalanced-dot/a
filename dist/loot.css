@@ -30,7 +30,7 @@
 .storage-warning{position:fixed;left:50%;bottom:160px;transform:translateX(-50%);z-index:15;max-width:90vw;background:#38251df2;color:#ffdda8;border:1px solid #c89058;padding:10px 14px;font:12px/1.5 Inter,system-ui,sans-serif;pointer-events:none}.storage-warning.hidden{display:none}
 
 /* Alpha.3: equipment art and a bounded backpack, independent of page scrolling. */
-#inventoryScreen .loot-icon{display:block;flex-shrink:0;width:52px;height:52px;background-image:url('assets/items/equipment-v1.webp');background-size:400% 200%;background-repeat:no-repeat;border-radius:4px}
+#inventoryScreen .loot-icon{display:block;flex-shrink:0;width:52px;height:52px;background-image:url('assets/items/equipment-v2.webp?v=icons2');background-size:400% 200%;background-repeat:no-repeat;border-radius:4px}
 .loot-icon[data-slot=weapon]{background-position:0 0}.loot-icon[data-slot=head]{background-position:33.3333% 0}.loot-icon[data-slot=armor]{background-position:66.6667% 0}.loot-icon[data-slot=gloves]{background-position:100% 0}.loot-icon[data-slot=boots]{background-position:0 100%}.loot-icon[data-slot=amulet]{background-position:33.3333% 100%}.loot-icon[data-slot=ring1]{background-position:66.6667% 100%}.loot-icon[data-slot=ring2]{background-position:100% 100%}
 #inventoryScreen .loot-icon-large{width:108px;height:108px;margin:12px auto}
 .loot-scroll-area{max-height:440px;max-height:clamp(250px,52dvh,560px);overflow-y:scroll;overflow-x:hidden;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:#b99b63 #0b1218;padding:5px 9px 5px 5px;touch-action:pan-y;border-top:1px solid #53605d55;border-bottom:1px solid #53605d55}

@@ -1,0 +1,56 @@
+{
+  "browser": "153.0.8010.0",
+  "physicalAndroid": false,
+  "scenarios": [
+    {
+      "mobile": false,
+      "buttons": "url(\"http://127.0.0.1:40261/v4-alpha9/assets/expansion-v2/portal-new-normal.webp?v=expansion2\")",
+      "templates": 21,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "fixture": {
+        "draws": 276,
+        "impacts": 24,
+        "identities": 23
+      },
+      "actualRuntimeDraws": {
+        "enemy": 3,
+        "hero": 2,
+        "death": 2
+      },
+      "errors": [],
+      "missing": []
+    },
+    {
+      "mobile": true,
+      "buttons": "url(\"http://127.0.0.1:40261/v4-alpha9/assets/expansion-v2/portal-new-normal.webp?v=expansion2\")",
+      "templates": 21,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "fixture": {
+        "draws": 276,
+        "impacts": 24,
+        "identities": 23
+      },
+      "actualRuntimeDraws": {
+        "enemy": 3,
+        "hero": 2,
+        "death": 2
+      },
+      "errors": [],
+      "missing": []
+    }
+  ]
+}

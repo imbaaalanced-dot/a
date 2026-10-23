@@ -120,6 +120,7 @@
     if(!enabled||!p||!kinds.has(p.kind))return false;
     const max=Number(p.max),life=Number(p.life);
     if(!(max>0)||!Number.isFinite(life))return false;
+    if(globalThis.Style2ImpactsV2?.draw?.(ctx,p))return true;
     const t=Math.max(0,Math.min(1,1-life/max)),fade=1-t;
     const tier=level(p.level),reduced=!!p.reduced,turn=Math.PI*2;
     const radius=(reduced?8:12)+tier*3+t*(reduced?12:24);

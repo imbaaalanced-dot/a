@@ -3,7 +3,17 @@
   'use strict';
   const L=globalThis.DenkmalLoot;
   const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
-  function icon(slot,large=false,power){const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;if(['bark','roots','splinter','wardlight','grove'].includes(power)){n.dataset.power=power;n.style.backgroundImage=`url(assets/kirchende/item-${power}.webp?v=v400a1)`;n.style.backgroundSize='contain';n.style.backgroundRepeat='no-repeat';n.style.backgroundPosition='center';}n.setAttribute('aria-hidden','true');return n;}
+  function icon(slot,large=false,power,item){
+    const n=el('span','loot-icon'+(large?' loot-icon-large':''));n.dataset.slot=slot;
+    const catalog=globalThis.DenkmalEquipmentCatalog?.templates||{},indices=globalThis.V2ExpansionData?.items||{};
+    const id=item?.templateId||(item&&!['bark','roots','splinter','wardlight','grove'].includes(power)?Object.keys(catalog).find(id=>catalog[id].name===item.name):null);
+    if(id&&Object.hasOwn(indices,id)){
+      const i=indices[id];n.dataset.template=id;n.style.backgroundImage='url(assets/expansion-v2/items.webp?v=expansion2)';n.style.backgroundSize='700% 300%';n.style.backgroundPosition=`${i%7/6*100}% ${Math.floor(i/7)/2*100}%`;
+    }else if(['bark','roots','splinter','wardlight','grove'].includes(power)){
+      n.dataset.power=power;n.style.backgroundImage=`url(assets/expansion-v2/kirchende-${power}.webp?v=expansion2)`;n.style.backgroundSize='contain';n.style.backgroundPosition='center';
+    }
+    n.style.backgroundRepeat='no-repeat';n.setAttribute('aria-hidden','true');return n;
+  }
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
   function create(model,{editable,onClose,onImport,getHero=()=>'marcel'}){
     let selected=null,filter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
@@ -62,7 +72,7 @@
       const b=button('',()=>{ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
       b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
-      b.append(icon(slot||item.slot,false,item.power),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
+      b.append(icon(slot||item.slot,false,item.power,item),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
       const target=slot||(selected===item.id&&item.slot.startsWith('ring')?ringTarget:item.slot);
       if(!equipped&&isStrictUpgrade(item,target)){const up=el('span','loot-upgrade','↑');up.setAttribute('aria-label','Garantierte Verbesserung gegenüber angelegter Ausrüstung');up.title='Bessere Werte ohne Nachteile gegenüber der angelegten Ausrüstung';b.append(up);}
       const users=Object.entries(model.profile.loadouts).filter(([,slots])=>Object.values(slots).includes(item.id)).map(([hero])=>hero==='kim'?'Kim':'Marcel');if(users.length)b.append(el('small','loot-used-by','Angelegt bei '+users.join(' und ')));
@@ -123,7 +133,7 @@
       const comparison=el('div','loot-comparison');
       for(const [label,item] of [['Angelegt',old],['Auswahl',i]]){
         const panel=el('section','loot-compare-card');panel.append(el('p','loot-compare-label',label));
-        if(item){panel.style.setProperty('--rarity',L.rarities[item.rarity].color);panel.append(icon(item.slot,true,item.power),el('h3','loot-item-title',item.name),el('small','',L.rarities[item.rarity].label+' · Stufe '+item.level));}
+        if(item){panel.style.setProperty('--rarity',L.rarities[item.rarity].color);panel.append(icon(item.slot,true,item.power,item),el('h3','loot-item-title',item.name),el('small','',L.rarities[item.rarity].label+' · Stufe '+item.level));}
         else panel.append(icon(slot,true),el('h3','', 'Freier Platz'));
         comparison.append(panel);
       }

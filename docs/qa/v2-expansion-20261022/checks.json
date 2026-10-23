@@ -1,0 +1,332 @@
+[
+  {
+    "test": "tests/alpha8-preview.test.cjs",
+    "exit": 0,
+    "output": "Alpha 8: six directly playable maps, campaign unlocks preserved\n"
+  },
+  {
+    "test": "tests/asset-manager.test.cjs",
+    "exit": 0,
+    "output": "Asset manager: coalescing, fallback status, next-level preload and release passed\n"
+  },
+  {
+    "test": "tests/boss-loot.test.cjs",
+    "exit": 0,
+    "output": "Boss loot: immediate unique claims, no other sources, defeat/finish safety, quota and stale-tab pending passed\nBoss loot: hard collection limit preserves one candidate and retries it after recycling\n"
+  },
+  {
+    "test": "tests/cache-busting.test.cjs",
+    "exit": 0,
+    "output": "TD2 Alpha.5 metadata and 45 static JS/CSS cache references verified.\n"
+  },
+  {
+    "test": "tests/campaign-balance.test.cjs",
+    "exit": 0,
+    "output": "campaign balance: eight-wave pilot profile and scope isolation passed\n"
+  },
+  {
+    "test": "tests/combat-fx.test.cjs",
+    "exit": 0,
+    "output": "Combat FX: gesture gating, mute, throttling, voice/particle caps and reduced motion passed.\n"
+  },
+  {
+    "test": "tests/elemental-sprites.test.cjs",
+    "exit": 0,
+    "output": "Generated elemental assets: loading fallback, tier crops, projectile direction, six chronological impact frames and warm reuse passed.\n"
+  },
+  {
+    "test": "tests/enemy-animations.test.cjs",
+    "exit": 0,
+    "output": "Enemy animation integration: 21 designs, movement and action states, stable identity, reduced motion, flight, bounds and fallback passed.\n"
+  },
+  {
+    "test": "tests/equipment-catalog.test.cjs",
+    "exit": 0,
+    "output": "Catalog: all 21 types, exact rolls, limits, seeded distribution and upgrade previews passed\n"
+  },
+  {
+    "test": "tests/equipment-effects.test.cjs",
+    "exit": 0,
+    "output": "All 14 existing equipment powers, three precedence rules and duplicate-power limits passed\n"
+  },
+  {
+    "test": "tests/equipment-migration.test.cjs",
+    "exit": 0,
+    "output": "Migration: v1/v2, exact legacy preservation, backup failures, imports, reload and stale tabs passed\n"
+  },
+  {
+    "test": "tests/flight-enemies.test.cjs",
+    "exit": 0,
+    "output": "Flight enemies: three specs, air targeting, direct movement, contact bounds and slowing passed\nFlight sprite loading, warm draw, error fallback and retry passed\n"
+  },
+  {
+    "test": "tests/game.test.cjs",
+    "exit": 0,
+    "output": "king level 2\nTowers choose the enemy closest to the monument within range\nTargeting remains deterministic with 20 to 200 active enemy objects\nCannon splash hits a nearby group while bow stays single-target\nRoads and monument remain clear while Level 1 pads stay legal\nRolled bonuses change derived stats without modifying base values\nLegendary chain and tower support apply to their intended projectiles\nLifesteal heals only on hero projectile hits, bounded by actual damage\nRepeated endWave grants no equipment\nMenu keyboard navigation reaches channel links and expandable help\nFlying enemies bypass ground lanes and reject cannon targeting and collisions\nHohensyburg has gated campaign, ground/air waves and persistent unlock\nGoethestra\u00dfe gates, mixed waves, air origin, completion and endless unlock\nPainted animation renderer handles ground, flying and boss enemies without changing combat state\n"
+  },
+  {
+    "test": "tests/goethestrasse-preview.test.cjs",
+    "exit": 0,
+    "output": "Goethestra\u00dfe test preview plays without campaign completion writes\n"
+  },
+  {
+    "test": "tests/goethestrasse.test.cjs",
+    "exit": 0,
+    "output": "Goethestra\u00dfe geometry, slots, mixed waves and completion passed\nGoethestra\u00dfe renderer and warm cache passed\n"
+  },
+  {
+    "test": "tests/intro-tutorial.test.cjs",
+    "exit": 0,
+    "output": "Level 1 intro title and first-run tutorial guidance checks passed\n"
+  },
+  {
+    "test": "tests/kirchende-loading.test.cjs",
+    "exit": 0,
+    "output": "Kirchende art loader: optimized sprite, retry and decoded drawing passed.\n"
+  },
+  {
+    "test": "tests/level4.test.cjs",
+    "exit": 0,
+    "output": "Level 4 paths, build pads, wave gates, saved unlock and cached church/lion artwork passed.\n"
+  },
+  {
+    "test": "tests/level5-preview.test.cjs",
+    "exit": 0,
+    "output": "Hohensyburg test preview plays without campaign completion writes\n"
+  },
+  {
+    "test": "tests/level5.test.cjs",
+    "exit": 0,
+    "output": "Hohensyburg map, 3 lanes, air route, tower safety, waves, saves and cached art passed\n"
+  },
+  {
+    "test": "tests/loot-ui.test.cjs",
+    "exit": 0,
+    "output": "Inventory hero portraits, mobile tabs, comparison values, consistent actions and write guards passed\n"
+  },
+  {
+    "test": "tests/loot.test.cjs",
+    "exit": 0,
+    "output": "Loot: starter powers, exact caps, stable snapshots, blocked storage and import preservation passed\nLoot: independent/shared hero references, ring guards, upgrades, salvage protections and menu/tab guards passed\n"
+  },
+  {
+    "test": "tests/main-menu.test.cjs",
+    "exit": 0,
+    "output": "Campaign, unlocked-map endless menu, channel and mobile target checks passed\n"
+  },
+  {
+    "test": "tests/menu-navigation.test.cjs",
+    "exit": 0,
+    "output": "Main menu submenus, settings, persisted hero banner and gameplay selection passed\n"
+  },
+  {
+    "test": "tests/portal-gameplay.test.cjs",
+    "exit": 0,
+    "output": "portal gameplay: waves, perk UI, physical exit accounting and unlock isolation passed\n"
+  },
+  {
+    "test": "tests/portal-perks.test.cjs",
+    "exit": 0,
+    "output": "portal perks: deterministic unique offers, caps and derived stats passed\n"
+  },
+  {
+    "test": "tests/portal-run.test.cjs",
+    "exit": 0,
+    "output": "portal run: state, economics, checkpoint and duplicate transition checks passed\n"
+  },
+  {
+    "test": "tests/portal-storage.test.cjs",
+    "exit": 0,
+    "output": "portal storage: shared boss catalog, durable deduplication, session export and stale tabs passed\n"
+  },
+  {
+    "test": "tests/portrait-hud.test.cjs",
+    "exit": 0,
+    "output": "TD2 portrait HUD and hero/loot routing checks passed.\n"
+  },
+  {
+    "test": "tests/preloader.test.cjs",
+    "exit": 0,
+    "output": "Preloader: success, progress 100%, game menu unlocked\n"
+  },
+  {
+    "test": "tests/startup-loading.test.cjs",
+    "exit": 0,
+    "output": "Startup: bounded downloads, slow-network menu release without false failures, lightweight critical assets\n"
+  },
+  {
+    "test": "tests/style2-adapter-regression.cjs",
+    "exit": 0,
+    "output": "Style-2 adapter regression: PASS\n"
+  },
+  {
+    "test": "tests/style2-ambience.test.cjs",
+    "exit": 0,
+    "output": "Style 2 phase 7 ambience: deterministic particles, cached light, mobile-low fallback, unchanged layout and HUD checks passed.\n"
+  },
+  {
+    "test": "tests/style2-cache-pressure.cjs",
+    "exit": 0,
+    "output": "Style-2 cache pressure: PASS (30 variants, peak 4, cache <= 12)\n"
+  },
+  {
+    "test": "tests/style2-cannon.test.cjs",
+    "exit": 0,
+    "output": "Style 2 cannon: three towers, three shells, 18 cached impact frames, capped FX and unchanged stats passed.\n"
+  },
+  {
+    "test": "tests/style2-church-sprite.test.cjs",
+    "exit": 0,
+    "output": "Level 4 church generated WebP, loading, alignment and fallback verified.\n"
+  },
+  {
+    "test": "tests/style2-default.test.cjs",
+    "exit": 0,
+    "output": "Style 2: default graphics and explicit fallback override passed\n"
+  },
+  {
+    "test": "tests/style2-ground.test.cjs",
+    "exit": 0,
+    "output": "Style 2 ground: no photo download, non-repeating atlas, clipped view and warm-cache reuse passed.\n"
+  },
+  {
+    "test": "tests/style2-impact-atlas.test.cjs",
+    "exit": 0,
+    "output": "V2 impacts: chronological cells, stable anchor, single retained texture, tier/low-mode fallback and draw recovery passed\n"
+  },
+  {
+    "test": "tests/style2-impact-pass4.test.cjs",
+    "exit": 0,
+    "output": "Style-2 Pass 4 impacts: PASS (5 families x 3 tiers x normal/reduced; legacy and cap)\n"
+  },
+  {
+    "test": "tests/style2-kirchende.test.cjs",
+    "exit": 0,
+    "output": "Style 2 Kirchende: baked light, moss, roots, transparency, caching and cache-key checks passed.\n"
+  },
+  {
+    "test": "tests/style2-level4-reference.test.cjs",
+    "exit": 0,
+    "output": "Style 2 reference level 4: cached garden, lamps, path clearance and untouched game data passed.\n"
+  },
+  {
+    "test": "tests/style2-manager-pressure.cjs",
+    "exit": 0,
+    "output": "Style-2 managed cache: PASS (30 variants; peak four; retained at most twelve)\n"
+  },
+  {
+    "test": "tests/style2-maps.test.cjs",
+    "exit": 0,
+    "output": "Style 2 maps: cached 1536px stone plaza and hedge maze, static lights, intact layout and render integration passed.\n"
+  },
+  {
+    "test": "tests/style2-markers.test.cjs",
+    "exit": 0,
+    "output": "Style 2 markers: shared caches, immutable pads/previews, real range radius and visible cost/block state passed.\n"
+  },
+  {
+    "test": "tests/style2-phase6.test.cjs",
+    "exit": 0,
+    "output": "Phase 6 projection round trips and immutable lane-safe scenery: passed\nUpright sprites retain foot position and height, then restore world transform.\nDecoration cache reuses its atlas and crops world-edge camera views.\n"
+  },
+  {
+    "test": "tests/style2-review-page.test.cjs",
+    "exit": 0,
+    "output": "Style-2 manual review page: PASS (script syntax, sizes, alpha audit and opt-in isolation)\n"
+  },
+  {
+    "test": "tests/style2-towers.test.cjs",
+    "exit": 0,
+    "output": "Style 2 towers: 9 silhouettes, 9 projectiles, 45 impacts, hot-cache rendering, capped FX passed.\n"
+  },
+  {
+    "test": "tests/style2-user-towers.test.cjs",
+    "exit": 0,
+    "output": "Style-2 user tower preview adapter: cold fallback, projectile warmup and heading passed\n"
+  },
+  {
+    "test": "tests/terrain-polish.test.cjs",
+    "exit": 0,
+    "output": "Alpha.5 photo renderer: stars, cached moss/earth/slabs, all trees and shrubs passed.\n"
+  },
+  {
+    "test": "tests/v2-expansion.test.cjs",
+    "exit": 0,
+    "output": "V2 expansion: 23 identities \u00d7 12 action frames, queue cap, failed draw recovery, six-map clearance, material-specific impacts and item mapping passed.\n"
+  },
+  {
+    "test": "tests/v3.1-features.test.cjs",
+    "exit": 0,
+    "output": "v3.1-features: all tests passed\n"
+  },
+  {
+    "test": "tests/v4-alpha4.test.cjs",
+    "exit": 0,
+    "output": "10 v4-alpha.4 combat, FX, menu and persistence checks passed.\nIntercept prediction: exact for stationary targets, bounded and adaptive for movers\nShell speed table covers every tower and hero shells stay at 560\nBow towers lead runners instead of firing at stale positions and connect\nVelocity is measured from the first real step and never fabricated\nSlowed enemies are led along their slowed path\nImpact bursts spawn shock rings, directional debris and well-formed particles\nRift chain lightning renders a visible bolt between targets\nHUD menu routes pause, closes on demand and on every screen switch\nShell contracts: alpha.4 badge, cache busts and menu layering\nPersistence and collision guards survive the alpha.4 pass\n"
+  },
+  {
+    "test": "tests/v4-alpha5.test.cjs",
+    "exit": 0,
+    "output": "10 v4-alpha5 boomerang, hero aggro and monument tests passed\nThree distinct WebP boomerang sprites and upgrades stay connected\nThorn and lantern towers are no longer available\nBoomerang tower upgrades give three distinct low-damage levels\nA boomerang passes through every enemy, returns and hits each once per leg\nBoomerang does not multi-hit a stationary enemy on one pass\nHero attracts enemies before touching them, within the road corridor\nAt most three ordinary enemies pursue hero at once\nKirchende monument sprite base rests in its contact shadow\nLow damage remains below single-target bow DPS at every stage\nChurch level unlocks after Kirchende and persists completion of wave 16\n"
+  },
+  {
+    "test": "tests/alpha8-assets.test.py",
+    "exit": 0,
+    "output": "church-ende-alpha8.webp (1536, 1536) 1\nlion-ende-alpha8.webp (1184, 1328) 1\nhero/kim-walk-alpha8.webp (1152, 1536) 12\nelemental/enemies-walk-alpha8.webp (1152, 1152) 9\nelemental/cannon-projectiles-v1.webp (384, 128) 3\nelemental/cannon-impacts-v1.webp (768, 384) 18\nscenery-alpha8.webp (768, 512) 6\n"
+  },
+  {
+    "test": "tests/alpha9-assets.test.py",
+    "exit": 0,
+    "output": "Alpha 9: 14 lossless WebP conversions and 12 transparent Marcel cells passed\n"
+  },
+  {
+    "test": "tests/alpha9-user-towers.test.py",
+    "exit": 0,
+    "output": "TD2 user towers: 30 PNG/WebP pairs, 60 SHA256, size, pivot and alpha checks passed\n"
+  },
+  {
+    "test": "tests/assets.test.py",
+    "exit": 0,
+    "output": "mage-towers-v1.webp: decoded, equal cells, transparent gutters verified\nmage-projectiles-v1.webp: decoded, equal cells, transparent gutters verified\nmage-impacts-v1.webp: decoded, equal cells, transparent gutters verified\nrift-towers-v1.webp: decoded, equal cells, transparent gutters verified\nrift-projectiles-v1.webp: decoded, equal cells, transparent gutters verified\nrift-impacts-v1.webp: decoded, equal cells, transparent gutters verified\nbow-towers-v1.webp: decoded, equal cells, transparent gutters verified\ncannon-towers-v1.webp: decoded, equal cells, transparent gutters verified\nboomerang-towers-v1.webp: decoded, equal cells, transparent gutters verified\nEleven enemy sprites: decode, populated cells, foot anchors and transparent borders verified\nThree flying sprites: decode, alpha, size budget and padded borders verified\nGoethestra\u00dfe memorial: decode, alpha and ground anchor verified\n"
+  },
+  {
+    "test": "tests/enemy-animation-assets.test.py",
+    "exit": 0,
+    "output": "Enemy atlas: RGBA decode, all 84 frames, transparent gutters, distinct poses, <2 MiB download / <9 MiB decoded passed.\n"
+  },
+  {
+    "test": "tests/style2-cleanup-assets.test.py",
+    "exit": 0,
+    "output": "Style-2 cleanup: 2 lossless pairs, stable footprint/pivots, magenta seam and detached fragment removed\n"
+  },
+  {
+    "test": "tests/style2-cleanup-pass3.test.py",
+    "exit": 0,
+    "output": "tower_bow_lv1 653 0 [1, 0, -1, 0]\ntower_bow_lv2 434 0 [0, -1, 0, 0]\ntower_bow_lv3 427 0 [-1, 0, 0, 0]\ntower_cannon_lv2 253 0 [1, 0, 0, 0]\ntower_cannon_lv3 420 0 [0, 4, 1, 0]\ntower_mage_lv1 245 0 [0, 0, 0, 0]\ntower_mage_lv2 501 0 [0, -1, 0, 0]\ntower_mage_lv3 558 0 [1, 0, -1, 0]\ntower_boomerang_lv1 612 0 [0, 1, 0, 0]\ntower_boomerang_lv2 640 0 [0, 0, 0, 0]\ntower_boomerang_lv3 517 0 [0, -1, 0, 0]\nStyle-2 pass3: 11 lossless pairs, original files unchanged, ground anchors and >90% seam reduction verified\n"
+  },
+  {
+    "test": "tests/style2-v2-assets.test.py",
+    "exit": 0,
+    "output": "impacts-v2 30 RGBA masters, clear boundaries, hashes and lossless runtime cells passed\nitems 8 RGBA masters, clear boundaries, hashes and lossless runtime cells passed\n"
+  },
+  {
+    "test": "tests/v2-expansion-assets.test.py",
+    "exit": 0,
+    "output": "V2 runtime art: hashes, decode, alpha, all 276 action cells, GPU texture bounds and <32 MiB expansion decode budget passed.\n"
+  },
+  {
+    "test": "TEST_MOBILE=1 tests/game.test.cjs",
+    "exit": 0,
+    "output": "king level 2\nTowers choose the enemy closest to the monument within range\nTargeting remains deterministic with 20 to 200 active enemy objects\nCannon splash hits a nearby group while bow stays single-target\nRoads and monument remain clear while Level 1 pads stay legal\nRolled bonuses change derived stats without modifying base values\nLegendary chain and tower support apply to their intended projectiles\nLifesteal heals only on hero projectile hits, bounded by actual damage\nRepeated endWave grants no equipment\nMenu keyboard navigation reaches channel links and expandable help\nFlying enemies bypass ground lanes and reject cannon targeting and collisions\nHohensyburg has gated campaign, ground/air waves and persistent unlock\nGoethestra\u00dfe gates, mixed waves, air origin, completion and endless unlock\nPainted animation renderer handles ground, flying and boss enemies without changing combat state\n"
+  },
+  {
+    "test": "TEST_MOBILE=1 tests/portal-gameplay.test.cjs",
+    "exit": 0,
+    "output": "portal gameplay: waves, perk UI, physical exit accounting and unlock isolation passed\n"
+  },
+  {
+    "test": "TEST_MOBILE=1 tests/menu-navigation.test.cjs",
+    "exit": 0,
+    "output": "Main menu submenus, settings, persisted hero banner and gameplay selection passed\n"
+  }
+]
