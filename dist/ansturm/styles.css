@@ -48,3 +48,12 @@
 }
 
 .menu-return{display:block;color:#e5cb8b;margin:12px;text-align:center}button:focus-visible,a:focus-visible{outline:3px solid #e5cb8b;outline-offset:3px}
+
+/* Alpha 1.5.6: one command hierarchy from Ansturm back to the shared TD2 menu. */
+#defeat{width:min(390px,calc(100vw - 32px));background:linear-gradient(160deg,#1c2933,#111920);box-shadow:0 24px 70px #000d,inset 0 1px #ffffff0a}
+#defeat h2{margin:0 0 18px;color:#eee4d2;font-size:clamp(23px,6vw,31px);letter-spacing:.025em}
+#defeat p{margin:0 0 18px;color:#d2c7b6;font-size:17px;line-height:1.45}
+.defeat-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.defeat-actions .primary{margin:0;min-height:54px}
+.secondary-command{min-height:50px;background:linear-gradient(#202a31,#131b21);border-color:#78694e;color:#d9d2c5;font-weight:750}
+.secondary-command:hover{border-color:#b3935e;color:#fff0d0}
