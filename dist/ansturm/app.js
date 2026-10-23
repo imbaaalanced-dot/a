@@ -35,3 +35,4 @@ function frame(t){const dt=prev?Math.min((t-prev)/1000,.1):0;prev=t;if(!manualPa
 function leaveGame(){if(s.wave>0)saveRecord(storage,s.wave);location.assign(new URL('../index.html',location.href));}
 el('leave').onclick=()=>{if(s.status==='ready'||s.status==='lost')leaveGame();else el('leaveConfirm').showModal();};
 el('stay').onclick=()=>{el('leaveConfirm').close();prev=0;acc=0;};el('leaveGame').onclick=leaveGame;
+el('defeatMenu').onclick=leaveGame;
