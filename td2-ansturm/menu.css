@@ -197,3 +197,39 @@
 }
 
 a.menu-art-button{text-decoration:none;color:inherit}
+
+/* Patch A: compact TD2 command hierarchy with two explicit game modes. */
+.menu-primary-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;max-width:620px!important}
+.menu-command{display:grid;grid-template-columns:38px minmax(0,1fr) 24px;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border:1px solid #756548;border-radius:3px;background:linear-gradient(180deg,#172025f2,#0d1418f2);box-shadow:inset 0 1px #ffffff0a,0 5px 18px #0007;color:#ddd4c2;text-align:left;text-decoration:none;cursor:pointer;touch-action:manipulation}
+.menu-command:hover{border-color:#b4935b;background:linear-gradient(180deg,#202a2ef5,#11191df5)}
+.menu-command-primary{border-color:#a98a50;background:linear-gradient(100deg,#292419f5,#151a1cf5 68%);box-shadow:inset 3px 0 #c39b59,0 7px 22px #0008}
+.menu-command-assault{border-color:#557987;background:radial-gradient(circle at 8% 50%,#2d798044,transparent 34%),linear-gradient(180deg,#16242a,#0d151a)}
+.menu-command-quiet{background:linear-gradient(180deg,#141b1fef,#0c1215ef);color:#c1c6c2}
+.menu-command-mark{display:grid;place-items:center;width:34px;height:34px;border:1px solid #8f774d66;border-radius:50%;color:#d3b473;font:700 16px/1 Georgia,serif}
+.menu-command>span:nth-child(2){display:grid;gap:2px;min-width:0}
+.menu-command strong{color:#eee5d2;font:700 15px/1.25 Cinzel,Georgia,serif;letter-spacing:.035em}
+.menu-command small{color:#9faaa8;font:500 10px/1.35 Inter,system-ui;letter-spacing:.025em}
+.menu-command-arrow{color:#b99b63;font:300 27px/1 system-ui;text-align:right}
+.mode-choice-list{display:grid;gap:9px}
+.campaign-endless-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:9px 13px;border:1px solid #58798588;border-radius:3px;background:#0d2026;color:#c4d8d8;font:650 11px/1.4 Inter,system-ui;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#startScreen[data-menu-panel]:not([data-menu-panel="home"]) :is(.menu-hero-figure,.menu-compact-status,.channel-card,.menu-help){display:none}
+#startScreen[data-menu-panel]:not([data-menu-panel="home"]) .menu-content{max-width:760px}
+@media(max-width:700px){
+  #startScreen .menu-primary-actions{gap:7px}
+  #startScreen .menu-command{grid-template-columns:36px minmax(0,1fr) 20px;min-height:58px;padding:9px 12px}
+  #startScreen .menu-command strong{font-size:14px}
+  #startScreen .menu-command small{font-size:9px}
+  #startScreen[data-menu-panel="home"] .hero-menu-banner{max-height:118px}
+  #startScreen[data-menu-panel="home"] .channel-card{min-height:58px;margin:9px 0 5px;padding:8px 12px}
+  #startScreen[data-menu-panel="home"] .menu-help{display:none}
+}
+@media(max-height:430px) and (orientation:landscape){
+  #startScreen .menu-shell{padding:8px max(14px,env(safe-area-inset-right)) 8px max(14px,env(safe-area-inset-left));gap:6px}
+  #startScreen .menu-content{width:min(720px,100%);margin:0 auto}
+  #startScreen .menu-hero-figure{display:none}
+  #startScreen .menu-primary-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:none!important}
+  #startScreen .menu-command{grid-template-columns:28px minmax(0,1fr) 14px;min-height:52px;padding:7px 9px;gap:7px}
+  #startScreen .menu-command-mark{width:26px;height:26px;font-size:12px}
+  #startScreen .menu-command small{display:none}
+  #startScreen :is(.menu-compact-status,.channel-card,.menu-help,.menu-footer){display:none}
+}
