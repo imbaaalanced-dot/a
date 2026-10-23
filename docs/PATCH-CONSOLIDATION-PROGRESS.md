@@ -16,3 +16,5 @@ Final: fixed preview preservation in branch Pages workflow — regression RED→
 Final: minor (deferred): preview copy retains obsolete files; no deletions in this patch, archived gates no longer loaded. Future asset deletion must clean only the dedicated target.
 Task 4: full local JavaScript suite, 55 Ansturm tests, TEST_MOBILE=1 and Python assets checks pass. Independent reviewer completed before final fixes; fixes verified by targeted failing tests and full green suite.
 Task 5: local Cloud Browser connection refused (separate environment); remote visual smoke pending. Real Android/15-minute performance test remains open.
+Publish attempt 1: GitHub Actions 40039163141 passed JavaScript tests then failed importing PIL. Added the existing project convention `python -m pip install Pillow` before the asset test. No test bypass.
+Remote draft: PR #57, parent PR #56; first remote commit 24ffd5bedd0f80f05ecdb5ae782679978dfeb8eb has the exact locally tested tree a7266dd4b52014ca7fcaf8990e0c82c37ada07c0 (connector upload after shell credentials unavailable).

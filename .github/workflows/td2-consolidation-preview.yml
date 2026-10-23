@@ -22,6 +22,7 @@ jobs:
           npm test --prefix ansturm-alpha1-5
           for test in tests/*.test.cjs; do node "$test" || exit 1; done
           TEST_MOBILE=1 node tests/game.test.cjs
+          python -m pip install Pillow
           python tests/assets.test.py
       - name: Publish isolated preview
         run: |
