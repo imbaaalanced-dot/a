@@ -233,3 +233,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
   #startScreen .menu-command small{display:none}
   #startScreen :is(.menu-compact-status,.channel-card,.menu-help,.menu-footer){display:none}
 }
+
+/* Show both heroes without cropping the selection banner, including mobile. */
+#startScreen .hero-menu-banner{aspect-ratio:6/1;object-fit:contain;object-position:center;min-height:0}

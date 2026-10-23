@@ -1020,14 +1020,14 @@
     });
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     const banner=$('menuHeroBanner');
-    const bannerUrl=kim?'assets/menu/kim-menu-banner-v1.webp':'assets/menu/marcel-banner-alpha9.webp';
+    const bannerUrl=kim?'assets/menu/heroes-kim-selected-v2.svg':'assets/menu/heroes-marcel-selected-v2.svg';
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
       if(!img||selectedCharacter!==(kim?'kim':'marcel'))return;
       try{await img.decode?.();}catch{return;}
       if(selectedCharacter===(kim?'kim':'marcel'))banner.src=bannerUrl;
     });
     if(!globalThis.DenkmalAssets)banner.src=bannerUrl;
-    banner.alt=(kim?'Kim':'Marcel')+' vor Kirche und Löwendenkmal';
+    banner.alt=(kim?'Kim':'Marcel')+' ausgewählt: farbig mit Goldkontur; anderer Held grau';
     $('menuHeroCaption').textContent=kim?'Kim · Die Bewahrerin':'Marcel · Der Beschützer';
     $('menuHeroName').textContent=kim?'KIM · DIE BEWAHRERIN':'MARCEL · DER BESCHÜTZER';
     try{localStorage.setItem('denkmal-character',selectedCharacter);}catch{}
