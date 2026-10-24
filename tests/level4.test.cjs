@@ -24,7 +24,7 @@ const sandbox={
   }}
 };
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 const campaign=sandbox.DenkmalLevels,level=campaign.levels[4],c=campaign.center;
 assert.ok(level&&level.approximate,'Level 4 should be marked as illustrative');
 assert.match(level.name,/LÖWE/);
@@ -64,7 +64,7 @@ assert.deepEqual(Array.from(campaign.getWaveGates(4,15)),[0,1,2,3]);
 assert.equal(campaign.level4Completed,false,'fresh account has no chapter 4 clear');
 assert.equal(campaign.completeLevel4(),true);
 assert.equal(campaign.level4Completed,true);
-assert.equal(localStorage.getItem('denkmal-level4-completed-v1'),'true');
+assert.equal(JSON.parse(localStorage.getItem('denkmal-progress-v2')).data.level4,true);
 assert.ok(writes.length>0,'completion is durable across browser sessions');
 vm.runInContext(fs.readFileSync(path.join(root,'church-art.js'),'utf8'),sandbox);
 const art=sandbox.DenkmalChurch;
