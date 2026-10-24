@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=alpha9a1" />
   <link rel="stylesheet" href="loot.css?v=icons2" />
-  <link rel="stylesheet" href="menu.css?v=alpha8polish1" />
+  <link rel="stylesheet" href="menu.css?v=patch-a1-heroes-v2" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=alpha8a2" />
@@ -21,7 +21,7 @@
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="asset-manager.js?v=alpha9a3"></script>
-  <script src="preloader.js?v=alpha9a1"></script>
+  <script src="preloader.js?v=hero-selection-v2"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal 3D. WASD oder Pfeiltasten bewegen, Leertaste ausweichen, E Turm bauen, Escape pausieren."></canvas>
 
@@ -91,20 +91,27 @@
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
         <div class="menu-content">
-          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/marcel-banner-alpha9.webp" width="2172" height="724" alt="Marcel vor Kirche und Löwendenkmal" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
+          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/heroes-marcel-selected-v2.svg" width="1800" height="300" alt="Marcel ausgewählt: farbig mit Goldkontur; Kim grau" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v2.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sechs spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
-          <nav id="menuHomeActions" class="menu-home-actions" aria-label="Hauptmenü">
-            <button id="menuCampaignBtn" class="menu-art-button" type="button" aria-controls="campaignMenu" aria-label="Kampagne"><img src="assets/menu/button-campaign-v1.webp" alt="" width="1024" height="264"/><span>Kampagne</span></button>
-            <button id="menuArcadeBtn" class="menu-art-button" type="button" aria-controls="endlessMenu" aria-label="Arcade – Endlos"><img src="assets/menu/button-arcade-v1.webp" alt="" width="1024" height="264"/><span>Arcade – Endlos</span></button>
-            <button id="campaignPilotBtn" class="menu-art-button" type="button" hidden><span>Kampagnenpilot · 8 Wellen</span></button><button id="portalNewBtn" class="menu-art-button" type="button"><span>Portalreise · Neuer Durchlauf</span></button><button id="portalResumeBtn" class="menu-art-button" type="button"><span>Portalreise · Fortsetzen</span></button>
-            <button id="menuCharacterBtn" class="menu-art-button" type="button" aria-controls="heroMenu" aria-label="Held wechseln / Inventar"><img src="assets/menu/button-hero-v1.webp" alt="" width="1024" height="264"/><span>Held wechseln / Inventar</span></button>
-            <button id="menuOptionsBtn" class="menu-art-button" type="button" aria-controls="optionsMenu" aria-label="Optionen"><img src="assets/menu/button-options-v1.webp" alt="" width="1024" height="264"/><span>Optionen</span></button>
+          <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
+            <button id="menuPlayBtn" class="menu-command menu-command-primary" type="button" aria-controls="playMenu"><span class="menu-command-mark" aria-hidden="true">◆</span><span><strong>Spielen</strong><small>Kampagne oder Denkmal-Ansturm</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+            <button id="menuCharacterBtn" class="menu-command" type="button" aria-controls="heroMenu"><span class="menu-command-mark" aria-hidden="true">♜</span><span><strong>Helden &amp; Ausrüstung</strong><small>Wächter wählen und Rucksack verwalten</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+            <button id="menuOptionsBtn" class="menu-command menu-command-quiet" type="button" aria-controls="optionsMenu"><span class="menu-command-mark" aria-hidden="true">⚙</span><span><strong>Optionen</strong><small>Ton, Grafik und Spielstand</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
           </nav>
+          <button id="campaignPilotBtn" class="menu-command" type="button" hidden><span>Kampagnenpilot · 8 Wellen</span></button><button id="portalNewBtn" class="menu-command" type="button" hidden><span>Portalreise · Neuer Durchlauf</span></button><button id="portalResumeBtn" class="menu-command" type="button" hidden><span>Portalreise · Fortsetzen</span></button>
           <button id="menuBackBtn" class="menu-back" type="button" hidden>‹ Zurück zum Hauptmenü</button>
           <div class="menu-actions" aria-label="Spielmodi">
+            <section class="menu-section play-menu" id="playMenu" hidden aria-labelledby="playMenuTitle">
+              <div class="menu-section-heading"><div><p class="menu-kicker">WÄHLE DEINE WACHT</p><h2 id="playMenuTitle">SPIELEN</h2></div><span class="menu-section-mark" aria-hidden="true">II</span></div>
+              <div class="mode-choice-list">
+                <button id="menuCampaignBtn" class="menu-command menu-command-primary" type="button" aria-controls="campaignMenu"><span class="menu-command-mark" aria-hidden="true">Ⅰ</span><span><strong>Kampagne</strong><small>Sechs Schauplätze · Fortschritt und Geschichte</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+                <a id="menuAnsturmBtn" class="menu-command menu-command-assault" href="ansturm/index.html"><span class="menu-command-mark" aria-hidden="true">⚔</span><span><strong>Denkmal-Ansturm</strong><small>Direkter Kampf · Überlebe den Angriff</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></a>
+              </div>
+            </section>
             <section class="menu-section campaign-menu" id="campaignMenu" hidden aria-labelledby="campaignTitle">
               <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–VI</span></div>
+              <button id="menuArcadeBtn" class="campaign-endless-link" type="button" aria-controls="endlessMenu">Endlos verteidigen <span aria-hidden="true">∞ ›</span></button>
               <div class="map-card-list">
                 <button id="startBtn" class="map-card map-card-primary" type="button">
                   <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Tutorial · Vier Tore · Wellen 1–5</span></span><span class="map-arrow" aria-hidden="true">➜</span>
@@ -287,6 +294,6 @@
   <script src="campaign-balance.js?v=portal1"></script>
   <script src="portal-run.js?v=portal1"></script>
   <script src="portal-perks.js?v=portal1"></script>
-  <script src="game.js?v=expansion2"></script>
+  <script src="game.js?v=patch-a1-heroes-v2"></script>
 </body>
 </html>
