@@ -3,6 +3,11 @@
 (()=>{'use strict';
   const kinds=new Set(['bow','cannon','mage','rift','boomerang']);
   const enabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2UserTowers')!=='0';
+  const projectileRefresh=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2ProjectileRefresh')==='1';
+  const refreshProjectiles=new Set(['projectile_bow_lv1','projectile_bow_lv2','projectile_bow_lv3',
+    'projectile_cannon_lv1','projectile_cannon_lv2','projectile_cannon_lv3',
+    'projectile_mage_lv1','projectile_mage_lv2','projectile_rift_lv1',
+    'projectile_boomerang_lv1','projectile_boomerang_lv2','projectile_boomerang_lv3']);
   // The normal game has DenkmalAssets; standalone previews use Image.
   // BOTH paths must stay bounded instead of retaining every variant visited.
   const known=new Map();
@@ -18,8 +23,10 @@
   function get(kind,tier,type){
     if(!enabled||!kinds.has(kind))return null;
     const id=`${type}_${kind}_lv${level(tier)}`;
+    const refreshed=type==='projectile'&&projectileRefresh&&refreshProjectiles.has(id);
     const version=cleanupPass3.has(id)?3:cleanupOverrides.has(id)?2:1;
-    const url=`assets/style2-user-towers-v${version}/runtime-webp/${type}s/${id}.webp?v=${version===1?'user-towers-1':'cleanup-'+version}`;
+    const url=refreshed?`assets/style2-reference-projectiles-v1/runtime-webp/projectiles/${id}.webp?v=reference-1`:
+      `assets/style2-user-towers-v${version}/runtime-webp/${type}s/${id}.webp?v=${version===1?'user-towers-1':'cleanup-'+version}`;
     const assets=globalThis.DenkmalAssets;
     if(assets?.retain&&assets?.ready){
       let current=known.get(url);
@@ -106,10 +113,11 @@
   function drawProjectile(ctx,b,now=0){
     if(!b)return false;
     const img=get(b.kind,b.level,'projectile');if(!img){if(debug)diagnostics.projectileFallbacks++;return false;}
-    const tier=level(b.level),size=[52,60,68][tier-1];
+    const tier=level(b.level),refreshed=projectileRefresh&&refreshProjectiles.has(`projectile_${b.kind}_lv${tier}`);
+    const size=[52,60,68][tier-1]*(refreshed?0.82:1);
     // Match each elongated source sprite's axis before applying velocity.
-    const sourceHeading=b.kind==='bow'?Math.PI/6:
-      tier<3&&(b.kind==='mage'||b.kind==='rift')?-Math.PI/4:0;
+    const sourceHeading=refreshed?(b.kind==='bow'?-.3:b.kind==='rift'?2.3:b.kind==='mage'?-Math.PI/2:0):
+      b.kind==='bow'?Math.PI/6:tier<3&&(b.kind==='mage'||b.kind==='rift')?-Math.PI/4:0;
     const angle=b.kind==='boomerang'?now*13:Math.atan2(b.vy??0,b.vx??1)-sourceHeading;
     ctx.save();try{ctx.translate(b.x,b.y);ctx.rotate(angle);ctx.drawImage(img,-size/2,-size/2,size,size);}catch{if(debug)diagnostics.drawErrors++;return false;}finally{ctx.restore();}
     return true;
@@ -192,5 +200,5 @@
       return false;
     }finally{ctx.restore();}
   }
-  globalThis.UserStyle2Towers={enabled,drawTower,drawProjectile,drawImpact,getDiagnostics:()=>({enabled,debug,...diagnostics,requested:known.size,managerPending:[...known.values()].filter(e=>e.loading).length,fallbackLoaded:[...fallbackImages.values()].filter(e=>e.ready).length,fallbackFailed:[...fallbackImages.values()].filter(e=>e.failed).length})};
+  globalThis.UserStyle2Towers={enabled,drawTower,drawProjectile,drawImpact,getDiagnostics:()=>({enabled,projectileRefresh,debug,...diagnostics,requested:known.size,managerPending:[...known.values()].filter(e=>e.loading).length,fallbackLoaded:[...fallbackImages.values()].filter(e=>e.ready).length,fallbackFailed:[...fallbackImages.values()].filter(e=>e.failed).length})};
 })();
