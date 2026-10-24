@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const loaded=[];
 const box={Image:class{constructor(){loaded.push(this);}},Math,localStorage:{getItem(){return null;}}};vm.createContext(box);
-vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),box);
+vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),box);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),box);
 assert.ok(fs.existsSync('dist/style2-phase6.js'),'phase 6 renderer exists');
 vm.runInContext(fs.readFileSync('dist/style2-phase6.js','utf8'),box);
 const p=box.Style2Phase6;
