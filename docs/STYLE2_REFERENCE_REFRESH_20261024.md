@@ -60,3 +60,10 @@ Die [statische 64/128-Pixel-Review-Tafel](qa/style2-reference-20261024/preview.p
 3. Android mit 4 GB RAM bleibt offen: Wellen mit vielen Projektil- und Trefferanimationen, FPS und Speichernutzung messen; kein Flackern und kein Glitch beim Kaltstart/Wechsel in den Sparmodus.
 4. Referenz-Eiswirbel aus `395.png` bleibt ein möglicher separater AoE-Effekt; das fliegende Magiegeschoss wird dadurch nicht ersetzt.
 5. PR #57 bleibt Draft, bis Android-QA und Review abgeschlossen sind. Kein Merge nach `main` ist durch diese Vorschau-Freigabe autorisiert.
+
+
+## Optionale Marcel-Pixelvariante
+
+Der Upload `marcel_walk_4x3.png` ist ein gültiges 3-Spalten×4-Zeilen-Sheet mit Zellen von 448×448 Pixeln. Für den Runtime-Atlas wurden die ersten beiden Richtungszeilen auf die vorhandene Renderer-Konvention `down/up/left/right` sortiert und jede Zelle einheitlich auf 128×128 Pixel verkleinert. Der verlustfreie WebP steckt in `dist/assets/hero/marcel-walk-reference-v1.svg`, damit die Variante über das bestehende statische Hosting ausgeliefert werden kann.
+
+Mit `?td2PixelMarcel=1` lädt Marcel diese alternative Grafik; ohne Parameter bleibt `marcel-walk-alpha9.webp` Standard. Kim und ihre Animation bleiben unverändert. Die Variante ist nur als Vorschau-Option integriert; Abnahme auf Android mit 4 GB RAM und Prüfung von Bewegungsrichtungen/Lesbarkeit stehen noch aus.
