@@ -85,7 +85,6 @@ print('Goethestraße memorial: decode, alpha and ground anchor verified')
 
 # Optional pixel-style Marcel atlas: SVG wrapper embeds a lossless WebP for static hosting.
 import base64
-import re
 import xml.etree.ElementTree as ET
 pixel_atlas = root / 'marcel-walk-reference-v1.svg'
 svg = ET.parse(pixel_atlas).getroot()
