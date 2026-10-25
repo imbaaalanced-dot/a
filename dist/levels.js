@@ -123,26 +123,21 @@
     6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
     4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
-  const saveKey='denkmal-level2-unlocked-v1';
-  let unlocked=false,storageAvailable=true;
-  try{unlocked=localStorage.getItem(saveKey)==='true';}catch{storageAvailable=false;}
-  function unlock(){unlocked=true;try{localStorage.setItem(saveKey,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
-  const level4Key='denkmal-level4-completed-v1';
-  let level4Completed=false;
-  try{level4Completed=localStorage.getItem(level4Key)==='true';}catch{}
-  function completeLevel4(){
-    level4Completed=true;try{localStorage.setItem(level4Key,'true');storageAvailable=true;}catch{storageAvailable=false;}
-    return storageAvailable;
-  }
-  const level5Key='denkmal-level5-completed-v1';
-  let level5Completed=false;
-  try{level5Completed=localStorage.getItem(level5Key)==='true';}catch{}
-  function completeLevel5(){level5Completed=true;try{localStorage.setItem(level5Key,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
-  const level6Key='denkmal-level6-completed-v1';
-  let level6Completed=false;
-  try{level6Completed=localStorage.getItem(level6Key)==='true';}catch{}
-  function completeLevel6(){level6Completed=true;try{localStorage.setItem(level6Key,'true');storageAvailable=true;}catch{storageAvailable=false;}return storageAvailable;}
+  const progressKey='denkmal-progress-v2',progressVersion=1;
+  const progressDefaults={level2:false,level4:false,level5:false,level6:false};
+  const validateProgress=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&Object.keys(progressDefaults).every(k=>typeof p[k]==='boolean');
+  let storage;try{storage=localStorage;}catch{}
+  const progressStore=globalThis.DenkmalPersistence.create(storage);
+  const oldKeys={level2:'denkmal-level2-unlocked-v1',level4:'denkmal-level4-completed-v1',level5:'denkmal-level5-completed-v1',level6:'denkmal-level6-completed-v1'};
+  const progressLoaded=progressStore.load(progressKey,progressVersion,progressDefaults,validateProgress,s=>Object.fromEntries(Object.entries(oldKeys).map(([field,key])=>[field,s.getItem(key)==='true'])));
+  const progress=progressLoaded.value;
+  let storageAvailable=progressLoaded.writable;
+  function saveFlag(flag){progress[flag]=true;storageAvailable=progressStore.save(progressKey,progressVersion,progress,validateProgress);return storageAvailable;}
+  function unlock(){return saveFlag('level2');}
+  function completeLevel4(){return saveFlag('level4');}
+  function completeLevel5(){return saveFlag('level5');}
+  function completeLevel6(){return saveFlag('level6');}
   function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
-  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,get level5Completed(){return level5Completed;},get level6Completed(){return level6Completed;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return level4Completed;},get unlocked(){return unlocked;},get storageAvailable(){return storageAvailable;}};
+  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,get level5Completed(){return progress.level5;},get level6Completed(){return progress.level6;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return progress.level4;},get unlocked(){return progress.level2;},get storageAvailable(){return storageAvailable;}};
 })();

@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
 const memory=new Map(),writes=[],storage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>{memory.set(k,v);writes.push(k);}};
 const box={Math,localStorage:storage,console};vm.createContext(box);
-vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),box);
+vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),box);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),box);
 const lib=box.DenkmalLevels,level=lib.levels[5],center=lib.center;
 assert.ok(level&&level.approximate,'visual approach is explicitly illustrative');
 assert.match(level.name,/KAISER-WILHELM/);
@@ -43,11 +43,11 @@ assert.equal(plan.enemyType(20,0),'boss');
 assert.ok(Array.from({length:48},(_,i)=>plan.enemyType(19,i)).includes('stormwing'));
 assert.equal(lib.level5Completed,false);assert.equal(lib.completeLevel5(),true);
 assert.equal(lib.level5Completed,true);
-assert.equal(memory.get('denkmal-level5-completed-v1'),'true');
-const reload={Math,localStorage:storage};vm.createContext(reload);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),reload);
+assert.equal(JSON.parse(memory.get('denkmal-progress-v2')).data.level5,true);
+const reload={Math,localStorage:storage};vm.createContext(reload);vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),reload);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),reload);
 assert.equal(reload.DenkmalLevels.level5Completed,true,'completed level survives browser restart');
 const blocked={Math,localStorage:{getItem(){throw Error('denied')},setItem(){throw Error('denied')}}};
-vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),blocked);
+vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),blocked);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),blocked);
 assert.equal(blocked.DenkmalLevels.completeLevel5(),false);
 assert.equal(blocked.DenkmalLevels.level5Completed,true,'blocked storage keeps session progress');
 // Renderer: test both cache reuse and objective anchoring, without a DOM or WebGL.
@@ -82,7 +82,7 @@ assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot re
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg1'));
-assert.ok(html.includes('levels.js?v=syburg2'));
+assert.ok(html.includes('levels.js?v=save1'));
 assert.ok(html.includes('hohensyburg-art.js?v=alpha9a3'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));

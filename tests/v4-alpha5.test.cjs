@@ -18,7 +18,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);
-vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');
@@ -50,7 +50,7 @@ check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
   assert.ok(gameSource.includes('frameWidth*(level-1)'));
   assert.ok(gameSource.includes('v400a5combined1'));
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.ok(html.includes('game.js?v=patch-a1'));
+  assert.ok(html.includes('game.js?v=allpatch1'));
   assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');
 });
 check('Thorn and lantern towers are no longer available',()=>{

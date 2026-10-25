@@ -17,7 +17,7 @@ const sandbox={
   localStorage:{getItem(){return null;},setItem(){}}
 };
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
 const levels=sandbox.DenkmalLevels,layoutLevel=i=>({...levels.levels[i],center:levels.center});
 const original=JSON.stringify([levels.levels[1],levels.levels[2]]);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-maps.js'),'utf8'),sandbox);
