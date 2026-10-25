@@ -64,6 +64,6 @@ Die [statische 64/128-Pixel-Review-Tafel](qa/style2-reference-20261024/preview.p
 
 ## Optionale Marcel-Pixelvariante
 
-Der Upload `marcel_walk_4x3.png` ist ein gültiges 3-Spalten×4-Zeilen-Sheet mit Zellen von 448×448 Pixeln. Für den Runtime-Atlas wurden die ersten beiden Richtungszeilen auf die vorhandene Renderer-Konvention `down/up/left/right` sortiert und jede Zelle einheitlich auf 128×128 Pixel verkleinert. Der verlustfreie WebP steckt in `dist/assets/hero/marcel-walk-reference-v1.svg`, damit die Variante über das bestehende statische Hosting ausgeliefert werden kann.
+Der Upload `marcel_walk_4x3.png` ist ein gültiges 3-Spalten×4-Zeilen-Sheet mit Zellen von 448×448 Pixeln. Für den Runtime-Atlas wurden die ersten beiden Richtungszeilen auf die vorhandene Renderer-Konvention `down/up/left/right` sortiert und jede Zelle einheitlich auf 128×128 Pixel verkleinert. Der verlustfreie WebP-Atlas liegt direkt unter `dist/assets/hero/marcel-walk-reference-v1.webp` und nutzt denselben Bildtyp wie die übrigen Laufatlanten.
 
 Mit `?td2PixelMarcel=1` lädt Marcel diese alternative Grafik; ohne Parameter bleibt `marcel-walk-alpha9.webp` Standard. Kim und ihre Animation bleiben unverändert. Die Variante ist nur als Vorschau-Option integriert; Abnahme auf Android mit 4 GB RAM und Prüfung von Bewegungsrichtungen/Lesbarkeit stehen noch aus.
