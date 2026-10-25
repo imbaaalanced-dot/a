@@ -34,8 +34,9 @@
   ];
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
+  const pixelMarcel = new URLSearchParams(globalThis.location?.search || '').get('td2PixelMarcel') === '1';
   const walkAtlases={marcel:new Image(),kim:new Image()};
-  walkAtlases.marcel.src='assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
+  walkAtlases.marcel.src=pixelMarcel ? 'assets/hero/marcel-walk-reference-v1.svg?v=1' : 'assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
   walkAtlases.kim.src='assets/hero/kim-walk-alpha8.webp?v=alpha8a2';
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
