@@ -83,26 +83,6 @@ with Image.open(elemental/'goethestrasse-memorial-v1.webp') as image:
     for edge in [(0,0,768,8),(0,760,768,768),(0,0,8,768),(760,0,768,768)]:assert a.crop(edge).getextrema()[1]==0
 print('Goethestraße memorial: decode, alpha and ground anchor verified')
 
-# Optional pixel-style Marcel atlas: SVG wrapper embeds a lossless WebP for static hosting.
-import base64
-import xml.etree.ElementTree as ET
-pixel_atlas = root / 'marcel-walk-reference-v1.svg'
-svg = ET.parse(pixel_atlas).getroot()
-assert svg.attrib.get('width') == '384' and svg.attrib.get('height') == '512'
-image_node = next(iter(svg))
-encoded = image_node.attrib['href'].split(',', 1)[1]
-pixel_bytes = base64.b64decode(encoded)
-assert pixel_atlas.stat().st_size < 300000
-from io import BytesIO
-with Image.open(BytesIO(pixel_bytes)) as image:
-    image.load()
-    assert image.format == 'WEBP' and image.mode == 'RGBA' and image.size == (384, 512)
-    for row in range(4):
-        for col in range(3):
-            cell = image.getchannel('A').crop((col*128,row*128,(col+1)*128,(row+1)*128))
-            assert cell.getbbox(), ('empty pixel Marcel frame', col, row)
-print('marcel-walk-reference-v1.svg: embedded 3x4 RGBA WebP atlas decoded')
-
 
 # Optional pixel-style Marcel atlas: decoded, with 12 populated 128px cells.
 pixel_atlas = root / 'marcel-walk-reference-v1.webp'
