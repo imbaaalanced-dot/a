@@ -102,3 +102,16 @@ with Image.open(BytesIO(pixel_bytes)) as image:
             cell = image.getchannel('A').crop((col*128,row*128,(col+1)*128,(row+1)*128))
             assert cell.getbbox(), ('empty pixel Marcel frame', col, row)
 print('marcel-walk-reference-v1.svg: embedded 3x4 RGBA WebP atlas decoded')
+
+
+# Optional pixel-style Marcel atlas: decoded, with 12 populated 128px cells.
+pixel_atlas = root / 'marcel-walk-reference-v1.webp'
+with Image.open(pixel_atlas) as image:
+    image.load()
+    assert image.format == 'WEBP' and image.mode == 'RGBA' and image.size == (384, 512)
+    assert pixel_atlas.stat().st_size < 250000
+    for row in range(4):
+        for col in range(3):
+            cell = image.getchannel('A').crop((col*128,row*128,(col+1)*128,(row+1)*128))
+            assert cell.getbbox(), ('empty pixel Marcel frame', col, row)
+print('marcel-walk-reference-v1.webp: decoded 3x4 RGBA atlas, within mobile budget')
