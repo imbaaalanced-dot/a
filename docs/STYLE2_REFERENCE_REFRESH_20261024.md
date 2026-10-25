@@ -1,7 +1,7 @@
 # TD2 Style 2 – Referenzgrafiken und neue Einschläge (24.10.2026)
 
 **Branch:** `feature/style2-tower-atlases-20261024`, angelegt auf `feature/td2-consolidation-resume-20261024`.
-**Status:** Lokal exportiert, opt-in in Canvas eingebunden und synthetisch getestet. **Keine Android-Gerätefreigabe, kein Merge, keine Veröffentlichung.**
+**Status:** Lokal exportiert, opt-in in Canvas eingebunden und synthetisch getestet. Nutzer hat die Umsetzung und Veröffentlichung ausdrücklich freigegeben. Veröffentlichung ausschließlich in der isolierten TD2-Vorschau; kein Merge nach `main`. Android-Gerätefreigabe steht aus.
 
 ## Eingänge und geprüfte Zuordnung
 
@@ -36,9 +36,9 @@ Ohne Parameter bleiben die bislang ausgewählten V1/V2/V3-Grafiken aktiv. Währe
 ## Reproduzierbarer Export
 
 ```
-python tools/export_style2_reference_refresh.py \
-  dist/assets/style2-reference-projectiles-v1/sources/user-projectiles-395.png \
-  dist/assets/style2-reference-impacts-v1/sources/ice-shatter-6frames.png \
+python tools/export_style2_reference_refresh.py \\
+  dist/assets/style2-reference-projectiles-v1/sources/user-projectiles-395.png \\
+  dist/assets/style2-reference-impacts-v1/sources/ice-shatter-6frames.png \\
   dist/assets/style2-reference-impacts-v1/sources/boomerang-impact-6frames.png
 ```
 
@@ -51,11 +51,12 @@ node tests/style2-user-towers.test.cjs
 node tests/style2-impact-atlas.test.cjs
 ```
 
-## Abnahme noch ausstehend
+## Veröffentlichungs- und Abnahmestatus
 
 Die [statische 64/128-Pixel-Review-Tafel](qa/style2-reference-20261024/preview.png) wurde nach dem Zuschnitt visuell geprüft; die Stufen sind unterscheidbar und die zwei VFX-Folgen bleiben lesbar. Das ist **kein** Laufzeit- oder Gerätetest.
 
-1. Lokaler echter Browser-Canvas-Sichttest der neuen Opt-in-Grafiken in 412×915-Portrait und Desktop-Breite.
-2. Android mit 4 GB RAM: Wellen mit vielen Projektileffekten, FPS und Speichernutzung messen; kein Flackern und kein Glitch beim Kaltstart/Wechsel in den Sparmodus.
-3. Referenz-Eiswirbel aus `395.png` als möglicher separater AoE-Effekt prüfen, ohne das fliegende Magiegeschoss zu ersetzen.
-4. Kein Veröffentlichungs- oder Merge-Vorgang ohne gesonderte Freigabe.
+1. Die neue Variante wird im isolierten Vorschaupfad mit `?td2ProjectileRefresh=1&td2ImpactRefresh=1` veröffentlicht; sie ist damit kein Standard- oder Live-Build.
+2. Browser-Canvas-Prüfung umfasst die existierende Cloud-Chrome-Vorschau; die Zusatzgrafiken werden vor Release in schmaler und Desktop-Ansicht geprüft.
+3. Android mit 4 GB RAM bleibt offen: Wellen mit vielen Projektil- und Trefferanimationen, FPS und Speichernutzung messen; kein Flackern und kein Glitch beim Kaltstart/Wechsel in den Sparmodus.
+4. Referenz-Eiswirbel aus `395.png` bleibt ein möglicher separater AoE-Effekt; das fliegende Magiegeschoss wird dadurch nicht ersetzt.
+5. PR #57 bleibt Draft, bis Android-QA und Review abgeschlossen sind. Kein Merge nach `main` ist durch diese Vorschau-Freigabe autorisiert.
