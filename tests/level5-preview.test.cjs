@@ -23,6 +23,19 @@ vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 t.startGame(5);assert.equal(t.game.level,5);assert.equal(t.state,'playing');
+assert.equal(t.game.waveTotal,32,'fresh Hohensyburg starts with a smaller opening wave');
+assert.doesNotMatch(t.wavePreview(17),/SCHATTENFLÜGLER|GARGOYLE|STURMGEIST/);
+for(const [wave,count,interval] of [[17,32,.75],[18,38,.60],[19,44,.48],[20,48,.40]]){
+ t.game.wave=wave;t.game.waveSpawned=0;t.game.enemies=[];t.game.intermission=0;t.game.spawnTimer=0;
+ assert.equal(t.waveSize(wave),count);
+ t.game.waveTotal=count;t.update(.01);
+ assert.equal(t.game.waveSpawned,1);assert.equal(t.game.spawnTimer,interval,'actual update uses the campaign spawn spacing');
+}
+t.game.mode='endless';t.game.wave=17;t.game.waveTotal=48;t.game.waveSpawned=0;t.game.enemies=[];t.game.spawnTimer=0;
+assert.equal(t.waveSize(17),48);t.update(.01);assert.equal(t.game.spawnTimer,.30);
+assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);
+t.mainMenu();t.startGame(1);t.mainMenu();t.startGame(5);
+assert.equal(t.game.waveTotal,32,'returning from another map does not use its wave profile');
 assert.equal(sandbox.DenkmalLevels.level4Completed,false);assert.equal(sandbox.DenkmalLevels.level5Completed,false);
 t.game.wave=20;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level5Completed,false);
 assert.equal(sandbox.localStorage.data.has('denkmal-level5-completed-v1'),false);
