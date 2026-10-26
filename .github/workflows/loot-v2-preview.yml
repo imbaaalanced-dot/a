@@ -1,0 +1,53 @@
+name: Publish isolated Loot V2 tester
+on:
+  push:
+    branches: [feature/td2-loot-v2-20261026]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-loot-v2-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    if: github.ref_name == 'feature/td2-loot-v2-20261026'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify gameplay, inventory and saves
+        run: |
+          set -e
+          for test in tests/*.test.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/loot-v2-game.test.cjs
+          for file in dist/equipment-catalog.js dist/loot.js dist/loot-ui.js dist/game.js; do node --check "$file"; done
+      - name: Verify desktop and touch browser flows
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install --with-deps chromium
+          TD2_QA_OUT=/tmp/td2-loot-v2-qa node tools/verify-equipment-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loot-v2-browser-qa
+          path: /tmp/td2-loot-v2-qa
+      - name: Publish only isolated loot-v2 tester
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/loot-v2-pages origin/gh-pages
+          mkdir -p /tmp/loot-v2-pages/loot-v2/v4-alpha9
+          cp -R dist/. /tmp/loot-v2-pages/loot-v2/v4-alpha9/
+          printf '{"sourceCommit":"%s"}\n' "$GITHUB_SHA" > /tmp/loot-v2-pages/loot-v2/v4-alpha9/loot-v2-build.json
+          touch /tmp/loot-v2-pages/.nojekyll
+          cd /tmp/loot-v2-pages
+          git add loot-v2 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish isolated Loot V2 tester ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi

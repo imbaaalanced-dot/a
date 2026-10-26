@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),{load,memory,json,fixture}=require('.
 const {DenkmalLoot:L}=load(),PRE='denkmal-loot-v1-pre-v3';
 for(const version of [1,2]){
  const original=fixture(version),old=JSON.parse(original).profile,s=memory({[L.KEY]:original}),m=L.create({storage:s});
- assert.equal(m.profile.version,3,'old profiles migrate to v3');assert.equal(m.profile.owned.length,43);
+ assert.equal(m.profile.version,4,'old profiles migrate to v4');assert.equal(m.profile.owned.length,43);
  assert.deepEqual(json(m.profile.loadouts.marcel),old.equipped);assert.deepEqual(json(m.profile.loadouts.kim),old.equipped);
  for(const i of [...old.items,...old.bag,...old.overflow]){const got=json(m.find(i.id));for(const k of Object.keys(i))assert.deepEqual(got[k],i[k]);assert.deepEqual(got.baseStats,i.stats);assert.equal(got.upgradeRank,0);}
  assert.equal(m.profile.essence,777);assert.equal(m.profile.level3,version===2);assert.equal(m.view('kim').bag.length,30);assert.equal(m.view('kim').overflow.length,5);

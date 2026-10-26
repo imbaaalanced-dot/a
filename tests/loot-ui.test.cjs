@@ -73,3 +73,12 @@ const recovery=box.DenkmalLoot.create({storage:{getItem:k=>recoveryData.get(k)||
 box.DenkmalLootUI.create(recovery,{editable:()=>true,onClose(){},onImport(){}}).render();
 assert.equal(get('lootRecoveryBtn').hidden,false,'a blocked migration offers original primary raw export');assert.equal(get('lootPreMigrationBtn').hidden,false,'the conflicting pre-v3 raw remains exportable too');
 console.log('Inventory hero portraits, mobile tabs, comparison values, consistent actions and write guards passed');
+// V2 filters apply to the collection without changing equipment.
+const filterModel=box.DenkmalLoot.create({storage:{getItem:()=>null,setItem(){}}});
+const filterUI=box.DenkmalLootUI.create(filterModel,{editable:()=>true,onClose(){},onImport(){}});filterUI.render();
+get('lootSlotFilter').onchange({target:{value:'armor'}});assert.equal(get('inventoryGrid').children.filter(e=>e.dataset.itemId).length,1);
+get('lootSlotFilter').onchange({target:{value:'all'}});get('lootFilter').onchange({target:{value:'upgrades'}});assert.equal(get('inventoryGrid').children.filter(e=>e.dataset.itemId).length,0);
+assert.equal(filterModel.profile.owned.length,3,'filters never mutate collection');
+const rings=JSON.parse(filterModel.exportJSON());rings.profile.owned.push({id:'ring-upgrade',name:'Ring',slot:'ring1',level:1,rarity:'magic',power:null,favorite:false,legacy:true,stats:{crit:.1},baseStats:{crit:.1},upgradeRank:0});assert.equal(filterModel.importJSON(JSON.stringify(rings)),true);
+get('lootFilter').onchange({target:{value:'all'}});find(get('inventoryGrid'),e=>e.dataset.itemId==='starter-ember').onclick();
+get('lootFilter').onchange({target:{value:'upgrades'}});assert.ok(find(get('inventoryGrid'),e=>e.dataset.itemId==='ring-upgrade'),'ring upgrade remains visible after inspecting a weapon');
