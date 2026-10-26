@@ -25,10 +25,11 @@ jobs:
           TEST_MOBILE=1 node tests/loot-v2-game.test.cjs
           for file in dist/equipment-catalog.js dist/loot.js dist/loot-ui.js dist/game.js; do node --check "$file"; done
       - name: Verify desktop and touch browser flows
+        timeout-minutes: 5
         run: |
           npm install --no-save --package-lock=false playwright@1.62.1
           npx playwright install --with-deps chromium
-          TD2_QA_OUT=/tmp/td2-loot-v2-qa node tools/verify-equipment-browser.cjs
+          TD2_QA_OUT=/tmp/td2-loot-v2-qa timeout 180s node tools/verify-equipment-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
