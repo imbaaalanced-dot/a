@@ -36,7 +36,7 @@
   }
   function fits(item,slot){return item.slot===slot||(item.slot.startsWith('ring')&&slot.startsWith('ring'));}
   const C=globalThis.DenkmalEquipmentCatalog;
-  const PRE_MIGRATION=KEY+'-pre-v3',MAX_OWNED=100046,heroes=['marcel','kim'];
+  const PRE_MIGRATION=KEY+'-pre-v3',PRE_V4=KEY+'-pre-v4',MAX_OWNED=100046,heroes=['marcel','kim'];
   const fail=()=>{throw Error('Ungültiger Spielstand');};
   const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   function safeData(x,depth=0){
@@ -62,21 +62,24 @@
     for(const k of keys)if(i.stats[k]!==expected[k])fail();
     if(i.legacy!==true){
       const t=C.templates[i.templateId];
-      if(!t||i.name!==t.name||i.slot!==t.slot||i.power!==t.power||keys.join()!==[...t.keys].sort().join()||!['epic','legendary'].includes(i.rarity))fail();
+      if(!t||i.name!==t.name||i.slot!==t.slot||keys.join()!==[...t.keys].sort().join())fail();
       const source=i.source;
-      if(!object(source)||!Object.hasOwn(C.bossPools,source.mapId)||!Number.isInteger(source.mapId)||source.bossType!==(source.mapId===3?'uprooted':'boss')||!Number.isFinite(source.wave)||source.wave<1||i.level!==Math.min(30,Math.floor(source.wave)))fail();
+      if(!object(source)||!Number.isFinite(source.wave)||source.wave<1||i.level!==Math.min(30,Math.floor(source.wave)))fail();
+      if(source.kind==='enemy'){
+        if(!C.validEnemy(source)||!['magic','rare'].includes(i.rarity)||i.power!==(i.rarity==='rare'?t.power:null))fail();
+      }else if(source.kind!==undefined&&source.kind!=='boss'||!Object.hasOwn(C.bossPools,source.mapId)||!Number.isInteger(source.mapId)||source.bossType!==(source.mapId===3?'uprooted':'boss')||!['epic','legendary'].includes(i.rarity)||i.power!==t.power)fail();
     }
   }
   function validateProfile(p){
     safeData(p);
-    if(!object(p)||p.version!==3||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||!['level2','level3','kirchendeCompleted'].every(k=>typeof p[k]==='boolean'))fail();
+    if(!object(p)||![3,4].includes(p.version)||!Number.isSafeInteger(p.nextId)||p.nextId<1||p.nextId>1e9||!Number.isSafeInteger(p.essence)||p.essence<0||p.essence>1e9||!['level2','level3','kirchendeCompleted'].every(k=>typeof p[k]==='boolean'))fail();
     if(!Array.isArray(p.owned)||p.owned.length>MAX_OWNED||!object(p.loadouts)||Object.keys(p.loadouts).sort().join()!=='kim,marcel'||!Array.isArray(p.milestones)||p.milestones.some(x=>![3,4,8,12].includes(x))||new Set(p.milestones).size!==p.milestones.length)fail();
     const index=new Map();for(const i of p.owned){checkItem(i);if(index.has(i.id))fail();index.set(i.id,i);}
     for(const hero of heroes){
       const worn=p.loadouts[hero],used=new Set();if(!object(worn)||Object.keys(worn).sort().join()!==Object.keys(slots).sort().join())fail();
       for(const [slot,id]of Object.entries(worn)){if(id===null)continue;const item=index.get(id);if(!item||used.has(id)||!fits(item,slot))fail();used.add(id);}
     }
-    return copy(p);
+    return {...copy(p),version:4};
   }
   function migrate(p){
     if(p.version===1){p={...p,version:2,level3:false,kirchendeCompleted:false};}
@@ -86,35 +89,35 @@
   }
   function decode(text){
     const e=JSON.parse(text);safeData(e);
-    if(e.format!=='denkmal-loot'||![1,2,3].includes(e.version)||e.profile?.version!==e.version)fail();
-    const profile=e.version===3?validateProfile(e.profile):migrate(e.profile),pending=e.pendingRewards||[],ids=new Set(profile.owned.map(i=>i.id)),tokens=new Set();
+    if(e.format!=='denkmal-loot'||![1,2,3,4].includes(e.version)||e.profile?.version!==e.version)fail();
+    const profile=e.version>=3?validateProfile(e.profile):migrate(e.profile),pending=e.pendingRewards||[],ids=new Set(profile.owned.map(i=>i.id)),tokens=new Set();
     if(!Array.isArray(pending))fail();
     for(const reward of pending){
       if(!object(reward)||!rewardIdentity(reward)||reward.item?.id!==rewardIdentity(reward)||ids.has(reward.item.id)||tokens.has(reward.item.id))fail();
-      checkItem(reward.item);tokens.add(reward.item.id);
+      checkItem(reward.item);if((reward.kind==='enemy')!==(reward.item.source?.kind==='enemy'))fail();tokens.add(reward.item.id);
     }
-    return {profile,pending:copy(pending),old:e.version<3?text:null};
+    return {profile,pending:copy(pending),old:e.version<4?text:null};
   }
   function rewardIdentity(r){
     if(!r||!['runId','spawnId'].every(k=>typeof r[k]==='string'&&/^[a-zA-Z0-9_-]+$/.test(r[k])))return null;
-    const id='boss-'+r.runId+'-'+r.spawnId;return id.length<=100?id:null;
+    const id=(r.kind==='enemy'?'enemy-':'boss-')+r.runId+'-'+r.spawnId;return id.length<=100?id:null;
   }
   function create({storage,rng=Math.random,canManage=()=>true,getHero=()=>'marcel'}={}){
     if(storage===undefined){try{storage=globalThis.localStorage;}catch{}}
     let profile=migrate(fresh()),status='',readOnly=false,recoveryRequired=false,lastRaw=null,preSource=null,pending=[];
-    const claimed=new Set();
+    const claimed=new Set(),attempted=new Set();let drought=0;
     try{
       lastRaw=storage?.getItem(KEY)||null;
       if(lastRaw){
         try{const d=decode(lastRaw);profile=d.profile;preSource=d.old;pending=d.pending;}
         catch{
           let e;try{e=JSON.parse(lastRaw);}catch{}
-          if(e?.version!==undefined&&![1,2,3].includes(e.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
+          if(e?.version!==undefined&&![1,2,3,4].includes(e.version)){readOnly=true;status='Neuere Speicherversion erkannt. Export sichern und passende Spielversion öffnen.';}
           else try{const d=decode(storage?.getItem(BACKUP));profile=d.profile;preSource=d.old;pending=d.pending;status='Spielstand aus Sicherung wiederhergestellt.';}catch{readOnly=true;status='Spielstand beschädigt. Rohsicherung exportieren oder gültige Sicherung importieren.';}
         }
       }
     }catch{status='Speichern blockiert: Fortschritt gilt nur für diese Sitzung. Bitte exportieren.';}
-    const raw=()=>JSON.stringify({format:'denkmal-loot',version:3,profile,...(pending.length?{pendingRewards:pending}:{})});
+    const raw=()=>JSON.stringify({format:'denkmal-loot',version:4,profile,...(pending.length?{pendingRewards:pending}:{})});
     const find=id=>profile.owned.find(i=>i.id===id);
     const wornIds=()=>new Set(heroes.flatMap(h=>Object.values(profile.loadouts[h])).filter(Boolean));
     function writable(){
@@ -127,9 +130,10 @@
       try{
         if(!storage)throw Error('storage');
         if(preSource){
-          const backup=storage.getItem(PRE_MIGRATION);
-          if(backup){try{const parsed=JSON.parse(backup);if(![1,2].includes(parsed.version))throw Error('pre-v3');decode(backup);}catch{recoveryRequired=true;status='Vorherige Versionssicherung ungültig. Bitte beide Rohsicherungen exportieren. Fortschritt gilt nur für diese Sitzung.';return false;}}
-          else storage.setItem(PRE_MIGRATION,preSource);
+          const backupKey=JSON.parse(preSource).version===3?PRE_V4:PRE_MIGRATION;
+          const backup=storage.getItem(backupKey);
+          if(backup){try{const parsed=JSON.parse(backup);if(![1,2,3].includes(parsed.version))throw Error('pre-v3');decode(backup);}catch{recoveryRequired=true;status='Vorherige Versionssicherung ungültig. Bitte beide Rohsicherungen exportieren. Fortschritt gilt nur für diese Sitzung.';return false;}}
+          else storage.setItem(backupKey,preSource);
         }
         if(lastRaw){let valid=false;try{decode(lastRaw);valid=true;}catch{}if(valid)storage.setItem(BACKUP,lastRaw);}
         const next=raw();storage.setItem(KEY,next);lastRaw=next;preSource=null;
@@ -148,7 +152,7 @@
       try{if((storage?.getItem(KEY)||null)!==lastRaw){readOnly=true;status='Spielstand in einem anderen Tab geändert. Bitte exportieren und neu laden.';return false;}}catch{}
       if(readOnly&&status.includes('anderen Tab'))return false;
       let d;try{validateImport(text);d=decode(text);}catch{return false;}
-      profile=d.profile;pending=d.pending;preSource=preSource||d.old;readOnly=false;retryPending();save();return true;
+      profile=d.profile;pending=d.pending;attempted.clear();drought=0;preSource=preSource||d.old;readOnly=false;retryPending();save();return true;
     }
     function setFlag(key){if(!writable())return false;profile[key]=true;save();return true;}
     function commit(next){try{next=validateProfile(next);}catch{return false;}profile=next;save();return true;}
@@ -196,23 +200,40 @@
         try{profile=validateProfile(next);}catch{break;}
         pending.shift();claimed.add(reward.item.id);granted++;
       }
-      if(granted)persisted=save();
+      if(granted||pending.length)persisted=save();
       return {granted,pending:pending.length,persisted};
     }
+    function claimEnemy(request){
+      const context={...request,kind:'enemy'},id=rewardIdentity(context);
+      if(!id||!C.validEnemy(context))return {state:'rejected',item:null,persisted:false};
+      if(attempted.has(id)||claimed.has(id)||find(id))return {state:'duplicate',item:null,persisted:false};
+      let candidate=pending.find(r=>r.item.id===id);
+      if(!candidate){
+        let roll;try{roll=rng();}catch{return {state:'rejected',item:null,persisted:false};}
+        if(typeof roll!=='number'||!Number.isFinite(roll)||roll<0||roll>=1)return {state:'rejected',item:null,persisted:false};
+        if(roll>=.04&&drought<39){attempted.add(id);drought++;return {state:'none',item:null,persisted:false};}
+        const descriptor=C.rollEnemy(context,rng,profile.owned.concat(pending.map(r=>r.item)));
+        if(!descriptor)return {state:'rejected',item:null,persisted:false};
+        candidate={kind:'enemy',runId:request.runId,spawnId:request.spawnId,item:{...descriptor,id}};pending.push(candidate);drought=0;
+      }
+      const result=retryPending(),granted=!!find(id);
+      if(!granted&&!status)status='Sammlung voll: Fund ausstehend. Im Menü Platz schaffen oder exportieren.';
+      return {state:granted?'granted':'pending',item:copy(candidate.item),persisted:granted&&result.persisted};
+    }
     function claimBoss(request){
-      const id=rewardIdentity(request);
+      const id=rewardIdentity({...request,kind:'boss'});
       if(!id||!Object.hasOwn(C.bossPools,request.mapId)||!Number.isInteger(request.mapId)||request.bossType!==(request.mapId===3?'uprooted':'boss')||!Number.isFinite(request.wave)||request.wave<1)return {state:'rejected',item:null,persisted:false};
       if(claimed.has(id)||find(id))return {state:'duplicate',item:null,persisted:false};
       let candidate=pending.find(r=>r.item.id===id);
       if(!candidate){
-        const descriptor=C.rollBoss(request,rng);if(!descriptor)return {state:'rejected',item:null,persisted:false};
+        const descriptor=C.rollBoss(request,rng,profile.owned.concat(pending.map(r=>r.item)));if(!descriptor)return {state:'rejected',item:null,persisted:false};
         candidate={runId:request.runId,spawnId:request.spawnId,item:{...descriptor,id}};pending.push(candidate);
       }
-      const result=retryPending(),granted=!!find(id);
+      const result=retryPending(),granted=!!find(id);if(granted)drought=0;
       if(!granted&&!status)status='Sammlung voll: Bossfund ausstehend. Im Menü Platz schaffen oder exportieren.';
       return {state:granted?'granted':'pending',item:copy(candidate.item),persisted:granted&&result.persisted};
     }
-    return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,claimBoss,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
+    return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,claimBoss,claimEnemy,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_V4)||storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
   }
   globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
 })();
