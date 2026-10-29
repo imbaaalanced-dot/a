@@ -1,0 +1,55 @@
+name: TD2 all patches preview
+on:
+  push:
+    branches: [feature/td2-all-patches-preview-20261025]
+permissions:
+  contents: write
+concurrency:
+  group: td2-all-patches-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify game and asset references
+        run: |
+          set -e
+          python3 -m pip install Pillow
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.test.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+          for test in tests/*.test.py; do python3 "$test"; done
+          node --check dist/ansturm/render.js
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('dist/ansturm')
+          assets = json.loads((root / 'assets.json').read_text())
+          missing = [key for key, url in assets.items() if not (root / url.split('?')[0]).is_file()]
+          if missing:
+              raise SystemExit(f'Missing Ansturm assets: {missing}')
+          PY
+      - name: Publish isolated preview
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-visual-preview origin/gh-pages
+          mkdir -p /tmp/td2-visual-preview/td2-all-patches
+          cp -R dist/. /tmp/td2-visual-preview/td2-all-patches/
+          touch /tmp/td2-visual-preview/.nojekyll
+          cd /tmp/td2-visual-preview
+          git add td2-all-patches .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish TD2 all patches preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi

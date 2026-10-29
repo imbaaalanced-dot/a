@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const textures=JSON.parse(fs.readFileSync('dist/assets/expansion-v2/manifest.json')).assets;
 const ready=new Map(),requests=[],waiting=[];
 const box={Date,Math,performance:{now:()=>500},DenkmalAssets:{ready:u=>ready.get(u)||null,retain(group,urls){requests.push({group,urls});return new Promise(resolve=>waiting.push(()=>{for(const u of urls){const rec=textures.find(r=>u.includes('/'+r.file+'?'));ready.set(u,{naturalWidth:rec?.size[0]||128,naturalHeight:rec?.size[1]||128});}resolve([]);}));},release(group){for(const u of ready.keys())if(group==='expansion-v2:'+u.split('/').pop().split('?')[0])ready.delete(u);}}};
-vm.createContext(box);for(const file of ['levels.js','v2-expansion-data.js','v2-expansion.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),box);
+vm.createContext(box);for(const file of ['persisted-state.js','levels.js','v2-expansion-data.js','v2-expansion.js'])vm.runInContext(fs.readFileSync('dist/'+file,'utf8'),box);
 const api=box.V2Expansion;
 const ctx=()=>({globalAlpha:1,depth:0,draws:[],save(){this.depth++;},restore(){this.depth--;},translate(){},scale(){},drawImage(...a){this.draws.push(a);}});
 async function drain(){for(let i=0;i<20;i++){while(waiting.length)waiting.shift()();await new Promise(r=>setImmediate(r));}}

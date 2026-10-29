@@ -80,6 +80,17 @@
   };
   let inventoryReturn='start';
   let storage;try{storage=localStorage;}catch{}
+  const preferenceKey='denkmal-preferences-v1',preferenceVersion=1;
+  const preferenceDefaults={character:'marcel',graphics:'auto',zoom:'wide',sound:true,telemetry:false,tutorialSeen:false};
+  const validPreferences=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['marcel','kim'].includes(p.character)&&['auto','low','high'].includes(p.graphics)&&['wide','standard'].includes(p.zoom)&&typeof p.sound==='boolean'&&typeof p.telemetry==='boolean'&&typeof p.tutorialSeen==='boolean';
+  const preferenceStore=globalThis.DenkmalPersistence.create(storage);
+  const preferenceLoaded=preferenceStore.load(preferenceKey,preferenceVersion,preferenceDefaults,validPreferences,s=>{
+    const character=s.getItem('denkmal-character'),graphics=s.getItem('denkmal-graphics'),zoom=s.getItem('denkmal-zoom');
+    return {character:character==='kim'?'kim':'marcel',graphics:['auto','low','high'].includes(graphics)?graphics:'auto',zoom:['wide','standard'].includes(zoom)?zoom:'wide',sound:s.getItem('denkmal-sound')!=='off',telemetry:s.getItem('denkmal-telemetry')==='on',tutorialSeen:s.getItem('td2-v4-intro-tutorial')==='done'};
+  });
+  const preferences=preferenceLoaded.value;
+  function savePreference(key,value){preferences[key]=value;return preferenceStore.save(preferenceKey,preferenceVersion,preferences,validPreferences);}
+  audioOn=preferences.sound;graphicsMode=preferences.graphics;zoomMode=preferences.zoom;telemetryOn=preferences.telemetry;
   const lootModel=globalThis.DenkmalLoot.create({storage,canManage:()=>state==='inventory'&&inventoryReturn==='start',getHero:()=>state==='inventory'&&inventoryReturn!=='start'?(game?.hero.character||selectedCharacter):selectedCharacter});
   if(lootModel.profile.level2&&!campaign.unlocked)campaign.unlock();
   if(campaign.unlocked&&!lootModel.profile.level2)lootModel.unlockLevel();
@@ -194,7 +205,7 @@
   const rand=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 
   let game,assetLevel=0;
-  let selectedCharacter='marcel',runSerial=0;
+  let selectedCharacter=preferences.character,runSerial=0;
   let originalIntroSlots=null;
   function reset(level=1,mode='campaign'){
     if(!originalIntroSlots)originalIntroSlots=campaign.levels[1].slots;campaign.levels[1].slots=mode==='campaign-pilot'?CampaignBalance.profile(1,{pilot:true}).slots:originalIntroSlots;
@@ -288,8 +299,7 @@
     {title:'Wellen und Baupause',text:'Während der Baupause kannst du Türme setzen. Starte die nächste Welle mit WELLE STARTEN oder warte kurz. Halte Gegner vom Denkmal fern.',target:()=>$('objective')},
     {title:'Beute und Inventar',text:'Gefundene Beute bleibt auch nach einer Niederlage erhalten. Öffne den Rucksack mit I oder über MENÜ · BEUTE. Ausrüstung wechselst du im Hauptmenü.',target:()=>document.querySelector('.hud-menu summary')}
   ];
-  const tutorialStorageKey='td2-v4-intro-tutorial';
-  function tutorialSeen(){try{return localStorage.getItem(tutorialStorageKey)==='done';}catch{return false;}}
+  function tutorialSeen(){return preferences.tutorialSeen;}
   function positionTutorialArrow(){
     if(!tutorialActive)return;
     const arrow=$('tutorialArrow'),bubble=document.querySelector('#introTutorial .tutorial-bubble'),target=introTutorialSteps[tutorialStepIndex]?.target();
@@ -325,7 +335,7 @@
   function finishIntroTutorial(){
     if(!tutorialActive)return;
     tutorialActive=false;tutorialPending=false;
-    try{localStorage.setItem(tutorialStorageKey,'done');}catch{}
+    savePreference('tutorialSeen',true);
     $('introTutorial').classList.add('hidden');focusGame();last=performance.now();updateUI();
   }
   function nextIntroTutorial(){
@@ -348,64 +358,89 @@
   const portalPoint=()=>({x:campaign.center.x,y:campaign.center.y-760});
   const inPortal=()=>game?.mode==='portal';
   const perkStats=()=>globalThis.PortalPerks?.derive({},portalRun?.perkRanks||{})||{};
-  function savePortal(){if(!portalRun)return false;const ok=portalStore.save(portalRun,portalSavedRevision);if(ok)portalSavedRevision=portalRun.revision;else showToast('Portalstand konnte nicht gespeichert werden · erneut versuchen');return ok;}
-  function portalEvent(e){portalRun=PortalRun.reduce(portalRun,e).run;}
+  function commitPortal(candidate){
+    if(!candidate)return false;
+    const ok=portalStore.save(candidate,portalSavedRevision);
+    if(ok){portalRun=candidate;portalSavedRevision=candidate.revision;}
+    else showToast('Portalstand konnte nicht gespeichert werden · erneut versuchen');
+    return ok;
+  }
+  function portalTransition(event,checkpoint){
+    const candidate=PortalRun.reduce(portalRun,event).run;
+    if(candidate===portalRun)return false;
+    if(checkpoint!==undefined)candidate.checkpoint=checkpoint;
+    return commitPortal(candidate);
+  }
   function portalSnapshot(){return {hero:JSON.parse(JSON.stringify(game.hero)),gold:game.essence,monumentHp:game.monument.hp,towers:JSON.parse(JSON.stringify(game.towers)),wave:game.wave};}
   function applyPortalSnapshot(c){if(!c)return;Object.assign(game.hero,c.hero);game.essence=c.gold;game.monument.hp=c.monumentHp??100;game.towers=c.towers.map(t=>({...t}));game.wave=c.wave;}
-  function portalWaveSetup(){game.waveSpawned=0;game.waveKilled=0;game.waveTotal=portalRun.section===3&&portalRun.waveInSection===2?12:10+portalRun.section*3;game.spawnTimer=.6;game.intermission=999999;game.enemies=[];game.bullets=[];game.loot=[];}
-  function setupPortalSection(){
+  function portalWaveSetup(run=portalRun){game.waveSpawned=0;game.waveKilled=0;game.waveTotal=run.section===3&&run.waveInSection===2?12:10+run.section*3;game.spawnTimer=.6;game.intermission=999999;game.enemies=[];game.bullets=[];game.loot=[];}
+  function setupPortalSection(run=portalRun){
     reset(1,'portal');tutorialPending=false;tutorialActive=false;closeScreens();state='playing';
-    game.maxTowers=6;game.essence=portalRun.gold;game.wave=(portalRun.section-1)*2+portalRun.waveInSection;
+    game.maxTowers=6;game.essence=run.gold;game.wave=(run.section-1)*2+run.waveInSection;
     game.monument.hp=game.monument.maxHp=100;
-    const stats=perkStats();game.hero.maxHp*=stats.healthMultiplier||1;
-    game.hero.hp=portalRun.heroHp===null?game.hero.maxHp:Math.min(game.hero.maxHp,portalRun.heroHp);
+    const stats=globalThis.PortalPerks?.derive({},run.perkRanks||{})||{};game.hero.maxHp*=stats.healthMultiplier||1;
+    game.hero.hp=run.heroHp===null?game.hero.maxHp:Math.min(game.hero.maxHp,run.heroHp);
     game.hero.y=campaign.center.y+720;game.hero.x=campaign.center.x+100;
-    portalWaveSetup();portalInside=false;focusGame();updateCamera();updateUI();
+    portalWaveSetup(run);portalInside=false;focusGame();updateCamera();updateUI();
   }
   function startPortalRun({resume=false}={}){
     if(!portalStore||!globalThis.PortalPerks)return false;
     const saved=portalStore.load();portalSavedRevision=saved.status==='ok'?saved.run.revision:null;
     if(resume){if(saved.status!=='ok'||['finished','failed'].includes(saved.run.phase)){showToast('Kein fortsetzbarer Portalstand');return false;}portalRun=saved.run;selectedCharacter=portalRun.heroId;}
     else {if(saved.status==='incompatible'||saved.status==='corrupt'){showToast('Portalstand unlesbar · bestehende Daten bleiben erhalten');return false;}portalRun=PortalRun.create({runId:globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),seed:Math.floor(Math.random()*4294967296),heroId:selectedCharacter,startBudget:towerSpecs.bow.cost*3,maxSections:3});}
-    levelLoadRequest++;portalRewardPending=null;saga.stopVoice();setupPortalSection();
+    levelLoadRequest++;portalRewardPending=null;saga.stopVoice();
+    if(resume&&portalRun.phase==='combat'){
+      const candidate=JSON.parse(JSON.stringify(portalRun));candidate.phase='build';candidate.revision++;
+      if(!commitPortal(candidate))return false;
+    }
+    if(resume&&portalRun.phase==='loading'){
+      const candidate=PortalRun.reduce(portalRun,{type:'READY'}).run;
+      setupPortalSection(candidate);candidate.checkpoint=portalSnapshot();
+      if(!commitPortal(candidate)){mainMenu();return false;}
+    }else setupPortalSection();
     if(resume&&portalRun.checkpoint)applyPortalSnapshot(portalRun.checkpoint);
-    if(portalRun.phase==='combat'){portalRun.phase='build';portalRun.revision++;}
-    if(portalRun.phase==='loading'){portalEvent({type:'READY'});setupPortalSection();}
-    if(!resume)portalRun.checkpoint=portalSnapshot();
-    if(!savePortal()){state='paused';return false;}
+    if(!resume){const candidate=JSON.parse(JSON.stringify(portalRun));candidate.checkpoint=portalSnapshot();if(!commitPortal(candidate)){mainMenu();return false;}}
     if(portalRun.phase==='perk')showPortalPerks();
     else if(portalRun.phase==='exit'){game.intermission=999999;showToast('Portal oben ist offen · gehe hindurch');}
     updateUI();return true;
   }
   function showPortalPerks(){
-    if(!portalRun.offers){const offer=PortalPerks.offer(portalRun.perkRanks,portalRun.rngState,{});portalRun.offers=offer.ids;portalRun.rngState=offer.rngState;portalRun.revision++;}
+    let offered=portalRun.offers,durable=true;
+    if(!offered){const offer=PortalPerks.offer(portalRun.perkRanks,portalRun.rngState,{}),candidate=JSON.parse(JSON.stringify(portalRun));candidate.offers=offer.ids;candidate.rngState=offer.rngState;candidate.revision++;offered=offer.ids;durable=commitPortal(candidate);}
     state='perk';clearInput();ui.perkGrid.innerHTML='';
-    const durable=savePortal();
-    portalRun.offers.forEach((id,i)=>{const p=PortalPerks.catalog.find(p=>p.id===id),rank=portalRun.perkRanks[id]||0,b=document.createElement('button');b.className='perk';b.disabled=!durable;
+    offered.forEach((id,i)=>{const p=PortalPerks.catalog.find(p=>p.id===id),rank=portalRun.perkRanks[id]||0,b=document.createElement('button');b.className='perk';b.disabled=!durable;
       b.innerHTML=`<span class="num">${i+1}</span><small>${p.group}</small><h3>${p.name} ${rank+1}/3</h3><p>${p.desc}: ${rank?p.values[rank-1]:0} → ${p.values[rank]} %</p>`;
       b.onclick=()=>choosePortalPerk(id);ui.perkGrid.appendChild(b);});
     ui.perk.classList.remove('hidden');focusModal(ui.perk);
     if(!durable){const retry=document.createElement('button');retry.textContent='SPEICHERN ERNEUT VERSUCHEN';retry.onclick=showPortalPerks;ui.perkGrid.appendChild(retry);}
   }
-  function choosePortalPerk(id){if(!inPortal()||state!=='perk'||!portalRun.offers?.includes(id))return;const before=JSON.parse(JSON.stringify(portalRun));portalEvent({type:'CHOOSE',id});
-    if(id==='endurance'){const extra=game.hero.maxHp/ (1+.1*(portalRun.perkRanks.endurance-1))*.1;game.hero.maxHp+=extra;game.hero.hp+=extra;}
-    portalRun.checkpoint=portalSnapshot();if(!savePortal()){portalRun=before;applyPortalSnapshot(before.checkpoint);return;}
+  function choosePortalPerk(id){if(!inPortal()||state!=='perk'||!portalRun.offers?.includes(id))return;
+    const candidate=PortalRun.reduce(portalRun,{type:'CHOOSE',id}).run;if(candidate===portalRun)return;
+    const snapshot=portalSnapshot();
+    if(id==='endurance'){const extra=game.hero.maxHp/(1+.1*(candidate.perkRanks.endurance-1))*.1;snapshot.hero.maxHp+=extra;snapshot.hero.hp+=extra;}
+    candidate.checkpoint=snapshot;if(!commitPortal(candidate))return;
+    applyPortalSnapshot(snapshot);
     ui.perk.classList.add('hidden');state='playing';portalInside=dist(game.hero,portalPoint())<52;focusGame();updateUI();showToast('Portal oben geöffnet · ↑');
   }
   function enterPortal(){
     if(!inPortal()||portalRun.phase!=='exit')return false;
-    const before=JSON.parse(JSON.stringify(portalRun));portalEvent({type:'ENTER',gold:game.essence,monumentHp:game.monument.hp,towers:game.towers,hp:game.hero.hp,maxHp:game.hero.maxHp});
-    if(!savePortal()){portalRun=before;return false;}
-    portalEvent({type:'READY'});setupPortalSection();portalRun.checkpoint=portalSnapshot();
-    if(!savePortal()){state='paused';return false;}showToast('PORTALREISE · ABSCHNITT '+portalRun.section+' / 3');return true;
+    if(!portalTransition({type:'ENTER',gold:game.essence,monumentHp:game.monument.hp,towers:game.towers,hp:game.hero.hp,maxHp:game.hero.maxHp}))return false;
+    const candidate=PortalRun.reduce(portalRun,{type:'READY'}).run;
+    setupPortalSection(candidate);candidate.checkpoint=portalSnapshot();
+    if(!commitPortal(candidate)){mainMenu();return false;}showToast('PORTALREISE · ABSCHNITT '+portalRun.section+' / 3');return true;
   }
   function endPortalWave(){
     if(portalRun.phase!=='combat')return;
     if(portalRewardPending){const reward=lootModel.claimBoss(portalRewardPending);if(!(reward.persisted||(reward.state==='duplicate'&&lootModel.save()))){showToast('Bossbeute nicht gespeichert · Speicherung erneut versuchen');return;}portalRewardPending=null;}
-    portalEvent({type:'CLEAR'});game.enemies=[];game.bullets=[];portalRun.checkpoint=portalSnapshot();
-    if(portalRun.phase==='finished'){savePortal();state='gameover';$('gameoverTitle').textContent='PORTALREISE GESCHAFFT';ui.gameoverStats.textContent='3 Abschnitte · Boss besiegt · Beute gesichert';ui.gameover.classList.remove('hidden');focusModal(ui.gameover);return;}
+    const candidate=PortalRun.reduce(portalRun,{type:'CLEAR'}).run;if(candidate===portalRun)return;
+    const snapshot=portalSnapshot();if(candidate.phase==='build')snapshot.wave=game.wave+1;
+    candidate.checkpoint=snapshot;
+    if(candidate.phase==='perk'&&!candidate.offers){const offer=PortalPerks.offer(candidate.perkRanks,candidate.rngState,{});candidate.offers=offer.ids;candidate.rngState=offer.rngState;candidate.revision++;}
+    if(!commitPortal(candidate))return;
+    game.enemies=[];game.bullets=[];
+    if(portalRun.phase==='finished'){state='gameover';$('gameoverTitle').textContent='PORTALREISE GESCHAFFT';ui.gameoverStats.textContent='3 Abschnitte · Boss besiegt · Beute gesichert';ui.gameover.classList.remove('hidden');focusModal(ui.gameover);return;}
     if(portalRun.phase==='perk'){showPortalPerks();return;}
-    game.wave++;portalWaveSetup();portalRun.checkpoint=portalSnapshot();if(!savePortal())state='paused';updateUI();
+    game.wave++;portalWaveSetup();updateUI();
   }
   function portalTick(dt){
     const h=game.hero,phase=portalRun.phase;
@@ -557,7 +592,7 @@
       chain:(b.chain||0)+(slowed&&b.kind==='rift'?1:0)
     };
   }
-  function launchWave(){if(inPortal()){if(state!=='playing'||portalRun.phase!=='build')return;portalRun.checkpoint=portalSnapshot();portalEvent({type:'START'});if(!savePortal()){portalRun.phase='build';return;}}if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
+  function launchWave(){if(inPortal()){if(state!=='playing'||portalRun.phase!=='build')return;if(!portalTransition({type:'START'},portalSnapshot()))return;}if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
   function collectWaveLoot(){game.essence+=game.loot.length*4;game.loot=[];}
   function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
   function spark(x,y,color,n=7){if(lowFX())n=Math.min(n,4);for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
@@ -628,7 +663,7 @@
     {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
   ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
   function selectPerk(p){if(state!=='perk')return;if(inPortal()){choosePortalPerk(typeof p==='string'?p:p.id);return;}p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
-  function gameOver(){if(state==='gameover')return;if(inPortal()){portalEvent({type:'FAIL'});savePortal();}collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
+  function gameOver(){if(state==='gameover')return;if(inPortal())portalTransition({type:'FAIL'});collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
 
 
   // The church blocks the player, even during a dodge. Movement resolves each
@@ -987,12 +1022,11 @@
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   function lowFX(){return reducedMotion||graphicsMode==='low'||(graphicsMode==='auto'&&mobileRender);}
   function graphicsLabel(){$('menuGraphicsBtn').textContent=$('graphicsBtn').textContent=`GRAFIK: ${{auto:'STANDARD',low:'SPARMODUS',high:'HOCH'}[graphicsMode]}`;}
-  function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';try{localStorage.setItem('denkmal-graphics',graphicsMode);}catch{}graphicsLabel();resize(false);}
+  function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';savePreference('graphics',graphicsMode);graphicsLabel();resize(false);}
   function zoomLabel(){$('menuZoomBtn').textContent=$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
-  function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();try{localStorage.setItem('denkmal-zoom',zoomMode);}catch{}zoomLabel();updateCamera();}
-  try{audioOn=localStorage.getItem('denkmal-sound')!=='off';const gm=localStorage.getItem('denkmal-graphics');if(['auto','low','high'].includes(gm))graphicsMode=gm;const zm=localStorage.getItem('denkmal-zoom');if(['wide','standard'].includes(zm))zoomMode=zm;telemetryOn=localStorage.getItem('denkmal-telemetry')==='on';}catch{}
+  function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();savePreference('zoom',zoomMode);zoomLabel();updateCamera();}
   function telemetryLabel(){$('menuTelemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('menuTelemetryBtn').textContent=$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
-  function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;try{localStorage.setItem('denkmal-telemetry',telemetryOn?'on':'off');}catch{}telemetryLabel();}
+  function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;savePreference('telemetry',telemetryOn);telemetryLabel();}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
   const menuEntries={play:'menuPlayBtn',campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
@@ -1030,16 +1064,15 @@
     banner.alt=(kim?'Kim':'Marcel')+' ausgewählt: farbig mit Goldkontur; anderer Held grau';
     $('menuHeroCaption').textContent=kim?'Kim · Die Bewahrerin':'Marcel · Der Beschützer';
     $('menuHeroName').textContent=kim?'KIM · DIE BEWAHRERIN':'MARCEL · DER BESCHÜTZER';
-    try{localStorage.setItem('denkmal-character',selectedCharacter);}catch{}
+    savePreference('character',selectedCharacter);
   }
   for(const [panel,id] of Object.entries(menuEntries))$(id).onclick=()=>showMenuPanel(panel);
   $('menuBackBtn').onclick=()=>showMenuPanel(menuPanel==='campaign'&&menuParent==='play'?'play':'home');
   $('chooseMarcel').onclick=()=>chooseCharacter('marcel');$('chooseKim').onclick=()=>chooseCharacter('kim');
-  try{selectedCharacter=localStorage.getItem('denkmal-character')==='kim'?'kim':'marcel';}catch{}
   chooseCharacter(selectedCharacter);showMenuPanel('home',false);
   for(const [menu,hud] of [['menuSoundBtn','soundBtn'],['menuGraphicsBtn','graphicsBtn'],['menuZoomBtn','zoomBtn'],['menuTelemetryBtn','telemetryBtn']])$(menu).onclick=()=>$(hud).onclick();
   $('tutorialNext').onclick=nextIntroTutorial;$('tutorialSkip').onclick=finishIntroTutorial;
-  $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();try{localStorage.setItem('denkmal-sound',audioOn?'on':'off');}catch{}if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
+  $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();savePreference('sound',audioOn);if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();
   atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({getCharacter:()=>selectedCharacter,openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);

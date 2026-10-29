@@ -1,0 +1,43 @@
+name: TD2 consolidation preview
+on:
+  push:
+    branches: [feature/td2-consolidation-resume-20261024]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-consolidation-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/feature/td2-consolidation-resume-20261024'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test model, menus and source parity
+        run: |
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.test.cjs; do node "$test" || exit 1; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          python -m pip install Pillow
+          python tests/assets.test.py
+      - name: Publish isolated preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/consolidation-preview origin/gh-pages
+          mkdir -p /tmp/consolidation-preview/td2-consolidation
+          cp -R dist/. /tmp/consolidation-preview/td2-consolidation/
+          printf '%s\n' "$GITHUB_SHA" > /tmp/consolidation-preview/td2-consolidation/build-sha.txt
+          touch /tmp/consolidation-preview/.nojekyll
+          cd /tmp/consolidation-preview
+          git add td2-consolidation .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish TD2 consolidation preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi

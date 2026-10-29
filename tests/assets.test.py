@@ -82,3 +82,16 @@ with Image.open(elemental/'goethestrasse-memorial-v1.webp') as image:
     assert a.getbbox() and a.getbbox()[3]<=752
     for edge in [(0,0,768,8),(0,760,768,768),(0,0,8,768),(760,0,768,768)]:assert a.crop(edge).getextrema()[1]==0
 print('Goethestraße memorial: decode, alpha and ground anchor verified')
+
+
+# Optional pixel-style Marcel atlas: decoded, with 12 populated 128px cells.
+pixel_atlas = root / 'marcel-walk-reference-v1.webp'
+with Image.open(pixel_atlas) as image:
+    image.load()
+    assert image.format == 'WEBP' and image.mode == 'RGBA' and image.size == (384, 512)
+    assert pixel_atlas.stat().st_size < 250000
+    for row in range(4):
+        for col in range(3):
+            cell = image.getchannel('A').crop((col*128,row*128,(col+1)*128,(row+1)*128))
+            assert cell.getbbox(), ('empty pixel Marcel frame', col, row)
+print('marcel-walk-reference-v1.webp: decoded 3x4 RGBA atlas, within mobile budget')

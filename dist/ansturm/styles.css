@@ -72,3 +72,80 @@
 .intro-actions .primary{min-height:54px;margin:0}
 .intro-menu-return{display:grid;place-items:center;margin:0;min-height:50px;border-style:solid;border-width:1px;border-radius:9px;text-decoration:none}
 @media(max-width:480px){.overlay{align-items:end;padding:10px}.mode-intro{max-height:calc(100dvh - 20px);overflow:auto;padding:19px}.mode-seal{width:46px;height:46px;font-size:21px}.mode-facts{margin-top:13px}.intro-actions{margin-top:15px}}
+
+.save-notice{position:fixed;z-index:20;top:4px;left:50%;transform:translateX(-50%);width:min(94vw,560px);margin:0;padding:10px 14px;background:#432b18;color:#ffe4b8;border:1px solid #c99b55;border-radius:6px;font-size:12px;pointer-events:none}.save-notice[hidden],#resume[hidden]{display:none}
+
+/* Mobile arena controls stay in their own row above the status and shop drawer. */
+@media(max-width:650px) and (orientation:portrait){
+  .hud{top:8px;left:9px;right:9px}
+  .health{max-width:none;padding:7px 9px}
+  .health span,#shieldtext{font-size:13px}
+  .arena-bottom{left:10px;right:10px;bottom:10px;display:block}
+  .controls{position:absolute;right:0;bottom:62px;width:100%;max-width:none;display:flex;flex-wrap:nowrap;gap:5px;justify-content:flex-end}
+  .controls button{min-height:48px;min-width:48px;padding:6px 7px;font-size:12px;white-space:nowrap}
+  .controls #leave{margin-right:auto}
+  #state{display:block;max-width:calc(100% - 154px);min-height:48px;padding:12px 9px;font-size:12px}
+  .shop-toggle{bottom:13px;min-height:48px;min-width:136px}
+  .layout.portrait-shop-open .shop-toggle{bottom:calc(min(60dvh,520px) + 9px)}
+  .layout.portrait-shop-open .controls{visibility:hidden;pointer-events:none}
+}
+@media(max-width:390px) and (orientation:portrait){
+  .controls button{font-size:11px;padding:5px}
+  .controls #leave{font-size:0}
+  .controls #leave::after{content:'⌂ Menü';font-size:11px}
+}
+
+/* Shared TD2 menu and HUD language: stone, narrow gold edges, serif headings. */
+:root{--td2-gold:#c39a52;--td2-cream:#e9dfca;--td2-mist:#aab9b3;font-family:Inter,system-ui,sans-serif;color:var(--td2-cream);background:#070b0d}
+button{border-radius:3px;touch-action:manipulation}
+header{padding:9px 15px;background:linear-gradient(100deg,#10191c,#0b1115);border-bottom:1px solid #a88a525e}
+.brand{font:700 17px/1.15 Cinzel,Georgia,serif;letter-spacing:.09em;color:#e8e1d1}
+.brand b{color:#cfaa68}.brand small{margin-top:4px;font:700 10px/1.1 Inter,system-ui,sans-serif;letter-spacing:.17em;color:#97aaa5}
+.stats span{border-radius:3px;border-color:#826c465e;background:#0b1214d9;font-size:13px}.stats strong{color:#e6cb91}
+.layout{gap:7px;padding:7px;background:#080d0f}
+.arena{border:1px solid #8e764c75;border-radius:3px;background:#10191b;box-shadow:inset 0 0 35px #0008}
+.hud{top:10px;left:10px;right:10px;gap:6px}
+.health{max-width:310px;padding:8px 10px;border:1px solid #88745276;border-radius:3px;background:#0c1417e8}
+.health .bar{height:8px;border-radius:1px;background:#372826}.health .bar div{border-radius:1px;background:linear-gradient(90deg,#923c32,#d88559)}
+.health span{display:block;margin-top:6px;font:600 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.03em}
+#shieldtext{border:1px solid #568b8b55;border-radius:3px;background:#0b1c21dd;color:#a8d9d1}
+.arena-bottom{bottom:10px;left:10px;right:10px;align-items:center}
+#state{border:1px solid #89764e5c;border-radius:3px;background:#0b1417eb;color:#e2d9c6;font:600 12px/1.25 Inter,system-ui,sans-serif;letter-spacing:.02em}
+.controls{gap:5px}
+.controls button,.shop-toggle{min-height:46px;border:1px solid #8e784f8c;border-radius:3px;background:linear-gradient(#182327ed,#0b1417ef);color:#e8dfcc;box-shadow:inset 0 1px #ffffff0d;font:600 12px/1.1 Inter,system-ui,sans-serif}
+.controls button[aria-pressed="true"]{background:linear-gradient(#4d432d,#252720);border-color:#d1b576;color:#f3deb0}
+.controls #reset{border-color:#765b4e66;color:#cbbcb0}
+.shop{border:1px solid #8e764c75;border-radius:3px;background:#111a1c;box-shadow:inset 0 0 24px #000a}
+.tabs{padding:7px;gap:6px;border-bottom:1px solid #94784b50}
+.tabs button{min-height:48px;border-radius:3px;background:#0e181b;color:#c6d0c9;font:700 12px Cinzel,Georgia,serif;letter-spacing:.04em}
+.tabs .selected{background:linear-gradient(100deg,#3c3524,#172020);border-color:#ba965b;color:#f0d69a;box-shadow:inset 3px 0 #d1ac69}
+.shop-summary{padding:11px 13px;color:#aebeb9;border-bottom-color:#94784b38}
+.cards{padding:8px}.card{border-radius:3px;border-color:#806b4b70;background:linear-gradient(#1a2527ec,#10191cec),url('assets/ui-slate.webp') center/cover;box-shadow:inset 0 1px #ffffff09}
+.card h3{font:700 14px/1.2 Cinzel,Georgia,serif;color:#e8d4a7;text-shadow:none}.card p{font-size:12px;color:#b9c6c1;line-height:1.3}.card small{color:#89b8b1}
+.buy{border-radius:3px;background:linear-gradient(#4c412b,#26271e);border-color:#ac8d53;color:#f0d596}
+.shop-toggle{background:linear-gradient(#4b4028,#232720);border-color:#c29d60;color:#f0d59a}
+.modal,.mode-intro{border-radius:3px;background:radial-gradient(ellipse at 50% 20%,#20322deb,#0b1215f9 72%);border:1px solid #b4975e;box-shadow:0 24px 65px #000d,inset 0 1px #fff1}
+.mode-intro h1,dialog h2{font-family:Cinzel,Georgia,serif;color:#e8dfca;letter-spacing:.06em}
+.mode-kicker{color:#c4a66d!important}.mode-seal{border-radius:3px;background:#192622;color:#d5b577}
+.mode-facts span{border-radius:3px;border-color:#8c785858;background:#0b1516}
+.mode-intro .primary,.defeat-actions .primary{border-radius:3px;background:linear-gradient(110deg,#b99960,#786335);color:#171711;border-color:#ecd8aa;font:700 14px Cinzel,Georgia,serif;letter-spacing:.06em}
+.secondary-command,.intro-menu-return{border-radius:3px;background:linear-gradient(#172124,#0c1417);border-color:#817050;color:#e0d6c3}
+dialog{border-radius:3px;background:#10191c;border-color:#ae925f}
+.save-notice{top:10px;border-radius:3px;background:#402b1def;color:#f6e3bf;border-color:#b1905d}
+@media(max-width:650px) and (orientation:portrait){
+  header{padding:6px 10px}.brand{font-size:14px;letter-spacing:.05em}.brand small{font-size:8px;letter-spacing:.1em}
+  .stats{gap:4px}.stats span{min-width:50px;padding:5px 4px;font-size:11px}
+  .layout{padding:4px}.hud{top:8px;left:8px;right:8px}.health{padding:7px 8px;max-width:none}
+  .arena-bottom{left:9px;right:9px;bottom:9px;pointer-events:none}
+  .controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;max-width:none;width:100%;bottom:58px;pointer-events:auto}
+  .controls button{width:100%;min-width:0;min-height:44px;padding:5px 2px;font-size:11px;white-space:normal}
+  .controls button:not([hidden]){grid-column:span 2}
+  .controls:has(#next[hidden]) #pause,.controls:has(#next[hidden]) #reset{grid-column:span 3}
+  .controls #leave{margin:0;font-size:11px}.controls #leave::after{content:none}
+  .controls button[hidden]{display:none}
+  #state{max-width:calc(100% - 138px);min-height:43px;padding:11px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .shop-toggle{right:9px;bottom:9px;min-width:130px;min-height:44px;font-size:12px}
+  .shop{left:4px;right:4px;bottom:4px;max-height:68dvh;border-radius:3px}
+  .layout.portrait-shop-open .shop-toggle{bottom:calc(min(60dvh,520px) + 9px)}
+  .card{min-height:90px}.card h3{font-size:13px}.card p{font-size:11px}.card .buy{min-height:48px}
+}

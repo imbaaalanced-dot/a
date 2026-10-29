@@ -14,7 +14,7 @@ let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
-vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
@@ -362,7 +362,7 @@ check('Archer backs away when Marcel closes inside minimum range',()=>{
 });
 // Persistence must survive a fresh script context; blocked storage must not stop play.
 const saved=new Map();
-function loadLevels(storage){const c={localStorage:storage};vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),c);return c.DenkmalLevels;}
+function loadLevels(storage){const c={localStorage:storage};vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),c);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),c);return c.DenkmalLevels;}
 const storage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
 assert.equal(loadLevels(storage).unlocked,false);loadLevels(storage).unlock();assert.equal(loadLevels(storage).unlocked,true);
 const blocked=loadLevels({getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}});assert.equal(blocked.unlock(),false);assert.equal(blocked.unlocked,true);
