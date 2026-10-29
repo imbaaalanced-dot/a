@@ -167,7 +167,7 @@ dialog{border-radius:3px;background:#10191c;border-color:#ae925f}
 .game-menu{position:relative;pointer-events:auto}
 .game-menu summary{list-style:none;cursor:pointer;display:grid;place-items:center;border:1px solid #8e784f8c;border-radius:3px;min-width:80px;min-height:46px;background:linear-gradient(#182327ed,#0b1417ef);font:700 12px/1.1 Inter,system-ui,sans-serif;color:#e8dfcc;touch-action:manipulation}
 .game-menu summary::-webkit-details-marker{display:none}
-.game-menu nav{position:absolute;bottom:calc(100% + 8px);left:0;display:grid;gap:6px;width:min(235px,70vw);padding:9px;background:#0d171bf7;border:1px solid #8e784f;box-shadow:0 12px 36px #000c;z-index:7;max-height:65dvh;overflow:auto}
+.game-menu nav{position:absolute;bottom:calc(100% + 8px);right:0;display:grid;gap:6px;width:min(235px,70vw);padding:9px;background:#0d171bf7;border:1px solid #8e784f;box-shadow:0 12px 36px #000c;z-index:7;max-height:65dvh;overflow:auto}
 .game-menu nav button{width:100%;min-height:46px;text-align:left;padding:10px 12px}
 .controls .game-menu~button{min-width:92px}
 .game-menu summary:focus-visible{outline:3px solid #92d9ec;outline-offset:3px}
@@ -184,6 +184,7 @@ dialog{border-radius:3px;background:#10191c;border-color:#ae925f}
 @media(max-width:650px) and (orientation:portrait){
  .controls{display:flex;width:100%;bottom:55px;justify-content:space-between;gap:6px;flex-wrap:nowrap}
  .controls button:not([hidden]){width:auto;flex:1;min-width:0;min-height:46px}
+ .game-menu nav{right:auto;left:0}
  .controls .game-menu{flex:1}.game-menu summary{min-height:46px;min-width:0}
  .game-menu nav button:not([hidden]){width:100%;flex:none;min-height:46px}
  .controls #leave{font-size:12px}
