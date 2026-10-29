@@ -1,3 +1,4 @@
+import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=menu4';
 import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step} from './model.js?v=ui2';import {renderArena} from './render.js?v=alpha15-3';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=resume1';import {sprite} from './sprites.js';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=document.hidden,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return null}})();
 let savedRun=readRun(storage), pendingStart=false, lastSaveTime=0;
@@ -16,7 +17,7 @@ function checkpoint(){
   notice(ok?'':storageWarning);
 }
 function discardRun(){if(!clearRun(storage))notice(storageWarning);savedRun={ok:false,reason:'missing'};}
-function beginRun(){el('intro').hidden=true;startGame(s);prev=0;acc=0;checkpoint();update();}
+function beginRun(){el('intro').hidden=true;startGame(s);prev=0;acc=0;checkpoint();update();if(!tutorialSeen(storage))openTutorial(el('pause'));}
 function requestNewRun(startImmediately){pendingStart=startImmediately;if(s.status!=='ready'||savedRun.reason!=='missing')el('confirm').showModal();else beginRun();}
 // Kaufkarten bleiben beim HUD-Refresh im DOM: laufende Touch-Gesten werden nicht unterbrochen.
 let renderedTab=null;const cardRefs=new Map();
@@ -45,10 +46,10 @@ function update(){el('gold').textContent=Math.floor(s.gold);el('wave').textConte
 function tone(frequency=440){if(!soundOn)return;try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!audioCtx)audioCtx=new Audio();if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});const o=audioCtx.createOscillator(),g=audioCtx.createGain(),now=audioCtx.currentTime;o.type='sine';o.frequency.value=frequency;g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.001,now+.09);o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+.1);}catch{soundOn=false;}}
 function restart(){discardRun();if(s.wave>0)saveRecord(storage,s.wave);s=createGame();manualPause=false;hiddenPause=document.hidden;shownDefeat=false;lastKills=0;acc=0;prev=0;renderedTab=null;el('defeat').close();el('intro').hidden=false;resumeOffer();update();}
 const portraitShop=window.matchMedia('(max-width:650px) and (orientation:portrait)');let shopOpen=false;
-function syncShop(){const layout=document.querySelector('.layout'),toggle=el('shopToggle');layout.classList.toggle('portrait-shop-open',portraitShop.matches&&shopOpen);toggle.hidden=!portraitShop.matches;toggle.setAttribute('aria-expanded',String(portraitShop.matches&&shopOpen));toggle.textContent=shopOpen?'✕ Schließen':'⚙ Upgrades';}
+function syncShop(){const layout=document.querySelector('.layout'),toggle=el('shopToggle');layout.classList.toggle('portrait-shop-open',portraitShop.matches&&shopOpen);toggle.hidden=!portraitShop.matches;toggle.setAttribute('aria-expanded',String(portraitShop.matches&&shopOpen));toggle.textContent=shopOpen?'Schließen':'Ausbauen';}
 el('shopToggle').onclick=()=>{shopOpen=!shopOpen;syncShop();};portraitShop.addEventListener('change',()=>{shopOpen=false;syncShop();});syncShop();
 el('speed').onclick=()=>{speed=speed===1?2:1;acc=0;prev=0;update();};el('sound').onclick=()=>{soundOn=!soundOn;tone(650);update();};el('start').onclick=()=>requestNewRun(true);el('pause').onclick=()=>{manualPause=!manualPause;acc=0;prev=0;update();};el('next').onclick=()=>{if(nextWave(s))checkpoint();update();};el('reset').onclick=()=>requestNewRun(false);el('cancelRestart').onclick=()=>el('confirm').close();el('confirmRestart').onclick=()=>{el('confirm').close();restart();if(pendingStart)beginRun();};el('again').onclick=restart;el('techTab').onclick=()=>{tab='tech';el('techTab').classList.add('selected');el('upgradeTab').classList.remove('selected');update();};el('upgradeTab').onclick=()=>{tab='upgrades';el('upgradeTab').classList.add('selected');el('techTab').classList.remove('selected');update();};document.addEventListener('visibilitychange',()=>{hiddenPause=document.hidden;if(hiddenPause)checkpoint();prev=0;acc=0;update();});
-function frame(t){const oldWave=s.wave,oldStatus=s.status;const dt=prev?Math.min((t-prev)/1000,.1):0;prev=t;if(!manualPause&&!hiddenPause&&!el('confirm').open&&!el('leaveConfirm').open&&s.status!=='ready'&&s.status!=='lost'){acc=Math.min(.30,acc+dt*speed);let count=0;while(acc>=1/30&&count++<10){step(s,1/30);acc-=1/30;}}if(s.kills>lastKills){tone(580);lastKills=s.kills;}if(s.status==='lost'&&!shownDefeat){shownDefeat=true;discardRun();saveRecord(storage,s.wave);el('result').textContent=`Welle ${s.wave} · ${s.kills} besiegte Gegner`;el('defeat').showModal();}if(oldWave!==s.wave||oldStatus!==s.status)checkpoint();else if(!manualPause&&!hiddenPause&&performance.now()-lastSaveTime>=5000)checkpoint();if(s.status==='intermission' && s.wave > readRecord(storage))saveRecord(storage,s.wave);const r=canvas.getBoundingClientRect();renderArena(ctx,s,{width:r.width,height:r.height,pixelRatio:window.devicePixelRatio||1});if(Math.floor(t/180)!==Math.floor((t-dt*1000)/180))update();requestAnimationFrame(frame);}resumeOffer();update();requestAnimationFrame(frame);
+function frame(t){const oldWave=s.wave,oldStatus=s.status;const dt=prev?Math.min((t-prev)/1000,.1):0;prev=t;if(!manualPause&&!hiddenPause&&!el('confirm').open&&!el('leaveConfirm').open&&!el('tutorial').open&&s.status!=='ready'&&s.status!=='lost'){acc=Math.min(.30,acc+dt*speed);let count=0;while(acc>=1/30&&count++<10){step(s,1/30);acc-=1/30;}}if(s.kills>lastKills){tone(580);lastKills=s.kills;}if(s.status==='lost'&&!shownDefeat){shownDefeat=true;discardRun();saveRecord(storage,s.wave);el('result').textContent=`Welle ${s.wave} · ${s.kills} besiegte Gegner`;el('defeat').showModal();}if(oldWave!==s.wave||oldStatus!==s.status)checkpoint();else if(!manualPause&&!hiddenPause&&performance.now()-lastSaveTime>=5000)checkpoint();if(s.status==='intermission' && s.wave > readRecord(storage))saveRecord(storage,s.wave);const r=canvas.getBoundingClientRect();renderArena(ctx,s,{width:r.width,height:r.height,pixelRatio:window.devicePixelRatio||1});if(Math.floor(t/180)!==Math.floor((t-dt*1000)/180))update();requestAnimationFrame(frame);}resumeOffer();update();requestAnimationFrame(frame);
 
 function leaveGame(){checkpoint();if(s.wave>0)saveRecord(storage,s.wave);location.assign(new URL('../index.html',location.href));}
 el('leave').onclick=()=>{if(s.status==='ready'||s.status==='lost')leaveGame();else el('leaveConfirm').showModal();};
@@ -64,3 +65,30 @@ el('resume').onclick=()=>{
 };
 window.addEventListener('pagehide',()=>{hiddenPause=true;checkpoint();prev=0;acc=0;});
 window.addEventListener('pageshow',()=>{hiddenPause=document.hidden;prev=0;acc=0;});
+
+// A modal owns its pause: closing it never changes the player's pause choice.
+let tutorialStep=0,tutorialFocus=null;
+function tutorialContent(){
+ const item=TUTORIAL_STEPS[tutorialStep];
+ el('tutorialCount').textContent=`KURZANLEITUNG · ${tutorialStep+1} / ${TUTORIAL_STEPS.length}`;
+ el('tutorialMark').textContent=item.mark;el('tutorialTitle').textContent=item.title;
+ el('tutorialText').textContent=item.text;el('tutorialTip').textContent=item.tip;
+ el('tutorialBack').disabled=tutorialStep===0;
+ el('tutorialNext').textContent=tutorialStep===TUTORIAL_STEPS.length-1?'Los geht’s':'Weiter';
+}
+function openTutorial(returnFocus){
+ tutorialFocus=returnFocus;tutorialStep=0;tutorialContent();
+ el('gameMenu').open=false;prev=0;acc=0;el('tutorial').showModal();el('tutorialNext').focus();
+}
+function closeTutorial(){
+ rememberTutorial(storage);el('tutorial').close();prev=0;acc=0;
+ tutorialFocus?.focus();
+}
+el('tutorialNext').onclick=()=>{if(tutorialStep<TUTORIAL_STEPS.length-1){tutorialStep++;tutorialContent();}else closeTutorial();};
+el('tutorialBack').onclick=()=>{if(tutorialStep>0){tutorialStep--;tutorialContent();}};
+el('tutorialSkip').onclick=closeTutorial;
+el('tutorial').addEventListener('cancel',event=>{event.preventDefault();closeTutorial();});
+el('help').onclick=()=>openTutorial(el('gameMenuToggle'));
+el('introHelp').onclick=()=>openTutorial(el('introHelp'));
+// Menu actions close the flyout before opening a modal or applying a setting.
+for(const id of ['leave','speed','sound','reset'])el(id).addEventListener('click',()=>{el('gameMenu').open=false;});
