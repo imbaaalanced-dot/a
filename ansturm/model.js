@@ -21,7 +21,7 @@ if(s.upgrades.tesla){const visited=new Set([target.id]);let last=target;for(let 
 }
 export function step(s,dt){if(s.status!=='running'&&s.status!=='intermission')return;if(!Number.isFinite(dt)||dt<=0||dt>1/30+1e-6)return; s.elapsed+=dt;
 if(s.status==='intermission'){s.intermission-=dt;if(s.intermission<=0)nextWave(s);return;}
-s.waveElapsed+=dt;s.spawnClock+=dt;while(s.spawned<s.planned&&s.spawnClock>=(25/s.planned)){s.spawnClock-=25/s.planned;spawnEnemy(s);}
+s.waveElapsed+=dt;s.spawnClock+=dt;while(s.spawned<s.planned&&s.spawnClock>=(25/s.planned)){s.spawnClock-=25/s.planned;spawnEnemy(s);}if(s.spawned===s.planned)s.spawnClock=0;
 for(const e of s.enemies){if(s.status!=='running')break;if(!e.alive)continue;if(e.burnUntil>s.elapsed)damageEnemy(s,e.id,e.burnDps*dt);let d=Math.hypot(e.x,e.y);if(d>.1){let advance=Math.min(d-.1,e.speed*(s.elapsed<e.slowUntil?0.52:1)*dt);e.x-=e.x/d*advance;e.y-=e.y/d*advance;}else{damageMonument(s,e.dps*dt);}}
 if(s.status!=='running'){s.effects=s.effects.filter(f=>(f.life-=dt)>0).slice(-120);return;}
 const stats=getStats(s);s.hp=Math.min(stats.maxHp,s.hp+stats.regenPerSecond*dt);if(s.upgrades.shield&&s.elapsed-s.lastDamage>=5)s.shield=Math.min(stats.shieldCapacity,s.shield+(4+s.upgrades.shield*3)*dt);
