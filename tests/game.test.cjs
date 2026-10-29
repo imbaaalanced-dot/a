@@ -470,7 +470,8 @@ check('Hohensyburg has gated campaign, ground/air waves and persistent unlock',(
   t.mainMenu();t.startGame(5);assert.equal(t.state,'start','level 5 requires cleared churchyard');
   sandbox.DenkmalLevels.completeLevel4();t.startGame(5);
   assert.equal(t.game.level,5);assert.equal(t.game.wave,17);assert.equal(t.game.maxTowers,11);
-  assert.match(t.wavePreview(17),/SCHATTENFLÜGLER/);
+  assert.doesNotMatch(t.wavePreview(17),/SCHATTENFLÜGLER/);
+  t.game.wave=18;assert.match(t.wavePreview(18),/SCHATTENFLÜGLER/);
   t.game.waveSpawned=0;for(let i=0;i<18;i++)t.spawnEnemy();
   const layout=sandbox.DenkmalLevels.levels[5];
   assert.ok(t.game.enemies.some(e=>e.flying));

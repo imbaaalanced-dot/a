@@ -383,7 +383,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git worktree add /tmp/denkmal-gh-pages origin/gh-pages
-          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-alpha8 ! -name v4-alpha9 ! -name v4-menu ! -name v4-enemies ! -name v4-level4 ! -name v4-level5 ! -name v4-20261018 ! -name v4-style2-reference ! -name v4-style2 ! -name v4-style2-cannon ! -name v4-style2-towers ! -name v4-style2-maps ! -name v4-style2-phase6 ! -name v4-style2-phase7 ! -name kirchende-foto ! -name v4-portalreise ! -name td2-ansturm ! -name td2-consolidation -exec rm -rf {} +
+          find /tmp/denkmal-gh-pages -mindepth 1 -maxdepth 1 ! -name .git ! -name superpowers-alpha3 ! -name v4 ! -name v4-alpha3 ! -name v4-alpha4 ! -name v4-alpha5 ! -name v4-alpha6 ! -name v4-alpha8 ! -name v4-alpha9 ! -name v4-menu ! -name v4-enemies ! -name v4-level4 ! -name v4-level5 ! -name v4-20261018 ! -name v4-style2-reference ! -name v4-style2 ! -name v4-style2-cannon ! -name v4-style2-towers ! -name v4-style2-maps ! -name v4-style2-phase6 ! -name v4-style2-phase7 ! -name kirchende-foto ! -name v4-portalreise ! -name td2-ansturm ! -name td2-consolidation ! -name td2-combined ! -name td2-ansturm-tutorial ! -name td2-unified-ui ! -name td2-level5-balance ! -name td2-all-patches ! -name loot-v2 -exec rm -rf {} +
           cp -R dist/. /tmp/denkmal-gh-pages/
           touch /tmp/denkmal-gh-pages/.nojekyll
           cd /tmp/denkmal-gh-pages

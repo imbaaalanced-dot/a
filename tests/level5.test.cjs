@@ -36,11 +36,17 @@ vm.runInContext(fs.readFileSync('dist/hohensyburg.js','utf8'),box);
 const plan=box.DenkmalHohensyburg;
 for(let wave=17;wave<=20;wave++){
  const pool=Array.from({length:48},(_,i)=>plan.enemyType(wave,i));
- assert.ok(pool.includes('wraith'));assert.ok(pool.includes('shadowwing'));
+ assert.ok(pool.includes('wraith'));assert.equal(pool.includes('shadowwing'),wave>=18);
  assert.match(plan.warning(wave),/LUFTANGRIFF/);assert.ok(plan.waveName(wave));
 }
 assert.equal(plan.enemyType(20,0),'boss');
-assert.ok(Array.from({length:48},(_,i)=>plan.enemyType(19,i)).includes('stormwing'));
+assert.equal(plan.campaignWave(17,'endless'),null);
+assert.equal(plan.campaignWave(21),null);
+assert.ok(!Array.from({length:32},(_,i)=>plan.enemyType(17,i)).some(t=>['guardian','archer','sapper','shadowwing','gargoyle','stormwing'].includes(t)));
+assert.equal(Array.from({length:38},(_,i)=>plan.enemyType(18,i)).filter(t=>t==='shadowwing').length,4);
+assert.ok(Array.from({length:48},(_,i)=>plan.enemyType(17,i,'endless')).includes('shadowwing'),'endless retains its original composition');
+
+assert.ok(Array.from({length:48},(_,i)=>plan.enemyType(20,i)).includes('stormwing'));
 assert.equal(lib.level5Completed,false);assert.equal(lib.completeLevel5(),true);
 assert.equal(lib.level5Completed,true);
 assert.equal(JSON.parse(memory.get('denkmal-progress-v2')).data.level5,true);
@@ -81,7 +87,7 @@ assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remain
 assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
-assert.ok(html.includes('hohensyburg.js?v=syburg1'));
+assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
 assert.ok(html.includes('levels.js?v=save1'));
 assert.ok(html.includes('hohensyburg-art.js?v=alpha9a3'));
 assert.match(game,/campaign.completeLevel5\(\)/);

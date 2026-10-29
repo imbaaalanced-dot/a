@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict'),{load,memory,json}=require('./helpers/equipment.cjs');
+const {DenkmalLoot:L,DenkmalEquipmentCatalog:C}=load();
+const req={mapId:2,wave:1,enemyType:'wraith',runId:'v2',spawnId:'1'};
+const m=L.create({storage:memory(),rng:()=>0});
+assert.equal(typeof m.claimEnemy,'function');
+const first=m.claimEnemy(req);assert.equal(first.state,'granted');assert.equal(first.item.rarity,'magic');assert.equal(first.item.power,null);assert.equal(first.item.source.kind,'enemy');assert.equal(m.claimEnemy(req).state,'duplicate');
+const seen=new Set([first.item.templateId]);for(let n=2;n<=21;n++)seen.add(m.claimEnemy({...req,spawnId:String(n)}).item.templateId);assert.equal(seen.size,21,'collect missing types before repeats');
+const reload=L.create({storage:m.storage});assert.equal(reload.find(first.item.id).templateId,first.item.templateId);assert.equal(reload.claimEnemy(req).state,'duplicate');
+const dry=L.create({storage:memory(),rng:()=>.99});for(let n=1;n<40;n++)assert.equal(dry.claimEnemy({...req,spawnId:String(n)}).state,'none');assert.equal(dry.claimEnemy({...req,spawnId:'39'}).state,'duplicate');assert.equal(dry.claimEnemy({...req,spawnId:'40'}).state,'granted');assert.equal(dry.claimEnemy({...req,spawnId:'41'}).state,'none');
+for(const change of [{enemyType:'boss'},{enemyType:'uprooted'},{mapId:0},{mapId:7},{wave:0},{spawnId:'bad!'}])assert.equal(m.claimEnemy({...req,...change}).state,'rejected');
+const invalid=L.create({storage:memory(),rng:()=>NaN});assert.equal(invalid.claimEnemy({...req,spawnId:'nan'}).state,'rejected');
+const quotaStorage=memory();quotaStorage.setItem=()=>{throw Error('quota')};const quota=L.create({storage:quotaStorage,rng:()=>0});const q=quota.claimEnemy(req);assert.equal(q.state,'granted');assert.equal(q.persisted,false);const recovered=L.create({storage:memory()});assert.equal(recovered.importJSON(quota.exportJSON()),true);assert.ok(recovered.find(q.item.id));
+const boss=L.create({storage:memory(),rng:()=>0});const types=new Set();for(let n=0;n<21;n++)types.add(boss.claimBoss({mapId:1,wave:5,bossType:'boss',runId:'boss-v2',spawnId:String(n)}).item.templateId);assert.equal(types.size,21);
+const old=JSON.parse(boss.exportJSON());old.version=3;old.profile.version=3;const raw=JSON.stringify(old),s=memory({[L.KEY]:raw}),migrated=L.create({storage:s});assert.equal(migrated.profile.version,4);assert.deepEqual(json(migrated.profile.owned),old.profile.owned);assert.equal(migrated.save(),true);assert.equal(s.getItem(L.KEY+'-pre-v4'),raw);
+const bad=JSON.parse(m.exportJSON());bad.profile.owned.find(i=>i.source).source.mapId=7;assert.equal(m.importJSON(JSON.stringify(bad)),false);
+console.log('Loot V2: enemy drops, pity, diversity, idempotence, quota export, migration and validation passed');

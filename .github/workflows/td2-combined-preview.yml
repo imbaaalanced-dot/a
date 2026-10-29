@@ -1,0 +1,60 @@
+name: Publish combined TD2 tester
+on:
+  push:
+    branches: [integrate/td2-combined-20261029]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-combined-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    if: github.ref_name == 'integrate/td2-combined-20261029'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify gameplay, inventory and saves
+        run: |
+          set -e
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.test.cjs; do node "$test"; done
+          python3 -m pip install Pillow
+          for test in tests/*.test.py; do python3 "$test"; done
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/loot-v2-game.test.cjs
+          for file in dist/equipment-catalog.js dist/loot.js dist/loot-ui.js dist/game.js; do node --check "$file"; done
+      - name: Verify desktop and touch browser flows
+        timeout-minutes: 8
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+          TD2_QA_OUT=/tmp/td2-combined-qa timeout 180s node tools/verify-equipment-browser.cjs
+          TD2_QA_OUT=/tmp/td2-combined-qa timeout 180s node tools/verify-combined-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combined-browser-qa
+          path: /tmp/td2-combined-qa
+      - name: Publish only combined tester
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/combined-pages origin/gh-pages
+          mkdir -p /tmp/combined-pages/td2-combined/v4-alpha9
+          cp -R dist/. /tmp/combined-pages/td2-combined/v4-alpha9/
+          printf '{"sourceCommit":"%s"}\n' "$GITHUB_SHA" > /tmp/combined-pages/td2-combined/v4-alpha9/combined-build.json
+          touch /tmp/combined-pages/.nojekyll
+          cd /tmp/combined-pages
+          git add td2-combined .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish combined TD2 tester ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
