@@ -1,0 +1,297 @@
+{
+  "version": 1,
+  "source_sha256": {
+    "mage": "439f5c27213cf5ca5e1b1a0d3c37ada8a431e0a094939068c5eaad135f630d21",
+    "boomerang": "09ee2387bd2b0fbd7780aa64e518429725a5578bfd14a71c8715602fbf78eadd"
+  },
+  "source_size": [
+    2172,
+    724
+  ],
+  "rows": [
+    "mage",
+    "boomerang"
+  ],
+  "columns": 6,
+  "runtime_cell": [
+    128,
+    128
+  ],
+  "pivot_master": [
+    128,
+    218
+  ],
+  "pivot_runtime": [
+    64,
+    109
+  ],
+  "scale": 0.48,
+  "tier_policy": "mage all levels; boomerang level 3 only",
+  "runtime_sha256": "7b0a58525afdfa4a4a04d05e34a60b46d0795e91b09f53d08ccb52ec39a41316",
+  "frames": [
+    {
+      "kind": "mage",
+      "frame": 0,
+      "source_rect": [
+        0,
+        150,
+        291,
+        600
+      ],
+      "master": "frames/impact_mage_00.png",
+      "sha256_png": "9b376974e9621aa1e1a728f54f3681321085730e1a8c6f22ad25de95dab68c41",
+      "runtime_rect": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "mage",
+      "frame": 1,
+      "source_rect": [
+        291,
+        150,
+        651,
+        600
+      ],
+      "master": "frames/impact_mage_01.png",
+      "sha256_png": "5c22dca506d0a2406981d82288ee5726279b718fe3c992765f91512f4b5d2d33",
+      "runtime_rect": [
+        128,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "mage",
+      "frame": 2,
+      "source_rect": [
+        651,
+        150,
+        1023,
+        600
+      ],
+      "master": "frames/impact_mage_02.png",
+      "sha256_png": "951a84e7bc4209ff68c7019dc069da10c259fda92c67d24e77233c6f145cd11f",
+      "runtime_rect": [
+        256,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "mage",
+      "frame": 3,
+      "source_rect": [
+        1023,
+        150,
+        1474,
+        600
+      ],
+      "master": "frames/impact_mage_03.png",
+      "sha256_png": "7a549997f7ffc76982459e2266bfe0d65743fad812202fee932f062c6cfdf084",
+      "runtime_rect": [
+        384,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "mage",
+      "frame": 4,
+      "source_rect": [
+        1474,
+        150,
+        1840,
+        600
+      ],
+      "master": "frames/impact_mage_04.png",
+      "sha256_png": "a1fe5eca5e4e59a477a0d50ad9784c8e2d91fe3226ac707e927a57f4f62ac0f6",
+      "runtime_rect": [
+        512,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "mage",
+      "frame": 5,
+      "source_rect": [
+        1840,
+        150,
+        2172,
+        600
+      ],
+      "master": "frames/impact_mage_05.png",
+      "sha256_png": "0b78242b8afd2e3b8a3fa6621de69655b287448a8bf5bb7183f86c2fd83cc0e0",
+      "runtime_rect": [
+        640,
+        0,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 0,
+      "source_rect": [
+        0,
+        150,
+        319,
+        600
+      ],
+      "master": "frames/impact_boomerang_00.png",
+      "sha256_png": "0218ef260ac6ad36aef879a8b4590e5bbce28a680458fa3659d98817e9ff7133",
+      "runtime_rect": [
+        0,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 1,
+      "source_rect": [
+        319,
+        150,
+        652,
+        600
+      ],
+      "master": "frames/impact_boomerang_01.png",
+      "sha256_png": "deedd784ef46adf54716a0ceb54eb546757733c50a9eb1108cd59b98fc6febe5",
+      "runtime_rect": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 2,
+      "source_rect": [
+        652,
+        150,
+        1047,
+        600
+      ],
+      "master": "frames/impact_boomerang_02.png",
+      "sha256_png": "1d99f01c3493a8beb20424b1df775733ae5d75f61651c397522f7b2f98b3646e",
+      "runtime_rect": [
+        256,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 3,
+      "source_rect": [
+        1047,
+        150,
+        1508,
+        600
+      ],
+      "master": "frames/impact_boomerang_03.png",
+      "sha256_png": "7a9e2ff6f4d6605cf646a76cabf86c261fffa368378d5a87c35ef00141516774",
+      "runtime_rect": [
+        384,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 4,
+      "source_rect": [
+        1508,
+        150,
+        1854,
+        600
+      ],
+      "master": "frames/impact_boomerang_04.png",
+      "sha256_png": "4f214b648b8d4a8a53b77964cb026ac6a11d1a32be24d7111cca90569a2e8c6d",
+      "runtime_rect": [
+        512,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    },
+    {
+      "kind": "boomerang",
+      "frame": 5,
+      "source_rect": [
+        1854,
+        150,
+        2172,
+        600
+      ],
+      "master": "frames/impact_boomerang_05.png",
+      "sha256_png": "9c5a37eefe7cf3599f165430dbb82e5dec9de9a550db7cbd14d68c25c1aae67a",
+      "runtime_rect": [
+        640,
+        128,
+        128,
+        128
+      ],
+      "pivot_master": [
+        128,
+        218
+      ]
+    }
+  ]
+}
