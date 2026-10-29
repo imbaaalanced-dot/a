@@ -17,14 +17,17 @@ const server=http.createServer((req,res)=>{const relative=decodeURIComponent(new
   const opening=await page.evaluate(()=>{const g=DenkmalTestHooks.getGame();return {level:g.level,wave:g.wave,count:g.waveTotal};});assert.deepEqual(opening,{level:5,wave:17,count:32});
   await page.goto(new URL('ansturm/index.html',base).href,{waitUntil:'networkidle'});
   const press=locator=>mobile?locator.tap():locator.click();
-  await press(page.locator('#start'));await press(page.locator('#pause'));
+  await press(page.locator('#start'));
+  await page.locator('#tutorial').waitFor({state:'visible'});
+  for(let step=1;step<=4;step++){assert.match(await page.locator('#tutorialCount').textContent(),new RegExp(step+' / 4'));await press(page.locator('#tutorialNext'));}
+  await page.locator('#tutorial').waitFor({state:'hidden'});await press(page.locator('#pause'));
   if(mobile)await press(page.locator('#shopToggle'));
   const gold=Number(await page.locator('#gold').textContent());await press(page.locator('#cards .buy').first());
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('td2.denkmalAnsturm.run.v1')));assert.equal(saved.state.tech.attack,1);assert.equal(saved.state.gold,gold-20);assert.equal(await page.locator('#saveNotice').isVisible(),false);
   await page.screenshot({path:path.join(out,mobile?'touch-ansturm.png':'desktop-ansturm.png')});
-  await page.reload({waitUntil:'networkidle'});await press(page.locator('#resume'));assert.match(await page.locator('#state').textContent(),/Pausiert/);assert.equal(Number(await page.locator('#gold').textContent()),gold-20);assert.match(await page.locator('#summary').textContent(),/Schaden 15/);
+  await page.reload({waitUntil:'networkidle'});await press(page.locator('#resume'));assert.equal(await page.locator('#tutorial').isVisible(),false);assert.match(await page.locator('#state').textContent(),/Pausiert/);assert.equal(Number(await page.locator('#gold').textContent()),gold-20);assert.match(await page.locator('#summary').textContent(),/Schaden 15/);
   if(mobile){await page.setViewportSize({width:915,height:412});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(out,'landscape-ansturm.png')});}
-  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);report.push({mobile,opening,ansturmPurchase:true,reloadPaused:true,gold:saved.state.gold,attack:1,errors,missing});await context.close();console.log('Combined scenario passed',mobile);
+  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);report.push({mobile,opening,tutorialCompleted:true,tutorialAbsentOnResume:true,ansturmPurchase:true,reloadPaused:true,gold:saved.state.gold,attack:1,errors,missing});await context.close();console.log('Combined scenario passed',mobile);
  }
  fs.writeFileSync(path.join(out,'combined-report.json'),JSON.stringify(report,null,2));
  }finally{await browser.close();}

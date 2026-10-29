@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import fs from 'node:fs';
 import * as model from '../model.js';import * as config from '../config.js';import * as storage from '../storage.js';
+import * as tutorial from '../tutorial.js';
 // DOM adapter only; real app handlers, model, serializer and storage execute below.
 function harness(seed){
  const data=seed||new Map(), listeners={}, nodes=new Map();let frame;
@@ -8,7 +9,7 @@ function harness(seed){
  const el=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id)};
  const document={hidden:false,getElementById:el,createElement:node,querySelector:node,addEventListener:(k,f)=>listeners[k]=f};
  const m={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};
- const sandbox={...model,...config,...storage,document,window:{matchMedia:()=>({matches:true,addEventListener(){}}),addEventListener:(k,f)=>listeners[k]=f,devicePixelRatio:1},localStorage:m,requestAnimationFrame:f=>frame=f,renderArena(){},sprite(){},location:{href:'https://example.test/preview/ansturm/index.html',assign(url){sandbox.navigated=String(url)}},URL,performance:{now:()=>0}};
+ const sandbox={...model,...config,...storage,...tutorial,document,window:{matchMedia:()=>({matches:true,addEventListener(){}}),addEventListener:(k,f)=>listeners[k]=f,devicePixelRatio:1},localStorage:m,requestAnimationFrame:f=>frame=f,renderArena(){},sprite(){},location:{href:'https://example.test/preview/ansturm/index.html',assign(url){sandbox.navigated=String(url)}},URL,performance:{now:()=>0}};
  vm.createContext(sandbox);let code=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8').replace(/import\s+[^;]+;/g,'');vm.runInContext(code,sandbox);
  return {el,data,listeners,document,frame:t=>frame(t),state:()=>vm.runInContext('s',sandbox),sandbox};
 }
@@ -19,3 +20,23 @@ test('purchase and hidden/pagehide events save without simulation catchup',()=>{
 test('loss clears snapshot, keeps record and cannot be saved by pagehide',()=>{const h=harness(seeded());h.el('resume').onclick();h.state().status='lost';h.state().hp=0;h.frame(100);assert.equal(h.data.has(storage.RUN_KEY),false);h.listeners.pagehide();assert.equal(h.data.has(storage.RUN_KEY),false);assert.equal(Number(h.data.get(storage.RECORD_KEY)),1);});
 test('return to menu saves before navigation',()=>{const h=harness(seeded());h.el('resume').onclick();h.state().gold=400;h.el('leave').onclick();h.el('leaveGame').onclick();assert.equal(storage.readRun({getItem:k=>h.data.get(k)}).state.gold,400);assert.equal(h.sandbox.navigated,'https://example.test/preview/index.html');});
 test('corrupt save explains failure and permits confirmed new start',()=>{const h=harness(new Map([[storage.RUN_KEY,'{bad']]));assert.equal(h.el('resume').hidden,true);assert.match(h.el('saveNotice').textContent,/nicht geladen/);h.el('start').onclick();assert.equal(h.el('confirm').open,true);h.el('confirmRestart').onclick();assert.equal(h.state().status,'running');});
+
+test('first new run explains the game without advancing combat',()=>{
+ const h=harness();h.el('start').onclick();assert.equal(h.el('tutorial').open,true);
+ const elapsed=h.state().elapsed;h.frame(100);h.frame(1200);assert.equal(h.state().elapsed,elapsed);
+ assert.match(h.el('tutorialTitle').textContent,/Denkmal/);
+ for(let i=0;i<4;i++)h.el('tutorialNext').onclick();
+ assert.equal(h.el('tutorial').open,false);h.frame(1300);h.frame(1400);assert.ok(h.state().elapsed>elapsed);
+});
+test('skipping is remembered and help can be replayed without changing the save',()=>{
+ const h=harness();h.el('start').onclick();h.el('tutorialSkip').onclick();
+ const again=harness(h.data);again.el('start').onclick();again.el('confirmRestart').onclick();assert.equal(again.el('tutorial').open,false);
+ const state=JSON.stringify(again.state());again.el('help').onclick();assert.equal(again.el('tutorial').open,true);
+ again.el('tutorialNext').onclick();again.el('tutorialBack').onclick();assert.match(again.el('tutorialTitle').textContent,/Denkmal/);
+ again.el('tutorialSkip').onclick();assert.equal(JSON.stringify(again.state()),state);
+});
+test('tutorial dismissal preserves a manually paused resumed run',()=>{
+ const h=harness(seeded());h.el('resume').onclick();assert.equal(h.el('tutorial').open,false);
+ h.el('help').onclick();h.el('tutorial').cancel({preventDefault(){}});
+ h.frame(100);h.frame(1200);assert.equal(h.state().elapsed,0);assert.match(h.el('pause').textContent,/Fortsetzen/);
+});
