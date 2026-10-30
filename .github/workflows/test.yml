@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Legacy Ansturm links remain usable
+        run: node tests/ansturm-legacy-links.test.cjs
       - name: Alpha 8 preview preserves campaign flags
         run: |
           node tests/loot-ui.test.cjs
