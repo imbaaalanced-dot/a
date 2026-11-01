@@ -1,3 +1,5 @@
+> Historischer Stand: Dieses Dokument beschreibt den damaligen Patch. Aktueller V4.1-Umfang und Fortschritt: [Releases](releases/V4.1.0-SCOPE.md). Frühere offene PRs können inzwischen gemergt sein. Aktive Level5=Hohensyburg, Level6=Goethestraße.
+
 # Denkmal TD2 V4 Alpha 9 – überprüfbarer Stand
 
 Basis: PR #47, Commit `8408f47`. Der noch offene Gegner-Patch PR #49 (`61b6158`) wurde in den separaten Alpha-9-Branch übernommen. PR #48 ist bereits Bestandteil von #47. `main` und `/v4-alpha8/` werden nicht verändert.

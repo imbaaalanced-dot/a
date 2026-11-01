@@ -1,3 +1,23 @@
+# Denkmal TD2 · V4.1.0 in Entwicklung
+
+Aktueller freigegebener Hauptstand: V4 Alpha9 mit LootV2, Kampagnenbalance und Ansturm-Menü/Tutorial. Branch `release/v4.1.0` entwickelt die fünf freigegebenen Pakete. Seine Kennung `v4.1.0-alpha.1` bezeichnet einen separaten Vorabbuild; sie ist kein abgeschlossener Hauptrelease.
+
+- [Separater V4.1 Alpha1 Testbuild – nach erfolgreicher CI-Veröffentlichung](https://imbaaalanced-dot.github.io/a/td2-all-patches/v4.1.0/)
+- [V4.1 Alpha1 Änderungen](docs/releases/V4.1.0-RELEASE.md)
+- [Verbindlicher V4.1-Umfang](docs/releases/V4.1.0-SCOPE.md)
+- [Arbeitsstand und Prüfnachweise](docs/releases/V4.1.0-PROGRESS.md)
+- [Animationsvertrag](docs/releases/V4.1.0-ANIMATION-CONTRACT.md)
+- [Kartenpolish und Geometrieschutz](docs/releases/V4.1.0-MAPS.md)
+- [Reproduzierbare Balanceanalyse](docs/releases/V4.1.0-BALANCE.md)
+
+Aktive Kampagnenreihenfolge:1 Einleitung,2 Labyrinth,3 Kriegerdenkmal Kirchende,4 Ender Dorfkirche/Löwe,5 Hohensyburg,6 Goethestraße. Frühere Texte ordnen5/6 teils anders zu; der aktive Code und `levels.js` sind maßgeblich.
+
+Speicherformate und alte Profile bleiben geschützt. Die Android-Abnahme des vorherigen Builds ist vom Nutzer bestätigt; neue Gerätewerte und eine V4.1-Abnahme werden daraus nicht abgeleitet.
+
+## Historisches Entwicklungsprotokoll
+
+Die folgenden Angaben beschreiben ältere Alpha-Patches und sind kein aktueller Versionsstatus.
+
 # Denkmal TD / TD2 · v4.0.0-alpha.5
 
 Visueller Alpha.5-Patch vom 15. Oktober 2026: goldene Level-Sterne, gecachte Waldtexturen, Stein-/Wegoberflächen und neue Baumkronen in Kirchende. Keine Änderungen an Kampfwerten, Wegen oder Bauplätzen.

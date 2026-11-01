@@ -1,0 +1,2067 @@
+{
+  "status": "all10 sources generated and selected; all10 isolate48 bodies; final runtime/art acceptance remains separate",
+  "generator": "built_in_image_gen",
+  "assets": [
+    {
+      "id": "enemy-00",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nActor identity: undead gray-green skeletal hound with ragged hide, protruding ribs, feral long skull, four legs, long raised bony tail; attack is snapping bite. Input image is the authoritative identity reference.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-e4f01512-39b3-4b65-a332-321766e094be.png",
+      "selected_source": "docs/qa/v410/source/enemy-00.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "9a5862cc2937c5964adaf5cfcf0e2b168731e09dab7e0386440e4a844ebbf9c2",
+      "remap": null,
+      "prompt_sha256": "80b1795603156716349aad024ac9ff298e69977daae40c94cfb8a37b97d50f81",
+      "components": [
+        {
+          "name": "enemy-00-left",
+          "path": "docs/qa/v410/source/enemy-00-left-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            3,
+            4,
+            5
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  13,
+                  386,
+                  436
+                ],
+                "sourcePivot": [
+                  144.5,
+                  344.0
+                ],
+                "pivot": [
+                  144.5,
+                  331.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  363,
+                  0,
+                  815,
+                  446
+                ],
+                "sourcePivot": [
+                  536.5,
+                  339.0
+                ],
+                "pivot": [
+                  173.5,
+                  339.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  685,
+                  15,
+                  1170,
+                  448
+                ],
+                "sourcePivot": [
+                  947.5,
+                  334.0
+                ],
+                "pivot": [
+                  262.5,
+                  319.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1087,
+                  9,
+                  1447,
+                  454
+                ],
+                "sourcePivot": [
+                  1239.5,
+                  336.0
+                ],
+                "pivot": [
+                  152.5,
+                  327.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  414,
+                  420,
+                  794
+                ],
+                "sourcePivot": [
+                  187.5,
+                  700.0
+                ],
+                "pivot": [
+                  187.5,
+                  286.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  361,
+                  422,
+                  799,
+                  818
+                ],
+                "sourcePivot": [
+                  527.5,
+                  688.0
+                ],
+                "pivot": [
+                  166.5,
+                  266.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  713,
+                  428,
+                  1152,
+                  830
+                ],
+                "sourcePivot": [
+                  888.5,
+                  698.0
+                ],
+                "pivot": [
+                  175.5,
+                  270.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1087,
+                  418,
+                  1438,
+                  841
+                ],
+                "sourcePivot": [
+                  1225.5,
+                  703.0
+                ],
+                "pivot": [
+                  138.5,
+                  285.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  773,
+                  459,
+                  1086
+                ],
+                "sourcePivot": [
+                  216.5,
+                  1017.0
+                ],
+                "pivot": [
+                  216.5,
+                  244.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  330,
+                  766,
+                  782,
+                  1086
+                ],
+                "sourcePivot": [
+                  505.5,
+                  1025.0
+                ],
+                "pivot": [
+                  175.5,
+                  259.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  720,
+                  815,
+                  1156,
+                  1086
+                ],
+                "sourcePivot": [
+                  877.5,
+                  1022.0
+                ],
+                "pivot": [
+                  157.5,
+                  207.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1088,
+                  810,
+                  1448,
+                  1086
+                ],
+                "sourcePivot": [
+                  1245.5,
+                  1023.0
+                ],
+                "pivot": [
+                  157.5,
+                  213.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.31958762886597936,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "prompt": "Use case identity-preserve. Make ONE DIRECTION ONLY game animation strip for exact actor in reference. Reference gives identity only; change camera-facing orientation to specified direction. Landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 isolated full-body sprites in square invisible cells. CRITICAL SMALL SPRITES: entire sprite including weapon at most65% of each cell height/width.30% clear space between sprites. No frame may touch canvas edge or neighbor. Row1 attack ready/windup/strike/recover. Row2 hit impact/recoil/stagger/recover. Row3 death fatal-impact/collapse/near-ground/settled-corpse. Consistent scale and bottom-center contact anchor. Fully transparent RGBA, no labels/grid/floor/backdrop. Preserve dark handpainted fantasy style/colors/anatomy/equipment. ALL12 sprites maintain specified single direction including recoil/death. No mirrored anatomy. SCREEN LEFT FACING, strict quadruped SIDE PROFILE. Same exact undead skeletal hound from reference, gray-green ragged hide, protruding ribs, elongated feral skull, four legs and raised long thin bony tail. Skull muzzle/nose/jaws point LEFT toward image LEFT edge; long tail extends RIGHT. Bite attack snaps LEFT. All hit/death frames stay oriented LEFT, no front views or turns. Death complete side-facing crumpled corpse. Preserve elevated fantasy game camera, full body/feet/tail within each cell. Ignore colored extraction bars.",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-96960ba1-cb90-4543-95ff-020a946b061b.png",
+          "prompt_sha256": "33fb9fac9fac3eb3cad0e8f98ce869d1b0a30a3de345ab1597445d99a4e68a0e",
+          "sha256": "97fe5faaf38c9415744469701eb5fd43817b992245e866f2a94caf4959ca568e"
+        },
+        {
+          "name": "enemy-00-right",
+          "path": "docs/qa/v410/source/enemy-00-right-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            6,
+            7,
+            8
+          ],
+          "packing": {
+            "opaqueSourcePixels": 468542,
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  31,
+                  0,
+                  386,
+                  405
+                ],
+                "sourcePivot": [
+                  251.5,
+                  331.0
+                ],
+                "pivot": [
+                  220.5,
+                  331.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  280,
+                  0,
+                  795,
+                  418
+                ],
+                "sourcePivot": [
+                  574.5,
+                  334.0
+                ],
+                "pivot": [
+                  294.5,
+                  334.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  713,
+                  0,
+                  1118,
+                  419
+                ],
+                "sourcePivot": [
+                  956.5,
+                  325.0
+                ],
+                "pivot": [
+                  243.5,
+                  325.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1023,
+                  7,
+                  1448,
+                  436
+                ],
+                "sourcePivot": [
+                  1329.5,
+                  335.0
+                ],
+                "pivot": [
+                  306.5,
+                  328.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  40,
+                  390,
+                  396,
+                  705
+                ],
+                "sourcePivot": [
+                  188.5,
+                  661.0
+                ],
+                "pivot": [
+                  148.5,
+                  271.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  347,
+                  392,
+                  736,
+                  758
+                ],
+                "sourcePivot": [
+                  545.5,
+                  656.0
+                ],
+                "pivot": [
+                  198.5,
+                  264.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  701,
+                  412,
+                  1104,
+                  788
+                ],
+                "sourcePivot": [
+                  969.5,
+                  659.0
+                ],
+                "pivot": [
+                  268.5,
+                  247.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1041,
+                  399,
+                  1430,
+                  800
+                ],
+                "sourcePivot": [
+                  1318.5,
+                  659.0
+                ],
+                "pivot": [
+                  277.5,
+                  260.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  728,
+                  402,
+                  1086
+                ],
+                "sourcePivot": [
+                  223.5,
+                  982.0
+                ],
+                "pivot": [
+                  223.5,
+                  254.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  393,
+                  728,
+                  730,
+                  1086
+                ],
+                "sourcePivot": [
+                  600.5,
+                  978.0
+                ],
+                "pivot": [
+                  207.5,
+                  250.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  701,
+                  769,
+                  1091,
+                  1086
+                ],
+                "sourcePivot": [
+                  969.5,
+                  984.0
+                ],
+                "pivot": [
+                  268.5,
+                  215.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1089,
+                  769,
+                  1434,
+                  1052
+                ],
+                "sourcePivot": [
+                  1305.5,
+                  987.0
+                ],
+                "pivot": [
+                  216.5,
+                  218.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.30097087378640774,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "prompt": "Use case identity-preserve. Make ONE DIRECTION ONLY game animation strip for exact actor in reference. Reference gives identity only; change camera-facing orientation to specified direction. Landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 isolated full-body sprites in square invisible cells. CRITICAL SMALL SPRITES: entire sprite including weapon at most65% of each cell height/width.30% clear space between sprites. No frame may touch canvas edge or neighbor. Row1 attack ready/windup/strike/recover. Row2 hit impact/recoil/stagger/recover. Row3 death fatal-impact/collapse/near-ground/settled-corpse. Consistent scale and bottom-center contact anchor. Fully transparent RGBA, no labels/grid/floor/backdrop. Preserve dark handpainted fantasy style/colors/anatomy/equipment. ALL12 sprites maintain specified single direction including recoil/death. No mirrored anatomy. SCREEN RIGHT FACING, strict quadruped SIDE PROFILE. Same exact undead skeletal hound from reference, gray-green ragged hide, protruding ribs, elongated feral skull, four legs and raised long thin bony tail. Skull muzzle/nose/jaws point RIGHT toward image RIGHT edge; long tail extends LEFT. Bite attack snaps RIGHT. All hit/death frames stay oriented RIGHT, no front views or turns. Death complete side-facing crumpled corpse. Independently draw opposite anatomy, NOT reflection. Preserve elevated fantasy game camera, full body/feet/tail within each cell. Ignore colored extraction bars.",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-c5692f9a-bf2a-4550-8138-63083ea2efd2.png",
+          "prompt_sha256": "82ccefb8a451124b84ae3f6d9e16bb57fe209a436abf8c9dfd98804434fed517",
+          "sha256": "c004a48d3133ac316c675983fc05f3c67d18927869a08b48babfc748ac1d4dfd"
+        }
+      ],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Corrected blocks use more detailed separately authored directional strips. Apparent body scale versus original front/back block needs final full-atlas runtime review; source strip packing uses one uniform scale per strip to preserve full alpha.",
+        "Left/right replaced, original down/up repacked through full48-body extraction to comparable padded cells; no unsafe whole-block remap. Failed whole-sheet edit exec-94fbb43c-6240-4aa3-aa0f-434fd1ab386f.png rejected for irregular rows."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64,
+      "viewScale": {
+        "down": 1,
+        "left": 1.3,
+        "right": 1.35,
+        "up": 1
+      },
+      "viewScaleReview": {
+        "method": "Visual author calibration from head/helmet, torso and legs of attack-ready pose in every direction, displayed at identical source-pixel scale. Factors apply uniformly to all12 poses in each directional band before shared atlas fit. Weapon silhouette excluded as size reference; no source mutation.",
+        "evidence": "/tmp/v410-a-body-calibration.png",
+        "status": "proposed visual factors; root to verify calibrated runtime contact sheet",
+        "notes": "enemy00 side-profile adjustment deliberately moderate for natural quadruped foreshortening; enemy01 UP is separately authored and also requires enlargement; enemy03 RIGHT/UP original poses remain at unity."
+      }
+    },
+    {
+      "id": "enemy-01",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nActor identity: stocky faceless armored medieval polearm fighter, rusted dark steel closed helmet and plate armor, brown cloth at waist, holding long diagonal two-handed spiked poleaxe; attack with poleaxe. Input image is the authoritative identity reference.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-6b9529e2-003d-4ea6-ac77-b514470625d8.png",
+      "edit_prompt": "Identity-preserve sprite-sheet correction. Edit attached existing atlas, preserve EXACT4columns\u00d712rows of48 separate sprites, portrait1:3, true RGBA transparency. Keep action order and each individual phase (attack then hit then death in each3-row direction block). Preserve exact actor identity/materials/weapon and all unaffected content. Correct the entire direction blocks: rows4,5,6 show genuine LEFT-facing armored warrior, helmet nose/visor toward LEFT, front of cuirass toward LEFT, back and cloak toward RIGHT. Rows7,8,9 show genuine RIGHT-facing warrior, helmet visor RIGHT, front cuirass RIGHT, back cloak LEFT. Rows10,11,12 are genuine BACK view: back of helmet, back armor and rear tabard; no visor/front cuirass at all. Do NOT horizontally mirror any rows; redraw the anatomical perspective and correct hands holding poleaxe. Keep rows1\u20133 unchanged. Keep poleaxe and hands on correct sides. Fix top-row raised poleaxe tip to be entirely inside its cell with transparent margin. Each sprite needs safe cell margin, no clipping. No labels/borders/grid.",
+      "edit_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-b62a8a91-703d-4512-a682-cfb5486ae086.png",
+      "selected_source": "docs/qa/v410/source/enemy-01.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "91cf1a7b184ea102d212f3b17d17b1bd60fd0befbcb9128fe90e01daa3773ae0",
+      "remap": null,
+      "prompt_sha256": "aff7cd23481245d101561261e5ef743f922b9cb5005a5a301874bea82202f0d3",
+      "components": [
+        {
+          "name": "enemy-01-left",
+          "path": "docs/qa/v410/source/enemy-01-left-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            3,
+            4,
+            5
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  9,
+                  402,
+                  403
+                ],
+                "sourcePivot": [
+                  238.5,
+                  374.0
+                ],
+                "pivot": [
+                  238.5,
+                  365.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  331,
+                  14,
+                  762,
+                  391
+                ],
+                "sourcePivot": [
+                  551.5,
+                  376.0
+                ],
+                "pivot": [
+                  220.5,
+                  362.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  634,
+                  19,
+                  1136,
+                  438
+                ],
+                "sourcePivot": [
+                  961.5,
+                  376.0
+                ],
+                "pivot": [
+                  327.5,
+                  357.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1055,
+                  31,
+                  1440,
+                  415
+                ],
+                "sourcePivot": [
+                  1313.5,
+                  376.0
+                ],
+                "pivot": [
+                  258.5,
+                  345.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  401,
+                  384,
+                  715
+                ],
+                "sourcePivot": [
+                  219.5,
+                  695.0
+                ],
+                "pivot": [
+                  219.5,
+                  294.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  353,
+                  443,
+                  734,
+                  799
+                ],
+                "sourcePivot": [
+                  545.5,
+                  697.0
+                ],
+                "pivot": [
+                  192.5,
+                  254.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  683,
+                  462,
+                  1128,
+                  821
+                ],
+                "sourcePivot": [
+                  937.5,
+                  696.0
+                ],
+                "pivot": [
+                  254.5,
+                  234.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1027,
+                  415,
+                  1432,
+                  827
+                ],
+                "sourcePivot": [
+                  1323.5,
+                  697.0
+                ],
+                "pivot": [
+                  296.5,
+                  282.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  729,
+                  400,
+                  1086
+                ],
+                "sourcePivot": [
+                  200.5,
+                  1009.0
+                ],
+                "pivot": [
+                  200.5,
+                  280.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  327,
+                  819,
+                  698,
+                  1086
+                ],
+                "sourcePivot": [
+                  518.5,
+                  1023.0
+                ],
+                "pivot": [
+                  191.5,
+                  204.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  688,
+                  795,
+                  1057,
+                  1054
+                ],
+                "sourcePivot": [
+                  863.5,
+                  1032.0
+                ],
+                "pivot": [
+                  175.5,
+                  237.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1056,
+                  813,
+                  1442,
+                  1056
+                ],
+                "sourcePivot": [
+                  1223.5,
+                  1034.0
+                ],
+                "pivot": [
+                  167.5,
+                  221.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.30876494023904383,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-f375aefa-589d-474b-9987-0bfcaeb8488a.png",
+          "prompt": "Use case identity-preserve. This is ONE DIRECTION ONLY animation strip for exact actor in reference. Reference gives identity only; change pose AND camera-facing orientation to the direction specified below. Create landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 full-body sprites in equal square invisible cells. Row1 attack: ready,windup,strike,recover. Row2 hit: impact,recoil,stagger,recover. Row3 death: fatal impact,collapse,near-ground,settled corpse. Same actor scale and bottom-center contact anchor. Fully transparent RGBA, no labels, no grid, no backdrop, no floor. Every whole weapon and limb within cell with12% clear padding. Preserve dark handpainted fantasy style/colors/anatomy/equipment from reference. Every sprite in ALL3rows maintains the SINGLE facing direction below including hit/death. NO frontal sprites, NO turnaround, NO view mixture. Independently draw correct anatomy/perspective; no mirror. DIRECTION: SCREEN LEFT. Closed helmet visor/nose points toward image LEFT edge. Breastplate faces LEFT; rear leather/tabard faces RIGHT. True SIDE PROFILE only, helmet has one left-facing visor profile, never faces viewer or right. Same stocky medieval poleaxe infantry from reference, blackened steel plate, closed helmet, brown leather and ragged tan waist tabard. Holds long wooden-shaft silver spiked poleaxe in both hands. Attack horizontal/overhead poleaxe chop directed LEFT. Keep complete poleaxe inside cell.",
+          "prompt_sha256": "fb1c49cb9b73a8049950b21379de713f8870c774ec0c11090bde3f530267b0b3",
+          "sha256": "db92710c5ae7ea4352cda0b08df4363a60fb412f96bfad79b90644162c0e5343"
+        },
+        {
+          "name": "enemy-01-right",
+          "path": "docs/qa/v410/source/enemy-01-right-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            6,
+            7,
+            8
+          ],
+          "packing": {
+            "opaqueSourcePixels": 414837,
+            "threshold": 192,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  23,
+                  402,
+                  458
+                ],
+                "sourcePivot": [
+                  171.5,
+                  378.0
+                ],
+                "pivot": [
+                  171.5,
+                  355.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  283,
+                  21,
+                  766,
+                  446
+                ],
+                "sourcePivot": [
+                  558.5,
+                  377.0
+                ],
+                "pivot": [
+                  275.5,
+                  356.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  695,
+                  15,
+                  1148,
+                  470
+                ],
+                "sourcePivot": [
+                  843.5,
+                  379.0
+                ],
+                "pivot": [
+                  148.5,
+                  364.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1041,
+                  33,
+                  1432,
+                  470
+                ],
+                "sourcePivot": [
+                  1212.5,
+                  379.0
+                ],
+                "pivot": [
+                  171.5,
+                  346.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  412,
+                  406,
+                  738
+                ],
+                "sourcePivot": [
+                  191.5,
+                  692.0
+                ],
+                "pivot": [
+                  191.5,
+                  280.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  379,
+                  435,
+                  760,
+                  774
+                ],
+                "sourcePivot": [
+                  538.5,
+                  693.0
+                ],
+                "pivot": [
+                  159.5,
+                  258.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  707,
+                  453,
+                  1089,
+                  809
+                ],
+                "sourcePivot": [
+                  907.5,
+                  695.0
+                ],
+                "pivot": [
+                  200.5,
+                  242.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1071,
+                  445,
+                  1434,
+                  815
+                ],
+                "sourcePivot": [
+                  1219.5,
+                  695.0
+                ],
+                "pivot": [
+                  148.5,
+                  250.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  706,
+                  418,
+                  1070
+                ],
+                "sourcePivot": [
+                  179.5,
+                  979.0
+                ],
+                "pivot": [
+                  179.5,
+                  273.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  348,
+                  763,
+                  784,
+                  1070
+                ],
+                "sourcePivot": [
+                  503.5,
+                  977.0
+                ],
+                "pivot": [
+                  155.5,
+                  214.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  681,
+                  787,
+                  1158,
+                  1086
+                ],
+                "sourcePivot": [
+                  980.5,
+                  1004.0
+                ],
+                "pivot": [
+                  299.5,
+                  217.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1015,
+                  801,
+                  1434,
+                  1056
+                ],
+                "sourcePivot": [
+                  1257.5,
+                  980.0
+                ],
+                "pivot": [
+                  242.5,
+                  179.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.32091097308488614,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-2b866c17-7687-4c61-84eb-6dda5491aea7.png",
+          "prompt": "Use case identity-preserve. This is ONE DIRECTION ONLY animation strip for exact actor in reference. Reference gives identity only; change pose AND camera-facing orientation to the direction specified below. Create landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 full-body sprites in equal square invisible cells. Row1 attack: ready,windup,strike,recover. Row2 hit: impact,recoil,stagger,recover. Row3 death: fatal impact,collapse,near-ground,settled corpse. Same actor scale and bottom-center contact anchor. Fully transparent RGBA, no labels, no grid, no backdrop, no floor. Every whole weapon and limb within cell with12% clear padding. Preserve dark handpainted fantasy style/colors/anatomy/equipment from reference. Every sprite in ALL3rows maintains the SINGLE facing direction below including hit/death. NO frontal sprites, NO turnaround, NO view mixture. Independently draw correct anatomy/perspective; no mirror. DIRECTION: SCREEN RIGHT. Closed helmet visor/nose points toward image RIGHT edge. Breastplate faces RIGHT; rear leather/tabard faces LEFT. True SIDE PROFILE only, helmet has one right-facing visor profile, never faces viewer or left. Same stocky medieval poleaxe infantry from reference, blackened steel plate, closed helmet, brown leather and ragged tan waist tabard. Holds long wooden-shaft silver spiked poleaxe in both hands. Attack horizontal/overhead poleaxe chop directed RIGHT. Keep complete poleaxe inside cell.",
+          "prior_origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-d02d6438-2d79-433b-b559-34462c62868f.png",
+          "edit_prompt": "Precise-object-edit: preserve EXACT4columns\u00d73rows12phase LEFT/RIGHT-oriented armored poleaxe warrior sprites in attached transparent image. Every pose, actor outfit, helmet, direction and sequence stays unchanged. Fix ONLY missing/edge-clipped poleaxe tip in top row fourth column recovery pose. Scale ALL12 entire sprites down25% within their existing cells so each has generous fully transparent margin on all edges, draw the missing complete silver poleaxe blade in row1col4 within that cell. Do not change pose or camera, don't mirror, no extra rows or columns. Full landscape4:3 RGBA transparent background, no text/grid.",
+          "prompt_sha256": "e61af7e700a827f1f57bb9e56aceb6233a231d4cda0869cc8cda5e84ebc36b63",
+          "edit_prompt_sha256": "740872b4e5bddc1d31ddd90f88c65a39e6e5154de84fefea46c2a4f043069600",
+          "sha256": "d3434083222244480a04d7a4bcbfbd7840cfd9fe4f6bb82dfdb2043c0eb34d7d"
+        },
+        {
+          "name": "enemy-01-up",
+          "path": "docs/qa/v410/source/enemy-01-up-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            9,
+            10,
+            11
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  56,
+                  380,
+                  434
+                ],
+                "sourcePivot": [
+                  174.5,
+                  365.0
+                ],
+                "pivot": [
+                  174.5,
+                  309.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  383,
+                  9,
+                  780,
+                  448
+                ],
+                "sourcePivot": [
+                  571.5,
+                  366.0
+                ],
+                "pivot": [
+                  188.5,
+                  357.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  723,
+                  9,
+                  1181,
+                  462
+                ],
+                "sourcePivot": [
+                  864.5,
+                  365.0
+                ],
+                "pivot": [
+                  141.5,
+                  356.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1045,
+                  21,
+                  1440,
+                  462
+                ],
+                "sourcePivot": [
+                  1238.5,
+                  362.2000000000007
+                ],
+                "pivot": [
+                  193.5,
+                  341.2000000000007
+                ]
+              },
+              {
+                "sourceBounds": [
+                  47,
+                  457,
+                  428,
+                  786
+                ],
+                "sourcePivot": [
+                  181.5,
+                  703.0
+                ],
+                "pivot": [
+                  134.5,
+                  246.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  363,
+                  370,
+                  768,
+                  801
+                ],
+                "sourcePivot": [
+                  599.5,
+                  700.0
+                ],
+                "pivot": [
+                  236.5,
+                  330.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  733,
+                  445,
+                  1126,
+                  811
+                ],
+                "sourcePivot": [
+                  938.5,
+                  708.0
+                ],
+                "pivot": [
+                  205.5,
+                  263.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1079,
+                  437,
+                  1448,
+                  823
+                ],
+                "sourcePivot": [
+                  1267.5,
+                  701.0
+                ],
+                "pivot": [
+                  188.5,
+                  264.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  747,
+                  396,
+                  1086
+                ],
+                "sourcePivot": [
+                  205.5,
+                  1019.0
+                ],
+                "pivot": [
+                  205.5,
+                  272.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  358,
+                  775,
+                  740,
+                  1086
+                ],
+                "sourcePivot": [
+                  558.5,
+                  1032.0
+                ],
+                "pivot": [
+                  200.5,
+                  257.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  713,
+                  816,
+                  1130,
+                  1052
+                ],
+                "sourcePivot": [
+                  889.0,
+                  1033.0
+                ],
+                "pivot": [
+                  176.0,
+                  217.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1097,
+                  809,
+                  1448,
+                  1052
+                ],
+                "sourcePivot": [
+                  1247.5,
+                  1035.0
+                ],
+                "pivot": [
+                  150.5,
+                  226.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.3384279475982533,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "prompt": "Use case identity-preserve. Make ONE DIRECTION ONLY game animation strip for exact actor in reference. Reference gives identity only; change camera-facing orientation to specified direction. Landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 isolated full-body sprites in square invisible cells. CRITICAL SMALL SPRITES: entire sprite including weapon at most65% of each cell height/width.30% clear space between sprites. No frame may touch canvas edge or neighbor. Row1 attack ready/windup/strike/recover. Row2 hit impact/recoil/stagger/recover. Row3 death fatal-impact/collapse/near-ground/settled-corpse. Consistent scale and bottom-center contact anchor. Fully transparent RGBA, no labels/grid/floor/backdrop. Preserve dark handpainted fantasy style/colors/anatomy/equipment. ALL12 sprites maintain specified single direction including recoil/death. No mirrored anatomy. BACK VIEW facing AWAY from viewer toward top edge. Show closed rear of helmet, rear plate armor, brown straps and rear tabard; NO front visor, NO breastplate, NO face. Exact stocky armored medieval poleaxe infantry from reference with blackened steel plate, brown leather and tan tabard; two-handed long wooden shaft silver spiked poleaxe. Attack poleaxe chop AWAY. Preserve back view for all12 phases.",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-217fc4ec-3859-4042-b923-140ffeffb2c6.png",
+          "prompt_sha256": "869901156f445bb49f842b8712bb40643d517128111887d2305f70ef8c51d7dd",
+          "sha256": "81476d172050511ee832c3e527fe8c4a16626372e75dffd95644e93914b4485a"
+        }
+      ],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Corrected blocks use more detailed separately authored directional strips. Apparent body scale versus original front/back block needs final full-atlas runtime review; source strip packing uses one uniform scale per strip to preserve full alpha.",
+        "Left/right/back replaced. Right strip targeted margin edit restores complete poleaxe tip; selected strip12 bodies confirmed. Whole-sheet directional edit failed and was not selected."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64,
+      "viewScale": {
+        "down": 1,
+        "left": 1.6,
+        "right": 2,
+        "up": 1.55
+      },
+      "viewScaleReview": {
+        "method": "Visual author calibration from head/helmet, torso and legs of attack-ready pose in every direction, displayed at identical source-pixel scale. Factors apply uniformly to all12 poses in each directional band before shared atlas fit. Weapon silhouette excluded as size reference; no source mutation.",
+        "evidence": "/tmp/v410-a-body-calibration.png",
+        "status": "proposed visual factors; root to verify calibrated runtime contact sheet",
+        "notes": "enemy00 side-profile adjustment deliberately moderate for natural quadruped foreshortening; enemy01 UP is separately authored and also requires enlargement; enemy03 RIGHT/UP original poses remain at unity."
+      }
+    },
+    {
+      "id": "enemy-02",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: human skeleton archer, bare skull, bony ribs and limbs, shredded faded olive-brown cloth/hoodless tattered cape, curved wooden bow and arrows. Attack draws and releases bow",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-1bb5eb19-7a0d-4d89-984d-35eeb5adf8f6.png",
+      "edit_prompt": "Identity-preserve sprite-sheet correction. Edit attached existing atlas, preserve EXACT4columns\u00d712rows of48 separate sprites, portrait1:3, true RGBA transparency. Keep action order and each individual phase (attack then hit then death in each3-row direction block). Preserve exact actor identity/materials/weapon and all unaffected content. Correct the two sideways direction blocks only: rows4,5,6 must be TRUE LEFT FACING SIDE PROFILE archer. Skull nose/two teeth point LEFT, only left profile eye socket visible; bow aimed LEFT. Body front/ribs face LEFT, spine/back RIGHT. Rows7,8,9 must be TRUE RIGHT FACING SIDE PROFILE archer, skull nose points RIGHT, one right profile eye socket, bow aimed RIGHT, back/spine LEFT. Maintain hands anatomically holding bow and string. No horizontal mirror; independently draw sides. Keep rows1\u20133 and10\u201312 unchanged, same exact skeleton/outfit/scale. Each sprite needs safe cell margin, no clipping. No labels/borders/grid.",
+      "edit_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-8b9a30b4-c9db-4580-a23c-f2f3e79c4dfa.png",
+      "selected_source": "docs/qa/v410/source/enemy-02.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "495b9f37cca0f468e07c70ae359ad1b1be12aa5cde3489688f4408726da8c437",
+      "remap": null,
+      "prompt_sha256": "117204cbb905d6e4ccf42f28d94a97e94cae11025b4e43f0cf169089146f4bcb",
+      "components": [
+        {
+          "name": "enemy-02-left",
+          "path": "docs/qa/v410/source/enemy-02-left-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            3,
+            4,
+            5
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  29,
+                  24,
+                  384,
+                  385
+                ],
+                "sourcePivot": [
+                  237.5,
+                  353.0
+                ],
+                "pivot": [
+                  208.5,
+                  329.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  319,
+                  19,
+                  746,
+                  415
+                ],
+                "sourcePivot": [
+                  574.5,
+                  355.0
+                ],
+                "pivot": [
+                  255.5,
+                  336.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  719,
+                  15,
+                  1112,
+                  436
+                ],
+                "sourcePivot": [
+                  977.5,
+                  355.0
+                ],
+                "pivot": [
+                  258.5,
+                  340.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1087,
+                  33,
+                  1434,
+                  373
+                ],
+                "sourcePivot": [
+                  1303.5,
+                  353.0
+                ],
+                "pivot": [
+                  216.5,
+                  320.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  344,
+                  397,
+                  723
+                ],
+                "sourcePivot": [
+                  230.5,
+                  682.0
+                ],
+                "pivot": [
+                  230.5,
+                  338.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  397,
+                  378,
+                  746,
+                  762
+                ],
+                "sourcePivot": [
+                  552.5,
+                  685.0
+                ],
+                "pivot": [
+                  155.5,
+                  307.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  709,
+                  388,
+                  1130,
+                  819
+                ],
+                "sourcePivot": [
+                  940.5,
+                  686.0
+                ],
+                "pivot": [
+                  231.5,
+                  298.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1089,
+                  424,
+                  1432,
+                  822
+                ],
+                "sourcePivot": [
+                  1312.5,
+                  687.0
+                ],
+                "pivot": [
+                  223.5,
+                  263.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  625,
+                  394,
+                  1069
+                ],
+                "sourcePivot": [
+                  212.5,
+                  1019.3799999999974
+                ],
+                "pivot": [
+                  212.5,
+                  394.3799999999974
+                ]
+              },
+              {
+                "sourceBounds": [
+                  370,
+                  716,
+                  772,
+                  1086
+                ],
+                "sourcePivot": [
+                  543.5,
+                  1018.0
+                ],
+                "pivot": [
+                  173.5,
+                  302.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  685,
+                  803,
+                  1071,
+                  1086
+                ],
+                "sourcePivot": [
+                  878.5,
+                  1035.0
+                ],
+                "pivot": [
+                  193.5,
+                  232.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1067,
+                  806,
+                  1430,
+                  1086
+                ],
+                "sourcePivot": [
+                  1212.5,
+                  1040.0
+                ],
+                "pivot": [
+                  145.5,
+                  234.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.3490990990990991,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-f19b23db-e82e-4523-b637-ce77dad8926c.png",
+          "prompt": "Use case identity-preserve. This is ONE DIRECTION ONLY animation strip for exact actor in reference. Reference gives identity only; change pose AND camera-facing orientation to the direction specified below. Create landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 full-body sprites in equal square invisible cells. Row1 attack: ready,windup,strike,recover. Row2 hit: impact,recoil,stagger,recover. Row3 death: fatal impact,collapse,near-ground,settled corpse. Same actor scale and bottom-center contact anchor. Fully transparent RGBA, no labels, no grid, no backdrop, no floor. Every whole weapon and limb within cell with12% clear padding. Preserve dark handpainted fantasy style/colors/anatomy/equipment from reference. Every sprite in ALL3rows maintains the SINGLE facing direction below including hit/death. NO frontal sprites, NO turnaround, NO view mixture. Independently draw correct anatomy/perspective; no mirror. DIRECTION: SCREEN LEFT, strict anatomical SIDE PROFILE. Bare skull nose and teeth point LEFT toward image LEFT edge, one left profile eye socket, one side of ribcage. Spine/back and trailing cloth toward RIGHT. Same undead skeleton archer in ragged brown/olive shoulder cloth and loincloth, curved wooden bow, ivory bones, bare skull. Bow aimed LEFT, arrow released toward LEFT. Every single hit/death sprite remains left-side-facing. Do NOT show two front eye sockets.",
+          "prompt_sha256": "df9916c2a5f591a769faecd1757255935edeacb276a7128c05601266e8f75fcb",
+          "sha256": "50cf4ec6197d50c5f119af04d562c229d468c693b378426ab71a8e6b4742955f"
+        },
+        {
+          "name": "enemy-02-right",
+          "path": "docs/qa/v410/source/enemy-02-right-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            6,
+            7,
+            8
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  9,
+                  386,
+                  405
+                ],
+                "sourcePivot": [
+                  170.5,
+                  356.0
+                ],
+                "pivot": [
+                  170.5,
+                  347.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  361,
+                  23,
+                  752,
+                  426
+                ],
+                "sourcePivot": [
+                  508.5,
+                  353.0
+                ],
+                "pivot": [
+                  147.5,
+                  330.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  701,
+                  17,
+                  1120,
+                  454
+                ],
+                "sourcePivot": [
+                  856.5,
+                  356.0
+                ],
+                "pivot": [
+                  155.5,
+                  339.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1085,
+                  33,
+                  1434,
+                  448
+                ],
+                "sourcePivot": [
+                  1255.5,
+                  357.0
+                ],
+                "pivot": [
+                  170.5,
+                  324.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  21,
+                  408,
+                  368,
+                  766
+                ],
+                "sourcePivot": [
+                  169.5,
+                  705.0
+                ],
+                "pivot": [
+                  148.5,
+                  297.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  355,
+                  418,
+                  738,
+                  786
+                ],
+                "sourcePivot": [
+                  535.5,
+                  703.0
+                ],
+                "pivot": [
+                  180.5,
+                  285.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  697,
+                  433,
+                  1094,
+                  828
+                ],
+                "sourcePivot": [
+                  869.5,
+                  715.0
+                ],
+                "pivot": [
+                  172.5,
+                  282.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1070,
+                  424,
+                  1434,
+                  831
+                ],
+                "sourcePivot": [
+                  1235.5,
+                  713.0
+                ],
+                "pivot": [
+                  165.5,
+                  289.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  21,
+                  730,
+                  362,
+                  1086
+                ],
+                "sourcePivot": [
+                  201.5,
+                  1022.0
+                ],
+                "pivot": [
+                  180.5,
+                  292.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  353,
+                  769,
+                  750,
+                  1086
+                ],
+                "sourcePivot": [
+                  505.5,
+                  1020.0
+                ],
+                "pivot": [
+                  152.5,
+                  251.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  709,
+                  811,
+                  1106,
+                  1070
+                ],
+                "sourcePivot": [
+                  882.5,
+                  1024.0
+                ],
+                "pivot": [
+                  173.5,
+                  213.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1083,
+                  827,
+                  1440,
+                  1086
+                ],
+                "sourcePivot": [
+                  1272.5,
+                  1019.0
+                ],
+                "pivot": [
+                  189.5,
+                  192.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.35469107551487417,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "prompt": "Use case identity-preserve. Make ONE DIRECTION ONLY game animation strip for exact actor in reference. Reference gives identity only; change camera-facing orientation to specified direction. Landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 isolated full-body sprites in square invisible cells. CRITICAL SMALL SPRITES: entire sprite including weapon at most65% of each cell height/width.30% clear space between sprites. No frame may touch canvas edge or neighbor. Row1 attack ready/windup/strike/recover. Row2 hit impact/recoil/stagger/recover. Row3 death fatal-impact/collapse/near-ground/settled-corpse. Consistent scale and bottom-center contact anchor. Fully transparent RGBA, no labels/grid/floor/backdrop. Preserve dark handpainted fantasy style/colors/anatomy/equipment. ALL12 sprites maintain specified single direction including recoil/death. No mirrored anatomy. TRUE SIDE PROFILE facing SCREEN RIGHT. Bare skull nose and teeth point RIGHT, ONE profile eye socket; spine/back and trailing cloth LEFT. Exact undead skeleton archer from reference in ragged brown/olive cloth/loincloth, ivory bones, curved wooden bow. Bow aimed RIGHT, arrow released RIGHT. All hit/death sprites remain right-facing. Never show front skull with two eye sockets.",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-f13d897d-4dde-4cbf-94c6-81e3c96973c1.png",
+          "prompt_sha256": "ef0b23be648104c644e6ebc1c1e2e3a045389aba47cda270b45c701222748d82",
+          "sha256": "810d7fb2804e702896f4cd753628322328608de8e9d024f0dce1aa5f25a996e6"
+        }
+      ],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Corrected blocks use more detailed separately authored directional strips. Apparent body scale versus original front/back block needs final full-atlas runtime review; source strip packing uses one uniform scale per strip to preserve full alpha."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64,
+      "viewScale": {
+        "down": 1,
+        "left": 1.5,
+        "right": 1.5,
+        "up": 1
+      },
+      "viewScaleReview": {
+        "method": "Visual author calibration from head/helmet, torso and legs of attack-ready pose in every direction, displayed at identical source-pixel scale. Factors apply uniformly to all12 poses in each directional band before shared atlas fit. Weapon silhouette excluded as size reference; no source mutation.",
+        "evidence": "/tmp/v410-a-body-calibration.png",
+        "status": "proposed visual factors; root to verify calibrated runtime contact sheet",
+        "notes": "enemy00 side-profile adjustment deliberately moderate for natural quadruped foreshortening; enemy01 UP is separately authored and also requires enlargement; enemy03 RIGHT/UP original poses remain at unity."
+      }
+    },
+    {
+      "id": "enemy-03",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: stocky rust-dark steel armored warrior, closed helmet, massive angular brown-black two handed heavy rectangular war hammer, leather brown tunic and ragged tan tabard. Attack overhead hammer blow",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-6d7b3d7e-8bfc-407f-94a0-30a222304ece.png",
+      "edit_prompt": "Identity-preserve sprite sheet correction. Preserve entire exact4columns\u00d712rows transparent portrait1:3 atlas. Change ONLY rows4,5,6 (second3-row direction block) to true LEFT facing three-quarter side view. This is an armored hammer fighter. In those12 sprites, visor/front of helmet faces image LEFT, hammer attacks toward LEFT EDGE, breastplate faces LEFT, rear cape trails to RIGHT. Body must be newly drawn for this opposite view with appropriate hands, no horizontal reflection, same dark armor/brown cape/two-handed hammer identity. Match phase poses: row4 anticipation/lift/strike/recover, row5 hit recoil/stagger/recover, row6 collapse/corpse. Other rows1\u20133,7\u201312 remain unchanged. Also complete any top-edge missing hammer tip with transparent margin. Keep exact grid, all48 sprites, no text/border/grid, no ground, true RGBA transparency.",
+      "edit_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-11841069-4dfa-4cf9-ae94-672a6bc240d5.png",
+      "selected_source": "docs/qa/v410/source/enemy-03.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "7378e233f598559bb6d58cbe11522d57fb74540034c0f0d5bf413c7b86e23370",
+      "remap": null,
+      "prompt_sha256": "9f2161bf9238ec5ae211361558a1f1922c2a8b5a11e21986cba735218e9a7fdc",
+      "components": [
+        {
+          "name": "enemy-03-left",
+          "path": "docs/qa/v410/source/enemy-03-left-strip.png",
+          "dimensions": [
+            1448,
+            1086
+          ],
+          "row_band": [
+            3,
+            4,
+            5
+          ],
+          "packing": {
+            "threshold": 64,
+            "frames": [
+              {
+                "sourceBounds": [
+                  0,
+                  11,
+                  388,
+                  462
+                ],
+                "sourcePivot": [
+                  179.5,
+                  377.0
+                ],
+                "pivot": [
+                  179.5,
+                  366.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  290,
+                  0,
+                  742,
+                  458
+                ],
+                "sourcePivot": [
+                  530.5,
+                  376.0
+                ],
+                "pivot": [
+                  240.5,
+                  376.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  642,
+                  19,
+                  1132,
+                  468
+                ],
+                "sourcePivot": [
+                  947.5,
+                  375.0
+                ],
+                "pivot": [
+                  305.5,
+                  356.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1033,
+                  15,
+                  1442,
+                  478
+                ],
+                "sourcePivot": [
+                  1296.5,
+                  380.0
+                ],
+                "pivot": [
+                  263.5,
+                  365.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  23,
+                  426,
+                  414,
+                  794
+                ],
+                "sourcePivot": [
+                  232.5,
+                  702.0
+                ],
+                "pivot": [
+                  209.5,
+                  276.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  377,
+                  416,
+                  737,
+                  804
+                ],
+                "sourcePivot": [
+                  525.5,
+                  706.0
+                ],
+                "pivot": [
+                  148.5,
+                  290.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  707,
+                  449,
+                  1094,
+                  830
+                ],
+                "sourcePivot": [
+                  869.5,
+                  709.0
+                ],
+                "pivot": [
+                  162.5,
+                  260.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1077,
+                  428,
+                  1434,
+                  833
+                ],
+                "sourcePivot": [
+                  1234.5,
+                  704.0
+                ],
+                "pivot": [
+                  157.5,
+                  276.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  0,
+                  728,
+                  404,
+                  1086
+                ],
+                "sourcePivot": [
+                  173.5,
+                  1016.0
+                ],
+                "pivot": [
+                  173.5,
+                  288.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  337,
+                  772,
+                  749,
+                  1086
+                ],
+                "sourcePivot": [
+                  531.5,
+                  1021.0
+                ],
+                "pivot": [
+                  194.5,
+                  249.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  699,
+                  804,
+                  1059,
+                  1086
+                ],
+                "sourcePivot": [
+                  861.5,
+                  1031.0
+                ],
+                "pivot": [
+                  162.5,
+                  227.0
+                ]
+              },
+              {
+                "sourceBounds": [
+                  1047,
+                  819,
+                  1448,
+                  1086
+                ],
+                "sourcePivot": [
+                  1254.5,
+                  1018.0
+                ],
+                "pivot": [
+                  207.5,
+                  199.0
+                ]
+              }
+            ],
+            "method": "isolated-body-nearest-alpha; measured-lower-body-pivot"
+          },
+          "packing_scale": 0.3163265306122449,
+          "review": "True assigned facing reviewed; twelve coherent attack/hit/death frames; independent generated artwork packed without reflection or rotation",
+          "origin": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-cfb319e6-97da-4e55-87c7-03d7a9dbe338.png",
+          "prompt": "Use case identity-preserve. This is ONE DIRECTION ONLY animation strip for exact actor in reference. Reference gives identity only; change pose AND camera-facing orientation to the direction specified below. Create landscape4:3 canvas1024x768, EXACT4columns\u00d73rows,12 full-body sprites in equal square invisible cells. Row1 attack: ready,windup,strike,recover. Row2 hit: impact,recoil,stagger,recover. Row3 death: fatal impact,collapse,near-ground,settled corpse. Same actor scale and bottom-center contact anchor. Fully transparent RGBA, no labels, no grid, no backdrop, no floor. Every whole weapon and limb within cell with12% clear padding. Preserve dark handpainted fantasy style/colors/anatomy/equipment from reference. Every sprite in ALL3rows maintains the SINGLE facing direction below including hit/death. NO frontal sprites, NO turnaround, NO view mixture. Independently draw correct anatomy/perspective; no mirror. DIRECTION: SCREEN LEFT. Helmet visor points to image LEFT edge. Front of cuirass faces LEFT; cape/back trails RIGHT. TRUE SIDE PROFILE, only left-facing helmet profile, never helmet front. Same stocky dark steel plate-armored two-handed heavy rectangular warhammer warrior, brown cape and tan tabard as reference. Hammer attacks to LEFT.",
+          "prompt_sha256": "a063f6e0ce1f198faa2ec2fb1127d27de42e667595f4b420688b86f234b332f7",
+          "sha256": "ccd36cde929aaed6de35e56bfb42131fc4fc50b5319270ae5a7ee51870d33689"
+        }
+      ],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Corrected blocks use more detailed separately authored directional strips. Apparent body scale versus original front/back block needs final full-atlas runtime review; source strip packing uses one uniform scale per strip to preserve full alpha."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 240,
+      "viewScale": {
+        "down": 1,
+        "left": 1.6,
+        "right": 1,
+        "up": 1
+      },
+      "viewScaleReview": {
+        "method": "Visual author calibration from head/helmet, torso and legs of attack-ready pose in every direction, displayed at identical source-pixel scale. Factors apply uniformly to all12 poses in each directional band before shared atlas fit. Weapon silhouette excluded as size reference; no source mutation.",
+        "evidence": "/tmp/v410-a-body-calibration.png",
+        "status": "proposed visual factors; root to verify calibrated runtime contact sheet",
+        "notes": "enemy00 side-profile adjustment deliberately moderate for natural quadruped foreshortening; enemy01 UP is separately authored and also requires enlargement; enemy03 RIGHT/UP original poses remain at unity."
+      }
+    },
+    {
+      "id": "enemy-04",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: floating undead wraith, empty dark hood with shadow face, tattered desaturated blue-gray robe and ragged ochre cloth strips, silver skeletal arms, two long silver blades pointing down, faint cool blue magic. Attack crossing dual blade slash. The reference shows identity only; you MUST rotate actor into real side/back views. LEFT block all hoods opening faces image LEFT; RIGHT all hood openings image RIGHT; BACK show only closed rear hood cloth and rear robe, not eyes or hood opening.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-c9d6a173-c9a5-49ad-9f2d-f3b07e4552ac.png",
+      "selected_source": "docs/qa/v410/source/enemy-04.png",
+      "selected_dimensions": [
+        724,
+        2171
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "a58250b19590404410b164655c223e3cc51ec52d7cf533cafc113086d4e219df",
+      "remap": null,
+      "prompt_sha256": "24f4065da856f2b4369ab781fdfa01cc83850ab33995df7a9d7e9d9e5b407c97",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Original canvas724x2171; exporter uses component extraction rather than integer grid crop.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    },
+    {
+      "id": "enemy-05",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: grim humanoid plague doctor wearing full brown leather bird-beak gasmask with two round brass-rimmed black goggles, tattered moss-green hood/cape and skirt, dark leather armor, brass canisters and sickly yellow-green vapor accents. Holding small brass poison gear. Attack throws poison flask with one hand, no large weapon. Reference identity only. LEFT block bird beak points clearly toward LEFT image edge. RIGHT block beak toward RIGHT image edge. UP block shows back of hood, no mask/goggles.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-42da34e7-fca1-4fc7-bfd7-5a893232f768.png",
+      "selected_source": "docs/qa/v410/source/enemy-05.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "5e9b6c28db9d8a44147990c572de988dfb2ab06344f945a4dc09872b831c046c",
+      "remap": null,
+      "prompt_sha256": "617f32e18c71cf19e695e2feea37483b197c2f5baba7995e679baeee52b9a3f3",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    },
+    {
+      "id": "enemy-06",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: undead ice mage, full dark desaturated teal hood with pale gray face deep within, layered heavy charcoal and blue-gray robe, turquoise glowing rune embroidery, jagged spiked shoulder armor, long dark staff topped with green-turquoise glowing orb in a curled metal claw, cyan accents. Attack staff magical casting. Reference shows identity only. Rows4\u20136 true side view: hood opening and staff strike LEFTWARD toward image LEFT EDGE; rear cloak to RIGHT. Rows7\u20139 independently drawn opposite side: hood opening and staff strike RIGHTWARD toward image RIGHT EDGE, rear cloak to LEFT. Rows10\u201312 back: NO face, closed rear hood and rear cloak.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-3e9f85f4-98da-46a1-a1ae-777826a7e224.png",
+      "edit_prompt": "Precise-object-edit: correct ONLY clipping/margins of this existing sprite sheet. Keep EXACT4columns\u00d712rows and preserve every pose, direction, artwork, proportions, colors, identity and alpha. The raised staff in top row second column is clipped at canvas top: draw its complete orb inside the cell. Other attacks touch neighboring cells. Give every sprite 12% transparent clear space on every side by making each entire sprite about20% smaller centered horizontally within its current cell. Repaint tiny missing tip if needed, do not crop any weapon. Keep bottom-center pivot consistent. Do NOT generate extra rows/columns, no borders, no labels. Entire canvas portrait1:3 1024x3072, true RGBA transparency.",
+      "edit_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-e85c31fb-3f28-4fcd-82c3-a5baf97287df.png",
+      "selected_source": "docs/qa/v410/source/enemy-06.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "43bf5f75176bc37e50c1f3ce5ffe1ba600d1df6a7d8b333e2379d30a666e9859",
+      "remap": null,
+      "prompt_sha256": "02b0f88e2de8fe8b719c80814db91e276bdd1f50b9ef59082872b71ee04e151c",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Selected targeted margin edit retained directions and improved raised weapon clearance.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    },
+    {
+      "id": "enemy-07",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: muscular chunky ivory undead skeleton berserker wearing blackened iron segmented shoulder armor and boots, brown leather straps, skull trophy on right shoulder, large heavy silver cleaver axe held in right hand. Bare ivory ribcage, skull face, thick limb bones. Attack brutal cleaver chop. Rows4\u20136 skull NOSE and cleaver strike LEFTWARD toward image LEFT EDGE; back to RIGHT. Rows7\u20139 NOSE and cleaver strike RIGHTWARD toward image RIGHT EDGE, back to LEFT. Rows10\u201312 show rear skull, NO skull face or ribs from front, back straps and spine.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-fe6426f9-0bf1-4475-850f-83741ad655fb.png",
+      "edit_prompt": "Precise-object-edit: correct ONLY clipping/margins of this existing sprite sheet. Keep EXACT4columns\u00d712rows and preserve every pose, direction, artwork, proportions, colors, identity and alpha. The raised cleaver in top row second column is clipped at canvas top. Draw complete cleaver inside that cell. Give EVERY sprite 12% transparent clear space on every side by making each entire sprite about20% smaller centered horizontally within current cell. Repaint tiny missing weapon tip if needed. Keep bottom-center pivot consistent and preserve all48 current phases. Do NOT generate extra rows/columns, no borders, no labels. Entire canvas portrait1:3 1024x3072, true RGBA transparency.",
+      "edit_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-338f4164-119d-4ab6-929a-95c4f3b5b0c8.png",
+      "selected_source": "docs/qa/v410/source/enemy-07.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "6141a7503ebf452ea6fc26ba7feece0479148c47e80325ece8dda2651d9e27e8",
+      "remap": null,
+      "prompt_sha256": "ef100d1b9c355640932631b3005a95876dc0c3f88e5c25954b0ecbc404774621",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Selected targeted margin edit retained directions and improved raised weapon clearance.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    },
+    {
+      "id": "enemy-08",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: blue-gray muscular gargoyle demon, tall backswept silver horns, angular bestial gray face and long pointed ears, large dark charcoal bat wings, brown leather chest harness and loincloth, big clawed arms/feet and long thin tail. Flying hovering pose maintained. Attack lunging claw swipe. All wing tips must fit square cells, use folded wings when needed. Rows4\u20136 TRUE SIDE VIEW: long snout and claw strike toward image LEFT EDGE, tail toward RIGHT, wing attachment on back. Rows7\u20139 opposite side snout toward image RIGHT EDGE, tail toward LEFT. Rows10\u201312 show back of head and wing backs, NO face/chest. Death four phases collapse then final fallen folded-wing corpse entirely within cell.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-9630076e-19ec-41a4-9cca-7caa5e359999.png",
+      "selected_source": "docs/qa/v410/source/enemy-08.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "8e91d51777aada631f10d8ac1d79090dcdc00f69d475bedc6ebe9b9070dcaa0c",
+      "remap": null,
+      "prompt_sha256": "1e9024884c8a01be7c04619370c0edfc1b5b6ae5b34b54d7cb63c0c9586afcf7",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    },
+    {
+      "id": "enemy-09",
+      "prompt": "Use case: identity-preserve. Create production game animation sprite atlas from the attached exact single-actor reference. Preserve its specific anatomy, outfit, weapon, materials, colors and dark hand-painted graphic fantasy style. Ignore any stray colored bars or extraction artifacts. Full atlas portrait 1024x3072 pixels, aspect ratio 1:3. EXACTLY FOUR columns and TWELVE rows, 48 sprites total in identical square invisible cells. Transparent RGBA background, no floor, no text, no grid. Each sprite fits entirely inside its cell with at least 15% clear margin, including weapon or tail. Constant actor scale and bottom-center contact pivot. Fixed slightly elevated gameplay camera matching reference.\nRow order is strict: rows1-3 face DOWN toward viewer; rows4-6 face LEFT, clear left-facing profile; rows7-9 face RIGHT, independently drawn right-facing profile showing appropriate opposite body surfaces, NOT a horizontally mirrored left block; rows10-12 face UP away from viewer showing back of head/body, NO visible face. Each direction has three action rows: first attack across four chronological cells anticipation, wind-up, strike, recovery; second hit across four chronological cells contact, recoil, stagger, regaining balance; third death across four cells fatal impact, collapsing, near-ground, settled corpse. No standing corpse or repeated neutral frames. Do not change actor into a different species between views. No clipped limbs, merged neighboring sprites, background colors or checkerboard.\nCRITICAL facing enforcement: rows4,5,6 actor NOSE/FRONT points toward the LEFT EDGE of image, tail/back toward right edge; rows7,8,9 NOSE/FRONT toward RIGHT EDGE, back toward left. Every single frame in each block respects that facing; hit does not turn around. Do not swap these directional blocks.\nActor identity: massive dark brown wild boar war beast with large cream ivory tusks, short coarse mane and pointed ears, heavy iron steel-gray plate armor across shoulders and back studded with rivets and spikes, orange-brown leather straps with brass fittings, steel armored forehead, chunky dark hooves, short thin tail. Attack charging headbutt and tusk gore. Four quadruped legs only. Rows4\u20136 TRUE SIDE VIEW: boar snout and tusks point toward image LEFT EDGE, tail to RIGHT. Rows7\u20139 opposite side snout and tusks point toward image RIGHT EDGE, tail toward LEFT. Rows10\u201312 show rump/rear of armored back, head points AWAY, NO face or forward-facing tusks.",
+      "source_generation": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-05e78853-6439-4137-860f-40204983cd94.png",
+      "selected_source": "docs/qa/v410/source/enemy-09.png",
+      "selected_dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "source_sha256": "2c6aec21ed053418ff6fc9d771fd831571bdfccf4fd799631b072ca2ea745804",
+      "remap": null,
+      "prompt_sha256": "ebac245cceeac9d63d393b99c934b5e23de474cdc0c1145fd526938807acd9ab",
+      "components": [],
+      "review_flags": [
+        "48 complete bodies isolated by current exporter. Art agent did not test runtime; artistic acceptance remains separate.",
+        "Front/left/right/back visually distinct with coherent phases; natural torso turns during recoil/collapse."
+      ],
+      "extracted_body_count": 48,
+      "extraction_threshold": 64
+    }
+  ],
+  "packing_contract": "Connected-component extraction preserving complete alpha sprites; uniform strip resampling and translation into181px cells only. No generated direction derived by mirror, rotation, tint or deformation.",
+  "component_count": 8,
+  "raw_originals_preserved": true
+}

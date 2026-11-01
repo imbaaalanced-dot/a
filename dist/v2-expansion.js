@@ -39,13 +39,13 @@ function enemy(ctx,e,face,options={}){
  const airborne=e.flying?12+(e.r||13)*.35:0;
  return action(ctx,name,kind,progress,e.x,e.y+6-airborne,heights[e.type]||54,face,options.reduced);
 }
-function hero(ctx,h,attackTime,reduced=false){
+function hero(ctx,h,attackTime,reduced=false,time=0){
  const name=h.character==='kim'?'kim':'marcel';image(name+'.webp');
  let kind,progress;
- if(h.hp<=0){kind='death';if(!deaths.has(h))deaths.set(h,performance.now());progress=(performance.now()-deaths.get(h))/650;}
- else if(h.hitFlash>0){kind='hit';progress=1-h.hitFlash/.16;}
- else if(attackTime>0){kind='attack';progress=1-attackTime/.24;}
- else return false;
+ if(h.hp<=0){kind='death';if(!deaths.has(h))deaths.set(h,time);progress=(time-deaths.get(h))/.65;}
+ else if(h.hitFlash>0){deaths.delete(h);kind='hit';progress=1-h.hitFlash/.16;}
+ else if(attackTime>0){deaths.delete(h);kind='attack';progress=1-attackTime/.24;}
+ else {deaths.delete(h);return false;}
  return action(ctx,name,kind,progress,0,0,70,1,reduced);
 }
 function impact(ctx,p){
@@ -77,6 +77,7 @@ function placements(level,layout){
 }
 let environmentLevel=0;
 function environment(ctx,level,layout,low=false){
+ globalThis.TD2DirectionalActions?.setLevel(level);
  if(environmentLevel&&environmentLevel!==level){const name='environment-'+environmentLevel+'.webp';globalThis.DenkmalAssets?.release('expansion-v2:'+name);pending.delete(url(name));}environmentLevel=level;
  const art=image('environment-'+level+'.webp');if(!art)return false;
  const ground={1:[3,5],2:[4,5,7],3:[6,7],4:[4,5],5:[4,5],6:[1,5,6]};

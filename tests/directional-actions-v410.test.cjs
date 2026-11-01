@@ -1,0 +1,46 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const rows=Object.fromEntries(['down','left','right','up'].map((d,i)=>[d,{attack:i*3,hit:i*3+1,death:i*3+2}]));
+const ready=new Map(),requests=[],releases=[],waiting=[];
+const spec={file:'test-hero.webp',cell:192,anchor:[96,178],height:160,frames:4,rows};
+const box={Date,Math,TD2DirectionalAssets:{marcel:spec,kim:{...spec,file:'kim.webp'},'enemy-00':{...spec,file:'enemy.webp',cell:128}},DenkmalEnemyAnimations:{select:()=>0},DenkmalAssets:{ready:u=>ready.get(u)||null,retain(g,urls){requests.push(g);return new Promise(resolve=>waiting.push(()=>{for(const u of urls){const c=u==='enemy.webp'?128:192;ready.set(u,{naturalWidth:4*c,naturalHeight:12*c});}resolve();}));},release:g=>releases.push(g)}};
+vm.createContext(box);vm.runInContext(fs.readFileSync('dist/directional-actions-v410.js','utf8'),box);const api=box.TD2DirectionalActions;
+const ctx=()=>({globalAlpha:1,depth:0,draws:[],scales:[],save(){this.depth++;},restore(){this.depth--;},translate(){},scale(...args){this.scales.push(args);},drawImage(...args){this.draws.push(args);}});
+const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r));while(waiting.length)waiting.shift()();}};
+(async()=>{
+ assert.equal(requests.length,0,'lazy until action');
+ assert.equal(api.draw(ctx(),'marcel','attack','down',0,0,0,70),false,'cold image uses previous renderer');await drain();
+ for(const [d,mapping]of Object.entries(rows))for(const [kind,row]of Object.entries(mapping))for(let f=0;f<4;f++){
+  const c=ctx();assert(api.draw(c,'marcel',kind,d,(f+.1)/4,0,0,70));assert.deepEqual(c.draws[0].slice(1,5),[f*192,row*192,192,192]);assert.equal(c.depth,0);assert.equal(c.scales.length,0,'genuine rows never use a flip');
+ }
+ const backup=spec.rows.left;delete spec.rows.left;const missing=ctx();assert.equal(api.draw(missing,'marcel','attack','left',.5,0,0,70),false,'missing direction falls back without mirror');assert.equal(missing.draws.length,0);spec.rows.left=backup;
+ ready.set(spec.file,{naturalWidth:1,naturalHeight:1});assert.equal(api.draw(ctx(),'marcel','attack','up',.5,0,0,70),false,'failed or malformed texture falls back');ready.delete(spec.file);assert.equal(api.draw(ctx(),'marcel','hit','down',.5,0,0,70),false,'unavailable decoded image falls back');ready.set(spec.file,{naturalWidth:768,naturalHeight:2304});
+ const broken=ctx();broken.drawImage=()=>{throw Error('lost context');};assert.equal(api.draw(broken,'marcel','hit','up',.5,0,0,70),false);assert.equal(broken.depth,0,'Canvas restored after draw exception');
+ for(const [x,y,d]of [[0,10,'down'],[-10,0,'left'],[10,0,'right'],[0,-10,'up']])assert.equal(api.enemyDirection({x:5,y:5,velX:x,velY:y},{x:999,y:999}),d,'velocity outranks target');
+ assert.equal(api.enemyDirection({x:10,y:20,velX:0,velY:0},{x:10,y:0}),'up','idle uses target vector');assert.equal(api.enemyDirection({x:0,y:0,velX:0,velY:0}),null,'unknown heading cannot manufacture a direction');
+ const fleeing={x:0,y:0,velX:-15,velY:0,attackAnim:.2};
+ assert.equal(api.enemyDirection(fleeing,{x:100,y:0}),'right','attacking archer aims toward target while moving away');
+ assert.equal(api.enemyDirection({...fleeing,deathDirection:'up'},{x:100,y:0},'death'),'up','death preserves captured direction');
+ const attackingHero={hp:20,character:'marcel',direction:'down',attackDirection:'left'};const aimed=ctx();api.hero(aimed,attackingHero,.2,false,0);assert.equal(aimed.draws[0][2],3*192,'hero attack uses captured aim, not movement');
+ attackingHero.hitFlash=.1;const hit=ctx();api.hero(hit,attackingHero,.2,false,0);assert.equal(hit.draws[0][2],192,'hit uses movement facing rather than attack aim');
+ const heroState={x:30,y:40,hp:100,maxHp:100,direction:'down',dodge:0,faceX:0,faceY:1,equipment:{},gear:{},speed:1,damage:1,fireRate:1};
+ const node={classList:{add(){},remove(){}},setAttribute(){}};
+ const sagaBox={Math,Image:class{},matchMedia:()=>({matches:false}),document:{getElementById:()=>node},localStorage:{getItem:()=>null},clearTimeout(){},setTimeout(){},location:{search:''}};
+ vm.createContext(sagaBox);vm.runInContext(fs.readFileSync('dist/hero-saga.js','utf8'),sagaBox);const saga=sagaBox.HeroSaga;saga.init({getGame:()=>({hero:heroState})});
+ saga.onAttack({x:30,y:-50});assert.equal(heroState.attackDirection,'up','onAttack captures actual world target');
+ saga.update(.1,true,{x:1,y:0});assert.equal(heroState.direction,'right');assert.equal(heroState.attackDirection,'up','movement cannot replace the active attack aim');
+ saga.update(.2,true,{x:0,y:1});assert.equal(heroState.attackDirection,null,'completed attack releases captured aim');
+ saga.onAttack();assert.equal(heroState.attackDirection,'down','legacy no-argument attack uses facing safely');
+ const h={hp:0,character:'marcel',direction:'right'};
+ const first=ctx();api.hero(first,h,0,false,10);assert.equal(first.draws[0][1],0);
+ h.direction='down';const pause=ctx();api.hero(pause,h,0,false,10);assert.equal(pause.draws[0][2],8*192,'death keeps initial facing despite later movement-facing changes');assert.equal(pause.draws[0][1],0,'paused simulation clock holds death pose');
+ const later=ctx();api.hero(later,h,0,false,10.4);assert.equal(later.draws[0][1],384,'simulation clock advances death');
+ const last=ctx();api.hero(last,h,0,false,20);assert.equal(last.draws[0][1],576,'death frame clamps rather than wraps');h.hp=1;api.hero(ctx(),h,0,false,20);h.hp=0;const again=ctx();api.hero(again,h,0,false,30);assert.equal(again.draws[0][1],0,'revival resets death clock');
+ const reduced=ctx();api.draw(reduced,'marcel','death','up',.1,0,0,70,{reduced:true,alphaApplied:true});assert.equal(reduced.draws[0][1],576);assert.equal(reduced.globalAlpha,1,'caller-applied fade is not doubled');
+ const enemy={type:'runner',x:0,y:0,velX:-10,velY:0,attackAnim:.11};assert.equal(api.enemy(ctx(),enemy,{level:1}),false);await drain();const e=ctx();assert(api.enemy(e,enemy,{level:1}));assert.equal(e.draws[0][2],384);const archer=ctx();assert(api.enemy(archer,enemy,{level:1,target:{x:100,y:0}}));assert.equal(archer.draws[0][2],6*128,'active attack selects actual target row even against movement');const corpse=ctx();assert(api.enemy(corpse,{...enemy,deathDirection:'up'},{level:1,target:{x:100,y:0},deathProgress:.5}));assert.equal(corpse.draws[0][2],11*128,'death draw uses captured row');api.setLevel(2);assert(releases.length>0,'level transition releases enemy groups');
+ // Integration retains both earlier optional fallbacks and supplies simulation time.
+ assert.match(fs.readFileSync('dist/hero-saga.js','utf8'),/TD2DirectionalActions\?\.hero\(ctx,h,attackTime,reduced,animationTime\)/);
+ assert.match(fs.readFileSync('dist/enemy-animations.js','utf8'),/TD2DirectionalActions\?\.enemy\(ctx,e,options\)/);
+ assert.doesNotMatch(fs.readFileSync('dist/v2-expansion.js','utf8'),/performance\.now/);
+ console.log('V4.1 directional actions: 48 exact crops, real direction selection, cold/failed fallback, simulation-clock death, balanced Canvas, cache release passed.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
