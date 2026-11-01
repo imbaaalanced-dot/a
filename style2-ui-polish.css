@@ -38,3 +38,15 @@
 @media (prefers-reduced-motion:reduce){
  .arsenal button{transition:none}
 }
+
+/* ===== Graphics pass ui-gold1: Ansturm-parity meters, gilded crest, tactile HUD chrome. ===== */
+.meter i{background-image:linear-gradient(90deg,#a97f3e,#e0bd76)}
+.meter.monument i{background-image:linear-gradient(90deg,#5e7a70,#9db8a8)}
+.soul-meter i{background-image:linear-gradient(90deg,#3f8f8c,#8ecac4)}
+.boss-meter i{background-image:linear-gradient(90deg,#8a3428,#d8704b)}
+.meter i{transition:width .28s ease}
+.crest{border-color:#c9a76199;box-shadow:0 0 0 3px #0a0e0fb8,0 0 12px #c39a5226,inset 0 0 10px #c39a5233;background:radial-gradient(circle at 50% 35%,#1a2221,#101414)}
+.icon-btn:not(:disabled):hover,.hud-menu summary:hover{border-color:#c9a86a;color:#e9dcc0}
+.icon-btn:not(:disabled):active{filter:brightness(1.15)}
+.toast{box-shadow:0 10px 30px #000a}
+@media(prefers-reduced-motion:reduce){.meter i{transition:none}}
