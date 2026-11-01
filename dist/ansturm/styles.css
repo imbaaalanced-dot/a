@@ -106,13 +106,13 @@ header{padding:9px 15px;background:linear-gradient(100deg,#10191c,#0b1115);borde
 .arena{border:1px solid #8e764c75;border-radius:3px;background:#10191b;box-shadow:inset 0 0 35px #0008}
 .hud{top:10px;left:10px;right:10px;gap:6px}
 .health{max-width:310px;padding:8px 10px;border:1px solid #88745276;border-radius:3px;background:#0c1417e8}
-.health .bar{height:8px;border-radius:1px;background:#372826}.health .bar div{border-radius:1px;background:linear-gradient(90deg,#923c32,#d88559)}
-.health span{display:block;margin-top:6px;font:600 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.03em}
+.health .bar{height:10px;border-radius:1px;background:#372826}.health .bar div{border-radius:1px;background:linear-gradient(90deg,#a97f3e,#e0bd76)}.health .bar div.low{background:linear-gradient(90deg,#c07a2f,#e49b61)}.health .bar div.critical{background:linear-gradient(90deg,#923c32,#d88559)}
+.health span{display:block;margin-top:6px;font:600 12px/1.2 Inter,system-ui,sans-serif;letter-spacing:.03em;font-variant-numeric:tabular-nums}
 #shieldtext{border:1px solid #568b8b55;border-radius:3px;background:#0b1c21dd;color:#a8d9d1}
 .arena-bottom{bottom:10px;left:10px;right:10px;align-items:center}
 #state{border:1px solid #89764e5c;border-radius:3px;background:#0b1417eb;color:#e2d9c6;font:600 12px/1.25 Inter,system-ui,sans-serif;letter-spacing:.02em}
 .controls{gap:5px}
-.controls button,.shop-toggle{min-height:46px;border:1px solid #8e784f8c;border-radius:3px;background:linear-gradient(#182327ed,#0b1417ef);color:#e8dfcc;box-shadow:inset 0 1px #ffffff0d;font:600 12px/1.1 Inter,system-ui,sans-serif}
+.controls button,.shop-toggle{min-height:46px;border:1px solid #a48a52c9;border-radius:3px;background:linear-gradient(#232f36f0,#101920f0);color:#efe5cf;box-shadow:inset 0 1px #ffffff14;font:600 12px/1.1 Inter,system-ui,sans-serif}
 .controls button[aria-pressed="true"]{background:linear-gradient(#4d432d,#252720);border-color:#d1b576;color:#f3deb0}
 .controls #reset{border-color:#765b4e66;color:#cbbcb0}
 .shop{border:1px solid #8e764c75;border-radius:3px;background:#111a1c;box-shadow:inset 0 0 24px #000a}
@@ -209,3 +209,8 @@ dialog{border-radius:3px;background:#10191c;border-color:#ae925f}
 }
 @media(prefers-reduced-motion:reduce){.shop{transition:none}}
 @supports(padding:max(0px)){#app{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}
+
+/* Urgent build-pause cue (TD2 UI polish) */
+#state.urgent{color:#ffd98a;border-color:#cb9b4f}
+@media (prefers-reduced-motion: no-preference){#state.urgent{animation:td2-state-pulse 1s ease-in-out infinite}}
+@keyframes td2-state-pulse{50%{background:#2a2010e6}}
