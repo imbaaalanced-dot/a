@@ -1,0 +1,46 @@
+name: TD2 V4.1 preview
+on:
+  push:
+    branches: [release/v4.1.0]
+permissions:
+  contents: write
+concurrency:
+  group: td2-v410-preview
+  cancel-in-progress: true
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify V4.1 and preserved game systems
+        run: |
+          set -e
+          python3 -m pip install Pillow numpy scipy
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.cjs; do node "$test"; done
+          for test in tests/*.test.py; do python3 "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
+      - name: Publish V4.1 isolated test build
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-v410-pages origin/gh-pages
+          mkdir -p /tmp/td2-v410-pages/td2-all-patches/v4.1.0
+          cp -R dist/. /tmp/td2-v410-pages/td2-all-patches/v4.1.0/
+          touch /tmp/td2-v410-pages/.nojekyll
+          cd /tmp/td2-v410-pages
+          git add td2-all-patches/v4.1.0 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish V4.1 test build ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi

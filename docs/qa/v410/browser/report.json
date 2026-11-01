@@ -1,0 +1,58 @@
+{
+  "browser": "153.0.8010.0",
+  "kind": "Desktop Chromium and touch emulation; canvas snapshots and DOM assertions, not full-page screenshots or physical Android",
+  "results": [
+    {
+      "name": "desktop",
+      "version": "v4.1.0-alpha.1",
+      "maps": 6,
+      "art": {
+        "actors": 23,
+        "calls": 276
+      },
+      "saveReload": true,
+      "errors": [],
+      "missing": []
+    },
+    {
+      "name": "portrait",
+      "version": "v4.1.0-alpha.1",
+      "maps": 6,
+      "art": {
+        "actors": 23,
+        "calls": 276
+      },
+      "saveReload": true,
+      "errors": [],
+      "missing": []
+    },
+    {
+      "name": "landscape",
+      "version": "v4.1.0-alpha.1",
+      "maps": 6,
+      "art": {
+        "actors": 23,
+        "calls": 276
+      },
+      "saveReload": true,
+      "errors": [],
+      "missing": []
+    },
+    {
+      "bossWave": 5,
+      "state": "Pausiert · Steinbrecher: Monumentstoß! Distanzschaden unterbricht (8 % HP). · 1.7 s"
+    },
+    {
+      "bossWave": 10,
+      "state": "Pausiert · Sturmherr: Verstärkung angekündigt – Frost bremst nahe Gegner. · 1.8 s"
+    },
+    {
+      "bossWave": 15,
+      "state": "Pausiert · Schildwächter: Schutz angekündigt – danach Schadensfenster nutzen. · 1.2 s"
+    },
+    {
+      "bossWave": 20,
+      "state": "Pausiert · Koloss: Ansturm angekündigt – Frost bremst. · 1.8 s"
+    }
+  ]
+}

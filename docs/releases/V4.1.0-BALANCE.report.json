@@ -1,0 +1,8238 @@
+{
+  "version": "4.1.0",
+  "method": {
+    "dt": 0.03333333333333333,
+    "purchaseEverySeconds": 1,
+    "seeds": [
+      17,
+      71,
+      410
+    ],
+    "windows": [
+      {
+        "name": "early",
+        "startWave": 1,
+        "endWave": 15,
+        "budget": 100
+      },
+      {
+        "name": "mid",
+        "startWave": 20,
+        "endWave": 24,
+        "budget": 10000
+      },
+      {
+        "name": "high",
+        "startWave": 100,
+        "endWave": 104,
+        "budget": 100000
+      }
+    ],
+    "strategies": {
+      "balanced": [
+        "attack",
+        "tempo",
+        "range",
+        "hp",
+        "multishot",
+        "regen",
+        "frost",
+        "shield",
+        "explosion",
+        "gold",
+        "tesla",
+        "fire",
+        "pierce"
+      ],
+      "chain": [
+        "attack",
+        "tempo",
+        "range",
+        "tesla",
+        "multishot",
+        "frost",
+        "hp",
+        "regen"
+      ],
+      "splash": [
+        "attack",
+        "tempo",
+        "range",
+        "explosion",
+        "fire",
+        "multishot",
+        "hp",
+        "regen"
+      ],
+      "defense": [
+        "hp",
+        "regen",
+        "shield",
+        "attack",
+        "tempo",
+        "frost",
+        "range",
+        "pierce"
+      ]
+    },
+    "maxSecondsPerRun": 900,
+    "limitations": [
+      "Fixed scripted purchasers, no human win-rate estimate",
+      "Mid/high windows inject documented gold; no claim of naturally reachable builds",
+      "No Android FPS/RAM, rendering, UI, player movement or campaign combat estimate",
+      "Effects/enemy maxima are observed values in these runs, not device performance guarantees"
+    ]
+  },
+  "sourceSha256": {
+    "ansturm-alpha1-5/model.js": "2a3ecabb123353aa56681cff78165323ff49afebe3a0653187b7da157482e8a7",
+    "ansturm-alpha1-5/config.js": "0269c0e223c75af58f82690e4f70d84394be78ba0b5277645d33bc385e85b1ee",
+    "dist/game.js": "fff32c1aa87480eb8191d468e379ab2672ba9881a6e3030c40928d25cedc679c"
+  },
+  "campaign": {
+    "startEssence": 70,
+    "towerCosts": {
+      "boomerang": 48,
+      "bow": 25,
+      "cannon": 35,
+      "ballista": 45,
+      "mage": 46,
+      "mortar": 62,
+      "rift": 58,
+      "shrine": 58
+    },
+    "openings": {
+      "twoBow": {
+        "spent": 50,
+        "remaining": 20
+      },
+      "twoCannon": {
+        "spent": 70,
+        "remaining": 0
+      },
+      "bowCannon": {
+        "spent": 60,
+        "remaining": 10
+      }
+    },
+    "waves": [
+      {
+        "wave": 1,
+        "count": 9,
+        "types": {
+          "wraith": 9
+        },
+        "bounty": 18,
+        "lootLowerBound": 0,
+        "lootUpperBound": 36,
+        "chapterBonusOnEntry": 0
+      },
+      {
+        "wave": 2,
+        "count": 12,
+        "types": {
+          "wraith": 6,
+          "runner": 6
+        },
+        "bounty": 24,
+        "lootLowerBound": 0,
+        "lootUpperBound": 48,
+        "chapterBonusOnEntry": 0
+      },
+      {
+        "wave": 3,
+        "count": 15,
+        "types": {
+          "wraith": 5,
+          "runner": 5,
+          "brute": 5
+        },
+        "bounty": 35,
+        "lootLowerBound": 0,
+        "lootUpperBound": 60,
+        "chapterBonusOnEntry": 0
+      },
+      {
+        "wave": 4,
+        "count": 18,
+        "types": {
+          "wraith": 5,
+          "runner": 5,
+          "brute": 4,
+          "archer": 4
+        },
+        "bounty": 44,
+        "lootLowerBound": 0,
+        "lootUpperBound": 72,
+        "chapterBonusOnEntry": 35
+      },
+      {
+        "wave": 5,
+        "count": 21,
+        "types": {
+          "boss": 1,
+          "brute": 5,
+          "archer": 5,
+          "wraith": 5,
+          "runner": 5
+        },
+        "bounty": 85,
+        "lootLowerBound": 0,
+        "lootUpperBound": 116,
+        "chapterBonusOnEntry": 0
+      }
+    ],
+    "interpretation": "Bounty assumes every enemy is killed or retired. Loot bounds allow every drop to expire versus every drop collected; no double counting collected and end-wave loot. No perk, sale, route, damage or human success simulation."
+  },
+  "runs": [
+    {
+      "window": "early",
+      "strategy": "balanced",
+      "seed": 17,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 7,
+      "kills": 152,
+      "seconds": 326.3,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 77,
+      "goldSpent": 2413,
+      "goldEarned": 2390,
+      "upgradeDiversity": 6,
+      "weaponDiversity": 0,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 11,
+        "tempo": 6,
+        "range": 5,
+        "hp": 7,
+        "regen": 5,
+        "gold": 2
+      },
+      "tech": {
+        "attack": 11,
+        "tempo": 6,
+        "hp": 7,
+        "regen": 5,
+        "range": 5,
+        "gold": 2
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 45,
+        "attacksPerSecond": 2.3,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1.2,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 16,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 340,
+          "gold": 10,
+          "kills": 29,
+          "goldSpent": 434,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 41,
+          "kills": 96,
+          "goldSpent": 1460,
+          "goldEarned": 1401
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 312.724837,
+          "gold": 71,
+          "kills": 124,
+          "goldSpent": 1930,
+          "goldEarned": 1901
+        },
+        {
+          "wave": 7,
+          "status": "lost",
+          "hp": 0,
+          "gold": 77,
+          "kills": 152,
+          "goldSpent": 2413,
+          "goldEarned": 2390
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "balanced",
+      "seed": 71,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 181,
+      "seconds": 372.466667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 51,
+      "goldSpent": 2963,
+      "goldEarned": 2914,
+      "upgradeDiversity": 6,
+      "weaponDiversity": 0,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 6,
+        "hp": 7,
+        "regen": 5,
+        "gold": 3
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 5,
+        "range": 6,
+        "gold": 3
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.51,
+        "goldMultiplier": 1.3,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 250,
+          "gold": 27,
+          "kills": 13,
+          "goldSpent": 225,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 45,
+          "kills": 96,
+          "goldSpent": 1460,
+          "goldEarned": 1405
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 406.24163,
+          "gold": 57,
+          "kills": 124,
+          "goldSpent": 1930,
+          "goldEarned": 1887
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 92.23111,
+          "gold": 100,
+          "kills": 155,
+          "goldSpent": 2433,
+          "goldEarned": 2433
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 51,
+          "kills": 181,
+          "goldSpent": 2963,
+          "goldEarned": 2914
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "balanced",
+      "seed": 410,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 178,
+      "seconds": 376.233333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 140,
+      "goldSpent": 2814,
+      "goldEarned": 2854,
+      "upgradeDiversity": 6,
+      "weaponDiversity": 0,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 5,
+        "hp": 7,
+        "regen": 5,
+        "gold": 3
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 5,
+        "range": 5,
+        "gold": 3
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1.3,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 34,
+          "kills": 96,
+          "goldSpent": 1471,
+          "goldEarned": 1405
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 412.775375,
+          "gold": 57,
+          "kills": 124,
+          "goldSpent": 1930,
+          "goldEarned": 1887
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 289.059924,
+          "gold": 100,
+          "kills": 155,
+          "goldSpent": 2433,
+          "goldEarned": 2433
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 140,
+          "kills": 178,
+          "goldSpent": 2814,
+          "goldEarned": 2854
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "chain",
+      "seed": 17,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 7,
+      "kills": 152,
+      "seconds": 324.8,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 47,
+      "goldSpent": 2269,
+      "goldEarned": 2216,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 11,
+        "tempo": 6,
+        "range": 5,
+        "hp": 7,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 11,
+        "tempo": 6,
+        "hp": 7,
+        "regen": 5,
+        "range": 5,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 45,
+        "attacksPerSecond": 2.3,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 16,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 340,
+          "gold": 10,
+          "kills": 29,
+          "goldSpent": 434,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 371.69145,
+          "gold": 114,
+          "kills": 124,
+          "goldSpent": 1786,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 7,
+          "status": "lost",
+          "hp": 0,
+          "gold": 47,
+          "kills": 152,
+          "goldSpent": 2269,
+          "goldEarned": 2216
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "chain",
+      "seed": 71,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 182,
+      "seconds": 373,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 56,
+      "goldSpent": 2696,
+      "goldEarned": 2652,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 5,
+        "hp": 8,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 8,
+        "regen": 5,
+        "range": 5,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 490,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 250,
+          "gold": 27,
+          "kills": 13,
+          "goldSpent": 225,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 430,
+          "gold": 98,
+          "kills": 124,
+          "goldSpent": 1802,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 38.058489,
+          "gold": 95,
+          "kills": 155,
+          "goldSpent": 2269,
+          "goldEarned": 2264
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 56,
+          "kills": 182,
+          "goldSpent": 2696,
+          "goldEarned": 2652
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "chain",
+      "seed": 410,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 179,
+      "seconds": 378.5,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 11,
+      "goldSpent": 2701,
+      "goldEarned": 2612,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 6,
+        "hp": 7,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 5,
+        "range": 6,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.51,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 428.077693,
+          "gold": 114,
+          "kills": 124,
+          "goldSpent": 1786,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 288.593103,
+          "gold": 90,
+          "kills": 155,
+          "goldSpent": 2274,
+          "goldEarned": 2264
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 11,
+          "kills": 179,
+          "goldSpent": 2701,
+          "goldEarned": 2612
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "splash",
+      "seed": 17,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 7,
+      "kills": 152,
+      "seconds": 324.8,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 47,
+      "goldSpent": 2269,
+      "goldEarned": 2216,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 11,
+        "tempo": 6,
+        "range": 5,
+        "hp": 7,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 11,
+        "tempo": 6,
+        "hp": 7,
+        "regen": 5,
+        "range": 5,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 45,
+        "attacksPerSecond": 2.3,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 16,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 340,
+          "gold": 10,
+          "kills": 29,
+          "goldSpent": 434,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 371.69145,
+          "gold": 114,
+          "kills": 124,
+          "goldSpent": 1786,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 7,
+          "status": "lost",
+          "hp": 0,
+          "gold": 47,
+          "kills": 152,
+          "goldSpent": 2269,
+          "goldEarned": 2216
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "splash",
+      "seed": 71,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 182,
+      "seconds": 373,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 56,
+      "goldSpent": 2696,
+      "goldEarned": 2652,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 5,
+        "hp": 8,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 8,
+        "regen": 5,
+        "range": 5,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 490,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 250,
+          "gold": 27,
+          "kills": 13,
+          "goldSpent": 225,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 430,
+          "gold": 98,
+          "kills": 124,
+          "goldSpent": 1802,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 38.058489,
+          "gold": 95,
+          "kills": 155,
+          "goldSpent": 2269,
+          "goldEarned": 2264
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 56,
+          "kills": 182,
+          "goldSpent": 2696,
+          "goldEarned": 2652
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "splash",
+      "seed": 410,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 8,
+      "kills": 179,
+      "seconds": 378.5,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 11,
+      "goldSpent": 2701,
+      "goldEarned": 2612,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 6,
+        "hp": 7,
+        "regen": 5
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 5,
+        "range": 6,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 5,
+        "rangeRatio": 0.51,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 4,
+      "maxEnemies": 20,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 250,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 1,
+          "kills": 13,
+          "goldSpent": 251,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 310,
+          "gold": 2,
+          "kills": 29,
+          "goldSpent": 442,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 340,
+          "gold": 50,
+          "kills": 48,
+          "goldSpent": 646,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 370,
+          "gold": 26,
+          "kills": 70,
+          "goldSpent": 973,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 400,
+          "gold": 72,
+          "kills": 96,
+          "goldSpent": 1400,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 7,
+          "status": "running",
+          "hp": 428.077693,
+          "gold": 114,
+          "kills": 124,
+          "goldSpent": 1786,
+          "goldEarned": 1800
+        },
+        {
+          "wave": 8,
+          "status": "running",
+          "hp": 288.593103,
+          "gold": 90,
+          "kills": 155,
+          "goldSpent": 2274,
+          "goldEarned": 2264
+        },
+        {
+          "wave": 8,
+          "status": "lost",
+          "hp": 0,
+          "gold": 11,
+          "kills": 179,
+          "goldSpent": 2701,
+          "goldEarned": 2612
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "defense",
+      "seed": 17,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 6,
+      "kills": 121,
+      "seconds": 283.9,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 46,
+      "goldSpent": 1794,
+      "goldEarned": 1740,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 7,
+        "regen": 4,
+        "attack": 10,
+        "tempo": 5,
+        "range": 4
+      },
+      "tech": {
+        "attack": 10,
+        "tempo": 5,
+        "hp": 7,
+        "regen": 4,
+        "range": 4,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 42,
+        "attacksPerSecond": 2.15,
+        "maxHp": 460,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.44,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 16,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 280,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 340,
+          "gold": 19,
+          "kills": 13,
+          "goldSpent": 233,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 370,
+          "gold": 0,
+          "kills": 29,
+          "goldSpent": 444,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 370,
+          "gold": 39,
+          "kills": 48,
+          "goldSpent": 657,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 400,
+          "gold": 20,
+          "kills": 70,
+          "goldSpent": 979,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 460,
+          "gold": 55,
+          "kills": 96,
+          "goldSpent": 1417,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 6,
+          "status": "lost",
+          "hp": 0,
+          "gold": 46,
+          "kills": 121,
+          "goldSpent": 1794,
+          "goldEarned": 1740
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "defense",
+      "seed": 71,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 6,
+      "kills": 118,
+      "seconds": 280.366667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 101,
+      "goldSpent": 1690,
+      "goldEarned": 1691,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 7,
+        "regen": 4,
+        "attack": 9,
+        "tempo": 5,
+        "range": 4
+      },
+      "tech": {
+        "attack": 9,
+        "tempo": 5,
+        "hp": 7,
+        "regen": 4,
+        "range": 4,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 39,
+        "attacksPerSecond": 2.15,
+        "maxHp": 460,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.44,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 15,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 280,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 310,
+          "gold": 31,
+          "kills": 13,
+          "goldSpent": 221,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 370,
+          "gold": 0,
+          "kills": 29,
+          "goldSpent": 444,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 339.969333,
+          "gold": 39,
+          "kills": 48,
+          "goldSpent": 657,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 400,
+          "gold": 21,
+          "kills": 70,
+          "goldSpent": 978,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 460,
+          "gold": 55,
+          "kills": 96,
+          "goldSpent": 1417,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 6,
+          "status": "lost",
+          "hp": 0,
+          "gold": 101,
+          "kills": 118,
+          "goldSpent": 1690,
+          "goldEarned": 1691
+        }
+      ]
+    },
+    {
+      "window": "early",
+      "strategy": "defense",
+      "seed": 410,
+      "startWave": 1,
+      "endWave": 15,
+      "initialGold": 100,
+      "funding": "natural opening",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 6,
+      "kills": 118,
+      "seconds": 287.3,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 113,
+      "goldSpent": 1690,
+      "goldEarned": 1703,
+      "upgradeDiversity": 5,
+      "weaponDiversity": 0,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 7,
+        "regen": 4,
+        "attack": 9,
+        "tempo": 5,
+        "range": 4
+      },
+      "tech": {
+        "attack": 9,
+        "tempo": 5,
+        "hp": 7,
+        "regen": 4,
+        "range": 4,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 0,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 39,
+        "attacksPerSecond": 2.15,
+        "maxHp": 460,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.44,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 3,
+      "maxEnemies": 16,
+      "samples": [
+        {
+          "wave": 1,
+          "status": "running",
+          "hp": 280,
+          "gold": 5,
+          "kills": 0,
+          "goldSpent": 95,
+          "goldEarned": 0
+        },
+        {
+          "wave": 2,
+          "status": "running",
+          "hp": 337,
+          "gold": 19,
+          "kills": 13,
+          "goldSpent": 233,
+          "goldEarned": 152
+        },
+        {
+          "wave": 3,
+          "status": "running",
+          "hp": 340,
+          "gold": 5,
+          "kills": 29,
+          "goldSpent": 439,
+          "goldEarned": 344
+        },
+        {
+          "wave": 4,
+          "status": "running",
+          "hp": 370,
+          "gold": 51,
+          "kills": 48,
+          "goldSpent": 645,
+          "goldEarned": 596
+        },
+        {
+          "wave": 5,
+          "status": "running",
+          "hp": 360.6487,
+          "gold": 12,
+          "kills": 70,
+          "goldSpent": 987,
+          "goldEarned": 899
+        },
+        {
+          "wave": 6,
+          "status": "running",
+          "hp": 440.633083,
+          "gold": 55,
+          "kills": 96,
+          "goldSpent": 1417,
+          "goldEarned": 1372
+        },
+        {
+          "wave": 6,
+          "status": "lost",
+          "hp": 0,
+          "gold": 113,
+          "kills": 118,
+          "goldSpent": 1690,
+          "goldEarned": 1703
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "balanced",
+      "seed": 17,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 70,
+      "seconds": 77.466667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 80,
+      "goldSpent": 11485,
+      "goldEarned": 1565,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 5,
+        "hp": 7,
+        "multishot": 3,
+        "regen": 4,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 3,
+        "tesla": 2,
+        "fire": 2,
+        "pierce": 2
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 4,
+        "range": 5,
+        "gold": 3
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 2,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 2,
+        "pierce": 2
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1.3,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 33,
+      "maxEnemies": 40,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 370,
+          "gold": 24,
+          "kills": 0,
+          "goldSpent": 9976,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 80,
+          "kills": 70,
+          "goldSpent": 11485,
+          "goldEarned": 1565
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "balanced",
+      "seed": 71,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 70,
+      "seconds": 72.433333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 80,
+      "goldSpent": 11485,
+      "goldEarned": 1565,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 12,
+        "tempo": 7,
+        "range": 5,
+        "hp": 7,
+        "multishot": 3,
+        "regen": 4,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 3,
+        "tesla": 2,
+        "fire": 2,
+        "pierce": 2
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 7,
+        "hp": 7,
+        "regen": 4,
+        "range": 5,
+        "gold": 3
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 2,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 2,
+        "pierce": 2
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.45,
+        "maxHp": 460,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1.3,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 33,
+      "maxEnemies": 45,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 370,
+          "gold": 24,
+          "kills": 0,
+          "goldSpent": 9976,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 80,
+          "kills": 70,
+          "goldSpent": 11485,
+          "goldEarned": 1565
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "balanced",
+      "seed": 410,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 70,
+      "seconds": 71.7,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 16,
+      "goldSpent": 11549,
+      "goldEarned": 1565,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 13,
+        "tempo": 7,
+        "range": 5,
+        "hp": 6,
+        "multishot": 3,
+        "regen": 4,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 3,
+        "tesla": 2,
+        "fire": 2,
+        "pierce": 2
+      },
+      "tech": {
+        "attack": 13,
+        "tempo": 7,
+        "hp": 6,
+        "regen": 4,
+        "range": 5,
+        "gold": 3
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 2,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 2,
+        "pierce": 2
+      },
+      "stats": {
+        "damage": 51,
+        "attacksPerSecond": 2.45,
+        "maxHp": 430,
+        "regenPerSecond": 4,
+        "rangeRatio": 0.475,
+        "goldMultiplier": 1.3,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 35,
+      "maxEnemies": 43,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 370,
+          "gold": 24,
+          "kills": 0,
+          "goldSpent": 9976,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 16,
+          "kills": 70,
+          "goldSpent": 11549,
+          "goldEarned": 1565
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "chain",
+      "seed": 17,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "completed",
+      "deaths": 0,
+      "lastWave": 24,
+      "kills": 381,
+      "seconds": 284.533333,
+      "hp": 640,
+      "minHp": 237.588866,
+      "finalGold": 567,
+      "goldSpent": 16214,
+      "goldEarned": 6781,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 19,
+        "tempo": 13,
+        "range": 10,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 13,
+        "regen": 10
+      },
+      "tech": {
+        "attack": 19,
+        "tempo": 13,
+        "hp": 13,
+        "regen": 10,
+        "range": 10,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 69,
+        "attacksPerSecond": 3.3499999999999996,
+        "maxHp": 640,
+        "regenPerSecond": 10,
+        "rangeRatio": 0.65,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 32,
+      "maxEnemies": 44,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 64,
+          "kills": 0,
+          "goldSpent": 9936,
+          "goldEarned": 0
+        },
+        {
+          "wave": 21,
+          "status": "running",
+          "hp": 237.588866,
+          "gold": 2,
+          "kills": 71,
+          "goldSpent": 11344,
+          "goldEarned": 1346
+        },
+        {
+          "wave": 22,
+          "status": "running",
+          "hp": 580,
+          "gold": 3,
+          "kills": 144,
+          "goldSpent": 12629,
+          "goldEarned": 2632
+        },
+        {
+          "wave": 23,
+          "status": "running",
+          "hp": 610,
+          "gold": 127,
+          "kills": 220,
+          "goldSpent": 13831,
+          "goldEarned": 3958
+        },
+        {
+          "wave": 24,
+          "status": "running",
+          "hp": 640,
+          "gold": 172,
+          "kills": 299,
+          "goldSpent": 15171,
+          "goldEarned": 5343
+        },
+        {
+          "wave": 24,
+          "status": "intermission",
+          "hp": 640,
+          "gold": 567,
+          "kills": 381,
+          "goldSpent": 16214,
+          "goldEarned": 6781
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "chain",
+      "seed": 71,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 70,
+      "seconds": 70.766667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 138,
+      "goldSpent": 11083,
+      "goldEarned": 1221,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 15,
+        "tempo": 9,
+        "range": 9,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 10,
+        "regen": 9
+      },
+      "tech": {
+        "attack": 15,
+        "tempo": 9,
+        "hp": 10,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 57,
+        "attacksPerSecond": 2.75,
+        "maxHp": 550,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 31,
+      "maxEnemies": 42,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 64,
+          "kills": 0,
+          "goldSpent": 9936,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 138,
+          "kills": 70,
+          "goldSpent": 11083,
+          "goldEarned": 1221
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "chain",
+      "seed": 410,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "completed",
+      "deaths": 0,
+      "lastWave": 24,
+      "kills": 381,
+      "seconds": 299.433333,
+      "hp": 640,
+      "minHp": 115.676367,
+      "finalGold": 567,
+      "goldSpent": 16214,
+      "goldEarned": 6781,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 19,
+        "tempo": 13,
+        "range": 10,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 13,
+        "regen": 10
+      },
+      "tech": {
+        "attack": 19,
+        "tempo": 13,
+        "hp": 13,
+        "regen": 10,
+        "range": 10,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 69,
+        "attacksPerSecond": 3.3499999999999996,
+        "maxHp": 640,
+        "regenPerSecond": 10,
+        "rangeRatio": 0.65,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 32,
+      "maxEnemies": 45,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 64,
+          "kills": 0,
+          "goldSpent": 9936,
+          "goldEarned": 0
+        },
+        {
+          "wave": 21,
+          "status": "running",
+          "hp": 145.676367,
+          "gold": 2,
+          "kills": 71,
+          "goldSpent": 11344,
+          "goldEarned": 1346
+        },
+        {
+          "wave": 22,
+          "status": "running",
+          "hp": 580,
+          "gold": 3,
+          "kills": 144,
+          "goldSpent": 12629,
+          "goldEarned": 2632
+        },
+        {
+          "wave": 23,
+          "status": "running",
+          "hp": 610,
+          "gold": 146,
+          "kills": 220,
+          "goldSpent": 13812,
+          "goldEarned": 3958
+        },
+        {
+          "wave": 24,
+          "status": "running",
+          "hp": 640,
+          "gold": 172,
+          "kills": 299,
+          "goldSpent": 15171,
+          "goldEarned": 5343
+        },
+        {
+          "wave": 24,
+          "status": "intermission",
+          "hp": 640,
+          "gold": 567,
+          "kills": 381,
+          "goldSpent": 16214,
+          "goldEarned": 6781
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "splash",
+      "seed": 17,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 40,
+      "seconds": 30.033333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 140,
+      "goldSpent": 10438,
+      "goldEarned": 578,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 13,
+        "tempo": 9,
+        "range": 9,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 9,
+        "regen": 9
+      },
+      "tech": {
+        "attack": 13,
+        "tempo": 9,
+        "hp": 9,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 51,
+        "attacksPerSecond": 2.75,
+        "maxHp": 520,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 12,
+      "maxEnemies": 43,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 14,
+          "kills": 0,
+          "goldSpent": 9986,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 140,
+          "kills": 40,
+          "goldSpent": 10438,
+          "goldEarned": 578
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "splash",
+      "seed": 71,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 40,
+      "seconds": 30.233333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 138,
+      "goldSpent": 10438,
+      "goldEarned": 576,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 13,
+        "tempo": 9,
+        "range": 9,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 9,
+        "regen": 9
+      },
+      "tech": {
+        "attack": 13,
+        "tempo": 9,
+        "hp": 9,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 51,
+        "attacksPerSecond": 2.75,
+        "maxHp": 520,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 13,
+      "maxEnemies": 45,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 14,
+          "kills": 0,
+          "goldSpent": 9986,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 138,
+          "kills": 40,
+          "goldSpent": 10438,
+          "goldEarned": 576
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "splash",
+      "seed": 410,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 36,
+      "seconds": 28.933333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 66,
+      "goldSpent": 10438,
+      "goldEarned": 504,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 13,
+        "tempo": 9,
+        "range": 9,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 9,
+        "regen": 9
+      },
+      "tech": {
+        "attack": 13,
+        "tempo": 9,
+        "hp": 9,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 51,
+        "attacksPerSecond": 2.75,
+        "maxHp": 520,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 12,
+      "maxEnemies": 45,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 520,
+          "gold": 14,
+          "kills": 0,
+          "goldSpent": 9986,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 66,
+          "kills": 36,
+          "goldSpent": 10438,
+          "goldEarned": 504
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "defense",
+      "seed": 17,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 4,
+      "seconds": 18.166667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 19,
+      "goldSpent": 10033,
+      "goldEarned": 52,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 10,
+        "regen": 9,
+        "shield": 3,
+        "attack": 12,
+        "tempo": 9,
+        "frost": 3,
+        "range": 9,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 9,
+        "hp": 10,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.75,
+        "maxHp": 550,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 6,
+      "maxEnemies": 47,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 550,
+          "gold": 116,
+          "kills": 0,
+          "goldSpent": 9884,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 19,
+          "kills": 4,
+          "goldSpent": 10033,
+          "goldEarned": 52
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "defense",
+      "seed": 71,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 6,
+      "seconds": 18.733333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 32,
+      "goldSpent": 10033,
+      "goldEarned": 65,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 10,
+        "regen": 9,
+        "shield": 3,
+        "attack": 12,
+        "tempo": 9,
+        "frost": 3,
+        "range": 9,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 9,
+        "hp": 10,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.75,
+        "maxHp": 550,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 7,
+      "maxEnemies": 47,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 550,
+          "gold": 116,
+          "kills": 0,
+          "goldSpent": 9884,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 32,
+          "kills": 6,
+          "goldSpent": 10033,
+          "goldEarned": 65
+        }
+      ]
+    },
+    {
+      "window": "mid",
+      "strategy": "defense",
+      "seed": 410,
+      "startWave": 20,
+      "endWave": 24,
+      "initialGold": 10000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 20,
+      "kills": 4,
+      "seconds": 18.2,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 5,
+      "goldSpent": 10033,
+      "goldEarned": 38,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 10,
+        "regen": 9,
+        "shield": 3,
+        "attack": 12,
+        "tempo": 9,
+        "frost": 3,
+        "range": 9,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 12,
+        "tempo": 9,
+        "hp": 10,
+        "regen": 9,
+        "range": 9,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 48,
+        "attacksPerSecond": 2.75,
+        "maxHp": 550,
+        "regenPerSecond": 9,
+        "rangeRatio": 0.615,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 6,
+      "maxEnemies": 47,
+      "samples": [
+        {
+          "wave": 20,
+          "status": "running",
+          "hp": 550,
+          "gold": 116,
+          "kills": 0,
+          "goldSpent": 9884,
+          "goldEarned": 0
+        },
+        {
+          "wave": 20,
+          "status": "lost",
+          "hp": 0,
+          "gold": 5,
+          "kills": 4,
+          "goldSpent": 10033,
+          "goldEarned": 38
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "balanced",
+      "seed": 17,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 14,
+      "seconds": 16.2,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 75,
+      "goldSpent": 100431,
+      "goldEarned": 506,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 21,
+        "tempo": 18,
+        "range": 17,
+        "hp": 18,
+        "multishot": 3,
+        "regen": 17,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 17,
+        "tesla": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 21,
+        "tempo": 18,
+        "hp": 18,
+        "regen": 17,
+        "range": 17,
+        "gold": 17
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 75,
+        "attacksPerSecond": 4.1,
+        "maxHp": 790,
+        "regenPerSecond": 17,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 2.7,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 42,
+      "maxEnemies": 187,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 790,
+          "gold": 336,
+          "kills": 0,
+          "goldSpent": 99664,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 75,
+          "kills": 14,
+          "goldSpent": 100431,
+          "goldEarned": 506
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "balanced",
+      "seed": 71,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 15,
+      "seconds": 16.866667,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 795,
+      "goldSpent": 99664,
+      "goldEarned": 459,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 20,
+        "tempo": 18,
+        "range": 17,
+        "hp": 18,
+        "multishot": 3,
+        "regen": 17,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 17,
+        "tesla": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 20,
+        "tempo": 18,
+        "hp": 18,
+        "regen": 17,
+        "range": 17,
+        "gold": 17
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 72,
+        "attacksPerSecond": 4.1,
+        "maxHp": 790,
+        "regenPerSecond": 17,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 2.7,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 42,
+      "maxEnemies": 194,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 790,
+          "gold": 336,
+          "kills": 0,
+          "goldSpent": 99664,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 795,
+          "kills": 15,
+          "goldSpent": 99664,
+          "goldEarned": 459
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "balanced",
+      "seed": 410,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 13,
+      "seconds": 16,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 751,
+      "goldSpent": 99664,
+      "goldEarned": 415,
+      "upgradeDiversity": 13,
+      "weaponDiversity": 7,
+      "researchDiversity": 6,
+      "purchases": {
+        "attack": 20,
+        "tempo": 18,
+        "range": 17,
+        "hp": 18,
+        "multishot": 3,
+        "regen": 17,
+        "frost": 3,
+        "shield": 3,
+        "explosion": 3,
+        "gold": 17,
+        "tesla": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 20,
+        "tempo": 18,
+        "hp": 18,
+        "regen": 17,
+        "range": 17,
+        "gold": 17
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 3,
+        "frost": 3,
+        "shield": 3,
+        "fire": 3,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 72,
+        "attacksPerSecond": 4.1,
+        "maxHp": 790,
+        "regenPerSecond": 17,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 2.7,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 43,
+      "maxEnemies": 186,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 790,
+          "gold": 336,
+          "kills": 0,
+          "goldSpent": 99664,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 751,
+          "kills": 13,
+          "goldSpent": 99664,
+          "goldEarned": 415
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "chain",
+      "seed": 17,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 6,
+      "seconds": 15.7,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 500,
+      "goldSpent": 99560,
+      "goldEarned": 60,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 29,
+      "maxEnemies": 189,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 440,
+          "kills": 0,
+          "goldSpent": 99560,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 500,
+          "kills": 6,
+          "goldSpent": 99560,
+          "goldEarned": 60
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "chain",
+      "seed": 71,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 8,
+      "seconds": 16.433333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 520,
+      "goldSpent": 99560,
+      "goldEarned": 80,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 30,
+      "maxEnemies": 196,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 440,
+          "kills": 0,
+          "goldSpent": 99560,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 520,
+          "kills": 8,
+          "goldSpent": 99560,
+          "goldEarned": 80
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "chain",
+      "seed": 410,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 6,
+      "seconds": 15.833333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 500,
+      "goldSpent": 99560,
+      "goldEarned": 60,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "tesla": 3,
+        "multishot": 3,
+        "frost": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 3,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 0,
+        "fire": 0,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 30,
+      "maxEnemies": 190,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 440,
+          "kills": 0,
+          "goldSpent": 99560,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 500,
+          "kills": 6,
+          "goldSpent": 99560,
+          "goldEarned": 60
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "splash",
+      "seed": 17,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 5,
+      "seconds": 10.9,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 440,
+      "goldSpent": 99610,
+      "goldEarned": 50,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 10,
+      "maxEnemies": 130,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 390,
+          "kills": 0,
+          "goldSpent": 99610,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 440,
+          "kills": 5,
+          "goldSpent": 99610,
+          "goldEarned": 50
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "splash",
+      "seed": 71,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 5,
+      "seconds": 11.233333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 440,
+      "goldSpent": 99610,
+      "goldEarned": 50,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 9,
+      "maxEnemies": 134,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 390,
+          "kills": 0,
+          "goldSpent": 99610,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 440,
+          "kills": 5,
+          "goldSpent": 99610,
+          "goldEarned": 50
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "splash",
+      "seed": 410,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 4,
+      "seconds": 11.1,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 430,
+      "goldSpent": 99610,
+      "goldEarned": 40,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "attack": 22,
+        "tempo": 21,
+        "range": 21,
+        "explosion": 3,
+        "fire": 3,
+        "multishot": 3,
+        "hp": 21,
+        "regen": 20
+      },
+      "tech": {
+        "attack": 22,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 20,
+        "range": 21,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 3,
+        "tesla": 0,
+        "explosion": 3,
+        "frost": 0,
+        "shield": 0,
+        "fire": 3,
+        "pierce": 0
+      },
+      "stats": {
+        "damage": 78,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 20,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 0
+      },
+      "maxEffects": 10,
+      "maxEnemies": 134,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 390,
+          "kills": 0,
+          "goldSpent": 99610,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 430,
+          "kills": 4,
+          "goldSpent": 99610,
+          "goldEarned": 40
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "defense",
+      "seed": 17,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 0,
+      "seconds": 13.5,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 810,
+      "goldSpent": 99190,
+      "goldEarned": 0,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 21,
+        "regen": 21,
+        "shield": 3,
+        "attack": 21,
+        "tempo": 21,
+        "frost": 3,
+        "range": 20,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 21,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 21,
+        "range": 20,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 75,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 21,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 5,
+      "maxEnemies": 167,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 810,
+          "kills": 0,
+          "goldSpent": 99190,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 810,
+          "kills": 0,
+          "goldSpent": 99190,
+          "goldEarned": 0
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "defense",
+      "seed": 71,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 0,
+      "seconds": 12.933333,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 810,
+      "goldSpent": 99190,
+      "goldEarned": 0,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 21,
+        "regen": 21,
+        "shield": 3,
+        "attack": 21,
+        "tempo": 21,
+        "frost": 3,
+        "range": 20,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 21,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 21,
+        "range": 20,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 75,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 21,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 5,
+      "maxEnemies": 160,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 810,
+          "kills": 0,
+          "goldSpent": 99190,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 810,
+          "kills": 0,
+          "goldSpent": 99190,
+          "goldEarned": 0
+        }
+      ]
+    },
+    {
+      "window": "high",
+      "strategy": "defense",
+      "seed": 410,
+      "startWave": 100,
+      "endWave": 104,
+      "initialGold": 100000,
+      "funding": "synthetic window; no reachability claim",
+      "outcome": "lost",
+      "deaths": 1,
+      "lastWave": 100,
+      "kills": 1,
+      "seconds": 12.9,
+      "hp": 0,
+      "minHp": 0,
+      "finalGold": 820,
+      "goldSpent": 99190,
+      "goldEarned": 10,
+      "upgradeDiversity": 8,
+      "weaponDiversity": 3,
+      "researchDiversity": 5,
+      "purchases": {
+        "hp": 21,
+        "regen": 21,
+        "shield": 3,
+        "attack": 21,
+        "tempo": 21,
+        "frost": 3,
+        "range": 20,
+        "pierce": 3
+      },
+      "tech": {
+        "attack": 21,
+        "tempo": 21,
+        "hp": 21,
+        "regen": 21,
+        "range": 20,
+        "gold": 0
+      },
+      "upgrades": {
+        "multishot": 0,
+        "tesla": 0,
+        "explosion": 0,
+        "frost": 3,
+        "shield": 3,
+        "fire": 0,
+        "pierce": 3
+      },
+      "stats": {
+        "damage": 75,
+        "attacksPerSecond": 4.55,
+        "maxHp": 880,
+        "regenPerSecond": 21,
+        "rangeRatio": 0.8,
+        "goldMultiplier": 1,
+        "shieldCapacity": 240
+      },
+      "maxEffects": 6,
+      "maxEnemies": 159,
+      "samples": [
+        {
+          "wave": 100,
+          "status": "running",
+          "hp": 880,
+          "gold": 810,
+          "kills": 0,
+          "goldSpent": 99190,
+          "goldEarned": 0
+        },
+        {
+          "wave": 100,
+          "status": "lost",
+          "hp": 0,
+          "gold": 820,
+          "kills": 1,
+          "goldSpent": 99190,
+          "goldEarned": 10
+        }
+      ]
+    }
+  ],
+  "baseline": {
+    "version": "4.1.0",
+    "method": {
+      "dt": 0.03333333333333333,
+      "purchaseEverySeconds": 1,
+      "seeds": [
+        17,
+        71,
+        410
+      ],
+      "windows": [
+        {
+          "name": "early",
+          "startWave": 1,
+          "endWave": 15,
+          "budget": 100
+        },
+        {
+          "name": "mid",
+          "startWave": 20,
+          "endWave": 24,
+          "budget": 10000
+        },
+        {
+          "name": "high",
+          "startWave": 100,
+          "endWave": 104,
+          "budget": 100000
+        }
+      ],
+      "strategies": {
+        "balanced": [
+          "attack",
+          "tempo",
+          "range",
+          "hp",
+          "multishot",
+          "regen",
+          "frost",
+          "shield",
+          "explosion",
+          "gold",
+          "tesla",
+          "fire",
+          "pierce"
+        ],
+        "chain": [
+          "attack",
+          "tempo",
+          "range",
+          "tesla",
+          "multishot",
+          "frost",
+          "hp",
+          "regen"
+        ],
+        "splash": [
+          "attack",
+          "tempo",
+          "range",
+          "explosion",
+          "fire",
+          "multishot",
+          "hp",
+          "regen"
+        ],
+        "defense": [
+          "hp",
+          "regen",
+          "shield",
+          "attack",
+          "tempo",
+          "frost",
+          "range",
+          "pierce"
+        ]
+      },
+      "maxSecondsPerRun": 900,
+      "limitations": [
+        "Fixed scripted purchasers, no human win-rate estimate",
+        "Mid/high windows inject documented gold; no claim of naturally reachable builds",
+        "No Android FPS/RAM, rendering, UI, player movement or campaign combat estimate",
+        "Effects/enemy maxima are observed values in these runs, not device performance guarantees"
+      ]
+    },
+    "sourceSha256": {
+      "ansturm-alpha1-5/model.js": "21f0cd16f87464e970406c713c9ca49fba3271ff4566f8cf1a3e76a9c85fb3b0",
+      "ansturm-alpha1-5/config.js": "0269c0e223c75af58f82690e4f70d84394be78ba0b5277645d33bc385e85b1ee",
+      "dist/game.js": "859d81ab24594149499cba64a94aaec6a9abbb63a405cc2404626ed1ecf9592f"
+    },
+    "campaign": {
+      "startEssence": 70,
+      "towerCosts": {
+        "boomerang": 48,
+        "bow": 25,
+        "cannon": 35,
+        "ballista": 45,
+        "mage": 46,
+        "mortar": 62,
+        "rift": 58,
+        "shrine": 58
+      },
+      "openings": {
+        "twoBow": {
+          "spent": 50,
+          "remaining": 20
+        },
+        "twoCannon": {
+          "spent": 70,
+          "remaining": 0
+        },
+        "bowCannon": {
+          "spent": 60,
+          "remaining": 10
+        }
+      },
+      "waves": [
+        {
+          "wave": 1,
+          "count": 9,
+          "types": {
+            "wraith": 9
+          },
+          "bounty": 18,
+          "lootLowerBound": 0,
+          "lootUpperBound": 36,
+          "chapterBonusOnEntry": 0
+        },
+        {
+          "wave": 2,
+          "count": 12,
+          "types": {
+            "wraith": 6,
+            "runner": 6
+          },
+          "bounty": 24,
+          "lootLowerBound": 0,
+          "lootUpperBound": 48,
+          "chapterBonusOnEntry": 0
+        },
+        {
+          "wave": 3,
+          "count": 15,
+          "types": {
+            "wraith": 5,
+            "runner": 5,
+            "brute": 5
+          },
+          "bounty": 35,
+          "lootLowerBound": 0,
+          "lootUpperBound": 60,
+          "chapterBonusOnEntry": 0
+        },
+        {
+          "wave": 4,
+          "count": 18,
+          "types": {
+            "wraith": 5,
+            "runner": 5,
+            "brute": 4,
+            "archer": 4
+          },
+          "bounty": 44,
+          "lootLowerBound": 0,
+          "lootUpperBound": 72,
+          "chapterBonusOnEntry": 35
+        },
+        {
+          "wave": 5,
+          "count": 21,
+          "types": {
+            "boss": 1,
+            "brute": 5,
+            "archer": 5,
+            "wraith": 5,
+            "runner": 5
+          },
+          "bounty": 85,
+          "lootLowerBound": 0,
+          "lootUpperBound": 116,
+          "chapterBonusOnEntry": 0
+        }
+      ],
+      "interpretation": "Bounty assumes every enemy is killed or retired. Loot bounds allow every drop to expire versus every drop collected; no double counting collected and end-wave loot. No perk, sale, route, damage or human success simulation."
+    },
+    "runs": [
+      {
+        "window": "early",
+        "strategy": "balanced",
+        "seed": 17,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 7,
+        "kills": 152,
+        "seconds": 326.3,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 77,
+        "goldSpent": 2413,
+        "goldEarned": 2390,
+        "upgradeDiversity": 6,
+        "purchases": {
+          "attack": 11,
+          "tempo": 6,
+          "range": 5,
+          "hp": 7,
+          "regen": 5,
+          "gold": 2
+        },
+        "tech": {
+          "attack": 11,
+          "tempo": 6,
+          "hp": 7,
+          "regen": 5,
+          "range": 5,
+          "gold": 2
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 45,
+          "attacksPerSecond": 2.3,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1.2,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 16,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 340,
+            "gold": 10,
+            "kills": 29,
+            "goldSpent": 434,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 41,
+            "kills": 96,
+            "goldSpent": 1460,
+            "goldEarned": 1401
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 312.724837,
+            "gold": 71,
+            "kills": 124,
+            "goldSpent": 1930,
+            "goldEarned": 1901
+          },
+          {
+            "wave": 7,
+            "status": "lost",
+            "hp": 0,
+            "gold": 77,
+            "kills": 152,
+            "goldSpent": 2413,
+            "goldEarned": 2390
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "balanced",
+        "seed": 71,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 181,
+        "seconds": 372.466667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 51,
+        "goldSpent": 2963,
+        "goldEarned": 2914,
+        "upgradeDiversity": 6,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 6,
+          "hp": 7,
+          "regen": 5,
+          "gold": 3
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 5,
+          "range": 6,
+          "gold": 3
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.51,
+          "goldMultiplier": 1.3,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 250,
+            "gold": 27,
+            "kills": 13,
+            "goldSpent": 225,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 45,
+            "kills": 96,
+            "goldSpent": 1460,
+            "goldEarned": 1405
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 406.24163,
+            "gold": 57,
+            "kills": 124,
+            "goldSpent": 1930,
+            "goldEarned": 1887
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 92.23111,
+            "gold": 100,
+            "kills": 155,
+            "goldSpent": 2433,
+            "goldEarned": 2433
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 51,
+            "kills": 181,
+            "goldSpent": 2963,
+            "goldEarned": 2914
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "balanced",
+        "seed": 410,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 178,
+        "seconds": 376.233333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 140,
+        "goldSpent": 2814,
+        "goldEarned": 2854,
+        "upgradeDiversity": 6,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 5,
+          "hp": 7,
+          "regen": 5,
+          "gold": 3
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 5,
+          "range": 5,
+          "gold": 3
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1.3,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 34,
+            "kills": 96,
+            "goldSpent": 1471,
+            "goldEarned": 1405
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 412.775375,
+            "gold": 57,
+            "kills": 124,
+            "goldSpent": 1930,
+            "goldEarned": 1887
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 289.059924,
+            "gold": 100,
+            "kills": 155,
+            "goldSpent": 2433,
+            "goldEarned": 2433
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 140,
+            "kills": 178,
+            "goldSpent": 2814,
+            "goldEarned": 2854
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "chain",
+        "seed": 17,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 7,
+        "kills": 152,
+        "seconds": 324.8,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 47,
+        "goldSpent": 2269,
+        "goldEarned": 2216,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 11,
+          "tempo": 6,
+          "range": 5,
+          "hp": 7,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 11,
+          "tempo": 6,
+          "hp": 7,
+          "regen": 5,
+          "range": 5,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 45,
+          "attacksPerSecond": 2.3,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 16,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 340,
+            "gold": 10,
+            "kills": 29,
+            "goldSpent": 434,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 371.69145,
+            "gold": 114,
+            "kills": 124,
+            "goldSpent": 1786,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 7,
+            "status": "lost",
+            "hp": 0,
+            "gold": 47,
+            "kills": 152,
+            "goldSpent": 2269,
+            "goldEarned": 2216
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "chain",
+        "seed": 71,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 182,
+        "seconds": 373,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 56,
+        "goldSpent": 2696,
+        "goldEarned": 2652,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 5,
+          "hp": 8,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 8,
+          "regen": 5,
+          "range": 5,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 490,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 250,
+            "gold": 27,
+            "kills": 13,
+            "goldSpent": 225,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 430,
+            "gold": 98,
+            "kills": 124,
+            "goldSpent": 1802,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 38.058489,
+            "gold": 95,
+            "kills": 155,
+            "goldSpent": 2269,
+            "goldEarned": 2264
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 56,
+            "kills": 182,
+            "goldSpent": 2696,
+            "goldEarned": 2652
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "chain",
+        "seed": 410,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 179,
+        "seconds": 378.5,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 11,
+        "goldSpent": 2701,
+        "goldEarned": 2612,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 6,
+          "hp": 7,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 5,
+          "range": 6,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.51,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 428.077693,
+            "gold": 114,
+            "kills": 124,
+            "goldSpent": 1786,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 288.593103,
+            "gold": 90,
+            "kills": 155,
+            "goldSpent": 2274,
+            "goldEarned": 2264
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 11,
+            "kills": 179,
+            "goldSpent": 2701,
+            "goldEarned": 2612
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "splash",
+        "seed": 17,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 7,
+        "kills": 152,
+        "seconds": 324.8,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 47,
+        "goldSpent": 2269,
+        "goldEarned": 2216,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 11,
+          "tempo": 6,
+          "range": 5,
+          "hp": 7,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 11,
+          "tempo": 6,
+          "hp": 7,
+          "regen": 5,
+          "range": 5,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 45,
+          "attacksPerSecond": 2.3,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 16,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 340,
+            "gold": 10,
+            "kills": 29,
+            "goldSpent": 434,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 371.69145,
+            "gold": 114,
+            "kills": 124,
+            "goldSpent": 1786,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 7,
+            "status": "lost",
+            "hp": 0,
+            "gold": 47,
+            "kills": 152,
+            "goldSpent": 2269,
+            "goldEarned": 2216
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "splash",
+        "seed": 71,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 182,
+        "seconds": 373,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 56,
+        "goldSpent": 2696,
+        "goldEarned": 2652,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 5,
+          "hp": 8,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 8,
+          "regen": 5,
+          "range": 5,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 490,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 250,
+            "gold": 27,
+            "kills": 13,
+            "goldSpent": 225,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 430,
+            "gold": 98,
+            "kills": 124,
+            "goldSpent": 1802,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 38.058489,
+            "gold": 95,
+            "kills": 155,
+            "goldSpent": 2269,
+            "goldEarned": 2264
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 56,
+            "kills": 182,
+            "goldSpent": 2696,
+            "goldEarned": 2652
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "splash",
+        "seed": 410,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 8,
+        "kills": 179,
+        "seconds": 378.5,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 11,
+        "goldSpent": 2701,
+        "goldEarned": 2612,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 6,
+          "hp": 7,
+          "regen": 5
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 5,
+          "range": 6,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 5,
+          "rangeRatio": 0.51,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 4,
+        "maxEnemies": 20,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 250,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 1,
+            "kills": 13,
+            "goldSpent": 251,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 310,
+            "gold": 2,
+            "kills": 29,
+            "goldSpent": 442,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 340,
+            "gold": 50,
+            "kills": 48,
+            "goldSpent": 646,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 370,
+            "gold": 26,
+            "kills": 70,
+            "goldSpent": 973,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 400,
+            "gold": 72,
+            "kills": 96,
+            "goldSpent": 1400,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 7,
+            "status": "running",
+            "hp": 428.077693,
+            "gold": 114,
+            "kills": 124,
+            "goldSpent": 1786,
+            "goldEarned": 1800
+          },
+          {
+            "wave": 8,
+            "status": "running",
+            "hp": 288.593103,
+            "gold": 90,
+            "kills": 155,
+            "goldSpent": 2274,
+            "goldEarned": 2264
+          },
+          {
+            "wave": 8,
+            "status": "lost",
+            "hp": 0,
+            "gold": 11,
+            "kills": 179,
+            "goldSpent": 2701,
+            "goldEarned": 2612
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "defense",
+        "seed": 17,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 6,
+        "kills": 121,
+        "seconds": 283.9,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 46,
+        "goldSpent": 1794,
+        "goldEarned": 1740,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "hp": 7,
+          "regen": 4,
+          "attack": 10,
+          "tempo": 5,
+          "range": 4
+        },
+        "tech": {
+          "attack": 10,
+          "tempo": 5,
+          "hp": 7,
+          "regen": 4,
+          "range": 4,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 42,
+          "attacksPerSecond": 2.15,
+          "maxHp": 460,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.44,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 16,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 280,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 340,
+            "gold": 19,
+            "kills": 13,
+            "goldSpent": 233,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 370,
+            "gold": 0,
+            "kills": 29,
+            "goldSpent": 444,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 370,
+            "gold": 39,
+            "kills": 48,
+            "goldSpent": 657,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 400,
+            "gold": 20,
+            "kills": 70,
+            "goldSpent": 979,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 460,
+            "gold": 55,
+            "kills": 96,
+            "goldSpent": 1417,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 6,
+            "status": "lost",
+            "hp": 0,
+            "gold": 46,
+            "kills": 121,
+            "goldSpent": 1794,
+            "goldEarned": 1740
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "defense",
+        "seed": 71,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 6,
+        "kills": 118,
+        "seconds": 280.366667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 101,
+        "goldSpent": 1690,
+        "goldEarned": 1691,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "hp": 7,
+          "regen": 4,
+          "attack": 9,
+          "tempo": 5,
+          "range": 4
+        },
+        "tech": {
+          "attack": 9,
+          "tempo": 5,
+          "hp": 7,
+          "regen": 4,
+          "range": 4,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 39,
+          "attacksPerSecond": 2.15,
+          "maxHp": 460,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.44,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 15,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 280,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 310,
+            "gold": 31,
+            "kills": 13,
+            "goldSpent": 221,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 370,
+            "gold": 0,
+            "kills": 29,
+            "goldSpent": 444,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 339.969333,
+            "gold": 39,
+            "kills": 48,
+            "goldSpent": 657,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 400,
+            "gold": 21,
+            "kills": 70,
+            "goldSpent": 978,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 460,
+            "gold": 55,
+            "kills": 96,
+            "goldSpent": 1417,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 6,
+            "status": "lost",
+            "hp": 0,
+            "gold": 101,
+            "kills": 118,
+            "goldSpent": 1690,
+            "goldEarned": 1691
+          }
+        ]
+      },
+      {
+        "window": "early",
+        "strategy": "defense",
+        "seed": 410,
+        "startWave": 1,
+        "endWave": 15,
+        "initialGold": 100,
+        "funding": "natural opening",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 6,
+        "kills": 118,
+        "seconds": 287.3,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 113,
+        "goldSpent": 1690,
+        "goldEarned": 1703,
+        "upgradeDiversity": 5,
+        "purchases": {
+          "hp": 7,
+          "regen": 4,
+          "attack": 9,
+          "tempo": 5,
+          "range": 4
+        },
+        "tech": {
+          "attack": 9,
+          "tempo": 5,
+          "hp": 7,
+          "regen": 4,
+          "range": 4,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 0,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 39,
+          "attacksPerSecond": 2.15,
+          "maxHp": 460,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.44,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 3,
+        "maxEnemies": 16,
+        "samples": [
+          {
+            "wave": 1,
+            "status": "running",
+            "hp": 280,
+            "gold": 5,
+            "kills": 0,
+            "goldSpent": 95,
+            "goldEarned": 0
+          },
+          {
+            "wave": 2,
+            "status": "running",
+            "hp": 337,
+            "gold": 19,
+            "kills": 13,
+            "goldSpent": 233,
+            "goldEarned": 152
+          },
+          {
+            "wave": 3,
+            "status": "running",
+            "hp": 340,
+            "gold": 5,
+            "kills": 29,
+            "goldSpent": 439,
+            "goldEarned": 344
+          },
+          {
+            "wave": 4,
+            "status": "running",
+            "hp": 370,
+            "gold": 51,
+            "kills": 48,
+            "goldSpent": 645,
+            "goldEarned": 596
+          },
+          {
+            "wave": 5,
+            "status": "running",
+            "hp": 360.6487,
+            "gold": 12,
+            "kills": 70,
+            "goldSpent": 987,
+            "goldEarned": 899
+          },
+          {
+            "wave": 6,
+            "status": "running",
+            "hp": 440.633083,
+            "gold": 55,
+            "kills": 96,
+            "goldSpent": 1417,
+            "goldEarned": 1372
+          },
+          {
+            "wave": 6,
+            "status": "lost",
+            "hp": 0,
+            "gold": 113,
+            "kills": 118,
+            "goldSpent": 1690,
+            "goldEarned": 1703
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "balanced",
+        "seed": 17,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 70,
+        "seconds": 77.466667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 80,
+        "goldSpent": 11485,
+        "goldEarned": 1565,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 5,
+          "hp": 7,
+          "multishot": 3,
+          "regen": 4,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 3,
+          "tesla": 2,
+          "fire": 2,
+          "pierce": 2
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 4,
+          "range": 5,
+          "gold": 3
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 2,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 2,
+          "pierce": 2
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1.3,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 33,
+        "maxEnemies": 40,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 370,
+            "gold": 24,
+            "kills": 0,
+            "goldSpent": 9976,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 80,
+            "kills": 70,
+            "goldSpent": 11485,
+            "goldEarned": 1565
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "balanced",
+        "seed": 71,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 70,
+        "seconds": 72.433333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 80,
+        "goldSpent": 11485,
+        "goldEarned": 1565,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 12,
+          "tempo": 7,
+          "range": 5,
+          "hp": 7,
+          "multishot": 3,
+          "regen": 4,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 3,
+          "tesla": 2,
+          "fire": 2,
+          "pierce": 2
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 7,
+          "hp": 7,
+          "regen": 4,
+          "range": 5,
+          "gold": 3
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 2,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 2,
+          "pierce": 2
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.45,
+          "maxHp": 460,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1.3,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 33,
+        "maxEnemies": 45,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 370,
+            "gold": 24,
+            "kills": 0,
+            "goldSpent": 9976,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 80,
+            "kills": 70,
+            "goldSpent": 11485,
+            "goldEarned": 1565
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "balanced",
+        "seed": 410,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 70,
+        "seconds": 71.7,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 16,
+        "goldSpent": 11549,
+        "goldEarned": 1565,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 13,
+          "tempo": 7,
+          "range": 5,
+          "hp": 6,
+          "multishot": 3,
+          "regen": 4,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 3,
+          "tesla": 2,
+          "fire": 2,
+          "pierce": 2
+        },
+        "tech": {
+          "attack": 13,
+          "tempo": 7,
+          "hp": 6,
+          "regen": 4,
+          "range": 5,
+          "gold": 3
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 2,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 2,
+          "pierce": 2
+        },
+        "stats": {
+          "damage": 51,
+          "attacksPerSecond": 2.45,
+          "maxHp": 430,
+          "regenPerSecond": 4,
+          "rangeRatio": 0.475,
+          "goldMultiplier": 1.3,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 35,
+        "maxEnemies": 43,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 370,
+            "gold": 24,
+            "kills": 0,
+            "goldSpent": 9976,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 16,
+            "kills": 70,
+            "goldSpent": 11549,
+            "goldEarned": 1565
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "chain",
+        "seed": 17,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "completed",
+        "deaths": 0,
+        "lastWave": 24,
+        "kills": 381,
+        "seconds": 286.133333,
+        "hp": 640,
+        "minHp": 237.588866,
+        "finalGold": 567,
+        "goldSpent": 16214,
+        "goldEarned": 6781,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 19,
+          "tempo": 13,
+          "range": 10,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 13,
+          "regen": 10
+        },
+        "tech": {
+          "attack": 19,
+          "tempo": 13,
+          "hp": 13,
+          "regen": 10,
+          "range": 10,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 69,
+          "attacksPerSecond": 3.3499999999999996,
+          "maxHp": 640,
+          "regenPerSecond": 10,
+          "rangeRatio": 0.65,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 32,
+        "maxEnemies": 46,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 64,
+            "kills": 0,
+            "goldSpent": 9936,
+            "goldEarned": 0
+          },
+          {
+            "wave": 21,
+            "status": "running",
+            "hp": 237.588866,
+            "gold": 2,
+            "kills": 71,
+            "goldSpent": 11344,
+            "goldEarned": 1346
+          },
+          {
+            "wave": 22,
+            "status": "running",
+            "hp": 580,
+            "gold": 3,
+            "kills": 144,
+            "goldSpent": 12629,
+            "goldEarned": 2632
+          },
+          {
+            "wave": 23,
+            "status": "running",
+            "hp": 610,
+            "gold": 127,
+            "kills": 220,
+            "goldSpent": 13831,
+            "goldEarned": 3958
+          },
+          {
+            "wave": 24,
+            "status": "running",
+            "hp": 640,
+            "gold": 172,
+            "kills": 299,
+            "goldSpent": 15171,
+            "goldEarned": 5343
+          },
+          {
+            "wave": 24,
+            "status": "intermission",
+            "hp": 640,
+            "gold": 567,
+            "kills": 381,
+            "goldSpent": 16214,
+            "goldEarned": 6781
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "chain",
+        "seed": 71,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 70,
+        "seconds": 70.766667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 138,
+        "goldSpent": 11083,
+        "goldEarned": 1221,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 15,
+          "tempo": 9,
+          "range": 9,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 10,
+          "regen": 9
+        },
+        "tech": {
+          "attack": 15,
+          "tempo": 9,
+          "hp": 10,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 57,
+          "attacksPerSecond": 2.75,
+          "maxHp": 550,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 31,
+        "maxEnemies": 42,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 64,
+            "kills": 0,
+            "goldSpent": 9936,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 138,
+            "kills": 70,
+            "goldSpent": 11083,
+            "goldEarned": 1221
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "chain",
+        "seed": 410,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "completed",
+        "deaths": 0,
+        "lastWave": 24,
+        "kills": 381,
+        "seconds": 301.033333,
+        "hp": 640,
+        "minHp": 115.676367,
+        "finalGold": 567,
+        "goldSpent": 16214,
+        "goldEarned": 6781,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 19,
+          "tempo": 13,
+          "range": 10,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 13,
+          "regen": 10
+        },
+        "tech": {
+          "attack": 19,
+          "tempo": 13,
+          "hp": 13,
+          "regen": 10,
+          "range": 10,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 69,
+          "attacksPerSecond": 3.3499999999999996,
+          "maxHp": 640,
+          "regenPerSecond": 10,
+          "rangeRatio": 0.65,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 32,
+        "maxEnemies": 46,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 64,
+            "kills": 0,
+            "goldSpent": 9936,
+            "goldEarned": 0
+          },
+          {
+            "wave": 21,
+            "status": "running",
+            "hp": 145.676367,
+            "gold": 2,
+            "kills": 71,
+            "goldSpent": 11344,
+            "goldEarned": 1346
+          },
+          {
+            "wave": 22,
+            "status": "running",
+            "hp": 580,
+            "gold": 3,
+            "kills": 144,
+            "goldSpent": 12629,
+            "goldEarned": 2632
+          },
+          {
+            "wave": 23,
+            "status": "running",
+            "hp": 610,
+            "gold": 146,
+            "kills": 220,
+            "goldSpent": 13812,
+            "goldEarned": 3958
+          },
+          {
+            "wave": 24,
+            "status": "running",
+            "hp": 640,
+            "gold": 172,
+            "kills": 299,
+            "goldSpent": 15171,
+            "goldEarned": 5343
+          },
+          {
+            "wave": 24,
+            "status": "intermission",
+            "hp": 640,
+            "gold": 567,
+            "kills": 381,
+            "goldSpent": 16214,
+            "goldEarned": 6781
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "splash",
+        "seed": 17,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 40,
+        "seconds": 30.033333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 140,
+        "goldSpent": 10438,
+        "goldEarned": 578,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 13,
+          "tempo": 9,
+          "range": 9,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 9,
+          "regen": 9
+        },
+        "tech": {
+          "attack": 13,
+          "tempo": 9,
+          "hp": 9,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 51,
+          "attacksPerSecond": 2.75,
+          "maxHp": 520,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 12,
+        "maxEnemies": 43,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 14,
+            "kills": 0,
+            "goldSpent": 9986,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 140,
+            "kills": 40,
+            "goldSpent": 10438,
+            "goldEarned": 578
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "splash",
+        "seed": 71,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 40,
+        "seconds": 30.233333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 138,
+        "goldSpent": 10438,
+        "goldEarned": 576,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 13,
+          "tempo": 9,
+          "range": 9,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 9,
+          "regen": 9
+        },
+        "tech": {
+          "attack": 13,
+          "tempo": 9,
+          "hp": 9,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 51,
+          "attacksPerSecond": 2.75,
+          "maxHp": 520,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 13,
+        "maxEnemies": 45,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 14,
+            "kills": 0,
+            "goldSpent": 9986,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 138,
+            "kills": 40,
+            "goldSpent": 10438,
+            "goldEarned": 576
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "splash",
+        "seed": 410,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 36,
+        "seconds": 28.933333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 66,
+        "goldSpent": 10438,
+        "goldEarned": 504,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 13,
+          "tempo": 9,
+          "range": 9,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 9,
+          "regen": 9
+        },
+        "tech": {
+          "attack": 13,
+          "tempo": 9,
+          "hp": 9,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 51,
+          "attacksPerSecond": 2.75,
+          "maxHp": 520,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 12,
+        "maxEnemies": 45,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 520,
+            "gold": 14,
+            "kills": 0,
+            "goldSpent": 9986,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 66,
+            "kills": 36,
+            "goldSpent": 10438,
+            "goldEarned": 504
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "defense",
+        "seed": 17,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 4,
+        "seconds": 18.166667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 19,
+        "goldSpent": 10033,
+        "goldEarned": 52,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 10,
+          "regen": 9,
+          "shield": 3,
+          "attack": 12,
+          "tempo": 9,
+          "frost": 3,
+          "range": 9,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 9,
+          "hp": 10,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.75,
+          "maxHp": 550,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 6,
+        "maxEnemies": 47,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 550,
+            "gold": 116,
+            "kills": 0,
+            "goldSpent": 9884,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 19,
+            "kills": 4,
+            "goldSpent": 10033,
+            "goldEarned": 52
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "defense",
+        "seed": 71,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 6,
+        "seconds": 18.733333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 32,
+        "goldSpent": 10033,
+        "goldEarned": 65,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 10,
+          "regen": 9,
+          "shield": 3,
+          "attack": 12,
+          "tempo": 9,
+          "frost": 3,
+          "range": 9,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 9,
+          "hp": 10,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.75,
+          "maxHp": 550,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 7,
+        "maxEnemies": 47,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 550,
+            "gold": 116,
+            "kills": 0,
+            "goldSpent": 9884,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 32,
+            "kills": 6,
+            "goldSpent": 10033,
+            "goldEarned": 65
+          }
+        ]
+      },
+      {
+        "window": "mid",
+        "strategy": "defense",
+        "seed": 410,
+        "startWave": 20,
+        "endWave": 24,
+        "initialGold": 10000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 20,
+        "kills": 4,
+        "seconds": 18.2,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 5,
+        "goldSpent": 10033,
+        "goldEarned": 38,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 10,
+          "regen": 9,
+          "shield": 3,
+          "attack": 12,
+          "tempo": 9,
+          "frost": 3,
+          "range": 9,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 12,
+          "tempo": 9,
+          "hp": 10,
+          "regen": 9,
+          "range": 9,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 48,
+          "attacksPerSecond": 2.75,
+          "maxHp": 550,
+          "regenPerSecond": 9,
+          "rangeRatio": 0.615,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 6,
+        "maxEnemies": 47,
+        "samples": [
+          {
+            "wave": 20,
+            "status": "running",
+            "hp": 550,
+            "gold": 116,
+            "kills": 0,
+            "goldSpent": 9884,
+            "goldEarned": 0
+          },
+          {
+            "wave": 20,
+            "status": "lost",
+            "hp": 0,
+            "gold": 5,
+            "kills": 4,
+            "goldSpent": 10033,
+            "goldEarned": 38
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "balanced",
+        "seed": 17,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.666667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 336,
+        "goldSpent": 99664,
+        "goldEarned": 0,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 20,
+          "tempo": 18,
+          "range": 17,
+          "hp": 18,
+          "multishot": 3,
+          "regen": 17,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 17,
+          "tesla": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 20,
+          "tempo": 18,
+          "hp": 18,
+          "regen": 17,
+          "range": 17,
+          "gold": 17
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 72,
+          "attacksPerSecond": 4.1,
+          "maxHp": 790,
+          "regenPerSecond": 17,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 2.7,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 40,
+        "maxEnemies": 157,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 790,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "balanced",
+        "seed": 71,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.366667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 336,
+        "goldSpent": 99664,
+        "goldEarned": 0,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 20,
+          "tempo": 18,
+          "range": 17,
+          "hp": 18,
+          "multishot": 3,
+          "regen": 17,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 17,
+          "tesla": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 20,
+          "tempo": 18,
+          "hp": 18,
+          "regen": 17,
+          "range": 17,
+          "gold": 17
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 72,
+          "attacksPerSecond": 4.1,
+          "maxHp": 790,
+          "regenPerSecond": 17,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 2.7,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 40,
+        "maxEnemies": 153,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 790,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "balanced",
+        "seed": 410,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.066667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 336,
+        "goldSpent": 99664,
+        "goldEarned": 0,
+        "upgradeDiversity": 13,
+        "purchases": {
+          "attack": 20,
+          "tempo": 18,
+          "range": 17,
+          "hp": 18,
+          "multishot": 3,
+          "regen": 17,
+          "frost": 3,
+          "shield": 3,
+          "explosion": 3,
+          "gold": 17,
+          "tesla": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 20,
+          "tempo": 18,
+          "hp": 18,
+          "regen": 17,
+          "range": 17,
+          "gold": 17
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 3,
+          "frost": 3,
+          "shield": 3,
+          "fire": 3,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 72,
+          "attacksPerSecond": 4.1,
+          "maxHp": 790,
+          "regenPerSecond": 17,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 2.7,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 40,
+        "maxEnemies": 150,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 790,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 336,
+            "kills": 0,
+            "goldSpent": 99664,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "chain",
+        "seed": 17,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.7,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 440,
+        "goldSpent": 99560,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 28,
+        "maxEnemies": 157,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "chain",
+        "seed": 71,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.366667,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 440,
+        "goldSpent": 99560,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 28,
+        "maxEnemies": 153,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "chain",
+        "seed": 410,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 440,
+        "goldSpent": 99560,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "tesla": 3,
+          "multishot": 3,
+          "frost": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 3,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 0,
+          "fire": 0,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 28,
+        "maxEnemies": 149,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 440,
+            "kills": 0,
+            "goldSpent": 99560,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "splash",
+        "seed": 17,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 7.8,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 390,
+        "goldSpent": 99610,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 8,
+        "maxEnemies": 97,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "splash",
+        "seed": 71,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 7.5,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 390,
+        "goldSpent": 99610,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 8,
+        "maxEnemies": 93,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "splash",
+        "seed": 410,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 7.1,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 390,
+        "goldSpent": 99610,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "attack": 22,
+          "tempo": 21,
+          "range": 21,
+          "explosion": 3,
+          "fire": 3,
+          "multishot": 3,
+          "hp": 21,
+          "regen": 20
+        },
+        "tech": {
+          "attack": 22,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 20,
+          "range": 21,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 3,
+          "tesla": 0,
+          "explosion": 3,
+          "frost": 0,
+          "shield": 0,
+          "fire": 3,
+          "pierce": 0
+        },
+        "stats": {
+          "damage": 78,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 20,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 0
+        },
+        "maxEffects": 8,
+        "maxEnemies": 88,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 390,
+            "kills": 0,
+            "goldSpent": 99610,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "defense",
+        "seed": 17,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.433333,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 810,
+        "goldSpent": 99190,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 21,
+          "regen": 21,
+          "shield": 3,
+          "attack": 21,
+          "tempo": 21,
+          "frost": 3,
+          "range": 20,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 21,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 21,
+          "range": 20,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 75,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 21,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 5,
+        "maxEnemies": 154,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "defense",
+        "seed": 71,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 12.1,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 810,
+        "goldSpent": 99190,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 21,
+          "regen": 21,
+          "shield": 3,
+          "attack": 21,
+          "tempo": 21,
+          "frost": 3,
+          "range": 20,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 21,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 21,
+          "range": 20,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 75,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 21,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 5,
+        "maxEnemies": 150,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          }
+        ]
+      },
+      {
+        "window": "high",
+        "strategy": "defense",
+        "seed": 410,
+        "startWave": 100,
+        "endWave": 104,
+        "initialGold": 100000,
+        "funding": "synthetic window; no reachability claim",
+        "outcome": "lost",
+        "deaths": 1,
+        "lastWave": 100,
+        "kills": 0,
+        "seconds": 11.9,
+        "hp": 0,
+        "minHp": 0,
+        "finalGold": 810,
+        "goldSpent": 99190,
+        "goldEarned": 0,
+        "upgradeDiversity": 8,
+        "purchases": {
+          "hp": 21,
+          "regen": 21,
+          "shield": 3,
+          "attack": 21,
+          "tempo": 21,
+          "frost": 3,
+          "range": 20,
+          "pierce": 3
+        },
+        "tech": {
+          "attack": 21,
+          "tempo": 21,
+          "hp": 21,
+          "regen": 21,
+          "range": 20,
+          "gold": 0
+        },
+        "upgrades": {
+          "multishot": 0,
+          "tesla": 0,
+          "explosion": 0,
+          "frost": 3,
+          "shield": 3,
+          "fire": 0,
+          "pierce": 3
+        },
+        "stats": {
+          "damage": 75,
+          "attacksPerSecond": 4.55,
+          "maxHp": 880,
+          "regenPerSecond": 21,
+          "rangeRatio": 0.8,
+          "goldMultiplier": 1,
+          "shieldCapacity": 240
+        },
+        "maxEffects": 5,
+        "maxEnemies": 148,
+        "samples": [
+          {
+            "wave": 100,
+            "status": "running",
+            "hp": 880,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          },
+          {
+            "wave": 100,
+            "status": "lost",
+            "hp": 0,
+            "gold": 810,
+            "kills": 0,
+            "goldSpent": 99190,
+            "goldEarned": 0
+          }
+        ]
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "scenario": "early/balanced/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2390,
+        "goldSpent": 2413
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2390,
+        "goldSpent": 2413
+      }
+    },
+    {
+      "scenario": "early/balanced/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 181,
+        "hp": 0,
+        "goldEarned": 2914,
+        "goldSpent": 2963
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 181,
+        "hp": 0,
+        "goldEarned": 2914,
+        "goldSpent": 2963
+      }
+    },
+    {
+      "scenario": "early/balanced/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 178,
+        "hp": 0,
+        "goldEarned": 2854,
+        "goldSpent": 2814
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 178,
+        "hp": 0,
+        "goldEarned": 2854,
+        "goldSpent": 2814
+      }
+    },
+    {
+      "scenario": "early/chain/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2216,
+        "goldSpent": 2269
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2216,
+        "goldSpent": 2269
+      }
+    },
+    {
+      "scenario": "early/chain/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 182,
+        "hp": 0,
+        "goldEarned": 2652,
+        "goldSpent": 2696
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 182,
+        "hp": 0,
+        "goldEarned": 2652,
+        "goldSpent": 2696
+      }
+    },
+    {
+      "scenario": "early/chain/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 179,
+        "hp": 0,
+        "goldEarned": 2612,
+        "goldSpent": 2701
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 179,
+        "hp": 0,
+        "goldEarned": 2612,
+        "goldSpent": 2701
+      }
+    },
+    {
+      "scenario": "early/splash/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2216,
+        "goldSpent": 2269
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 7,
+        "kills": 152,
+        "hp": 0,
+        "goldEarned": 2216,
+        "goldSpent": 2269
+      }
+    },
+    {
+      "scenario": "early/splash/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 182,
+        "hp": 0,
+        "goldEarned": 2652,
+        "goldSpent": 2696
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 182,
+        "hp": 0,
+        "goldEarned": 2652,
+        "goldSpent": 2696
+      }
+    },
+    {
+      "scenario": "early/splash/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 179,
+        "hp": 0,
+        "goldEarned": 2612,
+        "goldSpent": 2701
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 8,
+        "kills": 179,
+        "hp": 0,
+        "goldEarned": 2612,
+        "goldSpent": 2701
+      }
+    },
+    {
+      "scenario": "early/defense/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 121,
+        "hp": 0,
+        "goldEarned": 1740,
+        "goldSpent": 1794
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 121,
+        "hp": 0,
+        "goldEarned": 1740,
+        "goldSpent": 1794
+      }
+    },
+    {
+      "scenario": "early/defense/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 118,
+        "hp": 0,
+        "goldEarned": 1691,
+        "goldSpent": 1690
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 118,
+        "hp": 0,
+        "goldEarned": 1691,
+        "goldSpent": 1690
+      }
+    },
+    {
+      "scenario": "early/defense/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 118,
+        "hp": 0,
+        "goldEarned": 1703,
+        "goldSpent": 1690
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 6,
+        "kills": 118,
+        "hp": 0,
+        "goldEarned": 1703,
+        "goldSpent": 1690
+      }
+    },
+    {
+      "scenario": "mid/balanced/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11485
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11485
+      }
+    },
+    {
+      "scenario": "mid/balanced/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11485
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11485
+      }
+    },
+    {
+      "scenario": "mid/balanced/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11549
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1565,
+        "goldSpent": 11549
+      }
+    },
+    {
+      "scenario": "mid/chain/17",
+      "before": {
+        "outcome": "completed",
+        "lastWave": 24,
+        "kills": 381,
+        "hp": 640,
+        "goldEarned": 6781,
+        "goldSpent": 16214
+      },
+      "after": {
+        "outcome": "completed",
+        "lastWave": 24,
+        "kills": 381,
+        "hp": 640,
+        "goldEarned": 6781,
+        "goldSpent": 16214
+      }
+    },
+    {
+      "scenario": "mid/chain/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1221,
+        "goldSpent": 11083
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 70,
+        "hp": 0,
+        "goldEarned": 1221,
+        "goldSpent": 11083
+      }
+    },
+    {
+      "scenario": "mid/chain/410",
+      "before": {
+        "outcome": "completed",
+        "lastWave": 24,
+        "kills": 381,
+        "hp": 640,
+        "goldEarned": 6781,
+        "goldSpent": 16214
+      },
+      "after": {
+        "outcome": "completed",
+        "lastWave": 24,
+        "kills": 381,
+        "hp": 640,
+        "goldEarned": 6781,
+        "goldSpent": 16214
+      }
+    },
+    {
+      "scenario": "mid/splash/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 40,
+        "hp": 0,
+        "goldEarned": 578,
+        "goldSpent": 10438
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 40,
+        "hp": 0,
+        "goldEarned": 578,
+        "goldSpent": 10438
+      }
+    },
+    {
+      "scenario": "mid/splash/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 40,
+        "hp": 0,
+        "goldEarned": 576,
+        "goldSpent": 10438
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 40,
+        "hp": 0,
+        "goldEarned": 576,
+        "goldSpent": 10438
+      }
+    },
+    {
+      "scenario": "mid/splash/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 36,
+        "hp": 0,
+        "goldEarned": 504,
+        "goldSpent": 10438
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 36,
+        "hp": 0,
+        "goldEarned": 504,
+        "goldSpent": 10438
+      }
+    },
+    {
+      "scenario": "mid/defense/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 4,
+        "hp": 0,
+        "goldEarned": 52,
+        "goldSpent": 10033
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 4,
+        "hp": 0,
+        "goldEarned": 52,
+        "goldSpent": 10033
+      }
+    },
+    {
+      "scenario": "mid/defense/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 6,
+        "hp": 0,
+        "goldEarned": 65,
+        "goldSpent": 10033
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 6,
+        "hp": 0,
+        "goldEarned": 65,
+        "goldSpent": 10033
+      }
+    },
+    {
+      "scenario": "mid/defense/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 4,
+        "hp": 0,
+        "goldEarned": 38,
+        "goldSpent": 10033
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 20,
+        "kills": 4,
+        "hp": 0,
+        "goldEarned": 38,
+        "goldSpent": 10033
+      }
+    },
+    {
+      "scenario": "high/balanced/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99664
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 14,
+        "hp": 0,
+        "goldEarned": 506,
+        "goldSpent": 100431
+      }
+    },
+    {
+      "scenario": "high/balanced/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99664
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 15,
+        "hp": 0,
+        "goldEarned": 459,
+        "goldSpent": 99664
+      }
+    },
+    {
+      "scenario": "high/balanced/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99664
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 13,
+        "hp": 0,
+        "goldEarned": 415,
+        "goldSpent": 99664
+      }
+    },
+    {
+      "scenario": "high/chain/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99560
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 6,
+        "hp": 0,
+        "goldEarned": 60,
+        "goldSpent": 99560
+      }
+    },
+    {
+      "scenario": "high/chain/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99560
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 8,
+        "hp": 0,
+        "goldEarned": 80,
+        "goldSpent": 99560
+      }
+    },
+    {
+      "scenario": "high/chain/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99560
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 6,
+        "hp": 0,
+        "goldEarned": 60,
+        "goldSpent": 99560
+      }
+    },
+    {
+      "scenario": "high/splash/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99610
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 5,
+        "hp": 0,
+        "goldEarned": 50,
+        "goldSpent": 99610
+      }
+    },
+    {
+      "scenario": "high/splash/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99610
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 5,
+        "hp": 0,
+        "goldEarned": 50,
+        "goldSpent": 99610
+      }
+    },
+    {
+      "scenario": "high/splash/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99610
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 4,
+        "hp": 0,
+        "goldEarned": 40,
+        "goldSpent": 99610
+      }
+    },
+    {
+      "scenario": "high/defense/17",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99190
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99190
+      }
+    },
+    {
+      "scenario": "high/defense/71",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99190
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99190
+      }
+    },
+    {
+      "scenario": "high/defense/410",
+      "before": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 0,
+        "hp": 0,
+        "goldEarned": 0,
+        "goldSpent": 99190
+      },
+      "after": {
+        "outcome": "lost",
+        "lastWave": 100,
+        "kills": 1,
+        "hp": 0,
+        "goldEarned": 10,
+        "goldSpent": 99190
+      }
+    }
+  ]
+}

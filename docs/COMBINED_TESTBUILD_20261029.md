@@ -1,3 +1,5 @@
+> Historischer Stand: Dieses Dokument beschreibt den damaligen Patch. Aktueller V4.1-Umfang und Fortschritt: [Releases](releases/V4.1.0-SCOPE.md). Frühere offene PRs können inzwischen gemergt sein. Aktive Level5=Hohensyburg, Level6=Goethestraße.
+
 # Gemeinsamer TD2-Testbuild · Release-Abnahme
 
 Freigegebene Integration: Level-5-Balance aus #62, Loot V2 aus #63 und der inzwischen gemergte Hauptstand einschließlich Ansturm-Menü und Einführung (#65). Branch: `integrate/td2-combined-20261029`, PR #64.

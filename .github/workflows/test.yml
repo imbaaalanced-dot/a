@@ -107,7 +107,7 @@ jobs:
 
       - name: Verify hero image decoding
         run: |
-          python -m pip install Pillow
+          python -m pip install Pillow numpy scipy
           python tests/assets.test.py
           python tests/style2-v2-assets.test.py
           python tests/v2-expansion-assets.test.py
@@ -118,3 +118,11 @@ jobs:
           python tests/style2-cleanup-pass3.test.py
           python tests/style2-reference-assets.test.py
           python tests/enemy-animation-assets.test.py
+
+      - name: V4.1 directional actions, maps and balance
+        run: |
+          node tests/directional-actions-v410.test.cjs
+          node tests/map-polish-v410.test.cjs
+          node tests/v410-balance.test.cjs
+          python tests/v410-source-extraction.test.py
+          python tests/v410-directional-assets.test.py

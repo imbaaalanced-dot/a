@@ -1,0 +1,854 @@
+{
+  "generator": "built-in image_gen__imagegen only",
+  "status": "11 selected generated sources saved; runtime export remains root responsibility",
+  "prompt_note": "Prompt specification reconstructed from generation turns after code-mode volatile store reset; actor locks and layout constraints preserved.",
+  "actors": [
+    {
+      "actor": "enemy-10",
+      "reference_path": "/tmp/td2-v410-art/enemy-10-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-852d4c91-b8c1-4246-8664-c3b06c33feb8.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-10.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 854669,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Tall heavily armored blackened-steel knight with angular crowned helmet, amber face glow, gold trim, ragged black cape, massive jagged dark poleaxe.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [
+          "Helmet/cape make side-direction recognition less clear than other sheets; torso and cape differ between side blocks."
+        ],
+        "alpha96_large_component_count": 49
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-11",
+      "reference_path": "/tmp/td2-v410-art/enemy-11-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-5eb5534c-5f69-4661-b9ea-055bcffef327.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-11.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 902257,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Hunched massive quadrupedal feral wolf-beast, gray-brown fur, bone spikes and riblike bone plating, elongated muzzle, claws. Lunge attacks and collapse death.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-12",
+      "reference_path": "/tmp/td2-v410-art/enemy-12-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-f43c9d5f-58b2-48df-aa27-b7872df2cb5a.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-12.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 922466,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Lean hooded rust-brown leather and dull steel assassin, concealed face, charcoal cape, belts, boots, long steel sword.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [
+          "Three connected source pairs replaced entirely with six newly authored complete sprites. Component identity accepted; high-detail replacement rendering is slightly sharper than surrounding frames."
+        ],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      },
+      "component_repair": {
+        "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-92cdd8db-01a4-46f9-8680-fbebed38175e.png",
+        "grid": [
+          2,
+          3
+        ],
+        "large_components": 6,
+        "method": "Removed three whole merged-source bounding regions; inserted six complete independent sprites. New sprites alpha-core96 dilated2px retains full opaque armor/blades and removes generated ambient fog. No slicing of merged original bodies. Whole sprite uniform aspect resize into original pose regions.",
+        "records": [
+          {
+            "source_bbox": [
+              77,
+              271,
+              488,
+              539
+            ],
+            "target_xy": [
+              185,
+              997
+            ],
+            "area": 60140
+          },
+          {
+            "source_bbox": [
+              624,
+              51,
+              943,
+              544
+            ],
+            "target_xy": [
+              212,
+              1130
+            ],
+            "area": 57766
+          },
+          {
+            "source_bbox": [
+              69,
+              789,
+              560,
+              1063
+            ],
+            "target_xy": [
+              185,
+              1549
+            ],
+            "area": 61553
+          },
+          {
+            "source_bbox": [
+              655,
+              567,
+              943,
+              1073
+            ],
+            "target_xy": [
+              223,
+              1669
+            ],
+            "area": 65302
+          },
+          {
+            "source_bbox": [
+              84,
+              1203,
+              486,
+              1495
+            ],
+            "target_xy": [
+              384,
+              2051
+            ],
+            "area": 56179
+          },
+          {
+            "source_bbox": [
+              585,
+              1176,
+              1000,
+              1483
+            ],
+            "target_xy": [
+              566,
+              2051
+            ],
+            "area": 59332
+          }
+        ],
+        "post_pack_alpha96_body_count": 48,
+        "prompt": "Use atlas as character IDENTITY ONLY, not layout. Create SIX separate complete full-body sprites of its exact hooded brown knight in TWO COLUMNS by THREE ROWS invisible regular square grid, portrait2:3,1024x1536, true RGBA transparent. Same steel shoulder/chest armor,brown hood concealing face,ragged charcoal short cape,dark trousers/boots,long narrow steel sword. Same elevated gameplay camera,hand-painted dark fantasy.\nRow1col1 LEFT facing dying/falling,torso low,knees collapsing,cloak trailing right,whole sword.\nRow1col2 RIGHT facing overhead sword attack windup,legs braced,nose/chest right,whole raised sword.\nRow2col1 RIGHT facing dying/falling,torso low,knees collapsing,cloak trailing left,whole sword.\nRow2col2 UP AWAY attack windup sword raised overhead,back of hood/cape visible,NO front face.\nRow3col1 UP AWAY final fallen corpse,back of cloak/hood visible,sword alongside.\nRow3col2 UP AWAY final settled corpse matching previous cell.\nEXACTLY6whole sprites. All separated by25percent transparent margins,each blade/cape/foot entirely in its own cell. No visible grid,text,labels,floor,background,checkerboard. Do not replicate48sprite layout of reference.",
+        "rejected_full_atlas_repair": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-1e3b1ea6-6fd1-4c1f-b306-a63a17fcca1a.png",
+        "unused_alpha_repair_attempt": {
+          "source": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-9dc9cc21-2486-4127-ad36-3674ce078452.png",
+          "rawSource": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-92cdd8db-01a4-46f9-8680-fbebed38175e.png",
+          "alphaRepairPrompt": "Remove ONLY all brown/black atmospheric glows, fog and background pixels from behind these SIX sprites. Output true transparent RGBA with nothing except the six exact complete armored characters and their swords/capes. Preserve all six poses, identity, equipment, layout, dimensions and character edges unchanged. No halos, no floor, no shadows, no scenery, no added marks. All6 must be isolated clean cutouts; full alpha255 within opaque clothing and armor, alpha0 empty surrounding space."
+        },
+        "rejected_full_atlas_prompt": "Precise game sprite atlas repair. Keep exact actor, camera, palette, outfit, weapon and animation phases; true transparent RGBA. This4column12row48sprite atlas has THREE accidental connections between distinct sprites. Separate them by redrawing complete individual sprites slightly smaller/repositioned within their own row, leaving clear transparent gutters:\n1) row6 column2 falling LEFT-facing corpse and row7 column2 RIGHT-facing raised-sword attack touch vertically. Complete both sprites, move them apart.\n2) row9 column2 RIGHT-facing falling corpse and row10 column2 UP-facing raised-sword attack touch vertically. Complete both, move them apart.\n3) row12 columns3and4 two UP-direction final corpse sprites touch sideways. Complete both corpses and swords as distinct objects with transparent gap.\nALL48sprites must be separately isolated bodies, not connected to any neighbor. Do not merely erase limbs, feet, weapons or cloak to make gaps; redraw complete forms, preserve anatomy and equipment. Keep rest unchanged. No visible grid, no labels or background. FOUR columns TWELVE rows, four action phases each row,48whole sprites."
+      },
+      "frameScale": {
+        "5,1": 1.35,
+        "6,1": 1.55,
+        "8,1": 1.4,
+        "9,1": 1.55,
+        "11,2": 1.5,
+        "11,3": 1.5
+      },
+      "calibration": {
+        "basis": "Manual comparison of head/hood width, shoulder plates and torso mass against adjacent original poses. Six replacements packed to different target shapes; raised long swords used disproportionately more fit space, so overhead poses need larger body correction.",
+        "frameScale": {
+          "5,1": 1.35,
+          "6,1": 1.55,
+          "8,1": 1.4,
+          "9,1": 1.55,
+          "11,2": 1.5,
+          "11,3": 1.5
+        },
+        "frameIndexing": "zero-based source row,column",
+        "confidence": "visual estimate; about\u00b10.1",
+        "application": "Apply whole sprite around retained contact anchor before common atlas scale. Full swords and cloak remain present. No source file changes."
+      }
+    },
+    {
+      "actor": "enemy-13",
+      "reference_path": "/tmp/td2-v410-art/enemy-13-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-b376b25e-c047-4939-b8ef-2be434289f99.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-13.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 1021229,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "right",
+        "left",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        2,
+        1,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Quadrupedal charcoal rock wolf, jagged layered stone armor, pointed ears, angular snout, cyan crystal cracks/spines and eyes.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 2,
+        "right": 1,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-14",
+      "reference_path": "/tmp/td2-v410-art/enemy-14-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-619c43e7-27d4-4f49-a385-18fd9e985112.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-14.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 870107,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Stocky dark rust-brown plate footsoldier, closed visor, torn cape, right hand longsword, left hand reinforced rectangular shield.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-15",
+      "reference_path": "/tmp/td2-v410-art/enemy-15-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-6185ef90-246e-43da-9a39-7dd19217ac17.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-15.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 1031701,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Slender spectral knight, pointed steel helmet, skeletal pale armor, long ragged charcoal cloak with cyan ribbons, narrow cyan glowing curved sword.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [
+          "LEFT band replaced by twelve complete independently authored component sprites from recorded4x3 source; no mirror/rotation. Check relative scale in runtime export."
+        ],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      },
+      "component_pack": {
+        "source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-89372523-58b2-43bf-af0e-f625ec950f0a.png",
+        "threshold": 1,
+        "large_components": 12,
+        "method": "Whole connected sprite components ordered by Y groups of4 thenX; component masks dilated1px to retain low-alpha antialias edge; uniform fit157px max edge, fixed174px baseline. No body cropping, mirroring or rotation.",
+        "records": [
+          {
+            "frame": 0,
+            "component_area": 45462,
+            "source_bbox": [
+              28,
+              72,
+              348,
+              373
+            ],
+            "target_xy": [
+              28,
+              601
+            ]
+          },
+          {
+            "frame": 1,
+            "component_area": 42774,
+            "source_bbox": [
+              351,
+              128,
+              707,
+              361
+            ],
+            "target_xy": [
+              202,
+              627
+            ]
+          },
+          {
+            "frame": 2,
+            "component_area": 46573,
+            "source_bbox": [
+              702,
+              141,
+              1112,
+              362
+            ],
+            "target_xy": [
+              373,
+              632
+            ]
+          },
+          {
+            "frame": 3,
+            "component_area": 36390,
+            "source_bbox": [
+              1123,
+              144,
+              1448,
+              364
+            ],
+            "target_xy": [
+              570,
+              632
+            ]
+          },
+          {
+            "frame": 4,
+            "component_area": 49484,
+            "source_bbox": [
+              24,
+              422,
+              351,
+              704
+            ],
+            "target_xy": [
+              27,
+              789
+            ]
+          },
+          {
+            "frame": 5,
+            "component_area": 43542,
+            "source_bbox": [
+              365,
+              451,
+              706,
+              705
+            ],
+            "target_xy": [
+              205,
+              800
+            ]
+          },
+          {
+            "frame": 6,
+            "component_area": 38225,
+            "source_bbox": [
+              740,
+              468,
+              1067,
+              701
+            ],
+            "target_xy": [
+              389,
+              808
+            ]
+          },
+          {
+            "frame": 7,
+            "component_area": 37204,
+            "source_bbox": [
+              1102,
+              483,
+              1416,
+              703
+            ],
+            "target_xy": [
+              573,
+              813
+            ]
+          },
+          {
+            "frame": 8,
+            "component_area": 34684,
+            "source_bbox": [
+              29,
+              809,
+              346,
+              1015
+            ],
+            "target_xy": [
+              29,
+              999
+            ]
+          },
+          {
+            "frame": 9,
+            "component_area": 35348,
+            "source_bbox": [
+              352,
+              842,
+              707,
+              1023
+            ],
+            "target_xy": [
+              203,
+              1009
+            ]
+          },
+          {
+            "frame": 10,
+            "component_area": 30393,
+            "source_bbox": [
+              688,
+              878,
+              1095,
+              1027
+            ],
+            "target_xy": [
+              374,
+              1021
+            ]
+          },
+          {
+            "frame": 11,
+            "component_area": 21930,
+            "source_bbox": [
+              1098,
+              906,
+              1432,
+              1023
+            ],
+            "target_xy": [
+              569,
+              1034
+            ]
+          }
+        ]
+      },
+      "viewScale": {
+        "left": 1.5
+      },
+      "calibration": {
+        "basis": "Manual visual comparison of helmet/head width and shoulder/torso mass against original DOWN/RIGHT/UP poses, not whole weapon/effect bounding box. LEFT replacement poses share one uniform fit, so same factor across all12frames.",
+        "viewScale": {
+          "left": 1.5
+        },
+        "confidence": "visual estimate; about\u00b10.1",
+        "application": "Apply around existing bottom-center/contact pivot before common atlas scaling. Preserve whole sword/effect margins; no source pixel changes."
+      }
+    },
+    {
+      "actor": "enemy-16",
+      "reference_path": "/tmp/td2-v410-art/enemy-16-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-ddefc2fa-1637-479e-8929-026ec1de79ef.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-16.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 874507,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Burgundy hooded necromancer, concealed face, layered charcoal/crimson cloak, gold clasps, purple orb and ornate gold staff.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-17",
+      "reference_path": "/tmp/td2-v410-art/enemy-17-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-4d10972a-698e-4874-92c4-78e21225d3fa.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-17.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 838857,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "right",
+        "left",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        2,
+        1,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Flying bat-gargoyle, charcoal-brown leathery wings and tan finger bones, horns, thin muscular torso, claws and hooked tail. Hover attack/hit, fold wings only on death.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 2,
+        "right": 1,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-18",
+      "reference_path": "/tmp/td2-v410-art/enemy-18-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-43e1152a-f6d8-4d8b-b3d8-bb303ae18094.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-18.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 793219,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Boss giant squat stone golem, huge asymmetrical fists, layered brown-gray boulder plates, hunched spiky shoulders, short legs, amber eyes, molten orange neck/chest.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [
+          "Top raised fist repaired; remaining directional golem poses turn torso during swing/recoil."
+        ],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-19",
+      "reference_path": "/tmp/td2-v410-art/enemy-19-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-6f8e18a5-76d4-4c6e-aa09-2df401be7506.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-19.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 809335,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Boss crowned lich king, ragged black/burgundy robes, skeletal armored torso, jagged gold crown, concealed face, violet magic hand and ornate gold staff.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    },
+    {
+      "actor": "enemy-20",
+      "reference_path": "/tmp/td2-v410-art/enemy-20-reference.png",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-21aed5c7-7b96-43a0-97be-96dedad782a1.png",
+      "selected_path": "/workspace/scratch/7d6e4a8b06b6/td2/docs/qa/v410/source/enemy-20.png",
+      "dimensions": [
+        724,
+        2172
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixel_count": 706856,
+      "grid": [
+        4,
+        12
+      ],
+      "direction_blocks_source_order": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "runtime_direction_block_remap": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prompt": "Use case: identity-preserve. Production Denkmal TD2 Style 2 game action sprite atlas. Input image is authoritative actor identity reference, NOT a layout reference. Remove stray rectangular colored bars and pixel debris. Output portrait1024x3072 PNG, genuine transparent RGBA. EXACTLY FOUR equal columns by TWELVE equal rows,48 isolated full-body sprites in square invisible regular cells. No labels/text/grid/borders/backdrop/floor/shadow rectangles. Preserve anatomy/clothing/armor/weapons/materials/palette/silhouette. Hand-painted graphic dark fantasy, broad readable shapes, consistent lighting, elevated reference gameplay camera, fixed scale and bottom-center pivot. Rows1-3 DOWN toward viewer; rows4-6 LEFT; rows7-9 RIGHT independently authored not simply mirrored; rows10-12 UP away. In each group first row4attack phases windup/commitment/strike/recovery, second row4hit phases impact/recoil/stagger/recover, third row4death phases onset/fall/fallen/final corpse. Safe transparent gutters and complete equipment inside each cell. Actor lock: Boss red-brown winged dragon-demon, muscular biped reptilian body, horns, long tail, ember cracks across chest/leathery wings, dark scales. Hover attack/hit; fold on death.",
+      "review": {
+        "layout": "4x12 visually inspected",
+        "true_alpha": true,
+        "four_directions": "visually distinct authored blocks; apply recorded remap where required",
+        "runtime_tested": false,
+        "flags": [
+          "Sword and flame swing retained/generated from diagonal reference equipment; identity review recommended against larger authoritative source."
+        ],
+        "alpha96_large_component_count": 48
+      },
+      "rowRemap": {
+        "down": 0,
+        "left": 1,
+        "right": 2,
+        "up": 3
+      }
+    }
+  ],
+  "component_candidates": [
+    {
+      "actor": "enemy-15",
+      "direction": "left",
+      "generated_source_path": "/workspace/scratch/7d6e4a8b06b6/generated_images/exec-89372523-58b2-43bf-af0e-f625ec950f0a.png",
+      "grid": [
+        4,
+        3
+      ],
+      "review": "Packed into enemy-15 source rows4-6 using12complete isolated components; visual identity and LEFT direction accepted.",
+      "prompt": "Standalone LEFT-only spectral cyan knight action strip. Transparent RGBA landscape1024x768,4columns3rows12isolated full-body sprites. Row1attack four phases, row2hit four phases,row3death four phases. Preserve reference identity/elevated camera,65percent cell height,20percent transparent margins,complete sword,no text/grid/background."
+    }
+  ]
+}

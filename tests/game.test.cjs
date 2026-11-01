@@ -19,6 +19,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'directional-actions-v410.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
@@ -147,6 +148,15 @@ check('2x speed is locked in Level 1 and toggles only in Level 2',()=>{
   assert.equal(t.toggleSpeed(),true);assert.equal(t.speedMultiplier,2);assert.equal(t.simulationStepsPerFrame(),2);
   assert.equal(t.toggleSpeed(),true);assert.equal(t.speedMultiplier,1);assert.equal(t.simulationStepsPerFrame(),1);
   t.startGame(1);assert.equal(t.speedMultiplier,1);assert.equal(t.toggleSpeed(),false);
+});
+check('Automatic hero shots and enemy deaths preserve actual combat heading',()=>{
+  t.startGame(1);saga.continueStory();t.launchWave();t.spawnEnemy();
+  const h=t.game.hero,e=t.game.enemies[0];h.direction='up';h.fireCd=0;
+  e.x=h.x+40;e.y=h.y;e.hp=e.maxHp=10000;e.speed=0;e.attackCd=100;
+  t.update(.01);assert.equal(h.attackDirection,'right','auto-fire passes the real target to the animation');
+  e.attackAnim=.2;e.targetX=e.x-100;e.targetY=e.y;e.velX=10;e.velY=0;
+  t.hurtEnemy(e,10001,{fixedDamage:true,bypassShield:true});
+  assert.equal(t.game.deathFx.at(-1).deathDirection,'left','death captures attack aim even when movement points away');
 });
 check('Wave 5 unlocks level 2 once and returns to main menu',()=>{
   t.game.wave=5;t.endWave();assert.equal(t.state,'levelcomplete');

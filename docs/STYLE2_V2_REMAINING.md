@@ -1,3 +1,5 @@
+> Historischer Stand: Dieses Dokument beschreibt den damaligen Patch. Aktueller V4.1-Umfang und Fortschritt: [Releases](releases/V4.1.0-SCOPE.md). Frühere offene PRs können inzwischen gemergt sein. Aktive Level5=Hohensyburg, Level6=Goethestraße.
+
 > Aktualisierung 22.10.2026: Die folgende ursprüngliche Restliste ist durch den Einbau des Erweiterungspakets teilweise erledigt. Aktueller Stand: [STYLE2_V2_EXPANSION.md](STYLE2_V2_EXPANSION.md). Offen bleiben echte viergerichtete Aktionskunst, historische Feinabnahme und Tests auf physischem Android.
 
 # Denkmal TD2: V2-Grafikstand und offene Pakete

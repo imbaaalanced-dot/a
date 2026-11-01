@@ -1,8 +1,8 @@
-import {createGame,getStats} from './model.js';
+import {createGame,getStats,initBoss} from './model.js?v=v410a1';
 import {TECH,UPGRADES,ENEMY} from './config.js';
 
 const scalarFields=['gold','hp','shield','wave','kills','elapsed','status','nextId','waveElapsed','spawned','planned','spawnClock','fireClock','intermission','lastDamage'];
-const enemyFields=['id','x','y','type','spriteKey','hp','maxHp','speed','dps','gold','slowUntil','burnUntil','burnDps','alive'];
+const enemyFields=['id','x','y','type','spriteKey','hp','maxHp','speed','dps','gold','slowUntil','burnUntil','burnDps','alive','bossPhase','bossTimer','bossInterrupt'];
 const bosses=['boss_stonebreaker','boss_stormlord','boss_shieldwarden','boss_colossus'];
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const finite=(v,min=0)=>Number.isFinite(v)&&v>=min;
@@ -30,10 +30,14 @@ function valid(s){
     if(!finite(e.x,-1)||e.x>1||!finite(e.y,-1)||e.y>1)return false;
     if(!['hp','maxHp','speed','dps','gold','slowUntil','burnUntil','burnDps'].every(k=>finite(e[k]))||e.hp<=0||e.hp>e.maxHp)return false;
     if(e.type==='boss'?!bosses.includes(e.spriteKey):e.spriteKey!==`enemy_${e.type}`)return false;
+    if(e.type==='boss'&&e.bossPhase!==undefined){
+      const phases={boss_stonebreaker:['approach','warning','recovery'],boss_stormlord:['approach','warning','haste','recovery'],boss_shieldwarden:['approach','warning','protected','vulnerable'],boss_colossus:['approach','warning','charge','recovery']}[e.spriteKey];
+      if(!phases.includes(e.bossPhase)||!finite(e.bossTimer)||e.bossTimer>8||!finite(e.bossInterrupt)||e.bossInterrupt>e.maxHp)return false;
+    }else if(e.bossTimer!==undefined||e.bossInterrupt!==undefined)return false;
   }
   return true;
 }
-function snapshot(s){return {...pick(s,scalarFields),tech:pick(s.tech,Object.keys(TECH)),upgrades:pick(s.upgrades,Object.keys(UPGRADES)),enemies:s.enemies.map(e=>pick(e,enemyFields))};}
+function snapshot(s){return {...pick(s,scalarFields),tech:pick(s.tech,Object.keys(TECH)),upgrades:pick(s.upgrades,Object.keys(UPGRADES)),enemies:s.enemies.map(e=>{const copy=pick(e,enemyFields);for(const k of enemyFields)if(copy[k]===undefined)delete copy[k];return initBoss(copy);})};}
 export function serializeRun(state){
   if(!valid(state))throw new Error('Ungültiger Durchlauf');
   return JSON.stringify({version:1,state:snapshot(state)});
