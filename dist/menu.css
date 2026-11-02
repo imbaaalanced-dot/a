@@ -283,3 +283,37 @@ a.menu-art-button{text-decoration:none;color:inherit}
   #startScreen:not(.hidden) .menu-section{animation-delay:.05s}
 }
 @keyframes td2-menu-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== menu-v3 redesign: generated memorial-yard scenery, 2:1 hero plates, seal crest ===== */
+#startScreen{background:#070b10}
+#startScreen>.menu-scene{opacity:.55}
+#startScreen .menu-scene img{object-position:72% 42%}
+#startScreen:after{background:linear-gradient(90deg,#060a0ef2 0%,#060a0ed0 30%,#060a0e26 62%,transparent 82%),linear-gradient(0deg,#060a0ef2,transparent 38%),linear-gradient(180deg,#060a0e99,transparent 22%)}
+.menu-scene:after{background:radial-gradient(130% 95% at 55% 36%,transparent 40%,#04070a99 100%)}
+.menu-crest{filter:drop-shadow(0 4px 14px #000c);width:96px;height:96px}
+#startScreen .hero-menu-banner{aspect-ratio:2/1;object-fit:cover;object-position:78% 38%;border-color:#c9a86a66;box-shadow:0 14px 40px #000c,0 0 0 1px #ffffff0a}
+#menuHeroCaption{color:#e3cfa0;text-shadow:0 1px 4px #000}
+.menu-command{background:linear-gradient(180deg,#141d23f5,#0b1116f5);border-color:#6d5f43cc}
+.menu-command:hover{border-color:#e0bd7d}
+.menu-command-primary{background:linear-gradient(100deg,#33291af8,#171b1df5 68%);box-shadow:inset 3px 0 #d9ae67,0 8px 26px #000a}
+.menu-command-mark{background:#241f1566}
+.menu-command:hover .menu-command-mark{border-color:#e0bd7d;color:#f0d9a2;transform:scale(1.06)}
+.map-card{background:#101a20ee;border-color:#7d7257aa}
+.map-card:hover:not(:disabled){border-color:#e0bd7d;background:#1a2a31}
+.map-card-primary{border-color:#f0d498;background:linear-gradient(105deg,#e2c384,#b08a4a);box-shadow:0 6px 24px #b2853830}
+.menu-section{border-color:#d9b77d40;background:linear-gradient(135deg,#0b141be8,#101820e0)}
+.menu-shell{gap:16px}
+.menu-masthead{border-bottom-color:#e0bd7d33}
+@media(max-width:700px){
+  #startScreen>.menu-scene{opacity:.5}
+  #startScreen .menu-scene img{object-position:center 30%}
+  #startScreen .hero-menu-banner{aspect-ratio:2/1;object-position:76% 40%}
+  .menu-crest{width:64px;height:64px}
+}
+
+/* menu-v3: responsive scenery swap without srcset (keeps the asset-existence test simple). */
+.menu-scene .menu-scene-mobile{display:none}
+@media(max-width:700px){
+  #startScreen .menu-scene img:not(.menu-scene-mobile){display:none}
+  .menu-scene .menu-scene-mobile{display:block}
+}

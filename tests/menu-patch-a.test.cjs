@@ -29,7 +29,7 @@ assert.match(css, /\.menu-command\s*\{/);
 assert.match(css, /min-height:\s*56px/);
 assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-primary-actions/);
 assert.match(css, /@media\s*\(max-height:\s*430px\)\s*and\s*\(orientation:\s*landscape\)/);
-assert.match(html, /menu\.css\?v=patch-a1/);
-assert.match(html, /game\.js\?v=v410a1/);
+assert.match(html, /menu\.css\?v=menu-v3-redesign/);
+assert.match(html, /game\.js\?v=v410a1menu3/);
 
 console.log('Patch A menu hierarchy and responsive command styling passed');
