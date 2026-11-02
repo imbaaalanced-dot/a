@@ -3,13 +3,13 @@
 'use strict';
 const KEY='td2-audio-v42';
 const defaults={effects:.55,music:.18,ambience:.15,muted:false};
-function create({storage,contextFactory}={}){
- let settings={...defaults};try{const saved=JSON.parse(storage?.getItem(KEY)||'null');for(const key of ['effects','music','ambience'])if(Number.isFinite(saved?.[key]))settings[key]=Math.max(0,Math.min(1,saved[key]));if(typeof saved?.muted==='boolean')settings.muted=saved.muted;}catch{}
+function create({storage,contextFactory,legacyMuted=false}={}){
+ let settings={...defaults,muted:!!legacyMuted};try{const saved=JSON.parse(storage?.getItem(KEY)||'null');for(const key of ['effects','music','ambience'])if(Number.isFinite(saved?.[key]))settings[key]=Math.max(0,Math.min(1,saved[key]));if(typeof saved?.muted==='boolean')settings.muted=saved.muted;}catch{}
  let ac=null,master=null,buses=null,noise=null,ambient=null,paused=false,scene='menu',nextNote=0,noteIndex=0;
- const voices=new Set(),last=new Map();
+ const voices=new Map(),last=new Map();
  const persist=()=>{try{storage?.setItem(KEY,JSON.stringify(settings));}catch{}};
  function levels(){if(!master)return;master.gain.value=paused||settings.muted?0:.65;for(const key of ['effects','music','ambience'])buses[key].gain.value=settings[key];}
- function stopAll(){for(const source of [...voices]){try{source.stop();}catch{}try{source.disconnect();}catch{}}voices.clear();ambient=null;nextNote=0;}
+ function stopAll(){for(const source of [...voices.keys()]){try{source.stop();}catch{}try{source.disconnect();}catch{}}voices.clear();ambient=null;nextNote=0;}
  function unlock(){
   try{
    if(!ac){const C=root.AudioContext||root.webkitAudioContext;if(!contextFactory&&!C)return false;ac=contextFactory?contextFactory():new C();master=ac.createGain();master.connect(ac.destination);buses={};for(const key of ['effects','music','ambience']){buses[key]=ac.createGain();buses[key].connect(master);}noise=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const samples=noise.getChannelData(0);let seed=731;for(let i=0;i<samples.length;i++){seed=(seed*16807)%2147483647;samples[i]=(seed/2147483647*2-1)*.5;}levels();}
@@ -21,7 +21,7 @@ function create({storage,contextFactory}={}){
   const source=type==='noise'?ac.createBufferSource():ac.createOscillator(),gain=ac.createGain();
   if(type==='noise')source.buffer=noise;else{source.type=type;source.frequency.setValueAtTime(freq,ac.currentTime);source.frequency.exponentialRampToValueAtTime(Math.max(20,end),ac.currentTime+duration);}
   const now=ac.currentTime;gain.gain.setValueAtTime(.0001,now);gain.gain.linearRampToValueAtTime(level,now+Math.min(.02,duration/5));gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
-  source.connect(gain);gain.connect(buses[bus]);voices.add(source);source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};source.start(now);source.stop(now+duration+.02);return true;
+  source.connect(gain);gain.connect(buses[bus]);voices.set(source,bus);source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};source.start(now);source.stop(now+duration+.02);return true;
  }
  function play(kind){
   if(!ac||ac.state!=='running'||paused||settings.muted||settings.effects===0)return false;
@@ -41,20 +41,22 @@ function create({storage,contextFactory}={}){
   }catch{return false;}
  }
  function tick(){
-  if(!ac||ac.state!=='running'||paused||settings.muted)return;
+  if(!ac||ac.state!=='running'||paused||settings.muted||scene==='silent')return;
   try{
-   if(settings.ambience>0&&!ambient){const source=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain();source.buffer=noise;source.loop=true;filter.type='lowpass';filter.frequency.value=260;gain.gain.value=.12;source.connect(filter);filter.connect(gain);gain.connect(buses.ambience);ambient=source;voices.add(source);source.onended=()=>{voices.delete(source);filter.disconnect();gain.disconnect();};source.start();}
+   if(settings.ambience>0&&!ambient){const source=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain();source.buffer=noise;source.loop=true;filter.type='lowpass';filter.frequency.value=260;gain.gain.value=.12;source.connect(filter);filter.connect(gain);gain.connect(buses.ambience);ambient=source;voices.set(source,'ambience');source.onended=()=>{voices.delete(source);filter.disconnect();gain.disconnect();};source.start();}
    if(settings.music>0&&ac.currentTime>=nextNote){nextNote=ac.currentTime+(scene==='combat'?1.8:2.8);const notes=scene==='combat'?[146.83,174.61,220,164.81,146.83,130.81,164.81,110]:[146.83,220,261.63,174.61,146.83,130.81,164.81,110];const f=notes[noteIndex++%notes.length];voice(f,1.6,.065,'sine','music');if(noteIndex%4===1)voice(f/2,2.5,.05,'triangle','music');}
   }catch{}
  }
  function setVolumes(values){for(const key of ['effects','music','ambience'])if(Number.isFinite(values[key]))settings[key]=Math.max(0,Math.min(1,values[key]));levels();persist();}
  function mute(value){const changed=settings.muted!==!!value;settings.muted=!!value;if(settings.muted)stopAll();levels();if(changed)persist();}
  function pause(value){if(paused===!!value)return;paused=!!value;if(paused)stopAll();levels();}
- function setScene(value){const next=value==='combat'?'combat':'menu';if(scene!==next){scene=next;nextNote=0;noteIndex=0;}}
+ function setScene(value){const next=['combat','silent'].includes(value)?value:'menu';if(scene!==next){scene=next;nextNote=0;noteIndex=0;
+  if(next==='silent'){for(const [source,bus] of [...voices])if(bus!=='effects'){try{source.stop();}catch{}voices.delete(source);}ambient=null;}
+ }}
  return {unlock,play,tick,setVolumes,mute,pause,setScene,get settings(){return {...settings}},get activeVoices(){return voices.size}};
 }
-let storage;try{storage=root.localStorage;}catch{}
-root.DenkmalAudio={create,KEY};root.TD2Audio=create({storage});
+let storage,legacyMuted=false;try{storage=root.localStorage;const old=JSON.parse(storage?.getItem('denkmal-preferences-v1')||'null');legacyMuted=typeof old?.data?.sound==='boolean'?!old.data.sound:storage?.getItem('denkmal-sound')==='off';}catch{}
+root.DenkmalAudio={create,KEY};root.TD2Audio=create({storage,legacyMuted});
 // Sliders work independently of the game loop and survive unavailable storage/audio.
 root.DenkmalAudio.bindControls=function(doc){
  for(const name of ['effects','music','ambience']){const input=doc.getElementById('volume-'+name);if(!input)continue;input.value=String(Math.round(root.TD2Audio.settings[name]*100));input.addEventListener('input',()=>{root.TD2Audio.unlock();root.TD2Audio.setVolumes({[name]:Number(input.value)/100});});}

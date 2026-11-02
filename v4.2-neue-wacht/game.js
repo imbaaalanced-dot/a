@@ -88,7 +88,7 @@
   });
   const preferences=preferenceLoaded.value;
   function savePreference(key,value){preferences[key]=value;return preferenceStore.save(preferenceKey,preferenceVersion,preferences,validPreferences);}
-  audioOn=preferences.sound;graphicsMode=preferences.graphics;zoomMode=preferences.zoom;telemetryOn=preferences.telemetry;
+  audioOn=globalThis.TD2Audio?!globalThis.TD2Audio.settings.muted:preferences.sound;graphicsMode=preferences.graphics;zoomMode=preferences.zoom;telemetryOn=preferences.telemetry;
   const lootModel=globalThis.DenkmalLoot.create({storage,canManage:()=>state==='inventory'&&inventoryReturn==='start',getHero:()=>state==='inventory'&&inventoryReturn!=='start'?(game?.hero.character||selectedCharacter):selectedCharacter});
   if(lootModel.profile.level2&&!campaign.unlocked)campaign.unlock();
   if(campaign.unlocked&&!lootModel.profile.level2)lootModel.unlockLevel();
@@ -638,7 +638,7 @@
     {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
   ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
   function selectPerk(p){if(state!=='perk')return;if(inPortal()){choosePortalPerk(typeof p==='string'?p:p.id);return;}p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);if(game.wave===4||game.wave===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${game.wave}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
-  function gameOver(){if(state==='gameover')return;if(inPortal())portalTransition({type:'FAIL'});collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
+  function gameOver(){if(state==='gameover')return;if(inPortal())portalTransition({type:'FAIL'});collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);if(audioOn)globalThis.TD2Audio?.play('defeat');}
 
 
   // The church blocks the player, even during a dodge. Movement resolves each
@@ -914,7 +914,7 @@
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
-  function loop(now){const audio=globalThis.TD2Audio;if(audio){audio.setScene(state==='playing'?'combat':'menu');audio.pause(!!document.hidden||!['playing','start'].includes(state)||tutorialActive);audio.tick();}const dt=Math.min(.034,(now-last)/1000||0);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}updateTelemetry(now);requestAnimationFrame(loop)}
+  function loop(now){const audio=globalThis.TD2Audio;if(audio){audio.setScene(state==='playing'?'combat':state==='start'?'menu':'silent');audio.pause(!!document.hidden||state==='paused'||tutorialActive);audio.tick();}const dt=Math.min(.034,(now-last)/1000||0);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}updateTelemetry(now);requestAnimationFrame(loop)}
   function tone(freq,dur=.05,vol=.035){if(audioOn)globalThis.TD2Audio?.play(freq<80?'boss':freq>=350?'purchase':'hit');}
   addEventListener('resize',()=>{resize(false);positionTutorialArrow();});
   addEventListener('blur',()=>{clearInput();saga.stopVoice();pauseGame();});
