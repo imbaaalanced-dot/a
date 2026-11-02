@@ -26,7 +26,7 @@ const expectedVersions = new Map([
   ['asset-manager.js', 'alpha9a3'],
   ['preloader.js', 'menu-v3b-preload'],
   ['persisted-state.js', 'save1'],
-  ['levels.js', 'level7'],
+  ['levels.js', 'level7b'],
   ['visuals.js', 'expansion2'],
   ['equipment-catalog.js', 'loot-v2-20261029'],
   ['loot.js', 'loot-v2-20261029'],

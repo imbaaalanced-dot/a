@@ -12,7 +12,7 @@ Playable reference-based memorial map for the Kriegerdenkmal in Schwerte-Westhof
 ## Design decisions
 
 - **The game shows the real state of November 2026**: the central tablet frame stands empty and both fire-bowl pedestals are bare. The theft is part of the documented design, not an oversight; the winged helmet remains as the surviving landmark.
-- Three asymmetric ground approaches: Reichshofstraße from west and east plus the northern green corridor ("Grünzug"). Wave 25 opens as a pure ground attack on both street corridors; the green corridor joins from wave 26.
+- Three asymmetric ground approaches: Reichshofstraße from west and east plus the northern green corridor ("Grünzug"). The two street lanes **merge in front of the memorial** at a shared junction (+150) and run the final approach together — two streets, one hot spot. Wave 25 opens as a pure ground attack on both street corridors; the green corridor joins from wave 26. Street lanes measure ~1230 px, the direct green corridor ~1015 px.
 - Air spawns at the street side and flies directly across the green; cyan corridor shown only in build pauses. Shadowwing arrives with wave 26, gargoyle with wave 27, stormwing with wave 28, which also carries the siege boss. Endless keeps aerial pressure from the start.
 - Wave names: NEBEL AN DER REICHSHOFSTRASSE, SCHATTEN DES GEFLÜGELTEN HELMS, STURM AUF DAS EHRENMAL, DIE LETZTE WACHT. Air warnings name the anti-air tower roles (bow, ice, rift lance).
 - Sixteen marked sites, up to twelve active towers, 340 starting essence, standard hero and monument rules. Cannon and boomerang stay ground-only.

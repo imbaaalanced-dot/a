@@ -110,17 +110,18 @@
       syburgSlots.every(other=>Math.hypot(other.x-p.x,other.y-p.y)>115))syburgSlots.push(p);
   }
   // Kriegerdenkmal Westhofen (Schwerte, Reichshofstraße): memorial on a green
-  // strip beside the street, bus stop at the roadside. Two street approaches
-  // plus one green-corridor lane from the north. Rectangles and routes are
-  // GAMEPLAY approximations from public aerial views and press photos,
-  // not survey data.
+  // strip beside the street, bus stop at the roadside. The two street
+  // approaches merge in front of the memorial (junction at +150) and share
+  // the final approach, mirroring the real roadside convergence; the northern
+  // green corridor stays separate. Rectangles and routes are GAMEPLAY
+  // approximations from public aerial views and press photos, not survey data.
   const westhofenPaths=[
-    [[-980,560],[-640,470],[-330,330],[-150,140],[0,0]],
-    [[960,600],[620,500],[360,300],[160,130],[0,0]],
+    [[-980,560],[-640,470],[-330,330],[-120,160],[0,150],[0,0]],
+    [[960,600],[620,500],[360,300],[120,160],[0,150],[0,0]],
     [[120,-960],[80,-600],[-60,-320],[-70,-120],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
   const westhofenSlots=[];
-  for(const [x,y] of [[-620,-300],[-300,-340],[320,-340],[640,-300],[-660,60],[660,60],[-180,-180],[180,-180],[0,320],[-520,180],[520,180],[-80,-560],[560,-560],[-560,-600],[360,-620],[-380,420]]){
+  for(const [x,y] of [[-620,-300],[-300,-340],[320,-340],[640,-300],[-660,60],[660,60],[-180,-180],[180,-180],[0,320],[-520,180],[520,180],[-80,-560],[560,-560],[-560,-600],[360,-620],[-380,420],[-150,320],[150,320]]){
     const p=point(x,y);
     if(Math.hypot(x,y)>=190&&westhofenPaths.every(path=>pathDistance(p,path)>=90)&&
       westhofenSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>=115))westhofenSlots.push(p);
