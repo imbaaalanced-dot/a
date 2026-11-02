@@ -12,13 +12,16 @@ for name in ('marcel-portrait-alpha9.webp', 'marcel-lantern-sprite-v1.webp'):
 
 # Menu downloads stay small enough for mobile connections.
 menu = root.parent / 'menu'
-for name, limit in (('warden-desktop-v2.webp', 200000), ('warden-mobile-v2.webp', 100000), ('crest-v2.webp', 20000)):
+for name, limit in (('memorial-yard-v3.webp', 200000), ('memorial-yard-mobile-v3.webp', 120000), ('crest-v3.webp', 60000), ('hero-banner-marcel-v3.webp', 90000), ('hero-banner-kim-v3.webp', 90000)):
     with Image.open(menu / name) as image:
         image.load()
         assert image.format == 'WEBP', name
         assert image.width > 0 and image.height > 0, name
         assert (menu / name).stat().st_size < limit, name
         print(f'{name}: decoded {image.width}x{image.height}, within download budget')
+with Image.open(menu / 'crest-v3.webp') as image:
+    assert image.mode == 'RGBA', 'crest-v3.webp keeps transparency'
+    assert image.getchannel('A').getextrema()[0] == 0, 'crest-v3.webp has transparent surroundings'
 
 with Image.open(root.parent / "items/equipment-v1.webp") as image:
     image.load()
