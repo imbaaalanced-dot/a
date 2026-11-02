@@ -15,7 +15,9 @@
     n.style.backgroundRepeat='no-repeat';n.setAttribute('aria-hidden','true');return n;
   }
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
-  function create(model,{editable,onClose,onImport,getHero=()=>'marcel'}){
+  function create(model,{editable,onClose,onImport,getHero:gameHero=()=>'marcel'}){
+    let inspectedHero=null,search='';
+    const getHero=()=>inspectedHero||gameHero();
     let selected=null,filter='all',sort='rarity',slotFilter='all',pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
     const $=id=>document.getElementById(id),root=$('inventoryScreen');
     const can=()=>editable()&&!model.readOnly;
@@ -33,7 +35,7 @@
       $('lootEquipmentTab').tabIndex=activeTab==='equipment'?0:-1;
       $('lootBagTab').tabIndex=activeTab==='bag'?0:-1;
       $('lootDetailBackdrop').hidden=!mobile||!detailOpen;
-      for(const id of ['lootEquipmentPanel','lootBagPanel','lootEquipmentTab','lootBagTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
+      for(const id of ['lootHeroSwitch','lootEquipmentPanel','lootBagPanel','lootEquipmentTab','lootBagTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
     }
     function closeDetail(){
       if(!selected)return false;
@@ -78,11 +80,15 @@
       const users=Object.entries(model.profile.loadouts).filter(([,slots])=>Object.values(slots).includes(item.id)).map(([hero])=>hero==='kim'?'Kim':'Marcel');if(users.length)b.append(el('small','loot-used-by','Angelegt bei '+users.join(' und ')));
       if(item.favorite)b.append(el('span','loot-star','★'));return b;
     }
+    function filteredItems(all){
+      return all.filter(i=>(!search||`${i.name} ${L.slots[i.slot]} ${i.power?L.powers[i.power].name:''}`.toLocaleLowerCase('de').includes(search))&&(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot))));
+    }
     function render(){
       const previousFocus=document.activeElement,hadFocus=root.contains(previousFocus),focusId=previousFocus?.id,focusItem=previousFocus?.dataset?.itemId,focusLabel=previousFocus?.textContent;
       if(lastHero!==getHero()){lastHero=getHero();generation++;selected=null;pending=null;}
       if(pending&&pending.revision&&pending.revision!==model.exportJSON())pending=null;
       const kim=getHero()==='kim';
+      $('lootHeroSwitch').value=getHero();
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
       $('lootHeroRole').textContent=kim?'DIE BEWAHRERIN':'DER BESCHÜTZER';
       $('lootHeroPortrait').src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
@@ -100,11 +106,12 @@
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
       $('backpackCount').textContent=`SAMMLUNG ${all.length} · RUCKSACK ${p.bag.length} / 30`;
       for(const [winner,loser,label]of [['echo','ember','Nachhall hat Vorrang vor Abendrot.'],['ash','oath','Aschenläufer hat Vorrang vor Steinwacht.'],['bell','lantern','Letzte Glocke hat Vorrang vor Erinnerungslicht.']])if(stats.powers[winner]&&stats.powers[loser])summary.append(el('span','loot-note',label));
-      const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
+      const matching=filteredItems(all),bulk=model.salvagePreview(matching.map(i=>i.id)),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
-      bulkBtn.textContent=`ALLES RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
+      bulkBtn.textContent=`AUSWAHL RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
-      const visible=all.filter(i=>(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot)))).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      const visible=matching.sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      $('lootResultCount').textContent=`${visible.length} Treffer · ${all.length} Gegenstände insgesamt`;
       for(const i of visible.slice(0,visibleLimit))grid.append(card(i));
       if(visible.length>visibleLimit)grid.append(button('WEITERE GEGENSTÄNDE',()=>{visibleLimit+=60;render();}));
       for(let n=visible.length;n<30;n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
@@ -163,18 +170,20 @@
       ['lootEquipAction','lootFavoriteAction','lootRecycleAction'].forEach((id,index)=>core.children[index].id=id);
       actions.append(core);detail.append(actions);
       const preview=model.upgradePreview(i.id),forge=el('details','loot-forge');
-      const improve=button(`VERBESSERN · ${preview.cost} ESSENZ`,()=>{pending={message:`${i.name} auf Schmiedestufe ${preview.nextRank} für ${preview.cost} Essenz verbessern?`,run:()=>model.upgrade(i.id)};render();$('lootConfirm').scrollIntoView({block:'nearest'});},locked||!preview.allowed);improve.id='lootUpgradeAction';
+      const improve=button(`VERBESSERN · ${preview.cost} ESSENZ`,()=>{pending={message:`${i.name} auf Schmiedestufe ${preview.nextRank} für ${preview.cost} Essenz verbessern?`,run:()=>model.upgrade(i.id)};render();$('lootConfirm').scrollIntoView({block:'nearest'});},!can()||!preview.allowed);improve.id='lootUpgradeAction';
       forge.append(el('summary','','Gezielt verbessern'),el('p','',preview.reason||`Nächste Schmiedestufe: ${preview.nextRank} / 3`));
       for(const key of Object.keys(i.stats))forge.append(el('p','loot-forge-value',`${L.statInfo[key].label}: ${fmt(key,i.stats[key])} → ${fmt(key,preview.stats[key])}`));
-      forge.append(improve);detail.append(forge,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':usedBy.length?'Zum Verbessern oder Recyceln bei beiden Helden ablegen.':i.favorite?'Favoriten sind vor Recycling und Verbessern geschützt.':'Schmiedessenz bleibt dauerhaft und ist getrennt von der Kampfessenz.'));
+      forge.append(improve);detail.append(forge,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':usedBy.length?'Verbesserungen gelten für alle Helden, die dieses Stück tragen. Angelegte Stücke sind vor Recycling geschützt.':i.favorite?'Favoriten sind vor Recycling geschützt und können verbessert werden.':'Schmiedessenz bleibt dauerhaft und ist getrennt von der Kampfessenz.'));
     }
     function download(text,name){if(!text)return;const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a','');if(blob.size>15000000){notice='Export überschreitet die Importgrenze von 15 MB. Vor erneutem Import Sammlung verkleinern.';render();}a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    $('lootHeroSwitch').onchange=e=>{if(!['marcel','kim'].includes(e.target.value))return;inspectedHero=e.target.value;render();};
+    $('lootSearch').oninput=e=>{search=e.target.value.trim().toLocaleLowerCase('de');visibleLimit=60;pending=null;render();};
     $('lootSlotFilter').onchange=e=>{slotFilter=e.target.value;visibleLimit=60;render();};
     $('lootFilter').onchange=e=>{filter=e.target.value;visibleLimit=60;render();};$('lootSort').onchange=e=>{sort=e.target.value;render();};
     $('lootSalvageAllBtn').onclick=()=>{
       if(!can())return;
-      const preview=model.salvagePreview();if(!preview.count)return;
-      pending={message:`${preview.count} nicht favorisierte Gegenstände aus Rucksack und Überlauf unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
+      const ids=filteredItems(model.profile.owned).map(i=>i.id),preview=model.salvagePreview(ids);if(!preview.count)return;
+      pending={message:`${preview.count} nicht geschützte Gegenstände der aktuellen Filterauswahl (einschließlich noch nicht eingeblendeter Treffer) unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll(ids)};
       render();$('lootConfirm').scrollIntoView({block:'nearest'});
     };
     $('lootExportBtn').onclick=()=>download(model.exportJSON(),'Denkmal-TD-Spielstand.json');
@@ -183,7 +192,7 @@
     $('lootImportBtn').onclick=()=>{if(editable())$('lootImportFile').click();};
     $('lootImportFile').onchange=async e=>{const file=e.target.files?.[0],token=generation;e.target.value='';if(!file||!editable())return;try{if(file.size>15000000)throw Error('Datei ist zu groß.');const text=await file.text();if(token!==generation||!editable())return;const p=model.validateImport(text);pending={message:`Sicherung mit ${p.owned.length} Gegenständen übernehmen? Sie ersetzt deine aktuelle Sammlung. Exportiere diese bei Bedarf zuerst.`,run:()=>{const ok=model.importJSON(text);if(ok)onImport();return ok;}};notice='';}catch{notice='Import abgelehnt: beschädigte Datei oder falsches Spielstandformat.';}render();$('lootConfirm').scrollIntoView({block:'nearest'});};
     $('inventoryClose').onclick=onClose;
-    return {render,closeDetail,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
+    return {render,closeDetail,close(){generation++;inspectedHero=null;selected=null;pending=null;notice='';syncPanels();}};
   }
   globalThis.DenkmalLootUI={create};
 })();

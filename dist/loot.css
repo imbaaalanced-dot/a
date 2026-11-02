@@ -161,3 +161,9 @@
 @media(prefers-reduced-motion:reduce){#inventoryScreen *{scroll-behavior:auto}}
 
 .loot-used-by,.loot-origin,.loot-rank{font-size:.75rem;color:#d4c39b;line-height:1.4}.loot-forge-value{font-variant-numeric:tabular-nums}.loot-footer{flex-wrap:wrap}.loot-forge button{min-height:48px}
+
+/* Rüstkammer: explicit hero context and searchable collection. */
+.loot-hero-switch{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:10px;color:#e2c487;font-size:13px}
+.loot-hero-switch small{color:#a9b6b4;font-size:12px}.loot-hero-switch select,.loot-search input{min-height:44px;border:1px solid #85989066;border-radius:4px;background:#152123;color:#eee4ce;padding:10px;font:inherit;box-sizing:border-box}
+.loot-search{display:grid;gap:6px;font-size:12px;color:#c9c4b4}.loot-search input{width:100%;min-width:0}#lootResultCount{font-size:12px;color:#a9b6b4}
+.loot-search input:focus-visible,.loot-hero-switch select:focus-visible{outline:2px solid #e2c487;outline-offset:2px}

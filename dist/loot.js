@@ -170,19 +170,18 @@
     function favorite(id){if(!manage()||!find(id))return false;const next=copy(profile),item=next.owned.find(i=>i.id===id);item.favorite=!item.favorite;return commit(next);}
     const salvageValue=i=>5+rarities[i.rarity].rank*8+i.level;
     const removable=i=>!i.favorite&&!wornIds().has(i.id);
-    function salvagePreview(){const items=profile.owned.filter(removable);return {count:items.length,essence:items.reduce((n,i)=>n+salvageValue(i),0)};}
+    function salvagePreview(ids){const selected=ids===undefined?null:new Set(Array.isArray(ids)?ids:[]);const items=profile.owned.filter(i=>removable(i)&&(!selected||selected.has(i.id)));return {count:items.length,essence:items.reduce((n,i)=>n+salvageValue(i),0)};}
     function salvage(id){
       if(!manage())return false;const item=find(id);if(!item||!removable(item))return false;
       const next=copy(profile);next.owned=next.owned.filter(i=>i.id!==id);next.essence=Math.min(1e9,next.essence+salvageValue(item));const ok=commit(next);if(ok)retryPending();return ok;
     }
-    function salvageAll(){
-      if(!manage())return false;const preview=salvagePreview();if(!preview.count)return false;
-      const next=copy(profile);next.owned=next.owned.filter(i=>!removable(i));next.essence=Math.min(1e9,next.essence+preview.essence);const ok=commit(next);if(ok)retryPending();return ok;
+    function salvageAll(ids){
+      if(!manage())return false;const preview=salvagePreview(ids);if(!preview.count)return false;
+      const next=copy(profile);const selected=ids===undefined?null:new Set(Array.isArray(ids)?ids:[]);next.owned=next.owned.filter(i=>!removable(i)||(selected&&!selected.has(i.id)));next.essence=Math.min(1e9,next.essence+preview.essence);const ok=commit(next);if(ok)retryPending();return ok;
     }
     function upgradePreview(id){
       const item=find(id);if(!item)return {allowed:false,reason:'Gegenstand fehlt',cost:0,nextRank:0,stats:{}};
       const p=C.previewUpgrade(item);
-      if(!removable(item))return {...p,allowed:false,reason:'Favorisiert oder bei einem Helden angelegt'};
       if(profile.essence<p.cost)return {...p,allowed:false,reason:'Nicht genug Schmiedessenz'};
       return p;
     }

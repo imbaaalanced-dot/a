@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {load,memory}=require('./helpers/equipment.cjs');
+const L=load().DenkmalLoot,storage=memory();let menu=true;
+const m=L.create({storage,canManage:()=>menu});const e=JSON.parse(m.exportJSON());e.profile.essence=1000;
+for(const id of ['shared','keep','recycle'])e.profile.owned.push({id,name:id,slot:'weapon',rarity:'epic',level:5,power:null,favorite:false,legacy:true,stats:{damage:20},baseStats:{damage:20},upgradeRank:0});
+assert.ok(m.importJSON(JSON.stringify(e)));m.equip('shared','weapon','marcel');m.equip('shared','weapon','kim');m.favorite('shared');
+const snapshot=JSON.stringify(m.snapshot('kim'));assert.ok(m.upgrade('shared'));
+assert.equal(m.find('shared').favorite,true);assert.equal(m.find('shared').stats.damage,21);assert.equal(m.profile.essence,950);
+assert.equal(m.view('kim').items.find(i=>i.id==='shared').stats.damage,21);assert.notEqual(JSON.stringify(m.snapshot('kim')),snapshot);
+assert.equal(m.salvage('shared'),false);
+assert.equal(m.salvagePreview(['shared','recycle','recycle','missing']).count,1);
+assert.ok(m.salvageAll(['shared','recycle']));assert.ok(m.find('shared'));assert.ok(m.find('keep'));assert.equal(m.find('recycle'),null);
+assert.equal(m.salvageAll([]),false);assert.equal(m.salvageAll('keep'),false);
+menu=false;const before=m.exportJSON();assert.equal(m.upgrade('shared'),false);assert.equal(m.salvageAll(['keep']),false);assert.equal(m.exportJSON(),before);
+const reloaded=L.create({storage});assert.equal(reloaded.find('shared').upgradeRank,1);assert.equal(reloaded.profile.loadouts.kim.weapon,'shared');
+console.log('Workshop: shared favorite forging, scoped salvage, combat guards and reload passed');

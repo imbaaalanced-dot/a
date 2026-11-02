@@ -16,7 +16,7 @@ let menu=true,hero='marcel';const s=memory(),m=L.create({storage:s,canManage:()=
 const env=JSON.parse(m.exportJSON());for(const id of ['new-weapon','forge-weapon'])env.profile.owned.push({id,slot:'weapon',name:'Prüfstab',rarity:'epic',level:5,power:null,favorite:false,legacy:true,stats:{damage:20,haste:.1},baseStats:{damage:20,haste:.1},upgradeRank:0});assert.equal(m.importJSON(JSON.stringify(env)),true);
 const originalCount=m.profile.owned.length,stable=JSON.stringify(m.snapshot('marcel'));
 assert.equal(m.equip('new-weapon','weapon','kim'),true);assert.equal(m.profile.loadouts.marcel.weapon,'fixture-0');assert.equal(m.profile.loadouts.kim.weapon,'new-weapon');
-assert.equal(m.salvage('new-weapon'),false);assert.equal(m.upgrade('new-weapon'),false);
+assert.equal(m.salvage('new-weapon'),false);assert.equal(m.upgrade('new-weapon'),true);
 assert.equal(JSON.stringify(m.snapshot('marcel')),stable);
 assert.equal(m.equip('new-weapon','weapon','marcel'),true);assert.equal(m.profile.owned.length,originalCount);assert.equal(m.unequip('weapon','kim'),true);assert.equal(m.profile.loadouts.marcel.weapon,'new-weapon');
 assert.equal(m.equip('fixture-8','ring2','kim'),true);assert.equal(m.equip('fixture-8','ring1','kim'),false);assert.equal(m.equip('fixture-9','ring1','kim'),true);
