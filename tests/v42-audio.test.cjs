@@ -13,3 +13,12 @@ audio.setVolumes({effects:NaN,music:5,ambience:-1});assert.equal(audio.settings.
 audio.pause(true);assert.equal(audio.play('boss'),false);audio.pause(false);audio.mute(true);assert.equal(audio.play('boss'),false);audio.mute(false);assert.equal(audio.play('boss'),true);
 const broken=box.DenkmalAudio.create({storage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}},contextFactory(){throw Error('no device')}});assert.doesNotThrow(()=>{broken.unlock();broken.play('cannon');broken.setVolumes({music:.5})});
 assert.ok(starts>0);console.log('Audio gesture, cooldown, pause, mute, persistence, bounds and failure handling passed');
+// A scheduled stop is asynchronous in a browser: keep voices alive until onended.
+const sources=[];
+const sustained={...context,createOscillator(){const n={frequency:param(),connect(){return this},disconnect(){},start(){},stop(){this.scheduled=true}};sources.push(n);return n},createBufferSource(){const n={connect(){return this},disconnect(){},start(){},stop(){this.scheduled=true}};sources.push(n);return n}};
+const events=box.DenkmalAudio.create({contextFactory:()=>sustained});events.unlock();events.play('defeat');const count=events.activeVoices;assert.ok(count>0);
+events.setScene('silent');assert.equal(events.activeVoices,count,'terminal screen keeps event tails');events.tick();assert.equal(events.activeVoices,count,'terminal screen starts no score');
+events.pause(true);assert.equal(events.activeVoices,0,'manual/background pause stops everything');events.pause(false);
+for(let i=0;i<30;i++){sustained.currentTime+=1;events.play('event-'+i)}assert.ok(events.activeVoices<=12,'hard polyphony cap');
+const legacy=box.DenkmalAudio.create({legacyMuted:true});assert.equal(legacy.settings.muted,true,'legacy off is honored on first migration');
+const authoritative=box.DenkmalAudio.create({storage,legacyMuted:true});assert.equal(authoritative.settings.muted,false,'shared setting takes precedence over legacy');
