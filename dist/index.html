@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
   <link rel="stylesheet" href="portal-ui.css?v=expansion2" />
+  <link rel="stylesheet" href="hud-v42.css?v=v42hud1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -52,7 +53,7 @@
     <section class="objective" id="objective">
       <span id="objectiveText">WELLE 1</span>
       <div class="wave-meter"><i id="waveProgress"></i></div>
-      <small id="enemyCount">0 FEINDE VERBLEIBEN</small><small id="wavePreview" class="wave-preview hidden"></small>
+      <small id="enemyCount">0 FEINDE VERBLEIBEN</small><details id="wavePreviewDetails" class="wave-preview-details hidden"><summary>VORSCHAU · DETAILS</summary><small id="wavePreview" class="wave-preview hidden" tabindex="0" aria-label="Gegner und Zuläufe der nächsten Welle"></small></details>
       <button id="nextWaveBtn" class="icon-btn hidden">WELLE STARTEN</button>
       <small id="storyText" class="story-text">DAS TOR ZUR ASCHE ÖFFNET SICH</small>
     </section>
@@ -306,6 +307,6 @@
   <script src="portal-run.js?v=v42a1"></script>
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
-  <script src="game.js?v=v42a1"></script>
+  <script src="game.js?v=v42a1hud1"></script>
 </body>
 </html>
