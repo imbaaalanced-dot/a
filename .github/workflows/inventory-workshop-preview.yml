@@ -1,0 +1,56 @@
+name: Verify and publish inventory workshop tester
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-inventory-workshop-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/td2-inventory-workshop-20261102'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify gameplay, inventory and saves
+        run: |
+          set -e
+          for test in tests/*.test.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/loot-v2-game.test.cjs
+          for file in dist/equipment-catalog.js dist/loot.js dist/loot-ui.js dist/game.js; do node --check "$file"; done
+      - name: Verify desktop and touch browser flows
+        timeout-minutes: 5
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+          TD2_WORKSHOP_QA=1 TD2_QA_OUT=/tmp/td2-inventory-workshop-qa timeout 180s node tools/verify-equipment-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inventory-workshop-browser-qa
+          path: /tmp/td2-inventory-workshop-qa
+      - name: Publish only isolated inventory-workshop tester
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/inventory-workshop-pages origin/gh-pages
+          mkdir -p /tmp/inventory-workshop-pages/inventory-workshop/v4-alpha9
+          cp -R dist/. /tmp/inventory-workshop-pages/inventory-workshop/v4-alpha9/
+          printf '{"sourceCommit":"%s"}\n' "${{ github.event.pull_request.head.sha }}" > /tmp/inventory-workshop-pages/inventory-workshop/v4-alpha9/inventory-workshop-build.json
+          touch /tmp/inventory-workshop-pages/.nojekyll
+          cd /tmp/inventory-workshop-pages
+          git add inventory-workshop .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Verify and publish inventory workshop tester ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
