@@ -1,0 +1,37 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+
+const root = path.resolve(__dirname, '../dist');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'menu.css'), 'utf8');
+const preloader = fs.readFileSync(path.join(root, 'preloader.js'), 'utf8');
+
+// The preloader must load the scenery variant the viewport will actually show.
+assert.match(preloader, /matchMedia\('\(max-width:700px\)'\)/, 'preloader picks scenery per viewport');
+assert.match(preloader, /memorial-yard-mobile-v3\.webp/, 'mobile scenery referenced by preloader');
+assert.match(preloader, /memorial-yard-v3\.webp/, 'desktop scenery referenced by preloader');
+
+// Only the saved hero banner is preloaded; the other loads on demand in game.js.
+assert.match(preloader, /hero-banner-'\s*\+\s*character\s*\+\s*'-v3\.webp/, 'banner URL is character-aware');
+assert.doesNotMatch(preloader, /'assets\/menu\/hero-banner-marcel-v3\.webp'/, 'marcel banner not hardcoded');
+assert.doesNotMatch(preloader, /'assets\/menu\/hero-banner-kim-v3\.webp'/, 'kim banner not hardcoded');
+
+// Character preference is read from the versioned envelope with the legacy key as fallback.
+assert.match(preloader, /denkmal-preferences-v1/, 'reads versioned preference envelope');
+assert.match(preloader, /denkmal-character/, 'legacy character key fallback kept');
+assert.match(preloader, /character === 'marcel' \|\| envelope\.data\.character === 'kim'|envelope\.data\.character === 'marcel' \|\| envelope\.data\.character === 'kim'/, 'character values validated');
+
+// Hidden scenery must not be downloaded eagerly on mobile (CSS display swap + lazy).
+const scene = html.match(/<div class="menu-scene"[\s\S]*?<\/div>/)?.[0] || '';
+assert.match(scene, /memorial-yard-v3\.webp[^>]*loading="lazy"/, 'desktop scenery is lazy');
+assert.match(scene, /memorial-yard-mobile-v3\.webp[^>]*loading="lazy"/, 'mobile scenery is lazy');
+
+// Cache key bumped for the changed preloader.
+assert.match(html, /preloader\.js\?v=menu-v3b-preload/);
+
+// The CSS swap breakpoint stays in sync with the preloader breakpoint.
+assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*?menu-scene-mobile/, 'CSS scenery swap at 700px');
+
+console.log('Menu v3b device-aware preloader regression passed');

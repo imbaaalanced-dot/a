@@ -24,7 +24,7 @@ const expectedVersions = new Map([
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a6hud2'],
   ['asset-manager.js', 'alpha9a3'],
-  ['preloader.js', 'menu-v3-preload'],
+  ['preloader.js', 'menu-v3b-preload'],
   ['persisted-state.js', 'save1'],
   ['levels.js', 'save1'],
   ['visuals.js', 'expansion2'],
