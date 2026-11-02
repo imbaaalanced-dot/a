@@ -4,9 +4,9 @@
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
-    'assets/menu/churchyard-quiet-v1.webp',
-    'assets/menu/crest-v2.webp','assets/menu/heroes-marcel-selected-v2.svg',
-    'assets/menu/heroes-kim-selected-v2.svg'
+    'assets/menu/memorial-yard-v3.webp',
+    'assets/menu/crest-v3.webp','assets/menu/hero-banner-marcel-v3.webp',
+    'assets/menu/hero-banner-kim-v3.webp'
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

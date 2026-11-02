@@ -1067,14 +1067,14 @@
     });
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     const banner=$('menuHeroBanner');
-    const bannerUrl=kim?'assets/menu/heroes-kim-selected-v2.svg':'assets/menu/heroes-marcel-selected-v2.svg';
+    const bannerUrl=kim?'assets/menu/hero-banner-kim-v3.webp':'assets/menu/hero-banner-marcel-v3.webp';
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
       if(!img||selectedCharacter!==(kim?'kim':'marcel'))return;
       try{await img.decode?.();}catch{return;}
       if(selectedCharacter===(kim?'kim':'marcel'))banner.src=bannerUrl;
     });
     if(!globalThis.DenkmalAssets)banner.src=bannerUrl;
-    banner.alt=(kim?'Kim':'Marcel')+' ausgewählt: farbig mit Goldkontur; anderer Held grau';
+    banner.alt=(kim?'Kim':'Marcel')+' · '+(kim?'Die Bewahrerin':'Der Beschützer');
     $('menuHeroCaption').textContent=kim?'Kim · Die Bewahrerin':'Marcel · Der Beschützer';
     $('menuHeroName').textContent=kim?'KIM · DIE BEWAHRERIN':'MARCEL · DER BESCHÜTZER';
     savePreference('character',selectedCharacter);
