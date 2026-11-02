@@ -10,7 +10,7 @@ Aktueller freigegebener Hauptstand: V4 Alpha9 mit LootV2, Kampagnenbalance und A
 - [Kartenpolish und Geometrieschutz](docs/releases/V4.1.0-MAPS.md)
 - [Reproduzierbare Balanceanalyse](docs/releases/V4.1.0-BALANCE.md)
 
-Aktive Kampagnenreihenfolge:1 Einleitung,2 Labyrinth,3 Kriegerdenkmal Kirchende,4 Ender Dorfkirche/Löwe,5 Hohensyburg,6 Goethestraße. Frühere Texte ordnen5/6 teils anders zu; der aktive Code und `levels.js` sind maßgeblich.
+Aktive Kampagnenreihenfolge:1 Einleitung,2 Labyrinth,3 Kriegerdenkmal Kirchende,4 Ender Dorfkirche/Löwe,5 Hohensyburg,6 Goethestraße,7 Kriegerdenkmal Westhofen (Preview-Branch, außerhalb des verbindlichen V4.1.0-Umfangs). Frühere Texte ordnen5/6 teils anders zu; der aktive Code und `levels.js` sind maßgeblich.
 
 Speicherformate und alte Profile bleiben geschützt. Die Android-Abnahme des vorherigen Builds ist vom Nutzer bestätigt; neue Gerätewerte und eine V4.1-Abnahme werden daraus nicht abgeleitet.
 
