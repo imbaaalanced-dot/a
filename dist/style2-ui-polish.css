@@ -50,3 +50,21 @@
 .icon-btn:not(:disabled):active{filter:brightness(1.15)}
 .toast{box-shadow:0 10px 30px #000a}
 @media(prefers-reduced-motion:reduce){.meter i{transition:none}}
+
+/* ===== Graphics pass ui-gold2: state-coloured meters, urgent build-pause cue, modal depth. ===== */
+.meter i.low{background-image:linear-gradient(90deg,#c07a2f,#e49b61)}
+.meter i.critical{background-image:linear-gradient(90deg,#923c32,#d88559)}
+.objective.urgent>span{color:#ffd98a}
+.objective.urgent{border-color:#cb9b4f;box-shadow:0 0 14px #cb9b4f2e}
+.modal{background:radial-gradient(ellipse at 50% 40%,#17262aee,#0a1013f7 72%)}
+.pause-screen{background:radial-gradient(ellipse at 50% 42%,#162426ec,#080e11f7 74%)}
+.modal .eyebrow{color:#d5bd8b}
+.modal h1,.modal h2{text-shadow:0 4px 35px #000,0 0 26px #d9ae6724}
+.primary:active{filter:brightness(.93)}
+@media(prefers-reduced-motion:no-preference){
+  .meter i.critical{animation:td2-meter-critical 1s ease-in-out infinite}
+  .objective.urgent{animation:td2-objective-urgent 1s ease-in-out infinite}
+}
+@keyframes td2-meter-critical{50%{filter:brightness(1.22)}}
+@keyframes td2-objective-urgent{50%{background-color:#241c0ee6}}
+@media(prefers-reduced-motion:reduce){.meter i.critical,.objective.urgent{animation:none}}
