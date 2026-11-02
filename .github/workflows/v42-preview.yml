@@ -1,0 +1,46 @@
+name: TD2 V4.2 preview
+on:
+  push:
+    branches: [release/v4.2-neue-wacht]
+permissions:
+  contents: write
+concurrency:
+  group: td2-v42-preview
+  cancel-in-progress: true
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify V4.2 and preserved game systems
+        run: |
+          set -e
+          python3 -m pip install Pillow numpy scipy
+          npm test --prefix ansturm-alpha1-5
+          for test in tests/*.cjs; do node "$test"; done
+          for test in tests/*.test.py; do python3 "$test"; done
+          TEST_MOBILE=1 node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/level5-preview.test.cjs
+      - name: Publish V4.2 isolated test build
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-v42-pages origin/gh-pages
+          mkdir -p /tmp/td2-v42-pages/v4.2-neue-wacht
+          cp -R dist/. /tmp/td2-v42-pages/v4.2-neue-wacht/
+          touch /tmp/td2-v42-pages/.nojekyll
+          cd /tmp/td2-v42-pages
+          git add v4.2-neue-wacht .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish V4.2 test build ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi

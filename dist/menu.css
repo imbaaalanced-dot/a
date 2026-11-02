@@ -317,3 +317,35 @@ a.menu-art-button{text-decoration:none;color:inherit}
   #startScreen .menu-scene img:not(.menu-scene-mobile){display:none}
   .menu-scene .menu-scene-mobile{display:block}
 }
+
+/* V4.2: a single command centre with the two guardians facing inward. */
+.neue-wacht .menu-shell{width:min(1180px,100%);max-width:1180px;margin:auto;position:relative;padding:24px;display:grid;grid-template-columns:minmax(160px,1fr) minmax(320px,470px) minmax(160px,1fr);gap:20px}
+.neue-wacht .menu-masthead,.neue-wacht .menu-footer{grid-column:1/-1;width:100%}
+.neue-wacht .menu-content{grid-column:2;grid-row:2;max-width:none;width:100%;padding:0}
+.neue-wacht .warden-pair{display:contents}
+.neue-wacht .warden-card{grid-row:2;position:relative;align-self:start;overflow:hidden;padding:0;border:1px solid #5c615e;border-radius:12px;background:#101719;min-width:0;box-shadow:0 12px 35px #0009;text-align:center}
+.neue-wacht .warden-marcel{grid-column:1}.neue-wacht .warden-kim{grid-column:3}
+.neue-wacht .warden-card img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;object-position:50% 15%;display:block;filter:grayscale(1) brightness(.65);transition:filter .2s}
+.neue-wacht .warden-kim img{transform:scaleX(-1)}
+.neue-wacht .warden-card[aria-pressed=true]{border:2px solid #e5bc72;box-shadow:0 0 25px #d8a64b35}
+.neue-wacht .warden-card[aria-pressed=true] img{filter:sepia(.2) brightness(1.05)}
+.neue-wacht .warden-card span{display:grid;gap:3px;padding:14px 6px;background:linear-gradient(#142024,#0b1115);color:#e9d9b9}
+.neue-wacht .warden-card b{font-size:18px;letter-spacing:.12em}.neue-wacht .warden-card small{font-size:12px;color:#b5b8b3}.neue-wacht .warden-card em{font-size:11px;font-style:normal;color:#daba76}
+.neue-wacht .menu-heading{margin:0 0 12px}.neue-wacht .menu-heading h1{font-size:clamp(28px,3.4vw,46px)}
+.neue-wacht .menu-crest{width:58px;height:58px}.neue-wacht .menu-intro{font-size:13px;margin:0 0 18px}
+.neue-wacht .menu-primary-actions{display:grid;grid-template-columns:1fr;gap:10px}
+.neue-wacht .menu-command{min-height:64px}.neue-wacht .menu-edition{font-size:11px;letter-spacing:.1em;color:#c6b185}
+.neue-wacht [hidden]{display:none!important}.neue-wacht .channel-card{margin-top:16px}
+@media(max-width:850px){
+ .neue-wacht .menu-shell{display:flex;flex-direction:column;padding:16px;gap:12px;max-width:540px}
+ .neue-wacht .warden-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ .neue-wacht .warden-card{grid-column:auto;grid-row:auto;width:100%;display:grid;grid-template-columns:76px 1fr;align-items:center}
+ .neue-wacht .warden-card img{height:104px;aspect-ratio:auto;object-position:50% 15%}
+ .neue-wacht .warden-card span{padding:8px 4px;background:none}.neue-wacht .warden-card b{font-size:13px}.neue-wacht .warden-card small{font-size:10px}
+ .neue-wacht .menu-heading h1{font-size:30px}.neue-wacht .menu-intro{display:none}
+ .neue-wacht .menu-command{min-height:60px}.neue-wacht .menu-edition{font-size:9px}
+}
+@media(max-width:380px){.neue-wacht .warden-card{grid-template-columns:52px 1fr}.neue-wacht .menu-shell{padding:10px}.neue-wacht .menu-command small{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.neue-wacht *{animation:none!important;transition:none!important}}
+
+.audio-mixer{border:1px solid #8a785544;border-radius:8px;margin:12px 0;padding:12px;color:#d9c79f;min-width:0}.audio-mixer legend{font-size:12px;letter-spacing:.08em}.audio-mixer label{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;min-height:40px}.audio-mixer input{width:55%;min-height:32px;accent-color:#d7b36d}.game-menu .audio-mixer{width:230px;max-width:70vw}

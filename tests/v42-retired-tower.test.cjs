@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+const P=require('../dist/portal-run.js');
+const r=P.create({runId:'retired',seed:12,heroId:'marcel',startBudget:75});
+r.checkpoint={hero:{hp:100,maxHp:100,x:12,y:12},gold:7,monumentHp:100,wave:2,towers:[{kind:'boomerang',level:3,spent:133,x:20,y:30,damage:14,range:305,fireRate:1.55},{kind:'bow',level:1,spent:25,x:25,y:30,damage:12,range:200,fireRate:.5}]};
+assert.equal(typeof P.normalizeRetiredTowers,'function','legacy checkpoint normalization required');
+const migrated=P.normalizeRetiredTowers(r);
+assert.equal(migrated.checkpoint.gold,140);
+assert.deepEqual(migrated.checkpoint.towers,[r.checkpoint.towers[1]]);
+assert.equal(r.checkpoint.gold,7,'input untouched');
+assert.deepEqual(P.normalizeRetiredTowers(migrated),migrated,'idempotent refund');
+const data=new Map([[P.KEY,JSON.stringify(r)]]);const storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+const store=P.createStore(storage);const loaded=store.load();assert.equal(loaded.run.checkpoint.gold,140);
+assert.equal(store.save(loaded.run,0),true);assert.equal(store.load().run.checkpoint.gold,140);
+assert.equal(P.createStore(storage).load().run.checkpoint.gold,140);
+console.log('Retired towers: refund, input safety, reload and write migration passed');

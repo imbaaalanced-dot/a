@@ -7,12 +7,13 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.1.0-alpha.1"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v4.2.0-alpha.1"'), 'version remains available as metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
 // and the expected key updated here; unchanged files keep their existing keys.
 const expectedVersions = new Map([
+  ['audio-v42.js','v42a1'],
   ['directional-assets-v410.js','v410a1'],
   ['directional-actions-v410.js','v410a1'],
   ['map-polish-v410.js','v410a1'],
@@ -20,11 +21,11 @@ const expectedVersions = new Map([
   ['hero.css', 'v400a4merge1'],
   ['polish.css', 'alpha9a1'],
   ['loot.css', 'icons2'],
-  ['menu.css', 'menu-v3-redesign'],
+  ['menu.css', 'v42a1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a6hud2'],
   ['asset-manager.js', 'alpha9a3'],
-  ['preloader.js', 'menu-v3-preload'],
+  ['preloader.js', 'v42a1'],
   ['persisted-state.js', 'save1'],
   ['levels.js', 'save1'],
   ['visuals.js', 'expansion2'],
@@ -34,7 +35,7 @@ const expectedVersions = new Map([
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
   ['hero-saga.js', 'v410a1'],
-  ['combat-fx.js', 'v400a6s2t5'],
+  ['combat-fx.js', 'v42a1'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
   ['elemental-sprites.js', 'alpha8a2'],
@@ -46,8 +47,8 @@ const expectedVersions = new Map([
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'goethe1'],
-  ['game.js', 'v410a1menu3'],
-  ['portal-run.js','save2'],
+  ['game.js', 'v42a1'],
+  ['portal-run.js','v42a1'],
   ['portal-perks.js','portal1'],
   ['campaign-balance.js','portal1'],
   ['portal-ui.css','expansion2'],
@@ -86,4 +87,4 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
-console.log('TD2 V4.1 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 V4.2 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');

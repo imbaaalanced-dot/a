@@ -22,7 +22,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),san
 vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');
-source=source.replace(/\}\)\(\);\s*$/, `globalThis.test={get game(){return game},get state(){return state},get lootModel(){return lootModel},startGame,mainMenu,endWave,selectTower,upgradeTower,shootBoomerang,moveBoomerang,update,drawMonument,projectileSpeed};})();`);
+source=source.replace(/\}\)\(\);\s*$/, `globalThis.test={get game(){return game},get state(){return state},get lootModel(){return lootModel},startGame,mainMenu,endWave,selectTower,upgradeTower,update,drawMonument,projectileSpeed};})();`);
 vm.runInContext(source,sandbox);
 const t=sandbox.test;
 const results=[];
@@ -41,66 +41,11 @@ function enemy(x,y,armor=0){
     hp:500,maxHp:500,armor,damage:0,speed:0,attackCd:99,attackCooldown:1,
     focusMonument:false};
 }
-check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
-  const gameSource=fs.readFileSync(path.join(root,'game.js'),'utf8');
-  const atlas=path.join(root,'assets','tower-boomerang-atlas.webp');
-  assert.ok(fs.existsSync(atlas),'missing three-stage transparent boomerang atlas');
-  assert.ok(fs.statSync(atlas).size>5000,'empty or truncated atlas');
-  assert.ok(gameSource.includes('towerLevelArt.boomerang[0]'));
-  assert.ok(gameSource.includes('frameWidth*(level-1)'));
-  assert.ok(gameSource.includes('v400a5combined1'));
-  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.ok(html.includes('game.js?v=v410a1'));
-  assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');
-});
-check('Thorn and lantern towers are no longer available',()=>{
-  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  const art=fs.readFileSync(path.join(root,'kirchende-art.js'),'utf8');
-  const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-  assert.ok(!html.includes('tower-thorn')&&!html.includes('tower-lantern'));
-  assert.ok(!game.includes("name:'DORNENWERFER'")&&!game.includes("name:'RUNENLATERNE'"));
-  assert.ok(!art.includes("'thorn1'")&&!art.includes("'lantern1'"));
-  assert.ok(html.includes('data-tower="boomerang"'));
-  assert.equal(t.projectileSpeed('boomerang'),440);
-  t.selectTower('boomerang');assert.equal(t.game.selectedTower,'boomerang');
-});
-check('Boomerang tower upgrades give three distinct low-damage levels',()=>{
-  const h=t.game.hero;
-  const tower={x:h.x+20,y:h.y,kind:'boomerang',level:1,spent:48,damage:8,
-    fireRate:1.75,fireCd:0,range:265,targetMode:'first'};
-  t.game.towers=[tower];t.game.essence=300;
-  t.upgradeTower();assert.equal(tower.level,2);assert.equal(tower.damage,11);
-  assert.equal(tower.range,285);assert.equal(tower.fireRate,1.65);
-  t.upgradeTower();assert.equal(tower.level,3);assert.equal(tower.damage,14);
-  assert.equal(tower.range,305);assert.equal(tower.fireRate,1.55);
-  t.upgradeTower();assert.equal(tower.level,3);
-  assert.equal(t.game.essence,215,'35 + 50 essence upgrades');
-});
-check('A boomerang passes through every enemy, returns and hits each once per leg',()=>{
-  const tower={x:1300,y:1350,kind:'boomerang',level:1,damage:8,fireCd:99,
-    fireRate:1.75,range:265,targetMode:'first'};
-  const a=enemy(1370,1350),b=enemy(1460,1350,.6),c=enemy(1520,1350);
-  const offLane=enemy(1400,1410);
-  t.game.enemies=[a,b,c,offLane];
-  t.shootBoomerang(tower,a);
-  assert.equal(t.game.bullets.length,1);
-  assert.equal(t.game.bullets[0].maxDistance,265);
-  let sawReturn=false;
-  for(let i=0;i<100;i++){
-    t.update(.02);
-    if(t.game.bullets.some(b=>b.phase==='back'))sawReturn=true;
-  }
-  assert.ok(sawReturn,'projectile changes to return phase');
-  assert.equal(t.game.bullets.length,0,'boomerang arrives back at the tower');
-  for(const e of [a,b,c])assert.equal(e.hp,484,'each enemy receives exactly 8 + 8 damage despite armor');
-  assert.equal(offLane.hp,500,'off-axis enemies are not hit');
-});
-check('Boomerang does not multi-hit a stationary enemy on one pass',()=>{
-  const tower={x:1300,y:1350,kind:'boomerang',level:1,damage:8,range:265};
-  const a=enemy(1360,1350);t.game.enemies=[a];
-  t.shootBoomerang(tower,a);
-  for(let i=0;i<15;i++)t.update(.02);
-  assert.equal(a.hp,492,'outbound contact applies one fixed damage instance');
+check('Retired towers cannot be selected from gameplay or the keyboard',()=>{
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ assert.ok(!html.includes('data-tower="boomerang"'));
+ t.selectTower('bow');t.selectTower('boomerang');assert.equal(t.game.selectedTower,'bow');
+ listeners.keydown({code:'Digit5',preventDefault(){}});assert.equal(t.game.selectedTower,'bow');
 });
 check('Hero attracts enemies before touching them, within the road corridor',()=>{
   const points=sandbox.DenkmalLevels.levels[3].paths[0],p=points[0],q=points[1];
@@ -135,11 +80,6 @@ check('Kirchende monument sprite base rests in its contact shadow',()=>{
   assert.equal(contact[1],m.y+7);
   assert.ok(Math.abs(anchor.y+12-contact[1])<=6,'sprite foot and ground shadow overlap');
 });
-check('Low damage remains below single-target bow DPS at every stage',()=>{
-  for(const [damage,rate] of [[8,1.75],[11,1.65],[14,1.55]]){
-    assert.ok((damage*2)/rate<12/.5,'boomerang trades boss DPS for crowd penetration');
-  }
-});
 check('Church level unlocks after Kirchende and persists completion of wave 16',()=>{
   t.startGame(4);assert.equal(t.game.level,3,'level 4 is locked before Kirchende reward');
   t.lootModel.claimKirchendeCompletion();t.startGame(4);
@@ -152,4 +92,4 @@ check('Church level unlocks after Kirchende and persists completion of wave 16',
   assert.equal(sandbox.DenkmalLevels.level4Completed,true,'clearing the lion stage unlocks endless');
   t.mainMenu();t.startGame(4,'endless');assert.equal(t.game.mode,'endless');
 });
-console.log(results.length+' v4-alpha5 boomerang, hero aggro and monument tests passed\n'+results.join('\n'));
+console.log(results.length+' v4-alpha5 retired tower, hero aggro and monument tests passed\n'+results.join('\n'));

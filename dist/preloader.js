@@ -5,8 +5,8 @@
   const portraits = ['storm.webp','gate.webp','journey.webp'];
   const essential = [
     'assets/menu/memorial-yard-v3.webp',
-    'assets/menu/crest-v3.webp','assets/menu/hero-banner-marcel-v3.webp',
-    'assets/menu/hero-banner-kim-v3.webp'
+    'assets/menu/crest-v3.webp','assets/hero/marcel-portrait-alpha9.webp',
+    'assets/hero/kim-inventory-portrait-v1.webp'
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+let starts=0,stops=0,created=0;const nodes=[];const param=()=>({value:0,setValueAtTime(v){this.value=v},exponentialRampToValueAtTime(v){this.value=v},linearRampToValueAtTime(v){this.value=v},cancelScheduledValues(){}});
+const context={state:'running',currentTime:0,destination:{},sampleRate:8000,resume:()=>Promise.resolve(),createGain(){const n={gain:param(),connect(){return this},disconnect(){}};nodes.push(n);return n},createOscillator(){return {frequency:param(),connect(){return this},disconnect(){},start(){starts++},stop(){stops++;this.onended?.()}}},createBuffer:(n,len)=>({getChannelData:()=>new Float32Array(len)}),createBufferSource(){return {connect(){return this},disconnect(){},start(){starts++},stop(){stops++;this.onended?.()}}},createBiquadFilter(){return {frequency:param(),Q:param(),connect(){return this},disconnect(){}}}};
+const box={console,Math};vm.createContext(box);
+assert.ok(fs.existsSync('dist/audio-v42.js'),'shared engine exists');vm.runInContext(fs.readFileSync('dist/audio-v42.js','utf8'),box);
+const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+const audio=box.DenkmalAudio.create({storage,contextFactory:()=>{created++;return context}});
+assert.equal(audio.play('bow'),false);assert.equal(created,0,'no context before gesture');audio.unlock();assert.equal(created,1);
+assert.equal(audio.play('bow'),true);assert.equal(audio.play('bow'),false,'same-event cooldown');
+audio.setVolumes({effects:.4,music:.2,ambience:.1});assert.equal(audio.settings.effects,.4);
+const restored=box.DenkmalAudio.create({storage});assert.equal(restored.settings.music,.2);
+audio.setVolumes({effects:NaN,music:5,ambience:-1});assert.equal(audio.settings.effects,.4);assert.equal(audio.settings.music,1);assert.equal(audio.settings.ambience,0);
+audio.pause(true);assert.equal(audio.play('boss'),false);audio.pause(false);audio.mute(true);assert.equal(audio.play('boss'),false);audio.mute(false);assert.equal(audio.play('boss'),true);
+const broken=box.DenkmalAudio.create({storage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}},contextFactory(){throw Error('no device')}});assert.doesNotThrow(()=>{broken.unlock();broken.play('cannon');broken.setVolumes({music:.5})});
+assert.ok(starts>0);console.log('Audio gesture, cooldown, pause, mute, persistence, bounds and failure handling passed');

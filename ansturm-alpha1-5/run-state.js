@@ -1,4 +1,4 @@
-import {createGame,getStats,initBoss} from './model.js?v=v410a1';
+import {createGame,getStats,initBoss} from './model.js?v=v42a1';
 import {TECH,UPGRADES,ENEMY} from './config.js';
 
 const scalarFields=['gold','hp','shield','wave','kills','elapsed','status','nextId','waveElapsed','spawned','planned','spawnClock','fireClock','intermission','lastDamage'];

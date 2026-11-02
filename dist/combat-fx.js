@@ -13,6 +13,7 @@
   let audio, master, voices = 0;
   const lastSound = new Map();
   function unlock() {
+    if(globalThis.TD2Audio){globalThis.TD2Audio.unlock();return;}
     try {
       const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
       if (!AC) return;
@@ -20,8 +21,9 @@
       if (audio.state === 'suspended') audio.resume().catch(() => {});
     } catch {}
   }
-  function mute(muted) { if (master) master.gain.value = muted ? 0 : .65; }
+  function mute(muted) { if(globalThis.TD2Audio){globalThis.TD2Audio.mute(muted);return;} if (master) master.gain.value = muted ? 0 : .65; }
   function sound(kind, impact, enabled) {
+    if(globalThis.TD2Audio){if(enabled)globalThis.TD2Audio.play(impact?'hit':kind);return;}
     if (!enabled || !audio || audio.state !== 'running' || voices >= 8) return;
     const key = kind + (impact ? ':hit' : ':shot'), now = audio.currentTime;
     if (now - (lastSound.get(key) ?? -1) < .055) return;

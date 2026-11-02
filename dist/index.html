@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta name="application-version" content="v4.1.0-alpha.1" />
-  <meta name="application-build" content="v410a1-directions-bosses-maps-balance" />
+  <meta name="application-version" content="v4.2.0-alpha.1" />
+  <meta name="application-build" content="v42a1-neue-wacht" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#080b0c" />
-  <title>Denkmal TD · Marcel der Denkmalschützer</title>
+  <title>Denkmal TD2 · Neue Wacht</title>
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=alpha9a1" />
   <link rel="stylesheet" href="loot.css?v=icons2" />
-  <link rel="stylesheet" href="menu.css?v=menu-v3-redesign" />
+  <link rel="stylesheet" href="menu.css?v=v42a1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
@@ -21,7 +21,7 @@
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="asset-manager.js?v=alpha9a3"></script>
-  <script src="preloader.js?v=menu-v3-preload"></script>
+  <script src="preloader.js?v=v42a1"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal 3D. WASD oder Pfeiltasten bewegen, Leertaste ausweichen, E Turm bauen, Escape pausieren."></canvas>
 
@@ -67,7 +67,7 @@
       <button data-tower="cannon" title="Flächenschaden gegen Gruppen"><kbd>2</kbd><span>KANONE</span><b>35</b></button>
       <button data-tower="mage" title="Verlangsamt getroffene Gegner"><kbd>3</kbd><span>MAGIE</span><b>46</b></button>
       <button data-tower="rift" title="Kettenblitz auf mehrere Gegner"><kbd>4</kbd><span>RIFT</span><b>58</b></button>
-    <button id="tower-boomerang" data-tower="boomerang" hidden title="Durchdringt Gegner und trifft beim Rückflug erneut"><kbd>5</kbd><span>BUMERANG</span><b>48</b></button></section>
+</section>
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
@@ -86,16 +86,23 @@
     <span id="sagaComplete" class="saga-complete hidden">DIE NAMEN SIND FREI · ENDLOSE WACHT</span>
     <div id="joystick" class="joystick" aria-label="Touch-Steuerung: zum Bewegen ziehen"><span></span></div>
 
-    <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <section class="start-screen modal neue-wacht" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span class="menu-edition">NEUE WACHT · V4.2 VORSCHAU</span></header>
+        <div class="warden-pair" role="group" aria-label="Held für die Kampagne wählen">
+          <button id="homeChooseMarcel" class="warden-card warden-marcel" type="button" aria-pressed="true"><img src="assets/hero/marcel-portrait-alpha9.webp" width="1280" height="1920" alt="Marcel mit blauer Laterne" decoding="async"><span><b>MARCEL</b><small>Der Beschützer</small><em>Ausgewählt</em></span></button>
+          <button id="homeChooseKim" class="warden-card warden-kim" type="button" aria-pressed="false"><img src="assets/hero/kim-inventory-portrait-v1.webp" width="640" height="960" alt="Kim mit türkiser Laterne" decoding="async"><span><b>KIM</b><small>Die Bewahrerin</small><em>Auswählen</em></span></button>
+        </div>
         <div class="menu-content">
-          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/hero-banner-marcel-v3.webp" width="1440" height="720" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
-          <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
+          <figure class="menu-hero-figure" hidden><img id="menuHeroBanner" class="hero-menu-banner" src="assets/hero/marcel-portrait-alpha9.webp" width="1440" height="720" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
+          <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Die Wacht<br><em>beginnt mit dir.</em></h1></div></div>
           <p class="menu-intro">Sechs spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
           <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
-            <button id="menuPlayBtn" class="menu-command menu-command-primary" type="button" aria-controls="playMenu"><span class="menu-command-mark" aria-hidden="true">◆</span><span><strong>Spielen</strong><small>Kampagne oder Denkmal-Ansturm</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+            <button id="homeCampaignBtn" class="menu-command menu-command-primary" type="button" aria-controls="campaignMenu"><span class="menu-command-mark">Ⅰ</span><span><strong>Kampagne</strong><small>Sechs Schauplätze. Deine Geschichte.</small></span><span aria-hidden="true">›</span></button>
+            <a id="homeAnsturmBtn" class="menu-command menu-command-assault" href="ansturm/index.html"><span class="menu-command-mark">⚔</span><span><strong>Denkmal-Ansturm</strong><small>Ein Denkmal. Angriffe von allen Seiten.</small></span><span aria-hidden="true">›</span></a>
+            <button id="homeEndlessBtn" class="menu-command" type="button" aria-controls="endlessMenu"><span class="menu-command-mark">∞</span><span><strong>Endlose Wacht</strong><small>Verteidige deine freigeschalteten Karten.</small></span><span aria-hidden="true">›</span></button>
+            <button id="menuPlayBtn" hidden class="menu-command menu-command-primary" type="button" aria-controls="playMenu"><span class="menu-command-mark" aria-hidden="true">◆</span><span><strong>Spielen</strong><small>Kampagne oder Denkmal-Ansturm</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
             <button id="menuCharacterBtn" class="menu-command" type="button" aria-controls="heroMenu"><span class="menu-command-mark" aria-hidden="true">♜</span><span><strong>Helden &amp; Ausrüstung</strong><small>Wächter wählen und Rucksack verwalten</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
             <button id="menuOptionsBtn" class="menu-command menu-command-quiet" type="button" aria-controls="optionsMenu"><span class="menu-command-mark" aria-hidden="true">⚙</span><span><strong>Optionen</strong><small>Ton, Grafik und Spielstand</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
           </nav>
@@ -168,7 +175,7 @@
           </div>
           </section>
           <section id="optionsMenu" class="menu-section menu-options" hidden aria-labelledby="optionsMenuTitle">
-            <h2 id="optionsMenuTitle">Optionen</h2>
+            <h2 id="optionsMenuTitle">Optionen</h2><fieldset class="audio-mixer"><legend>Klangmischung</legend><label>Effekte <input id="volume-effects" type="range" min="0" max="100" step="1" aria-label="Effektlautstärke"></label><label>Musik <input id="volume-music" type="range" min="0" max="100" step="1" aria-label="Musiklautstärke"></label><label>Atmosphäre <input id="volume-ambience" type="range" min="0" max="100" step="1" aria-label="Umgebungslautstärke"></label></fieldset>
             <button id="menuSoundBtn" class="icon-btn" type="button" aria-pressed="true">TON: AN</button>
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
@@ -272,7 +279,8 @@
   <script src="v2-expansion.js?v=v410a1"></script>
   <script src="loot-ui.js?v=loot-v2-20261029"></script>
   <script src="hero-saga.js?v=v410a1"></script>
-  <script src="combat-fx.js?v=v400a6s2t5"></script>
+  <script src="audio-v42.js?v=v42a1"></script>
+  <script src="combat-fx.js?v=v42a1"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
   <script src="elemental-sprites.js?v=alpha8a2"></script>
   <script src="style2-impact-atlas.js?v=reference-refresh-1"></script>
@@ -295,9 +303,9 @@
   <script src="hohensyburg.js?v=syburg-balance2"></script>
   <script src="hohensyburg-art.js?v=alpha9a3"></script>
   <script src="campaign-balance.js?v=portal1"></script>
-  <script src="portal-run.js?v=save2"></script>
+  <script src="portal-run.js?v=v42a1"></script>
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
-  <script src="game.js?v=v410a1menu3"></script>
+  <script src="game.js?v=v42a1"></script>
 </body>
 </html>

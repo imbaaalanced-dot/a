@@ -47,7 +47,6 @@ check('Shell speed table covers every tower and hero shells stay at 560',()=>{
   assert.deepEqual([t.projectileSpeed('bow'),t.projectileSpeed('cannon'),t.projectileSpeed('mortar'),t.projectileSpeed('ballista')],[520,430,350,660]);
   assert.equal(t.projectileSpeed('mage'),520);
   assert.equal(t.projectileSpeed('rift'),520);
-  assert.equal(t.projectileSpeed('boomerang'),440);
   startRun();
   const h=t.game.hero;h.fireCd=0;
   t.game.enemies=[makeEnemy({x:h.x+80,y:h.y,hp:1000,maxHp:1000,speed:0,attackCd:99})];
@@ -140,10 +139,10 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
   const portrait=fs.readFileSync(path.join(root,'portrait-patch.css'),'utf8');
-  assert.ok(html.includes('name="application-version" content="v4.1.0-alpha.1"'),'metadata names the current V4.1 preview');
+  assert.ok(html.includes('name="application-version" content="v4.2.0-alpha.1"'),'metadata names the current V4.1 preview');
   assert.ok(html.includes('id="hudMenu"'),'the menu details element is addressable');
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
-  assert.ok(html.includes('game.js?v=v410a1'),'hero targeting fix has a fresh cache key');
+  assert.ok(html.includes('game.js?v=v42a1'),'hero targeting fix has a fresh cache key');
   assert.ok(!html.includes('v400a3'),'no stale alpha.3 cache busts remain');
   assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,2,'unchanged assets retain their cache keys');
   assert.ok(polish.includes('.hud-menu-panel{z-index:8}'),'polish keeps the menu under modal overlays');
