@@ -22,7 +22,11 @@ assert.deepEqual(Array.from(c.getWaveGates(7,25)),[0,1],'chapter opening pressur
 assert.deepEqual(Array.from(c.getWaveGates(7,26)),[0,1,2],'the green corridor joins from wave 26');
 vm.runInContext(fs.readFileSync('dist/westhofen.js','utf8'),box);const w=box.DenkmalWesthofen;
 for(let wave=25;wave<=28;wave++)assert.ok(w.waveName(wave));
-const opening=Array.from({length:34},(_,i)=>w.enemyType(25,i));
+// Merged street geometry concentrates junction fire on both lanes; the
+// chapter opening therefore runs above the Hohensyburg template (32/.75).
+assert.equal(w.campaignWave(25).count,38);assert.equal(w.campaignWave(25).interval,.62);
+assert.equal(w.campaignWave(28).count,52);assert.equal(w.campaignWave(28).interval,.40);
+const opening=Array.from({length:38},(_,i)=>w.enemyType(25,i));
 assert.ok(opening.every(t=>!['shadowwing','gargoyle','stormwing'].includes(t)),'wave 25 chapter opening is a pure ground attack');
 assert.ok(opening.includes('wraith')&&opening.includes('runner'));
 assert.ok(Array.from({length:48},(_,i)=>w.enemyType(26,i)).includes('shadowwing'),'air pressure arrives with wave 26');
@@ -60,7 +64,7 @@ vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),reloaded);vm.r
 assert.equal(reloaded.DenkmalLevels.level7Completed,true,'completion survives a browser restart');
 // Wiring: scripts, cache keys, menu cards and game hooks must reference Westhofen.
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
-assert.ok(html.includes('westhofen.js?v=westhofen1'));
+assert.ok(html.includes('westhofen.js?v=westhofen2'));
 assert.ok(html.includes('westhofen-art.js?v=westhofen1'));
 assert.ok(html.includes('levels.js?v=level7b'));
 assert.ok(html.includes('game.js?v=v410a1level7'));

@@ -3,7 +3,9 @@
 (()=>{'use strict';
  const air=['shadowwing','gargoyle','stormwing'];
  // Only the four campaign waves use the gentler chapter opening.
- const opening={25:{count:34,interval:.70},26:{count:40,interval:.58},27:{count:46,interval:.48},28:{count:50,interval:.42}};
+ // Tuned for the merged street approach: junction towers cover both lanes,
+ // so the counts/intervals run slightly above the Hohensyburg template.
+ const opening={25:{count:38,interval:.62},26:{count:42,interval:.54},27:{count:46,interval:.46},28:{count:52,interval:.40}};
  function campaignWave(wave,mode='campaign'){return mode==='campaign'&&opening[wave]||null;}
  function enemyType(wave,index,mode='campaign'){
   if(campaignWave(wave,mode)){
