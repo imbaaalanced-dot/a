@@ -22,6 +22,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sand
 vm.runInContext(fs.readFileSync(path.join(root,'directional-actions-v410.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');
@@ -502,11 +503,29 @@ check('Goethestraße gates, mixed waves, air origin, completion and endless unlo
   assert.equal(t.game.enemies.filter(e=>e.flying).length,4);
   assert.equal(new Set(t.game.enemies.filter(e=>!e.flying).map(e=>e.gateIndex)).size,3);
   t.mainMenu();t.startGame(6,'endless');assert.equal(t.state,'start','endless locked until completion');
+  t.startGame(7);assert.equal(t.state,'start','level 7 locked before Goethestraße completion');
   t.startGame(6);t.game.wave=24;t.endWave();assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level6Completed,true);
   assert.match(element('levelCompleteTitle').textContent,/GOETHESTRASSE/);
-  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
-  t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,25);assert.ok(t.wavePreview(25).includes('STURMGEIST'));
+  element('nextLevelBtn').onclick();assert.equal(t.game.level,7,'regular story continues with Level 7');
+  assert.equal(t.game.wave,25);assert.ok(t.wavePreview(25).includes('GEIST'));assert.ok(!t.wavePreview(25).includes('STURMGEIST'));
   t.mainMenu();t.startGame(6,'endless');assert.equal(t.game.level,6);assert.equal(t.game.mode,'endless');
+});
+check('Westhofen gates progress, chapter opening, air pressure, completion and endless unlock',()=>{
+  t.mainMenu();t.startGame(7);assert.equal(t.game.level,7,'chapter VII follows the Level 6 completion');assert.equal(t.game.wave,25);assert.equal(t.game.essence,340);assert.equal(t.game.maxTowers,12);
+  assert.equal(sandbox.DenkmalLevels.getWaveGates(7,25).join(','),'0,1');
+  t.launchWave();t.game.waveSpawned=0;for(let i=0;i<16;i++)t.spawnEnemy();
+  const definition=sandbox.DenkmalLevels.levels[7];
+  assert.equal(t.game.enemies.filter(e=>e.flying).length,0,'wave 25 chapter opening is a pure ground attack');
+  for(const e of t.game.enemies){const p=definition.gates[e.gateIndex];assert.ok(p,'enemy spawns on a defined gate');assert.equal(e.x,p.x);assert.equal(e.y,p.y);}
+  assert.ok(new Set(t.game.enemies.map(e=>e.gateIndex)).size>=2,'both street corridors see pressure');
+  t.mainMenu();t.startGame(7,'endless');assert.equal(t.state,'start','endless locked until Level 7 completion');
+  t.startGame(7);t.game.wave=28;t.endWave();
+  assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level7Completed,true);
+  assert.match(element('levelCompleteTitle').textContent,/WESTHOFEN/);
+  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
+  t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,29);
+  const composition=t.waveComposition(29);
+  assert.ok(composition.shadowwing>0||composition.gargoyle>0||composition.stormwing>0,'endless waves keep aerial pressure');
 });
 check('Painted animation renderer handles ground, flying and boss enemies without changing combat state',()=>{
   for(const type of Object.keys(t.enemySpecs)){
