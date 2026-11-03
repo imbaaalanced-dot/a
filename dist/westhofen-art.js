@@ -21,7 +21,7 @@ const C={x:1536,y:1536};
 // Decorative location estimates only. Runtime geometry is the source of truth.
 const SCENERY=[
  {name:'pergola',url:'assets/westhofen/pergola-pilot.svg?v=westhofen-scenery1',dx:-825,dy:-420,w:165,h:124},
- {name:'stairs',url:'assets/westhofen/stairs-pilot.svg?v=westhofen-scenery1',dx:805,dy:-420,w:150,h:112},
+ {name:'stairs',url:'assets/westhofen/stairs-pilot.svg?v=westhofen-scenery1',dx:850,dy:-530,w:150,h:112},
  {name:'wall',url:'assets/westhofen/wall-pilot.svg?v=westhofen-scenery1',dx:820,dy:-115,w:152,h:114}
 ];
 let sceneryStarted=false;
