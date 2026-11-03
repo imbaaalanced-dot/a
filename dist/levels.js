@@ -137,7 +137,7 @@
   function completeLevel4(){return saveFlag('level4');}
   function completeLevel5(){return saveFlag('level5');}
   function completeLevel6(){return saveFlag('level6');}
-  function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
+  function nearestSlot(p,level=2,radius=88){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=radius?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
   globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,get level5Completed(){return progress.level5;},get level6Completed(){return progress.level6;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return progress.level4;},get unlocked(){return progress.level2;},get storageAvailable(){return storageAvailable;}};
 })();
