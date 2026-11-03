@@ -40,3 +40,21 @@ test('tutorial dismissal preserves a manually paused resumed run',()=>{
  h.el('help').onclick();h.el('tutorial').cancel({preventDefault(){}});
  h.frame(100);h.frame(1200);assert.equal(h.state().elapsed,0);assert.match(h.el('pause').textContent,/Fortsetzen/);
 });
+
+test('speed cycles 1x, 2x, 3x and back to 1x',()=>{
+ const h=harness();
+ for(const expected of [1,2,3,1]){
+  assert.equal(h.el('speed').textContent,`${expected}× Tempo`);
+  h.el('speed').onclick();
+ }
+});
+test('3x advances three times the simulation time and respects pause and catchup cap',()=>{
+ const h=harness(seeded());h.el('resume').onclick();h.el('pause').onclick();
+ h.el('speed').onclick();h.el('speed').onclick();
+ h.frame(100);const initial=h.state().elapsed;h.frame(200);
+ assert.ok(Math.abs(h.state().elapsed-initial-.3)<1e-9);
+ h.el('pause').onclick();const paused=h.state().elapsed;h.frame(10000);
+ assert.equal(h.state().elapsed,paused);
+ h.el('pause').onclick();h.frame(10100);h.frame(60100);
+ assert.ok(h.state().elapsed-paused<=.300000001);
+});
