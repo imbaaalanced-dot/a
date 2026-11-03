@@ -1,6 +1,6 @@
 # Westhofen Style-2-Prototyp: Produktionsauftrag
 
-Status: Planung auf isoliertem Entwicklungsbranch. Keine neuen Sprites integriert, keine Tests ausgeführt.
+Status: SVG-Denkmal-Pilot integriert (Draft-PR #74). Isolierte Laufzeitprüfungen 8/8 erfolgreich; vollständige Node-/Python-CI, Browser-Rendering und Android-Gerätetest noch ausstehend.
 
 ## Bestätigte Ausgangsbasis
 - Basisbranch: `feature/level7-westhofen-20261102`; Level 7 mit drei Zugängen, 16 Bauplätzen, 12 aktiven Türmen und Wellen 25–28.
@@ -23,3 +23,13 @@ Status: Planung auf isoliertem Entwicklungsbranch. Keine neuen Sprites integrier
 - Keine stillschweigende Umstellung auf 25 Wellen.
 - Keine Änderung der Gegner-KI, Spielstände oder Turmbalance.
 - Keine Behauptung, dass generierte Bildgruppen bereits runtimefähige Sprites sind.
+
+## Nachweis vom 03.11.2026
+
+- `dist/assets/westhofen-monument-pilot.svg` erstellt; semitransparente Bodenschatten, sonst transparente Fläche; keine externen Bildreferenzen. Illustrativer Pilot, **keine** künstlerische Endabnahme.
+- `dist/westhofen-art.js` lädt Sprite asynchron und zeichnet bis zum erfolgreichen Laden bzw. nach Fehler weiter das bisherige prozedurale Denkmal. Beschädigungsanzeige und Context-Save/Restore bleiben vorhanden.
+- `dist/index.html`, `tests/westhofen.test.cjs`, `tests/cache-busting.test.cjs`: konsistente Cache-Kennung `westhofenstyle2pilot1`.
+- `tests/westhofen-sprite.test.cjs` neu für Lade-, Fehler-, Fallback- und Kontextzustände.
+- Acht isolierte Prüfungen am tatsächlichen GitHub-Quelltext bestanden (Versionen, SVG-Aufbau, fehlende Fremdmedien, Loader-Zustände, Schaden). **Nicht** mit einem vollständigen Node-Testlauf oder einem Android-Test verwechseln.
+- Draft-PR: https://github.com/imbaaalanced-dot/a/pull/74 gegen `feature/level7-westhofen-20261102`, nicht `main`.
+- Kein neuer Westhofen-Build veröffentlicht. Nächster Schritt: vollständige CI, 64/128px-Bildabnahme, Android-Test.
