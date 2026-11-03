@@ -18,6 +18,52 @@ function readyMonumentSprite(){
  return monumentLoad==='ready'&&monumentSprite?.complete&&monumentSprite.naturalWidth>0?monumentSprite:null;
 }
 const C={x:1536,y:1536};
+// Decorative location estimates only. Runtime geometry is the source of truth.
+const SCENERY=[
+ {name:'pergola',url:'assets/westhofen/pergola-pilot.svg?v=westhofen-scenery1',dx:-825,dy:-420,w:165,h:124},
+ {name:'stairs',url:'assets/westhofen/stairs-pilot.svg?v=westhofen-scenery1',dx:805,dy:-420,w:150,h:112},
+ {name:'wall',url:'assets/westhofen/wall-pilot.svg?v=westhofen-scenery1',dx:820,dy:-115,w:152,h:114}
+];
+let sceneryStarted=false;
+const scenery=new Map();
+function requestScenery(){
+ if(sceneryStarted)return;
+ sceneryStarted=true;
+ if(typeof Image!=='function')return;
+ for(const item of SCENERY){
+  const img=new Image();
+  scenery.set(item.name,{image:img,loaded:false,failed:false});
+  img.decoding='async';
+  img.onload=()=>{
+   const entry=scenery.get(item.name);
+   if(entry){entry.loaded=img.naturalWidth>0&&img.naturalHeight>0;entry.failed=!entry.loaded;ground=null;}
+  };
+  img.onerror=()=>{const entry=scenery.get(item.name);if(entry)entry.failed=true;};
+  img.src=item.url;
+ }
+}
+function safeScenery(item,layout){
+ const p={x:C.x+item.dx,y:C.y+item.dy};
+ const margin=Math.max(item.w,item.h)*.6+120;
+ return Math.hypot(item.dx,item.dy)>400 &&
+   p.x>margin&&p.y>margin&&p.x<3072-margin&&p.y<3072-margin&&
+   layout.paths.every(route=>globalThis.DenkmalLevels.pathDistance(p,route)>margin)&&
+   layout.slots.every(slot=>Math.hypot(slot.x-p.x,slot.y-p.y)>margin);
+}
+function drawScenery(q,layout){
+ for(const item of SCENERY){
+  const entry=scenery.get(item.name);
+  if(!entry?.loaded||!entry.image.complete||!safeScenery(item,layout))continue;
+  // Ground uses 0.82 depth projection; compensate standing silhouettes.
+  q.save();
+  try{
+   q.translate(C.x+item.dx,C.y+item.dy);
+   q.scale(1,1/.82);
+   q.drawImage(entry.image,-item.w/2,-item.h,item.w,item.h);
+  }finally{q.restore();}
+ }
+}
+
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
@@ -40,6 +86,8 @@ function createGround(layout){
  // Gravel apron around the memorial leaves the objective and build pads free.
  q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
  for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
+ // Scenery is baked into the existing ground cache, before vegetation.
+ drawScenery(q,layout);
  // Hedges with benches frame the green; both stay clear of lanes and pads.
  for(const side of [-1,1]){const hx=C.x+side*430,hy=C.y-260;q.fillStyle='#27361f';q.beginPath();q.ellipse(hx,hy,90,46,side*.3,0,7);q.fill();
   for(let j=0;j<26;j++){const px=hx+(rnd()-.5)*160,py=hy+(rnd()-.5)*76;globalThis.DenkmalForest?.drawShrub?.(q,px,py,12,j);q.fillStyle=j%5?'#5e7044':'#4c5f3a';q.beginPath();q.arc(px,py,4+rnd()*4,0,7);q.fill();}
@@ -49,7 +97,7 @@ function createGround(layout){
   q.fillStyle='#12231c55';q.beginPath();q.ellipse(x+25,y+55,r,r*.5,0,0,7);q.fill();globalThis.DenkmalForest?.drawCrown?.(q,x,y,r,i);}
  return canvas;
 }
-function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
+function drawGround(ctx,layout){requestScenery();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
  const sprite=readyMonumentSprite();
  if(sprite){
