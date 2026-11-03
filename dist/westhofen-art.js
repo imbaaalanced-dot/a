@@ -64,6 +64,31 @@ function drawScenery(q,layout){
  }
 }
 
+// Ground-level moss, small plants and loose stones: deterministic and outside
+// all travel lanes, build pads and the monument footprint. Draw only in cache.
+function drawLowVegetation(q,layout,rnd){
+ const clearance=p=>Math.hypot(p.x-C.x,p.y-C.y)>355 &&
+   layout.paths.every(route=>globalThis.DenkmalLevels.pathDistance(p,route)>135)&&
+   layout.slots.every(slot=>Math.hypot(slot.x-p.x,slot.y-p.y)>112)&&
+   SCENERY.every(item=>Math.hypot(p.x-C.x-item.dx,p.y-C.y-item.dy)>155);
+ for(let i=0;i<130;i++){
+  const x=240+rnd()*2592,y=230+rnd()*2592,p={x,y};
+  if(!clearance(p))continue;
+  const radius=7+rnd()*17;
+  // Shadows and leafy clusters are kept shallow so build pads stay legible.
+  q.fillStyle='#14251a33';
+  q.beginPath();q.ellipse(x+3,y+5,radius*1.6,radius*.46,0,0,Math.PI*2);q.fill();
+  q.fillStyle=['#43563a','#64714a','#455d46','#77715b'][i%4];
+  for(let leaf=0;leaf<3;leaf++){
+   const a=(leaf*2.094)+rnd()*.35,px=x+Math.cos(a)*radius*.48,py=y+Math.sin(a)*radius*.28;
+   q.beginPath();q.ellipse(px,py,radius*.58,radius*.26,a*.28,0,Math.PI*2);q.fill();
+  }
+  if(i%5===0){
+   q.fillStyle='#a39d82';
+   q.beginPath();q.ellipse(x+radius,y+radius*.35,3+rnd()*4,2+rnd()*2,-.3,0,Math.PI*2);q.fill();
+  }
+ }
+}
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
@@ -86,6 +111,8 @@ function createGround(layout){
  // Gravel apron around the memorial leaves the objective and build pads free.
  q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
  for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
+ // Extra low vegetation is deterministic and respects paths, pads and decorations.
+ drawLowVegetation(q,layout,rnd);
  // Scenery is baked into the existing ground cache, before vegetation.
  drawScenery(q,layout);
  // Hedges with benches frame the green; both stay clear of lanes and pads.
