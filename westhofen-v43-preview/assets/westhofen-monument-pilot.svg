@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="-320 -210 640 300" role="img" aria-label="Kriegerdenkmal Westhofen, Sprite-Pilot mit geflügeltem Helm und leerer Mitteltafel">
+  <title>Kriegerdenkmal Westhofen, Style-2-Sprite-Pilot</title>
+  <defs>
+    <linearGradient id="stone" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#b8ab8b"/><stop offset=".37" stop-color="#807b6c"/><stop offset="1" stop-color="#4d514b"/></linearGradient>
+    <linearGradient id="stoneDark" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#747768"/><stop offset="1" stop-color="#303e3b"/></linearGradient>
+    <linearGradient id="stoneTop" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d1bea0"/><stop offset="1" stop-color="#828476"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c5a36b"/><stop offset=".28" stop-color="#6d684c"/><stop offset=".65" stop-color="#38453c"/><stop offset="1" stop-color="#b38c51"/></linearGradient>
+    <radialGradient id="shade"><stop stop-color="#0b1210" stop-opacity=".65"/><stop offset="1" stop-color="#0b1210" stop-opacity="0"/></radialGradient>
+  </defs>
+  <ellipse cx="0" cy="35" rx="299" ry="47" fill="url(#shade)"/>
+  <!-- Separate empty fire-bowl plinths: no flames or bowls (documented present-day state). -->
+  <g stroke="#292f2a" stroke-width="2">
+    <path d="M-280 38 L-212 38 L-197 49 L-265 49 Z" fill="url(#stoneTop)"/>
+    <path d="M-275 -9 L-217 -9 L-208 38 L-274 38 Z" fill="url(#stone)"/>
+    <path d="M-275 -9 L-259 -19 L-203 -19 L-217 -9 Z" fill="url(#stoneTop)"/>
+    <path d="M-217 -9 L-203 -19 L-198 31 L-208 38 Z" fill="url(#stoneDark)"/>
+    <path d="M212 38 L280 38 L266 49 L198 49 Z" fill="url(#stoneTop)"/>
+    <path d="M215 -9 L272 -9 L271 38 L206 38 Z" fill="url(#stone)"/>
+    <path d="M215 -9 L229 -19 L285 -19 L272 -9 Z" fill="url(#stoneTop)"/>
+    <path d="M272 -9 L285 -19 L280 31 L271 38 Z" fill="url(#stoneDark)"/>
+  </g>
+  <!-- Stepped, three-quarter stone socle with distinct upper-left light. -->
+  <g stroke="#313a35" stroke-width="2" stroke-linejoin="round">
+    <path d="M-118 13 L115 13 L139 27 L-94 27 Z" fill="url(#stoneTop)"/>
+    <path d="M-118 13 L-94 27 L-94 51 L-118 37 Z" fill="url(#stoneDark)"/>
+    <path d="M-94 27 L139 27 L139 51 L-94 51 Z" fill="url(#stone)"/>
+    <path d="M-100 -7 L98 -7 L121 8 L-76 8 Z" fill="url(#stoneTop)"/>
+    <path d="M-100 -7 L-76 8 L-76 31 L-100 18 Z" fill="url(#stoneDark)"/>
+    <path d="M-76 8 L121 8 L121 31 L-76 31 Z" fill="url(#stone)"/>
+    <path d="M-72 -118 L57 -118 L76 -103 L-53 -103 Z" fill="url(#stoneTop)"/>
+    <path d="M-72 -118 L-53 -103 L-53 -11 L-72 -23 Z" fill="url(#stoneDark)"/>
+    <path d="M-53 -103 L76 -103 L76 -11 L-53 -11 Z" fill="url(#stone)"/>
+    <path d="M57 -118 L76 -103 L76 -11 L57 -25 Z" fill="#353e39" opacity=".8"/>
+    <path d="M-82 -25 L76 -25 L93 -15 L-65 -15 Z" fill="url(#stoneTop)"/>
+  </g>
+  <!-- Retained side plaques and the missing central plaque: empty dark stone recess. -->
+  <g stroke="#34372f" stroke-width="2">
+    <path d="M-46 -94 L-13 -94 L-13 -42 L-46 -42 Z" fill="#5b584d"/>
+    <path d="M-42 -90 L-17 -90 L-17 -46 L-42 -46 Z" fill="url(#metal)"/>
+    <path d="M38 -94 L70 -94 L70 -42 L38 -42 Z" fill="#5b584d"/>
+    <path d="M42 -90 L66 -90 L66 -46 L42 -46 Z" fill="url(#metal)"/>
+    <path d="M-8 -95 L33 -95 L33 -39 L-8 -39 Z" fill="#8a826a"/>
+    <path d="M-4 -91 L29 -91 L29 -43 L-4 -43 Z" fill="#333832"/>
+  </g>
+  <g stroke="#a69b72" stroke-width="1" opacity=".43">
+    <path d="M-38 -78 H-21 M-38 -72 H-21 M-38 -66 H-21 M-38 -60 H-21"/>
+    <path d="M45 -78 H62 M45 -72 H62 M45 -66 H62 M45 -60 H62"/>
+  </g>
+  <!-- Bronze sword and round shield of the original monument composition. -->
+  <path d="M85 -137 L90 -146 L104 -51 L98 -47 Z" fill="url(#metal)" stroke="#29352f" stroke-width="2"/>
+  <path d="M76 -67 L114 -75" stroke="#b49a65" stroke-width="6" stroke-linecap="round"/>
+  <path d="M98 -48 L106 -20" stroke="#584f3e" stroke-width="7" stroke-linecap="round"/>
+  <ellipse cx="-77" cy="-76" rx="30" ry="34" fill="#222c2a" stroke="#b79967" stroke-width="4"/>
+  <ellipse cx="-79" cy="-78" rx="24" ry="27" fill="url(#metal)" stroke="#32453e" stroke-width="2"/>
+  <ellipse cx="-80" cy="-79" rx="7" ry="10" fill="#bca475" stroke="#31423a" stroke-width="2"/>
+  <path d="M-95 -86 Q-83 -101 -69 -86" stroke="#d6bc7c" stroke-width="2" fill="none" opacity=".7"/>
+  <!-- Surviving winged helmet. The wings are bronze, not an added eagle statue. -->
+  <g stroke="#273932" stroke-width="2" stroke-linejoin="round">
+    <path d="M-30 -149 Q-54 -179 -92 -172 Q-72 -154 -46 -145 Q-60 -151 -69 -163 Q-44 -164 -25 -150 Z" fill="url(#metal)"/>
+    <path d="M39 -149 Q67 -182 103 -172 Q78 -155 55 -145 Q69 -153 80 -162 Q56 -166 32 -150 Z" fill="url(#metal)"/>
+    <path d="M-33 -147 Q-29 -183 6 -188 Q39 -180 44 -145 Q4 -119 -33 -147 Z" fill="url(#metal)"/>
+    <path d="M-36 -146 Q5 -153 49 -146 L42 -136 Q6 -124 -35 -135 Z" fill="#8b754d"/>
+    <path d="M3 -184 Q6 -157 6 -139" stroke="#d9c18d" stroke-width="3" fill="none"/>
+    <path d="M-23 -162 Q-6 -178 19 -167" stroke="#d7b878" stroke-width="2" fill="none" opacity=".7"/>
+  </g>
+  <g fill="none" stroke="#cfba8f" opacity=".36" stroke-width="1.6">
+    <path d="M-106 20 H-74 M-62 25 H-8 M39 24 H83 M-47 -25 L-34 -31 M55 -112 L65 -107"/>
+    <path d="M-253 7 L-235 -3 M224 5 L240 -2 M-88 38 H-60 M6 41 H47"/>
+  </g>
+  <g stroke="#2f4c38" stroke-width="3" fill="none" opacity=".8">
+    <path d="M-111 34 q13 -7 23 3 M-71 -5 q17 -9 25 2 M64 4 q10 -9 21 -4 M241 38 q17 -6 23 -2"/>
+  </g>
+  <g fill="#40543b" opacity=".72">
+    <ellipse cx="-105" cy="36" rx="11" ry="4"/><ellipse cx="49" cy="41" rx="19" ry="3"/>
+    <ellipse cx="-248" cy="35" rx="10" ry="2.7"/><ellipse cx="257" cy="32" rx="9" ry="2.7"/>
+  </g>
+</svg>
