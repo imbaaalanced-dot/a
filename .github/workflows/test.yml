@@ -90,6 +90,11 @@ jobs:
           node tests/equipment-migration.test.cjs
           node tests/boss-loot.test.cjs
           node tests/equipment-effects.test.cjs
+      - name: Simulation work and exact baseline traces
+        run: |
+          node tests/simulation-work.test.cjs
+          node tests/simulation-equivalence.test.cjs
+          node tests/ansturm-source-parity.test.cjs
       - name: Gameplay regression suite
         run: node tests/game.test.cjs
       - name: Mobile gameplay regression suite
