@@ -43,6 +43,19 @@ assert.equal(scene.drawn.filter(args=>args[0] instanceof scene.box.Image).length
 art.drawGround(scene.ctx,layout);
 assert.equal(scene.canvases,2,'loaded scene uses warm cache');
 assert.equal(scene.drawn.filter(args=>args[0] instanceof scene.box.Image).length,3,'no per-frame sprite paints');
+const oldImages=[...scene.images];
+const staleCallback=oldImages[0].onload;
+art.release();
+assert(oldImages.every(image=>image.src===''&&image.onload===null),'leaving level releases decoded decoration references');
+art.drawGround(scene.ctx,layout);
+assert.equal(scene.images.length,6,'reentering requests a fresh set of scenery images');
+assert.equal(scene.canvases,3,'reentering creates a fresh ground cache');
+staleCallback();
+art.drawGround(scene.ctx,layout);
+assert.equal(scene.canvases,3,'late callbacks from the previous level cannot invalidate the new cache');
+for(const image of scene.images.slice(3)){image.complete=true;image.naturalWidth=256;image.naturalHeight=192;image.onload();}
+art.drawGround(scene.ctx,layout);
+assert.equal(scene.canvases,4,'newly loaded sprites rebuild the ground cache once');
 const fallback=makeScene();
 fallback.box.DenkmalWesthofenArt.drawGround(fallback.ctx,fallback.box.DenkmalLevels.levels[7]);
 for(const image of fallback.images)image.onerror();
