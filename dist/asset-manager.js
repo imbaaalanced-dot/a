@@ -7,7 +7,8 @@
     3:['assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'],
     4:['assets/church-ende-alpha8.webp?v=alpha8a2','assets/lion-ende-alpha8.webp?v=alpha8a2'],
     5:['assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3'],
-    6:['assets/elemental/goethestrasse-memorial-v1.webp?v=goethe1']
+    6:['assets/elemental/goethestrasse-memorial-v1.webp?v=goethe1'],
+    7:['swordsman','guardian','archer','censer','golem'].map(name=>'assets/enemies/westhofen/'+name+'-v1.webp?v=whactors1')
   };
   const common=['assets/scenery-alpha8.webp?v=alpha8a2','assets/enemies/walk-v1.webp?v=enemymove1'];
   function entry(url){
