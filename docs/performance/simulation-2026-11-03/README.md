@@ -59,7 +59,13 @@ for test in tests/*.test.py; do python3 "$test" || exit 1; done
 TEST_MOBILE=1 node tests/game.test.cjs
 ```
 
-Die Referenzdatei `tests/fixtures/simulation-c5d6f21.json` entstand aus dem unveränderten Ausgangscode. `--record --ref=c5d6f21` liest bei der Regeneration ausschließlich dessen Quelltext via `git show`. Normale Regressionstests brauchen die Git-Historie nicht. Die SHA-256-Summen umfassen jeden Schritt der ausgewählten Zustandsfelder (unter anderem Gegnerpositionen/HP/Status, Helden-/Monumentdaten, Geschosse, Turm-Cooldowns, Loot, Effekte, Wellenzähler). Zufall ist pro Harness deterministisch.
+Die unveränderten Originalquellen von `game.js`, `levels.js`, Ansturm-`model.js` und Ansturm-`config.js` liegen gzip-komprimiert in `tests/fixtures/simulation-baseline-c5d6f21.json`, einschließlich Ursprungscommit und SHA-256-Prüfung je Datei. Der Test führt Original und Optimierung pro Szenario in derselben Node-Laufzeit aus und vergleicht nach **jedem** Aufruf die vollständige JSON-Serialisierung der ausgewählten Zustandsfelder exakt. Es gibt weder Rundung noch numerische Toleranz. Normale Tests benötigen keine Git-Historie oder Netzwerkverbindung.
+
+Grenze: Unveränderte externe Kampagnenmodule (zum Beispiel HeroSaga/FlightEnemies) und das Testharness werden von beiden Läufen gemeinsam in derselben Version verwendet. Die Referenz prüft die hier geänderten Simulationsdateien; sie ist kein eingefrorenes Abbild des gesamten Spiels.
+
+Die früher erzeugten Hashes in `tests/fixtures/simulation-c5d6f21.json` bleiben als historische Node-v24.22.1-Diagnostik erhalten. Die erste CI unter Node v22.23.4 meldete ausschließlich für `boss-5` einen anderen Hash. Versionsübergreifende Fließkomma-Hashes sind deshalb keine geeignete Abnahmebedingung. Der direkte Vergleich auf derselben Laufzeit ersetzt diese Annahme und nennt bei Abweichung Szenario und ersten Schritt. Zusätzlich wird der aktuelle `boss-5`-Hash ausgegeben, damit CI den Unterschied zwischen Laufzeiten nachvollziehbar zeigt. Das ist eine Änderung am Testverfahren; Laufzeitcode und Benchmark-Ergebnisse bleiben unverändert.
+
+Geprüfte Zustandsfelder umfassen Gegnerpositionen/HP/Status, Helden-/Monumentdaten, Geschosse, Turm-Cooldowns, Loot, Effekte und Wellenzähler. Zufall ist pro Harness deterministisch. `--record --ref=c5d6f21` dient ausschließlich zur erneuten Erzeugung historischer Diagnosehashes aus dem Ursprungscommit.
 
 30 Referenzabläufe, insgesamt 14.160 Update-/Step-Aufrufe: 25/50/100/200 Gegner jeweils mit dauerhafter Last und echten Toden in beiden Modi; vier Ansturm-Bossvarianten; gemischte Kampagnengegner mit Flugeinheiten, Bossen und Unterstützung in allen sieben Leveln; gleiche Zielentfernungen/Reichweitengrenzen, Niederlage und Effektüberlauf im Ansturm. Exakte Gleichheit bezieht sich auf diese Szenarien, nicht auf sämtliche denkbaren Spielzustände. Die vorhandenen Boss-/Flug-/Bumerang-/Schadens-/Spawn-/Speicherstandstests ergänzen diese Prüfung.
 

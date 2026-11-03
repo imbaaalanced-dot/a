@@ -33,5 +33,6 @@
     "ansturm-ties": "2adc43fa3deceae22d482fcf8fae4c7cc6fb6c3a28efbad761e42e7fd78619ad",
     "ansturm-lost": "4f5c00a13dc77c01b723e50ad15a63215e92e3a73dbfb100b5a14c37fa2b9c7a",
     "ansturm-effect-cap": "2adc43fa3deceae22d482fcf8fae4c7cc6fb6c3a28efbad761e42e7fd78619ad"
-  }
+  },
+  "runtime": "v24.22.1"
 }

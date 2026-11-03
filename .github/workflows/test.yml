@@ -92,6 +92,7 @@ jobs:
           node tests/equipment-effects.test.cjs
       - name: Simulation work and exact baseline traces
         run: |
+          npm test --prefix ansturm-alpha1-5
           node tests/simulation-work.test.cjs
           node tests/simulation-equivalence.test.cjs
           node tests/ansturm-source-parity.test.cjs

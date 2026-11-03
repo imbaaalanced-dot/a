@@ -3,7 +3,15 @@ const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const {execFileSync}=require('node:child_process');
 const {createRenderSandbox}=require('./render-sandbox.cjs');
 const root=path.resolve(__dirname,'../..');
-function read(file,ref){return ref?execFileSync('git',['show',`${ref}:${file}`],{cwd:root,encoding:'utf8',maxBuffer:2e6}):fs.readFileSync(path.join(root,file),'utf8');}
+let baseline;
+function baselineSource(file){
+ baseline??=require('../fixtures/simulation-baseline-c5d6f21.json');
+ const item=baseline.files[file];if(!item)throw Error('Missing baseline source: '+file);
+ const bytes=require('node:zlib').gunzipSync(Buffer.from(item.gzipBase64,'base64'));
+ if(require('node:crypto').createHash('sha256').update(bytes).digest('hex')!==item.sha256)throw Error('Baseline integrity failure: '+file);
+ return bytes.toString('utf8');
+}
+function read(file,ref){if(ref==='baseline')return baselineSource(file);return ref?execFileSync('git',['show',`${ref}:${file}`],{cwd:root,encoding:'utf8',maxBuffer:2e6}):fs.readFileSync(path.join(root,file),'utf8');}
 function mathBox(instrument=false){let seed=0x12345678,calls=0;const math=Object.create(Math);math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};if(instrument)math.hypot=(...args)=>{calls++;return Math.hypot(...args);};return {math,calls:()=>calls};}
 function model(ref,instrument=false){const m=mathBox(instrument),box={Math:m.math};vm.createContext(box);vm.runInContext(read('ansturm-alpha1-5/config.js',ref).replaceAll('export ',''),box);vm.runInContext(read('ansturm-alpha1-5/model.js',ref).replace(/^import .*\n/,'').replaceAll('export ','')+'\nglobalThis.api={createGame,step,spawnEnemy,damageEnemy,getStats};',box);return {...box.api,calls:m.calls};}
 function ansturm(count,{ref,lethal=false,instrument=false,bossWave=20}={}){const api=model(ref,instrument),s=api.createGame({random:()=>.5});s.status='running';s.wave=bossWave;s.planned=count;
