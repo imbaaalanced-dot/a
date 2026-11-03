@@ -11,6 +11,25 @@ const heights={wraith:62,runner:54,brute:80,archer:62,guardian:80,sapper:64,
  rootrunner:60,stoneguard:86,mistcaller:72,boss:116,uprooted:140,
  shadowwing:86,gargoyle:100,stormwing:94};
 let entry=null;
+/* PoC (perf): live ctx.filter forces a GPU filter pass on every drawImage.
+ * Instead, bake each (atlas row, filter) pair once into an offscreen strip and
+ * draw from the bake with ctx.filter='none'. Falls back to the live filter if
+ * baking is unavailable, so rendering stays identical in every environment. */
+const bakeCache=new Map(),BAKE_CAP=24;
+function bake(img,row,filter){
+ if(typeof document==='undefined'||!document.createElement)return null;
+ const key=row+'|'+filter;
+ if(bakeCache.has(key))return bakeCache.get(key);
+ try{
+  const c=document.createElement('canvas');c.width=cell*4;c.height=cell;
+  const g=c.getContext('2d');
+  g.filter=filter;
+  g.drawImage(img,0,row*cell,cell*4,cell,0,0,cell*4,cell);
+  g.filter='none';
+  if(bakeCache.size>=BAKE_CAP){const oldest=bakeCache.keys().next().value;bakeCache.delete(oldest);}
+  bakeCache.set(key,c);return c;
+ }catch{return null;}
+}
 function variant(e){return Math.abs(Math.floor(Number(e.visualVariant)||0));}
 function select(e,level=1){
  if(!e)return -1;
@@ -55,10 +74,17 @@ function draw(ctx,e,face=1,time=0,options={}){
    if(!reduced&&death>0)ctx.scale(1,1-death*.78);
   }else if(attack>0)ctx.scale(1+attack*.07,1-attack*.025);
   ctx.scale(face<0?-1:1,1);
-  ctx.drawImage(img,frame*cell,row*cell,cell,cell,-size/2,-size*148/cell,size,size);
+  // PoC (perf): prefer the baked strip over a live ctx.filter pass.
+  const liveFilter=ctx.filter&&ctx.filter!=='none'?ctx.filter:null;
+  let source=img,sx=frame*cell,sy=row*cell;
+  if(liveFilter){
+   const strip=bake(img,row,liveFilter);
+   if(strip){source=strip;sx=frame*cell;sy=0;ctx.filter='none';}
+  }
+  ctx.drawImage(source,sx,sy,cell,cell,-size/2,-size*148/cell,size,size);
  }finally{ctx.restore();}
  return true;
 }
 function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
-globalThis.DenkmalEnemyAnimations={draw,select};
+globalThis.DenkmalEnemyAnimations={draw,select,bakeStats:()=>({entries:bakeCache.size})};
 })();
