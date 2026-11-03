@@ -3,6 +3,17 @@ from pathlib import Path
 from PIL import Image
 
 root = Path(__file__).resolve().parents[1] / 'dist' / 'assets' / 'hero'
+westhofen = root.parent / 'westhofen-monument-v2.webp'
+with Image.open(westhofen) as image:
+    image.load()
+    assert image.format == 'WEBP' and image.mode == 'RGBA'
+    assert image.size == (768, 384)
+    assert westhofen.stat().st_size < 150000, 'Westhofen monument exceeds mobile download budget'
+    alpha = image.getchannel('A')
+    assert alpha.getextrema() == (0, 255)
+    bbox = alpha.getbbox()
+    assert bbox and bbox[0] > 8 and bbox[1] > 8 and bbox[2] < 760 and bbox[3] < 376, 'sprite needs alpha gutters'
+    print('Westhofen memorial: transparent 768x384 WebP and mobile budget verified')
 for name in ('marcel-portrait-alpha9.webp', 'marcel-lantern-sprite-v1.webp'):
     with Image.open(root / name) as image:
         image.load()

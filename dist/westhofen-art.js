@@ -15,7 +15,7 @@ function readyMonumentSprite(){
   img.decoding='async';
   img.onload=()=>{if(generation===loadGeneration)monumentLoad=img.naturalWidth>0&&img.naturalHeight>0?'ready':'failed';};
   img.onerror=()=>{if(generation===loadGeneration)monumentLoad='failed';};
-  img.src='assets/westhofen-monument-pilot.svg?v=westhofenstyle2pilot1';
+  img.src='assets/westhofen-monument-v2.webp?v=whmonument2';
  }
  return monumentLoad==='ready'&&monumentSprite?.complete&&monumentSprite.naturalWidth>0?monumentSprite:null;
 }
@@ -135,7 +135,7 @@ function drawMonument(ctx,m){
   ctx.save();
   try{
    ctx.translate(m.x,m.y);
-   ctx.drawImage(sprite,-320,-210,640,300);
+   ctx.drawImage(sprite,-320,-230,640,320);
    // Preserve progressive monument damage feedback from the procedural fallback.
    const damage=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
    if(damage>.25){ctx.strokeStyle='#00000055';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-40,-96);ctx.lineTo(-30,-40);ctx.lineTo(-42,-2);ctx.stroke();}
