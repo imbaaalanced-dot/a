@@ -20,7 +20,7 @@ function makeScene(withImages=true){
 }
 const cases=[
  {dx:-825,dy:-420,w:165,h:124},
- {dx:805,dy:-420,w:150,h:112},
+ {dx:850,dy:-530,w:150,h:112},
  {dx:820,dy:-115,w:152,h:114}
 ];
 const scene=makeScene(),layout=scene.box.DenkmalLevels.levels[7],C=scene.box.DenkmalLevels.center;
