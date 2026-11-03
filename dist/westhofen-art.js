@@ -4,7 +4,19 @@
    two side tablets flank the empty central tablet frame, and the two fire-bowl
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
-let ground=null;
+let ground=null, monumentSprite=null, monumentLoad='unrequested';
+function readyMonumentSprite(){
+ if(monumentLoad==='unrequested'){
+  if(typeof Image!=='function'){monumentLoad='unavailable';return null;}
+  monumentLoad='loading';
+  const img=new Image();monumentSprite=img;
+  img.decoding='async';
+  img.onload=()=>{monumentLoad=img.naturalWidth>0&&img.naturalHeight>0?'ready':'failed';};
+  img.onerror=()=>{monumentLoad='failed';};
+  img.src='assets/westhofen-monument-pilot.svg?v=westhofenstyle2pilot1';
+ }
+ return monumentLoad==='ready'&&monumentSprite?.complete&&monumentSprite.naturalWidth>0?monumentSprite:null;
+}
 const C={x:1536,y:1536};
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
@@ -39,6 +51,19 @@ function createGround(layout){
 }
 function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
+ const sprite=readyMonumentSprite();
+ if(sprite){
+  ctx.save();
+  try{
+   ctx.translate(m.x,m.y);
+   ctx.drawImage(sprite,-320,-210,640,300);
+   // Preserve progressive monument damage feedback from the procedural fallback.
+   const damage=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
+   if(damage>.25){ctx.strokeStyle='#00000055';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-40,-96);ctx.lineTo(-30,-40);ctx.lineTo(-42,-2);ctx.stroke();}
+   if(damage>.6){ctx.strokeStyle='#00000077';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(52,-92);ctx.lineTo(44,-30);ctx.stroke();ctx.beginPath();ctx.moveTo(-10,-96);ctx.lineTo(4,-52);ctx.stroke();}
+  }finally{ctx.restore();}
+  return;
+ }
  ctx.save();ctx.translate(m.x,m.y);
  const hurt=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
  // Contact shadow and stepped stone pedestal.
