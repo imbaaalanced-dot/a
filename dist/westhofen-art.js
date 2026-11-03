@@ -5,14 +5,16 @@
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
 let ground=null, monumentSprite=null, monumentLoad='unrequested';
+let loadGeneration=0;
 function readyMonumentSprite(){
  if(monumentLoad==='unrequested'){
   if(typeof Image!=='function'){monumentLoad='unavailable';return null;}
   monumentLoad='loading';
   const img=new Image();monumentSprite=img;
+  const generation=loadGeneration;
   img.decoding='async';
-  img.onload=()=>{monumentLoad=img.naturalWidth>0&&img.naturalHeight>0?'ready':'failed';};
-  img.onerror=()=>{monumentLoad='failed';};
+  img.onload=()=>{if(generation===loadGeneration)monumentLoad=img.naturalWidth>0&&img.naturalHeight>0?'ready':'failed';};
+  img.onerror=()=>{if(generation===loadGeneration)monumentLoad='failed';};
   img.src='assets/westhofen-monument-pilot.svg?v=westhofenstyle2pilot1';
  }
  return monumentLoad==='ready'&&monumentSprite?.complete&&monumentSprite.naturalWidth>0?monumentSprite:null;
@@ -32,13 +34,15 @@ function requestScenery(){
  if(typeof Image!=='function')return;
  for(const item of SCENERY){
   const img=new Image();
+  const generation=loadGeneration;
   scenery.set(item.name,{image:img,loaded:false,failed:false});
   img.decoding='async';
   img.onload=()=>{
+   if(generation!==loadGeneration)return;
    const entry=scenery.get(item.name);
    if(entry){entry.loaded=img.naturalWidth>0&&img.naturalHeight>0;entry.failed=!entry.loaded;ground=null;}
   };
-  img.onerror=()=>{const entry=scenery.get(item.name);if(entry)entry.failed=true;};
+  img.onerror=()=>{if(generation!==loadGeneration)return;const entry=scenery.get(item.name);if(entry)entry.failed=true;};
   img.src=item.url;
  }
 }
@@ -165,4 +169,14 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){ground=null;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){
+ loadGeneration++;
+ ground=null;sceneryStarted=false;
+ for(const entry of scenery.values()){
+  entry.image.onload=null;entry.image.onerror=null;
+  entry.image.src='';
+ }
+ scenery.clear();
+ if(monumentSprite){monumentSprite.onload=null;monumentSprite.onerror=null;monumentSprite.src='';}
+ monumentSprite=null;monumentLoad='unrequested';
+}};})();
