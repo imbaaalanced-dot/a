@@ -3,6 +3,9 @@ name: Westhofen V4.3 isolated QA (no deployment)
 on:
   push:
     branches:
+      - feature/v4.3-westhofen-qa-pr-trigger
+  pull_request:
+    branches:
       - feature/v4.3-westhofen-qa-gate
   workflow_dispatch:
 
