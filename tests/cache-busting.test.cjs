@@ -48,7 +48,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js', 'goethe1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js', 'westhofen1'],
-  ['game.js', 'v410a1level7'],
+  ['game.js', 'v410a1perf1'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
   ['campaign-balance.js','portal1'],

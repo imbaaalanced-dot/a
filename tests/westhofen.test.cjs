@@ -67,7 +67,7 @@ const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/
 assert.ok(html.includes('westhofen.js?v=westhofen2'));
 assert.ok(html.includes('westhofen-art.js?v=westhofen1'));
 assert.ok(html.includes('levels.js?v=level7b'));
-assert.ok(html.includes('game.js?v=v410a1level7'));
+assert.ok(html.includes('game.js?v=v410a1perf1'));
 for(const id of ['level7Btn','endless7Btn'])assert.ok(html.includes('id="'+id+'"'),id+' exists in the menu');
 assert.match(html,/KRIEGERDENKMAL WESTHOFEN/);
 assert.match(game,/campaign\.completeLevel7\(\)/);
