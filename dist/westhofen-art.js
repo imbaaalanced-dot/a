@@ -15,7 +15,7 @@ function createGround(layout){
  // Reichshofstraße runs along the southern edge of the memorial green.
  const street=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
  path(q,street,'#a5a28c',165);path(q,street,'#676f6b',143);path(q,street,'#767d7444',118);
- for(let i=1;i<street.length;i++){const a=street[i-1],b=street[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}
+ for(let i=1;i<street.length;i++){const a=street[i-1],b=street[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=72){const t=d/len;q.strokeStyle='#d8d3ba55';q.lineWidth=4;q.setLineDash([22,38]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+18/len),a.y+(b.y-a.y)*(t+18/len));q.stroke();q.setLineDash([]);}}
  // Sidewalk between street and green strip; the air corridor crosses it.
  const walk=[{x:C.x-1120,y:C.y+632},{x:C.x-560,y:C.y+574},{x:C.x+40,y:C.y+592},{x:C.x+640,y:C.y+536},{x:C.x+1120,y:C.y+574}];
  path(q,walk,'#8f9482',54);
@@ -28,6 +28,9 @@ function createGround(layout){
  // Gravel apron around the memorial leaves the objective and build pads free.
  q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
  for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
+ // The two street lanes merge at the junction (+150); edge stones mark it.
+ q.fillStyle='#a89a642c';q.beginPath();q.ellipse(C.x,C.y+150,58,34,0,0,7);q.fill();
+ for(let i=0;i<10;i++){const a=i/10*7;q.fillStyle='#7d7c68';q.beginPath();q.ellipse(C.x+Math.cos(a)*54,C.y+150+Math.sin(a)*30,6,4,a,0,7);q.fill();}
  // Hedges with benches frame the green; both stay clear of lanes and pads.
  for(const side of [-1,1]){const hx=C.x+side*430,hy=C.y-260;q.fillStyle='#27361f';q.beginPath();q.ellipse(hx,hy,90,46,side*.3,0,7);q.fill();
   for(let j=0;j<26;j++){const px=hx+(rnd()-.5)*160,py=hy+(rnd()-.5)*76;globalThis.DenkmalForest?.drawShrub?.(q,px,py,12,j);q.fillStyle=j%5?'#5e7044':'#4c5f3a';q.beginPath();q.arc(px,py,4+rnd()*4,0,7);q.fill();}
@@ -41,27 +44,34 @@ function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawI
 function drawMonument(ctx,m){
  ctx.save();ctx.translate(m.x,m.y);
  const hurt=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
- // Contact shadow and stepped stone pedestal.
- ctx.fillStyle='#1b211f45';ctx.beginPath();ctx.ellipse(0,10,96,24,0,0,7);ctx.fill();
- for(const [w,h,y,c] of [[150,14,6,'#6f6d60'],[118,16,-8,'#7b7867'],[88,120,-72,'#6a685c']]){ctx.fillStyle=c;ctx.fillRect(-w/2,y-h,w,h);ctx.fillStyle='#00000018';ctx.fillRect(-w/2,y-4,w,4);}
- ctx.fillStyle='#827f6f';ctx.fillRect(-74,-96,148,26);
- // Three tablet frames: the central bronze tablet was stolen on 20.07.2026
- // and the frame stands empty; the side tablets remain.
- for(const side of [-1,1]){ctx.fillStyle='#5c5a4e';ctx.fillRect(side*58-24,-92,48,64);ctx.fillStyle='#8d8168';ctx.fillRect(side*58-20,-88,40,56);}
- ctx.fillStyle='#4a483e';ctx.fillRect(-24,-92,48,64);ctx.fillStyle='#2b2a24';ctx.fillRect(-20,-88,40,56);ctx.fillStyle='#9a9077';ctx.fillRect(-24,-30,48,3);
- // Winged bronze helmet resting on top, sword right, round shield left.
- ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(-30,-104);ctx.quadraticCurveTo(0,-150,30,-104);ctx.lineTo(24,-92);ctx.lineTo(-24,-92);ctx.closePath();ctx.fill();
- ctx.fillStyle='#7a6642';ctx.beginPath();ctx.ellipse(0,-108,24,14,0,0,7);ctx.fill();
- ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(22,-124);ctx.quadraticCurveTo(52,-116,44,-88);ctx.quadraticCurveTo(34,-102,20,-108);ctx.closePath();ctx.fill();
- ctx.beginPath();ctx.moveTo(-22,-124);ctx.quadraticCurveTo(-52,-116,-44,-88);ctx.quadraticCurveTo(-34,-102,-20,-108);ctx.closePath();ctx.fill();
- ctx.strokeStyle='#8d8168';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(86,-30);ctx.lineTo(62,-118);ctx.stroke();ctx.fillStyle='#8d8168';ctx.beginPath();ctx.moveTo(58,-128);ctx.lineTo(66,-112);ctx.lineTo(72,-124);ctx.closePath();ctx.fill();
- ctx.fillStyle='#7a7458';ctx.beginPath();ctx.arc(-88,-64,26,0,7);ctx.fill();ctx.fillStyle='#5d5744';ctx.beginPath();ctx.arc(-88,-64,17,0,7);ctx.fill();
+ // House-style contact shadow: soft, offset, matching Goethestraße.
+ ctx.fillStyle='#0b211e55';ctx.beginPath();ctx.ellipse(12,26,150,30,0,0,7);ctx.fill();
+ // Stepped stone pedestal; TD2 light comes from the upper left.
+ ctx.fillStyle='#6f6d60';ctx.fillRect(-92,-16,184,18);
+ ctx.fillStyle='#7b7867';ctx.fillRect(-76,-32,152,16);
+ ctx.fillStyle='#706d60';ctx.fillRect(-58,-148,116,116);
+ ctx.fillStyle='#8a8778';ctx.fillRect(-58,-148,10,116);ctx.fillRect(-76,-32,152,4);
+ ctx.fillStyle='#55524a';ctx.fillRect(48,-148,10,116);
+ // Cornice cap with shadow line, tablets sit beneath it.
+ ctx.fillStyle='#827f6f';ctx.fillRect(-70,-158,140,12);ctx.fillStyle='#00000030';ctx.fillRect(-70,-147,140,3);
+ // Side tablets remain; the central bronze tablet (WWI) was stolen on
+ // 20.07.2026 — only its lighter silhouette outline marks the empty frame.
+ for(const side of [-1,1]){ctx.fillStyle='#5c5a4e';ctx.fillRect(side*58-26,-96,52,62);ctx.fillStyle='#7a6642';ctx.fillRect(side*58-21,-91,42,52);ctx.strokeStyle='#5d4f35';ctx.lineWidth=2;for(let l=0;l<3;l++){ctx.beginPath();ctx.moveTo(side*58-14,-82+l*14);ctx.lineTo(side*58+14,-82+l*14);ctx.stroke();}}
+ ctx.fillStyle='#4a483e';ctx.fillRect(-26,-96,52,62);ctx.fillStyle='#2b2a24';ctx.fillRect(-21,-91,42,52);
+ ctx.strokeStyle='#9a9077';ctx.lineWidth=2;ctx.setLineDash([7,5]);ctx.strokeRect(-17,-87,34,44);ctx.setLineDash([]);
+ // Winged bronze helmet resting on the cap, sword right, round shield left.
+ ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(-28,-160);ctx.quadraticCurveTo(0,-198,28,-160);ctx.lineTo(24,-158);ctx.lineTo(-24,-158);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#7a6642';ctx.beginPath();ctx.ellipse(0,-164,22,13,0,0,7);ctx.fill();
+ ctx.fillStyle='#a08a56';ctx.beginPath();ctx.ellipse(-7,-168,10,6,-.3,0,7);ctx.fill();
+ for(const side of [-1,1]){ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(side*22,-180);ctx.quadraticCurveTo(side*52,-172,side*44,-146);ctx.quadraticCurveTo(side*34,-160,side*20,-164);ctx.closePath();ctx.fill();ctx.fillStyle='#8a744a44';ctx.beginPath();ctx.moveTo(side*22,-176);ctx.quadraticCurveTo(side*44,-168,side*40,-152);ctx.closePath();ctx.fill();}
+ ctx.strokeStyle='#8d8168';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(84,-40);ctx.lineTo(62,-128);ctx.stroke();ctx.fillStyle='#8d8168';ctx.beginPath();ctx.moveTo(58,-138);ctx.lineTo(66,-122);ctx.lineTo(72,-134);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#7a7458';ctx.beginPath();ctx.arc(-84,-74,26,0,7);ctx.fill();ctx.fillStyle='#5d5744';ctx.beginPath();ctx.arc(-84,-74,17,0,7);ctx.fill();ctx.fillStyle='#9a907755';ctx.beginPath();ctx.arc(-90,-80,6,0,7);ctx.fill();
  // Both fire-bowl pedestals stand bare since the theft; brackets remain.
- for(const side of [-1,1]){ctx.fillStyle='#6f6d60';ctx.fillRect(side*252-20,32,40,56);ctx.fillStyle='#827f6f';ctx.fillRect(side*252-26,26,52,8);ctx.strokeStyle='#00000030';ctx.lineWidth=3;ctx.beginPath();ctx.arc(side*252,22,14,Math.PI,0);ctx.stroke();}
+ for(const side of [-1,1]){ctx.fillStyle='#6f6d60';ctx.fillRect(side*252-20,32,40,56);ctx.fillStyle='#827f6f';ctx.fillRect(side*252-26,26,52,8);ctx.fillStyle='#8a877855';ctx.fillRect(side*252-20,32,5,56);ctx.strokeStyle='#00000030';ctx.lineWidth=3;ctx.beginPath();ctx.arc(side*252,22,14,Math.PI,0);ctx.stroke();}
  // Moss and cracks grow with damage, like the neglected real site.
- ctx.fillStyle='#3d4a2e33';ctx.fillRect(-70,-40,50,8);ctx.fillRect(30,-70,36,6);
- if(hurt>.25){ctx.strokeStyle='#00000045';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-40,-96);ctx.lineTo(-30,-40);ctx.lineTo(-42,-2);ctx.stroke();}
- if(hurt>.6){ctx.strokeStyle='#00000060';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(52,-92);ctx.lineTo(44,-30);ctx.stroke();ctx.beginPath();ctx.moveTo(-10,-96);ctx.lineTo(4,-52);ctx.stroke();}
+ ctx.fillStyle='#3d4a2e33';ctx.fillRect(-58,-52,34,8);ctx.fillRect(24,-96,20,6);ctx.fillRect(-92,-14,20,5);
+ if(hurt>.25){ctx.strokeStyle='#00000045';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-36,-96);ctx.lineTo(-28,-44);ctx.lineTo(-40,-2);ctx.stroke();}
+ if(hurt>.6){ctx.strokeStyle='#00000060';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(44,-96);ctx.lineTo(38,-36);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,-96);ctx.lineTo(6,-52);ctx.stroke();}
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
