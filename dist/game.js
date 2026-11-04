@@ -970,8 +970,20 @@
     if(!visible(o,range))return;
     const index=drawOrder.length;
     let entry=drawOrderPool[index];
-    if(!entry){entry={o,t};drawOrderPool[index]=entry;}
-    else{entry.o=o;entry.t=t;}
+    if(!entry){
+      entry={o,t,paint:null};
+      // The closure reads the current pooled entry, not the actor from its creation frame.
+      // This keeps the upright projection behavior without making a new callback every frame.
+      entry.paint=()=>{
+        const actor=entry.o;
+        if(entry.t==='t')drawTower(actor);
+        else if(entry.t==='e')drawEnemy(actor);
+        else if(entry.t==='d')drawEnemy(actor,1-actor.life/actor.maxLife);
+        else if(entry.t==='m')drawMonument(actor);
+        else drawHero(actor);
+      };
+      drawOrderPool[index]=entry;
+    }else{entry.o=o;entry.t=t;}
     drawOrder.push(entry);
   }
   function compareDrawDepth(a,b){return a.o.y-b.o.y;}
@@ -985,7 +997,7 @@
     drawOrder.sort(compareDrawDepth);
     return drawOrder;
   }
-  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout={...campaign.levels[game.level],center:campaign.center};const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},time,{low:lowFX()});drawGateSurges();const objs=collectDrawOrder();for(const a of objs){const paint=()=>{if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='d')drawEnemy(a.o,1-a.o.life/a.o.maxLife);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)};if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,paint);else paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
+  function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout={...campaign.levels[game.level],center:campaign.center};const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},time,{low:lowFX()});drawGateSurges();const objs=collectDrawOrder();for(const a of objs){if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,a.paint);else a.paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
   function resetFrameTelemetry(){
