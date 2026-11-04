@@ -6,7 +6,8 @@ const sources=['persisted-state.js','levels.js','westhofen-art.js'];
 function makeScene(withImages=true){
  const data=new Map(),drawn=[],images=[];
  const box={Math,localStorage:{getItem:key=>data.get(key)??null,setItem:(key,val)=>data.set(key,val)}};
- const context=new Proxy({drawImage(...args){drawn.push(args)},createRadialGradient(){return{addColorStop(){}}},createLinearGradient(){return{addColorStop(){}}}},{get:(obj,key)=>obj[key]??(()=>{})});
+ let gradients=0;
+ const context=new Proxy({drawImage(...args){drawn.push(args)},createRadialGradient(){gradients++;return{addColorStop(){}}},createLinearGradient(){return{addColorStop(){}}}},{get:(obj,key)=>obj[key]??(()=>{})});
  let canvases=0;
  box.document={createElement(){canvases++;return{width:0,height:0,getContext(){return context}};}};
  if(withImages)box.Image=class FakeImage{
@@ -16,7 +17,7 @@ function makeScene(withImages=true){
  };
  vm.createContext(box);
  for(const name of sources)vm.runInContext(fs.readFileSync(path.join(root,name),'utf8'),box);
- return {box,images,drawn,get canvases(){return canvases},ctx:context};
+ return {box,images,drawn,get canvases(){return canvases},get gradients(){return gradients},ctx:context};
 }
 const cases=[
  {dx:-825,dy:-420,w:165,h:124},
@@ -34,8 +35,10 @@ const art=scene.box.DenkmalWesthofenArt;
 art.drawGround(scene.ctx,layout);
 assert.equal(scene.images.length,3,'one request per decoration');
 assert.equal(scene.canvases,1,'first ground canvas built once');
+assert.equal(scene.gradients,2,'two static lantern glows are painted once into the ground cache');
 art.drawGround(scene.ctx,layout);
 assert.equal(scene.canvases,1,'idle frames keep warm cache');
+assert.equal(scene.gradients,2,'no per-frame lantern glow calculations');
 for(const image of scene.images){image.complete=true;image.naturalWidth=256;image.naturalHeight=192;image.onload();}
 art.drawGround(scene.ctx,layout);
 assert.equal(scene.canvases,2,'loaded scenery causes one cache rebuild');
