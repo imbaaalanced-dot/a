@@ -94,6 +94,25 @@ function drawLowVegetation(q,layout,rnd){
  }
 }
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
+// Irregular, staggered old-stone joints. All marks are baked once into ground,
+// not redrawn each frame; the path geometry and collision areas never change.
+function drawStoneJoints(ctx,lane){
+ for(let i=1;i<lane.length;i++){
+  const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y);
+  if(len<1)continue;
+  const ux=(b.x-a.x)/len,uy=(b.y-a.y)/len,nx=-uy,ny=ux;
+  for(let d=18,j=0;d<len-6;d+=31,j++){
+   const x=a.x+ux*d,y=a.y+uy*d,shift=(j%3-1)*4;
+   ctx.strokeStyle=j%4===0?'#c4ae8a55':'#302c2a75';ctx.lineWidth=1.7;
+   ctx.beginPath();ctx.moveTo(x+nx*(-31+shift),y+ny*(-31+shift));
+   ctx.lineTo(x+ux*3+nx*(31+shift),y+uy*3+ny*(31+shift));ctx.stroke();
+   // Half-length seam alternates sides, avoiding a uniform ladder appearance.
+   const side=j%2?-1:1,offset=d+15;
+   if(offset<len-5){ctx.beginPath();ctx.moveTo(a.x+ux*offset,a.y+uy*offset);
+    ctx.lineTo(a.x+ux*offset+nx*side*29,a.y+uy*offset+ny*side*29);ctx.stroke();}
+  }
+ }
+}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
  q.fillStyle='#3c503b';q.fillRect(0,0,3072,3072);
@@ -110,7 +129,7 @@ function createGround(layout){
  const bx=C.x+330,by=C.y+596;q.fillStyle='#565d58';q.fillRect(bx-58,by-40,116,46);q.fillStyle='#7e837a';q.fillRect(bx-58,by-48,116,10);q.fillStyle='#33383444';q.beginPath();q.ellipse(bx,by+10,72,14,0,0,7);q.fill();q.fillStyle='#4b524d';q.fillRect(bx-50,by-24,100,10);q.fillStyle='#2c332f';q.fillRect(bx+40,by-22,8,28);
  // Lane footpaths: two street accesses and the northern green corridor.
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,'#b9907244',58);
-  for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
+  drawStoneJoints(q,lane);
  }
  // Gravel apron around the memorial leaves the objective and build pads free.
  q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
