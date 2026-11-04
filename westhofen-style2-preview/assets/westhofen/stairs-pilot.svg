@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="192" viewBox="0 0 256 192" aria-label="Westhofen stone steps Style 2 Pilot"><defs>
+<linearGradient id="stone" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#b4a78d"/><stop offset=".42" stop-color="#777b6b"/><stop offset="1" stop-color="#424a43"/></linearGradient>
+<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#656b61"/><stop offset="1" stop-color="#2c3732"/></linearGradient>
+<linearGradient id="bronze" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#9e8a60"/><stop offset="1" stop-color="#3c4940"/></linearGradient>
+</defs>
+<title>Westhofen, verwitterte flache Steinstufen</title>
+<!-- stairs are decoration and must not imply blocking terrain -->
+<g stroke="#35423b" stroke-width="2" stroke-linejoin="round">
+<path d="M72 52 L181 48 L211 65 L99 71Z" fill="#afa58b"/>
+<path d="M99 71 L211 65 L211 78 L99 85Z" fill="url(#stone)"/>
+<path d="M72 52 L99 71 L99 85 L72 66Z" fill="url(#edge)"/>
+<path d="M57 76 L198 69 L224 90 L80 98Z" fill="#b3aa91"/>
+<path d="M80 98 L224 90 L224 104 L80 112Z" fill="url(#stone)"/>
+<path d="M57 76 L80 98 L80 112 L57 91Z" fill="url(#edge)"/>
+<path d="M43 101 L210 94 L237 118 L67 130Z" fill="#a79f87"/>
+<path d="M67 130 L237 118 L237 134 L67 147Z" fill="url(#stone)"/>
+<path d="M43 101 L67 130 L67 147 L43 115Z" fill="url(#edge)"/>
+<path d="M25 129 L221 121 L246 145 L50 161Z" fill="#a7a08a"/>
+<path d="M50 161 L246 145 L246 161 L50 178Z" fill="url(#stone)"/>
+<path d="M25 129 L50 161 L50 178 L25 144Z" fill="url(#edge)"/>
+</g>
+<g fill="#3f5b40" opacity=".85"><path d="M54 130 l28 3 -8 5 -17 -2Z M195 94 l15 1 -4 5 -13 0Z M82 76 l16 1 -7 5 -15 -2Z M168 150 l28 -2 -4 5 -20 2Z"/></g>
+<g stroke="#52694a" stroke-width="2" opacity=".8"><path d="M34 145 q10 -5 16 0 M202 151 q7 -9 18 -8 M72 140 l11 -8"/></g>
+<g stroke="#514b40" stroke-width="1.6" fill="none" opacity=".5"><path d="M117 112 l6 -9 12 4 M149 73 l-8 8 M91 154 l11 -7 -1 -9"/></g>
+</svg>

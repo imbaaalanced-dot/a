@@ -1,0 +1,1271 @@
+{
+  "version": 1,
+  "cell": 144,
+  "anchor": [
+    72,
+    136
+  ],
+  "visibleHeight": 128,
+  "columns": 4,
+  "actions": [
+    "walk",
+    "attack",
+    "hit",
+    "death",
+    "special"
+  ],
+  "facing": "one authored view; optional horizontal mirror",
+  "actors": [
+    {
+      "id": "swordsman",
+      "file": "swordsman-v1.webp",
+      "source": "1911.png",
+      "sourceSha256": "aa7cefd5af57d95927569d6e9ed957d32965ce0588f4f93a1118d0c952730770",
+      "sourceSize": [
+        1263,
+        1246
+      ],
+      "sourceScale": 0.4129032258064516,
+      "rows": 4,
+      "frames": [
+        {
+          "sourceRect": [
+            52,
+            37,
+            216,
+            258
+          ],
+          "destination": [
+            28,
+            29,
+            89,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            376,
+            36,
+            195,
+            259
+          ],
+          "destination": [
+            32,
+            29,
+            81,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            693,
+            33,
+            206,
+            264
+          ],
+          "destination": [
+            30,
+            27,
+            85,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            1026,
+            33,
+            199,
+            257
+          ],
+          "destination": [
+            31,
+            30,
+            82,
+            106
+          ]
+        },
+        {
+          "sourceRect": [
+            66,
+            356,
+            200,
+            245
+          ],
+          "destination": [
+            31,
+            35,
+            83,
+            101
+          ]
+        },
+        {
+          "sourceRect": [
+            378,
+            317,
+            213,
+            285
+          ],
+          "destination": [
+            28,
+            18,
+            88,
+            118
+          ]
+        },
+        {
+          "sourceRect": [
+            666,
+            345,
+            310,
+            258
+          ],
+          "destination": [
+            8,
+            29,
+            128,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            1002,
+            367,
+            217,
+            236
+          ],
+          "destination": [
+            27,
+            39,
+            90,
+            97
+          ]
+        },
+        {
+          "sourceRect": [
+            67,
+            653,
+            191,
+            259
+          ],
+          "destination": [
+            33,
+            29,
+            79,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            368,
+            644,
+            210,
+            269
+          ],
+          "destination": [
+            29,
+            25,
+            87,
+            111
+          ]
+        },
+        {
+          "sourceRect": [
+            691,
+            672,
+            190,
+            241
+          ],
+          "destination": [
+            33,
+            36,
+            78,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            1011,
+            659,
+            191,
+            254
+          ],
+          "destination": [
+            33,
+            31,
+            79,
+            105
+          ]
+        },
+        {
+          "sourceRect": [
+            68,
+            982,
+            171,
+            240
+          ],
+          "destination": [
+            37,
+            37,
+            71,
+            99
+          ]
+        },
+        {
+          "sourceRect": [
+            369,
+            1033,
+            193,
+            187
+          ],
+          "destination": [
+            32,
+            59,
+            80,
+            77
+          ]
+        },
+        {
+          "sourceRect": [
+            656,
+            1073,
+            268,
+            147
+          ],
+          "destination": [
+            17,
+            75,
+            111,
+            61
+          ]
+        },
+        {
+          "sourceRect": [
+            956,
+            1117,
+            291,
+            102
+          ],
+          "destination": [
+            12,
+            94,
+            120,
+            42
+          ]
+        }
+      ],
+      "atlasSha256": "72ead76d36a628ca5e32cefc147ce6b21c2c991cb107af705306a43700dde1ff"
+    },
+    {
+      "id": "archer",
+      "file": "archer-v1.webp",
+      "source": "1912.png",
+      "sourceSha256": "0a0059d8e63994114838e027035e76a9e75836473dcd1e73ab2c41468b1d9328",
+      "sourceSize": [
+        1247,
+        1261
+      ],
+      "sourceScale": 0.423841059602649,
+      "rows": 4,
+      "frames": [
+        {
+          "sourceRect": [
+            52,
+            27,
+            198,
+            257
+          ],
+          "destination": [
+            30,
+            27,
+            84,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            375,
+            28,
+            196,
+            258
+          ],
+          "destination": [
+            31,
+            27,
+            83,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            694,
+            29,
+            194,
+            254
+          ],
+          "destination": [
+            31,
+            28,
+            82,
+            108
+          ]
+        },
+        {
+          "sourceRect": [
+            999,
+            31,
+            212,
+            257
+          ],
+          "destination": [
+            27,
+            27,
+            90,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            63,
+            342,
+            210,
+            261
+          ],
+          "destination": [
+            28,
+            25,
+            89,
+            111
+          ]
+        },
+        {
+          "sourceRect": [
+            360,
+            319,
+            221,
+            283
+          ],
+          "destination": [
+            25,
+            16,
+            94,
+            120
+          ]
+        },
+        {
+          "sourceRect": [
+            651,
+            312,
+            239,
+            291
+          ],
+          "destination": [
+            22,
+            13,
+            101,
+            123
+          ]
+        },
+        {
+          "sourceRect": [
+            995,
+            341,
+            197,
+            265
+          ],
+          "destination": [
+            31,
+            24,
+            83,
+            112
+          ]
+        },
+        {
+          "sourceRect": [
+            61,
+            663,
+            201,
+            258
+          ],
+          "destination": [
+            30,
+            27,
+            85,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            365,
+            640,
+            212,
+            281
+          ],
+          "destination": [
+            27,
+            17,
+            90,
+            119
+          ]
+        },
+        {
+          "sourceRect": [
+            685,
+            676,
+            192,
+            244
+          ],
+          "destination": [
+            32,
+            33,
+            81,
+            103
+          ]
+        },
+        {
+          "sourceRect": [
+            1005,
+            674,
+            193,
+            248
+          ],
+          "destination": [
+            31,
+            31,
+            82,
+            105
+          ]
+        },
+        {
+          "sourceRect": [
+            60,
+            977,
+            200,
+            252
+          ],
+          "destination": [
+            30,
+            29,
+            85,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            353,
+            1030,
+            203,
+            196
+          ],
+          "destination": [
+            29,
+            53,
+            86,
+            83
+          ]
+        },
+        {
+          "sourceRect": [
+            636,
+            1080,
+            270,
+            153
+          ],
+          "destination": [
+            15,
+            71,
+            114,
+            65
+          ]
+        },
+        {
+          "sourceRect": [
+            926,
+            1131,
+            302,
+            106
+          ],
+          "destination": [
+            8,
+            91,
+            128,
+            45
+          ]
+        }
+      ],
+      "atlasSha256": "d504d0cbc5dcd38a053fc1568804c59ec3168f80ec66a638e2a0ead1a0605786"
+    },
+    {
+      "id": "guardian",
+      "file": "guardian-v1.webp",
+      "source": "1913.png",
+      "sourceSha256": "a4c70eb54e6fad8213cb6d8cfdf6c23ebe8c3c04de18d31cbce34b34e1d2795f",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceScale": 0.43389830508474575,
+      "rows": 4,
+      "frames": [
+        {
+          "sourceRect": [
+            35,
+            50,
+            244,
+            242
+          ],
+          "destination": [
+            19,
+            31,
+            106,
+            105
+          ]
+        },
+        {
+          "sourceRect": [
+            360,
+            53,
+            229,
+            237
+          ],
+          "destination": [
+            23,
+            33,
+            99,
+            103
+          ]
+        },
+        {
+          "sourceRect": [
+            675,
+            56,
+            232,
+            236
+          ],
+          "destination": [
+            22,
+            34,
+            101,
+            102
+          ]
+        },
+        {
+          "sourceRect": [
+            993,
+            52,
+            230,
+            240
+          ],
+          "destination": [
+            22,
+            32,
+            100,
+            104
+          ]
+        },
+        {
+          "sourceRect": [
+            40,
+            377,
+            233,
+            229
+          ],
+          "destination": [
+            22,
+            37,
+            101,
+            99
+          ]
+        },
+        {
+          "sourceRect": [
+            363,
+            380,
+            255,
+            223
+          ],
+          "destination": [
+            17,
+            39,
+            111,
+            97
+          ]
+        },
+        {
+          "sourceRect": [
+            655,
+            386,
+            281,
+            218
+          ],
+          "destination": [
+            11,
+            41,
+            122,
+            95
+          ]
+        },
+        {
+          "sourceRect": [
+            978,
+            370,
+            239,
+            235
+          ],
+          "destination": [
+            20,
+            34,
+            104,
+            102
+          ]
+        },
+        {
+          "sourceRect": [
+            37,
+            681,
+            243,
+            238
+          ],
+          "destination": [
+            20,
+            33,
+            105,
+            103
+          ]
+        },
+        {
+          "sourceRect": [
+            336,
+            666,
+            244,
+            253
+          ],
+          "destination": [
+            19,
+            26,
+            106,
+            110
+          ]
+        },
+        {
+          "sourceRect": [
+            656,
+            687,
+            247,
+            231
+          ],
+          "destination": [
+            19,
+            36,
+            107,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            978,
+            683,
+            245,
+            236
+          ],
+          "destination": [
+            19,
+            34,
+            106,
+            102
+          ]
+        },
+        {
+          "sourceRect": [
+            38,
+            999,
+            230,
+            231
+          ],
+          "destination": [
+            22,
+            36,
+            100,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            339,
+            1032,
+            253,
+            204
+          ],
+          "destination": [
+            17,
+            47,
+            110,
+            89
+          ]
+        },
+        {
+          "sourceRect": [
+            644,
+            1082,
+            279,
+            161
+          ],
+          "destination": [
+            12,
+            66,
+            121,
+            70
+          ]
+        },
+        {
+          "sourceRect": [
+            948,
+            1121,
+            295,
+            121
+          ],
+          "destination": [
+            8,
+            83,
+            128,
+            53
+          ]
+        }
+      ],
+      "atlasSha256": "bd47277e2bbbac31c98872b758d02affe757abcd6f2e6f9387377acb61daa016"
+    },
+    {
+      "id": "censer",
+      "file": "censer-v1.webp",
+      "source": "1914.png",
+      "sourceSha256": "61d94405f1937a75f0f51155b4bc05bc491fd6cf4ffb8df2cb9be6e8f793680b",
+      "sourceSize": [
+        1245,
+        1263
+      ],
+      "sourceScale": 0.3987538940809969,
+      "rows": 4,
+      "frames": [
+        {
+          "sourceRect": [
+            36,
+            31,
+            226,
+            268
+          ],
+          "destination": [
+            27,
+            29,
+            90,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            353,
+            28,
+            218,
+            267
+          ],
+          "destination": [
+            29,
+            30,
+            87,
+            106
+          ]
+        },
+        {
+          "sourceRect": [
+            660,
+            31,
+            209,
+            266
+          ],
+          "destination": [
+            31,
+            30,
+            83,
+            106
+          ]
+        },
+        {
+          "sourceRect": [
+            970,
+            31,
+            220,
+            265
+          ],
+          "destination": [
+            28,
+            30,
+            88,
+            106
+          ]
+        },
+        {
+          "sourceRect": [
+            35,
+            352,
+            231,
+            262
+          ],
+          "destination": [
+            26,
+            32,
+            92,
+            104
+          ]
+        },
+        {
+          "sourceRect": [
+            326,
+            341,
+            273,
+            273
+          ],
+          "destination": [
+            18,
+            27,
+            109,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            640,
+            354,
+            321,
+            259
+          ],
+          "destination": [
+            8,
+            33,
+            128,
+            103
+          ]
+        },
+        {
+          "sourceRect": [
+            973,
+            344,
+            217,
+            269
+          ],
+          "destination": [
+            29,
+            29,
+            87,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            28,
+            659,
+            252,
+            269
+          ],
+          "destination": [
+            22,
+            29,
+            100,
+            107
+          ]
+        },
+        {
+          "sourceRect": [
+            319,
+            654,
+            251,
+            274
+          ],
+          "destination": [
+            22,
+            27,
+            100,
+            109
+          ]
+        },
+        {
+          "sourceRect": [
+            643,
+            668,
+            253,
+            261
+          ],
+          "destination": [
+            22,
+            32,
+            101,
+            104
+          ]
+        },
+        {
+          "sourceRect": [
+            957,
+            661,
+            220,
+            270
+          ],
+          "destination": [
+            28,
+            28,
+            88,
+            108
+          ]
+        },
+        {
+          "sourceRect": [
+            32,
+            994,
+            221,
+            236
+          ],
+          "destination": [
+            28,
+            42,
+            88,
+            94
+          ]
+        },
+        {
+          "sourceRect": [
+            332,
+            1037,
+            247,
+            193
+          ],
+          "destination": [
+            23,
+            59,
+            98,
+            77
+          ]
+        },
+        {
+          "sourceRect": [
+            628,
+            1073,
+            274,
+            153
+          ],
+          "destination": [
+            18,
+            75,
+            109,
+            61
+          ]
+        },
+        {
+          "sourceRect": [
+            930,
+            1110,
+            310,
+            119
+          ],
+          "destination": [
+            10,
+            89,
+            124,
+            47
+          ]
+        }
+      ],
+      "atlasSha256": "ceddd789d584f41d45c4f7a5f099bfdf25dff950851e3b326e04bfb7dfc0f4a2"
+    },
+    {
+      "id": "golem",
+      "file": "golem-v1.webp",
+      "source": "1915.png",
+      "sourceSha256": "b9d2d0c39e3d6784e251a96b8bff7b69651596e4c65f3fde1151bfb18e864c6c",
+      "sourceSize": [
+        1122,
+        1402
+      ],
+      "sourceScale": 0.46545454545454545,
+      "rows": 5,
+      "frames": [
+        {
+          "sourceRect": [
+            25,
+            38,
+            223,
+            217
+          ],
+          "destination": [
+            20,
+            35,
+            104,
+            101
+          ]
+        },
+        {
+          "sourceRect": [
+            304,
+            38,
+            216,
+            215
+          ],
+          "destination": [
+            22,
+            36,
+            101,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            614,
+            49,
+            178,
+            203
+          ],
+          "destination": [
+            31,
+            42,
+            83,
+            94
+          ]
+        },
+        {
+          "sourceRect": [
+            915,
+            38,
+            154,
+            216
+          ],
+          "destination": [
+            36,
+            35,
+            72,
+            101
+          ]
+        },
+        {
+          "sourceRect": [
+            53,
+            340,
+            207,
+            201
+          ],
+          "destination": [
+            24,
+            42,
+            96,
+            94
+          ]
+        },
+        {
+          "sourceRect": [
+            303,
+            304,
+            237,
+            236
+          ],
+          "destination": [
+            17,
+            26,
+            110,
+            110
+          ]
+        },
+        {
+          "sourceRect": [
+            601,
+            361,
+            226,
+            182
+          ],
+          "destination": [
+            20,
+            51,
+            105,
+            85
+          ]
+        },
+        {
+          "sourceRect": [
+            878,
+            330,
+            223,
+            210
+          ],
+          "destination": [
+            20,
+            38,
+            104,
+            98
+          ]
+        },
+        {
+          "sourceRect": [
+            27,
+            595,
+            221,
+            215
+          ],
+          "destination": [
+            21,
+            36,
+            103,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            299,
+            596,
+            233,
+            214
+          ],
+          "destination": [
+            18,
+            36,
+            108,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            603,
+            595,
+            212,
+            215
+          ],
+          "destination": [
+            23,
+            36,
+            99,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            868,
+            595,
+            223,
+            215
+          ],
+          "destination": [
+            20,
+            36,
+            104,
+            100
+          ]
+        },
+        {
+          "sourceRect": [
+            35,
+            868,
+            214,
+            219
+          ],
+          "destination": [
+            22,
+            34,
+            100,
+            102
+          ]
+        },
+        {
+          "sourceRect": [
+            304,
+            910,
+            232,
+            179
+          ],
+          "destination": [
+            18,
+            53,
+            108,
+            83
+          ]
+        },
+        {
+          "sourceRect": [
+            567,
+            933,
+            243,
+            155
+          ],
+          "destination": [
+            16,
+            64,
+            113,
+            72
+          ]
+        },
+        {
+          "sourceRect": [
+            837,
+            976,
+            275,
+            112
+          ],
+          "destination": [
+            8,
+            84,
+            128,
+            52
+          ]
+        },
+        {
+          "sourceRect": [
+            35,
+            1156,
+            226,
+            224
+          ],
+          "destination": [
+            20,
+            32,
+            105,
+            104
+          ]
+        },
+        {
+          "sourceRect": [
+            300,
+            1121,
+            224,
+            259
+          ],
+          "destination": [
+            20,
+            15,
+            104,
+            121
+          ]
+        },
+        {
+          "sourceRect": [
+            604,
+            1187,
+            210,
+            193
+          ],
+          "destination": [
+            23,
+            46,
+            98,
+            90
+          ]
+        },
+        {
+          "sourceRect": [
+            864,
+            1164,
+            238,
+            216
+          ],
+          "destination": [
+            17,
+            35,
+            111,
+            101
+          ]
+        }
+      ],
+      "atlasSha256": "db2e44d6a8e2714555e06328fe976fb95abce5f68b5a66f9f20cdb5ea2974d65"
+    }
+  ]
+}
