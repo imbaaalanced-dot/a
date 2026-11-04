@@ -113,6 +113,26 @@ function drawStoneJoints(ctx,lane){
   }
  }
 }
+// Two restrained static lanterns near the memorial benches. Their soft light
+// is painted into the cached ground, with no animation or per-frame gradients.
+function drawGroundLanterns(ctx,layout){
+ for(const side of [-1,1]){
+  const x=C.x+side*500,y=C.y-200,p={x,y};
+  if(layout.paths.some(route=>globalThis.DenkmalLevels.pathDistance(p,route)<125)||
+     layout.slots.some(slot=>Math.hypot(slot.x-x,slot.y-y)<115))continue;
+  const glow=ctx.createRadialGradient(x,y-18,5,x,y-18,116);
+  glow.addColorStop(0,'#ffc77742');glow.addColorStop(.48,'#d4a45816');glow.addColorStop(1,'#d4a45800');
+  ctx.fillStyle=glow;ctx.beginPath();ctx.ellipse(x,y-12,116,69,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#161e1a55';ctx.beginPath();ctx.ellipse(x+7,y+4,17,6,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#323a35';ctx.fillRect(x-3,y-77,6,77);
+  ctx.fillStyle='#777468';ctx.fillRect(x-4,y-79,2,79);
+  ctx.fillStyle='#252a28';ctx.fillRect(x-12,y-94,24,5);
+  ctx.fillStyle='#b78c48';ctx.fillRect(x-9,y-90,18,18);
+  ctx.fillStyle='#ffd59a';ctx.fillRect(x-5,y-87,10,12);
+  ctx.fillStyle='#252a28';ctx.beginPath();ctx.moveTo(x-13,y-94);ctx.lineTo(x,y-106);
+  ctx.lineTo(x+13,y-94);ctx.closePath();ctx.fill();
+ }
+}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
  q.fillStyle='#3c503b';q.fillRect(0,0,3072,3072);
@@ -145,6 +165,7 @@ function createGround(layout){
  // Trees: northern green corridor and the street side, off authored lanes/pads.
  for(let i=0;i<30;i++){const north=i<20,x=north?C.x-1000+rnd()*2000:C.x-1050+rnd()*730,y=north?C.y-980+rnd()*520:C.y+430+rnd()*180,r=70+rnd()*80;const p={x,y};if(layout.paths.some(l=>globalThis.DenkmalLevels.pathDistance(p,l)<r+75)||layout.slots.some(s=>Math.hypot(x-s.x,y-s.y)<r+60))continue;
   q.fillStyle='#12231c55';q.beginPath();q.ellipse(x+25,y+55,r,r*.5,0,0,7);q.fill();globalThis.DenkmalForest?.drawCrown?.(q,x,y,r,i);}
+ drawGroundLanterns(q,layout);
  return canvas;
 }
 function drawGround(ctx,layout){requestScenery();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
