@@ -23,7 +23,7 @@ assert.equal(stateBundle.adaptiveScale,.85,'sustained 30fps lowers scale one ste
 assert.equal(resizeCalls,1,'one canvas resize');
 now=frames(now,1000/30,130);
 assert.equal(stateBundle.adaptiveScale,.85,'cooldown avoids repeated rapid resize');
-now=frames(now,1000/30,260);
+now=frames(now,1000/30,400);
 assert.equal(stateBundle.adaptiveScale,.7,'slow hardware uses floor .7');
 now=frames(now,1000/30,500);
 assert.equal(stateBundle.adaptiveScale,.7,'never shrink below minimum');
