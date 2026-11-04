@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - feature/v4.3-performance-integration-qa
+      - feature/v4.3-performance-qa-test-fix
   pull_request:
     branches:
       - feature/v4.3-adaptive-mobile-resolution
+      - feature/v4.3-performance-android-preview
   workflow_dispatch:
 
 permissions:
