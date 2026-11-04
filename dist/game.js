@@ -64,6 +64,7 @@
   let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,hitStop=0,toastTimer=0,tutorialActive=false,tutorialPending=false,tutorialStepIndex=0,speedMultiplier=1,levelLoadRequest=0;
   let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, moveIntent={x:0,y:0}, hudClock=0,camera={x:0,y:0},cameraLeadState={x:0,y:0};
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
+  let adaptiveScale=1,adaptivePrevious=0,adaptiveWindowMs=0,adaptiveWindowFrames=0,adaptiveLastChange=0,adaptiveFastWindows=0;
   const frameSamples=new Float32Array(120),frameSorted=new Float32Array(120);
   let frameCount=0,frameCursor=0,framePrevious=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -246,7 +247,7 @@
     // A tall phone can otherwise allocate several million canvas pixels even at DPR 1.
     // Choose the buffer size when the viewport/mode changes; never resize it in the render loop.
     const pixelBudget=mobileRender?(graphicsMode==='high'?2000000:graphicsMode==='low'?550000:900000):Infinity;
-    dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)));
+    dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)))*(graphicsMode==='auto'&&mobileRender?adaptiveScale:1);
     zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());
     const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);
     const bufferChanged=canvas.width!==pixelWidth||canvas.height!==pixelHeight;
@@ -1031,9 +1032,38 @@
       overlay.textContent=`FPS ${telemetryFps} · P95 ${stats.p95.toFixed(1)}ms · >50ms ${stats.stutters}/${stats.frameCount} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;
     }
   }
+  // Adapt only the game canvas on touch devices in AUTO mode, never simulation time.
+  // Sustained slow frames downgrade quickly; recovery requires much longer headroom.
+  function updateAdaptiveResolution(now){
+    if(!mobileRender||graphicsMode!=='auto'||document.hidden||state!=='playing'){
+      adaptivePrevious=0;adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;
+      return;
+    }
+    if(!adaptivePrevious){adaptivePrevious=now;return;}
+    const elapsed=now-adaptivePrevious;
+    adaptivePrevious=now;
+    // Ignore background/resume gaps; never treat them as sustained low FPS.
+    if(elapsed<=0||elapsed>200){adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;return;}
+    adaptiveWindowMs+=elapsed;
+    adaptiveWindowFrames++;
+    if(adaptiveWindowMs<3500)return;
+    const fps=adaptiveWindowFrames*1000/adaptiveWindowMs;
+    const enoughCooldown=!adaptiveLastChange||now-adaptiveLastChange>=12000;
+    if(fps<45&&enoughCooldown&&adaptiveScale>.7){
+      adaptiveScale=Math.max(.7,Math.round((adaptiveScale-.15)*100)/100);
+      adaptiveLastChange=now;adaptiveFastWindows=0;resize(false);
+    }else if(fps>=56&&adaptiveScale<1){
+      adaptiveFastWindows++;
+      if(adaptiveFastWindows>=6&&enoughCooldown){
+        adaptiveScale=Math.min(1,Math.round((adaptiveScale+.15)*100)/100);
+        adaptiveLastChange=now;adaptiveFastWindows=0;resize(false);
+      }
+    }else adaptiveFastWindows=0;
+    adaptiveWindowMs=0;adaptiveWindowFrames=0;
+  }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
-  function loop(now){const dt=Math.min(.034,(now-last)/1000||0);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}updateTelemetry(now);requestAnimationFrame(loop)}
+  function loop(now){const dt=Math.min(.034,(now-last)/1000||0);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}updateAdaptiveResolution(now);updateTelemetry(now);requestAnimationFrame(loop)}
   function tone(freq,dur=.05,vol=.035){if(!audioOn)return;try{const ac=tone.ac||(tone.ac=new (AudioContext||webkitAudioContext)());if(ac.state==='suspended')void ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch{}}
   addEventListener('resize',()=>{resize(false);positionTutorialArrow();});
   addEventListener('blur',()=>{clearInput();saga.stopVoice();pauseGame();});
@@ -1108,7 +1138,7 @@
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   function lowFX(){return reducedMotion||graphicsMode==='low'||(graphicsMode==='auto'&&mobileRender);}
   function graphicsLabel(){$('menuGraphicsBtn').textContent=$('graphicsBtn').textContent=`GRAFIK: ${{auto:'STANDARD',low:'SPARMODUS',high:'HOCH'}[graphicsMode]}`;}
-  function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';savePreference('graphics',graphicsMode);graphicsLabel();resize(false);}
+  function cycleGraphics(){graphicsMode=graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto';adaptiveScale=1;adaptivePrevious=0;adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;adaptiveLastChange=0;savePreference('graphics',graphicsMode);graphicsLabel();resize(false);}
   function zoomLabel(){$('menuZoomBtn').textContent=$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
   function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();savePreference('zoom',zoomMode);zoomLabel();updateCamera();}
   function telemetryLabel(){$('menuTelemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('menuTelemetryBtn').textContent=$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
