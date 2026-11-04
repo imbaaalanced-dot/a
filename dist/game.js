@@ -67,6 +67,7 @@
   let adaptiveScale=1,adaptivePrevious=0,adaptiveWindowMs=0,adaptiveWindowFrames=0,adaptiveLastChange=0,adaptiveFastWindows=0;
   const frameSamples=new Float32Array(120),frameSorted=new Float32Array(120);
   let frameCount=0,frameCursor=0,framePrevious=0;
+  let simulationTimeTotal=0,drawTimeTotal=0,simulationSamples=0,drawSamples=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
@@ -990,6 +991,13 @@
   function resetFrameTelemetry(){
     frameCount=0;frameCursor=0;framePrevious=0;
     telemetryFrames=0;telemetryLast=0;
+    simulationTimeTotal=0;drawTimeTotal=0;simulationSamples=0;drawSamples=0;
+  }
+  function recordCpuFrame(simulationMs,renderMs,didDraw){
+    if(!telemetryOn||document.hidden||state!=='playing')return;
+    simulationTimeTotal+=Math.max(0,simulationMs);
+    simulationSamples++;
+    if(didDraw){drawTimeTotal+=Math.max(0,renderMs);drawSamples++;}
   }
   function frameTelemetryStats(){
     if(!frameCount)return {p95:0,stutters:0,frameCount:0};
@@ -1029,7 +1037,10 @@
       telemetryFrames=0;telemetryLast=now;
       const stats=frameTelemetryStats();
       const heap=performance.memory?.usedJSHeapSize;
-      overlay.textContent=`FPS ${telemetryFps} · P95 ${stats.p95.toFixed(1)}ms · >50ms ${stats.stutters}/${stats.frameCount} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;
+      const simMs=simulationSamples?simulationTimeTotal/simulationSamples:0;
+      const renderMs=drawSamples?drawTimeTotal/drawSamples:0;
+      overlay.textContent=`FPS ${telemetryFps} · P95 ${stats.p95.toFixed(1)}ms · SIM ${simMs.toFixed(1)}ms · DRAW ${renderMs.toFixed(1)}ms · >50ms ${stats.stutters}/${stats.frameCount} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;
+      simulationTimeTotal=0;drawTimeTotal=0;simulationSamples=0;drawSamples=0;
     }
   }
   // Adapt only the game canvas on touch devices in AUTO mode, never simulation time.
@@ -1063,7 +1074,20 @@
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
-  function loop(now){const dt=Math.min(.034,(now-last)/1000||0);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}updateAdaptiveResolution(now);updateTelemetry(now);requestAnimationFrame(loop)}
+  function loop(now){
+    const dt=Math.min(.034,(now-last)/1000||0);
+    last=now;
+    const profile=telemetryOn&&state==='playing'&&!document.hidden;
+    const simulationStart=profile?performance.now():0;
+    for(let step=0;step<simulationStepsPerFrame();step++)update(dt);
+    const renderStart=profile?performance.now():0;
+    const shouldDraw=!document.hidden&&(state==='playing'||now-lastIdleDraw>=100);
+    if(shouldDraw){draw();lastIdleDraw=now;}
+    if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
+    updateAdaptiveResolution(now);
+    updateTelemetry(now);
+    requestAnimationFrame(loop);
+  }
   function tone(freq,dur=.05,vol=.035){if(!audioOn)return;try{const ac=tone.ac||(tone.ac=new (AudioContext||webkitAudioContext)());if(ac.state==='suspended')void ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch{}}
   addEventListener('resize',()=>{resize(false);positionTutorialArrow();});
   addEventListener('blur',()=>{clearInput();saga.stopVoice();pauseGame();});
