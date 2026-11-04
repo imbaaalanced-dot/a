@@ -1,0 +1,63 @@
+name: Publish isolated TD2 CPU profile preview
+
+on:
+  push:
+    branches:
+      - feature/v4.3-cpu-render-preview
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-cpu-render-preview-publish
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image test dependencies
+        run: python -m pip install Pillow numpy scipy
+      - name: Run full test suite before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in tests/*.test.py; do python "$file"; done
+          npm test --prefix ansturm-alpha1-5
+          for file in tests/*.test.cjs; do node "$file"; done
+          export TEST_MOBILE=1
+          for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
+            node "tests/$file"
+          done
+      - name: Publish isolated Android performance preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-westhofen-pages origin/gh-pages
+          mkdir -p /tmp/td2-westhofen-pages/android-perf-diagnostics-v43-preview
+          find /tmp/td2-westhofen-pages/android-perf-diagnostics-v43-preview -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/td2-westhofen-pages/android-perf-diagnostics-v43-preview/
+          printf "%s\n" "$GITHUB_SHA" > /tmp/td2-westhofen-pages/android-perf-diagnostics-v43-preview/performance-commit.txt
+          touch /tmp/td2-westhofen-pages/.nojekyll
+          cd /tmp/td2-westhofen-pages
+          git add android-perf-diagnostics-v43-preview .nojekyll
+          if git diff --cached --quiet; then
+            echo "Android performance preview unchanged."
+            exit 0
+          fi
+          git commit -m "Publish isolated CPU profile preview from ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
