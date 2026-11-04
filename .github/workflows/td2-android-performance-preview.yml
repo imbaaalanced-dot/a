@@ -3,7 +3,7 @@ name: Publish isolated TD2 Android performance preview
 on:
   push:
     branches:
-      - feature/v4.3-performance-android-preview
+      - feature/v4.3-performance-verified-preview
   workflow_dispatch:
 
 permissions:
@@ -40,7 +40,7 @@ jobs:
           for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
             node "tests/$file"
           done
-      - name: Publish only isolated Westhofen preview directory
+      - name: Publish isolated Android performance preview
         shell: bash
         run: |
           set -euo pipefail
@@ -51,11 +51,12 @@ jobs:
           mkdir -p /tmp/td2-westhofen-pages/android-performance-v43-preview
           find /tmp/td2-westhofen-pages/android-performance-v43-preview -mindepth 1 -maxdepth 1 -exec rm -rf {} +
           cp -R dist/. /tmp/td2-westhofen-pages/android-performance-v43-preview/
+          printf "%s\n" "$GITHUB_SHA" > /tmp/td2-westhofen-pages/android-performance-v43-preview/performance-commit.txt
           touch /tmp/td2-westhofen-pages/.nojekyll
           cd /tmp/td2-westhofen-pages
           git add android-performance-v43-preview .nojekyll
           if git diff --cached --quiet; then
-            echo "Westhofen preview unchanged."
+            echo "Android performance preview unchanged."
             exit 0
           fi
           git commit -m "Publish isolated Android performance preview from ${GITHUB_SHA}"
