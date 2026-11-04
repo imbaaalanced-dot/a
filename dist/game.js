@@ -64,6 +64,8 @@
   let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,hitStop=0,toastTimer=0,tutorialActive=false,tutorialPending=false,tutorialStepIndex=0,speedMultiplier=1,levelLoadRequest=0;
   let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, moveIntent={x:0,y:0}, hudClock=0,camera={x:0,y:0},cameraLeadState={x:0,y:0};
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
+  const frameSamples=new Float32Array(120),frameSorted=new Float32Array(120);
+  let frameCount=0,frameCursor=0,framePrevious=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
@@ -984,10 +986,50 @@
   function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout={...campaign.levels[game.level],center:campaign.center};const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,{...campaign.levels[game.level],center:campaign.center},time,{low:lowFX()});drawGateSurges();const objs=collectDrawOrder();for(const a of objs){const paint=()=>{if(a.t==='t')drawTower(a.o);else if(a.t==='e')drawEnemy(a.o);else if(a.t==='d')drawEnemy(a.o,1-a.o.life/a.o.maxLife);else if(a.t==='m')drawMonument(a.o);else drawHero(a.o)};if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,a.o,paint);else paint();}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=lowFX()?0:(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
+  function resetFrameTelemetry(){
+    frameCount=0;frameCursor=0;framePrevious=0;
+    telemetryFrames=0;telemetryLast=0;
+  }
+  function frameTelemetryStats(){
+    if(!frameCount)return {p95:0,stutters:0,frameCount:0};
+    let stutters=0;
+    for(let i=0;i<frameCount;i++){
+      const value=frameSamples[i];
+      frameSorted[i]=value;
+      if(value>50)stutters++;
+    }
+    const sorted=frameSorted.subarray(0,frameCount);
+    sorted.sort();
+    return {p95:sorted[Math.ceil(frameCount*.95)-1],stutters,frameCount};
+  }
   function updateTelemetry(now){
-    const overlay=$('fpsOverlay');if(!telemetryOn){telemetryFrames=0;telemetryLast=0;overlay.classList.add('hidden');return;}
-    overlay.classList.remove('hidden');if(!telemetryLast)telemetryLast=now;telemetryFrames++;const span=now-telemetryLast;
-    if(span>=500){telemetryFps=Math.round(telemetryFrames*1000/span);telemetryFrames=0;telemetryLast=now;const heap=performance.memory?.usedJSHeapSize;overlay.textContent=`FPS ${telemetryFps} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;}
+    const overlay=$('fpsOverlay');
+    if(!telemetryOn||document.hidden||state!=='playing'){
+      if(!telemetryOn)overlay.classList.add('hidden');
+      resetFrameTelemetry();
+      return;
+    }
+    overlay.classList.remove('hidden');
+    // Use rAF callback timestamps: frame intervals, not CPU render duration.
+    if(framePrevious){
+      const delta=now-framePrevious;
+      if(delta>0&&delta<=1000){
+        frameSamples[frameCursor]=delta;
+        frameCursor=(frameCursor+1)%frameSamples.length;
+        frameCount=Math.min(frameCount+1,frameSamples.length);
+      }
+    }
+    framePrevious=now;
+    if(!telemetryLast)telemetryLast=now;
+    telemetryFrames++;
+    const span=now-telemetryLast;
+    if(span>=500){
+      telemetryFps=Math.round(telemetryFrames*1000/span);
+      telemetryFrames=0;telemetryLast=now;
+      const stats=frameTelemetryStats();
+      const heap=performance.memory?.usedJSHeapSize;
+      overlay.textContent=`FPS ${telemetryFps} · P95 ${stats.p95.toFixed(1)}ms · >50ms ${stats.stutters}/${stats.frameCount} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;
+    }
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
@@ -1070,7 +1112,7 @@
   function zoomLabel(){$('menuZoomBtn').textContent=$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
   function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();savePreference('zoom',zoomMode);zoomLabel();updateCamera();}
   function telemetryLabel(){$('menuTelemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('menuTelemetryBtn').textContent=$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
-  function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;savePreference('telemetry',telemetryOn);telemetryLabel();}
+  function toggleTelemetry(){telemetryOn=!telemetryOn;resetFrameTelemetry();savePreference('telemetry',telemetryOn);telemetryLabel();}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
   const menuEntries={play:'menuPlayBtn',campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
