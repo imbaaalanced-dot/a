@@ -38,5 +38,6 @@ for(let k=0;k<250;k++){
  for(const e of entries)assert.ok(context.pool.includes(e),'reuses pooled wrappers');
 }
 game.towers=[];game.enemies=[];game.deathFx=[];
+game.monument.hidden=false;game.hero.hidden=false;
 assert.equal(context.collect().length,2,'pool shrinks active list when enemies disappear');
 console.log('Render order: 250 randomized depth/culling parity scenarios; pooled entries reused.');
