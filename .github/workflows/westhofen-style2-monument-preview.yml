@@ -1,0 +1,61 @@
+name: Publish Westhofen Style 2 memorial test build
+
+on:
+  push:
+    branches:
+      - preview/westhofen-style2-monument-20261104
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: westhofen-style2-monument-preview
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image test dependencies
+        run: python -m pip install Pillow numpy scipy
+      - name: Verify game and artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in tests/*.test.py; do python "$file"; done
+          npm test --prefix ansturm-alpha1-5
+          for file in tests/*.test.cjs; do node "$file"; done
+          export TEST_MOBILE=1
+          for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
+            node "tests/$file"
+          done
+      - name: Publish only independent preview directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/westhofen-style2-pages origin/gh-pages
+          mkdir -p /tmp/westhofen-style2-pages/westhofen-style2-preview
+          find /tmp/westhofen-style2-pages/westhofen-style2-preview -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R dist/. /tmp/westhofen-style2-pages/westhofen-style2-preview/
+          printf '{"sourceCommit":"%s"}\n' "$GITHUB_SHA" > /tmp/westhofen-style2-pages/westhofen-style2-preview/build.json
+          touch /tmp/westhofen-style2-pages/.nojekyll
+          cd /tmp/westhofen-style2-pages
+          git add westhofen-style2-preview .nojekyll
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish Westhofen Style 2 memorial preview from ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
