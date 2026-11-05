@@ -10,13 +10,13 @@
  #startScreen .menu-masthead{display:none!important}
  #startScreen .menu-content{width:100%!important;margin:0 auto!important;max-width:520px!important;display:flex;flex-direction:column;min-height:calc(100dvh - 40px)}
  #startScreen .menu-hero-figure,#startScreen .menu-heading,#startScreen .menu-intro{display:none!important}
- #startScreen #menuHomeActions:not([hidden]){display:flex!important;flex-direction:column;gap:0!important;min-height:calc(100dvh - 95px)!important;padding-top:clamp(215px,37dvh,400px)!important;background:none!important}
+ #startScreen #menuHomeActions:not([hidden]){display:flex!important;flex-direction:column;gap:0!important;min-height:calc(100dvh - 95px)!important;padding-top:clamp(230px,38dvh,400px)!important;background:none!important}
  #startScreen #menuHomeActions:not([hidden])>.menu-command{display:none!important}
  #startScreen .td2-portrait-home{display:flex;flex-direction:column;gap:0;flex:1;justify-content:flex-end;width:100%;min-height:0}
- #startScreen .td2-portrait-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:max(36px,9dvh);left:12%;right:12%;text-align:center;pointer-events:none;filter:drop-shadow(0 7px 7px #000c)}
- #startScreen .td2-portrait-logo img{display:block;width:min(62vw,270px);height:auto;max-height:24dvh;object-fit:contain;filter:drop-shadow(0 2px 7px #000b)}
- #startScreen .td2-portrait-logo strong{font:800 clamp(26px,8.5vw,43px)/.99 Cinzel,Georgia,serif;letter-spacing:.06em;color:#f6d995;-webkit-text-stroke:.5px #6b4322;text-shadow:0 2px #3c2314,0 4px #000,0 0 14px #000}
- #startScreen .td2-portrait-logo small{margin-top:5px;color:#e4c88b;font:700 11px/1.3 Georgia,serif;letter-spacing:.2em;text-shadow:0 2px 4px #000}
+ #startScreen .td2-portrait-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:max(12px,2.8dvh);left:9%;right:9%;text-align:center;pointer-events:none;filter:drop-shadow(0 7px 7px #000c)}
+ #startScreen .td2-portrait-logo img{display:block;width:min(43vw,176px);height:auto;max-height:17dvh;object-fit:contain;filter:drop-shadow(0 2px 7px #000b)}
+ #startScreen .td2-portrait-logo strong{font:800 clamp(23px,5.8vw,32px)/1.06 Cinzel,Georgia,serif;letter-spacing:.025em;white-space:nowrap;color:#f6d995;-webkit-text-stroke:.5px #6b4322;text-shadow:0 2px #3c2314,0 4px #000,0 0 14px #000}
+ #startScreen .td2-portrait-logo small{margin-top:5px;color:#e4c88b;font:700 10px/1.25 Georgia,serif;letter-spacing:.1em;max-width:300px;text-shadow:0 2px 4px #000}
  #startScreen .td2-mode-stack{display:grid;grid-template-columns:1fr;gap:clamp(7px,1.3dvh,13px);margin:0 0 clamp(14px,3dvh,30px);width:min(72%,320px)}
  #startScreen .td2-mode-button{width:100%;min-height:clamp(54px,8dvh,78px)!important;padding:9px 12px!important;display:flex!important;align-items:center;gap:12px;border:2px solid #b68b4a!important;border-radius:6px!important;color:#f2dca6!important;background:linear-gradient(145deg,#49433acc,#24272ce8 55%,#111820ee)!important;box-shadow:inset 0 0 0 2px #11161b,0 5px 15px #000b,0 0 0 1px #d3a45755;cursor:pointer;text-align:left;font:700 clamp(14px,4vw,20px) Cinzel,Georgia,serif!important;letter-spacing:0!important;text-shadow:0 2px 3px #000}
  #startScreen .td2-mode-button::before{content:attr(data-icon);display:grid;place-items:center;width:clamp(35px,10vw,52px);height:clamp(35px,10vw,52px);flex:none;border:1px solid #bd9657;border-radius:50%;font:700 25px Georgia,serif;color:#ecc46f;background:#131a20e0;box-shadow:0 0 9px #0008}
