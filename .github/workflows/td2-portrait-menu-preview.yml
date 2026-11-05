@@ -1,0 +1,53 @@
+name: TD2 Style 2 portrait menu preview
+on:
+  push:
+    branches: [feature/style2-portrait-menu-20261105]
+permissions:
+  contents: write
+concurrency:
+  group: td2-style2-portrait-menu-preview
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify portrait menu and existing navigation
+        run: |
+          set -e
+          node tests/portrait-home-v1.test.cjs
+          node tests/cache-busting.test.cjs
+          node tests/main-menu.test.cjs
+          node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          node --check dist/portrait-home-v1.js
+          test -f dist/assets/menu/crest-v3.webp
+          test -f dist/assets/menu/memorial-yard-mobile-v3.webp
+          test -f dist/ansturm/index.html
+      - name: Publish separate Android browser preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-portrait-pages origin/gh-pages
+          mkdir -p /tmp/td2-portrait-pages/td2-style2-portrait-preview
+          cp -R dist/. /tmp/td2-portrait-pages/td2-style2-portrait-preview/
+          touch /tmp/td2-portrait-pages/.nojekyll
+          cd /tmp/td2-portrait-pages
+          git add td2-style2-portrait-preview .nojekyll
+          if git diff --cached --quiet; then
+            echo "Portrait preview is up to date."
+            exit 0
+          fi
+          git commit -m "Publish isolated Style 2 portrait preview ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
