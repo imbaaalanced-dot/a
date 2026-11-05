@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="192" viewBox="0 0 256 192" aria-label="Westhofen Pergola Style 2 Pilot"><defs>
+<linearGradient id="stone" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#b4a78d"/><stop offset=".42" stop-color="#777b6b"/><stop offset="1" stop-color="#424a43"/></linearGradient>
+<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#656b61"/><stop offset="1" stop-color="#2c3732"/></linearGradient>
+<linearGradient id="bronze" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#9e8a60"/><stop offset="1" stop-color="#3c4940"/></linearGradient>
+</defs>
+<title>Westhofen, moosbewachsene Pergola als freistehendes Dekorationsobjekt</title>
+<!-- elevated three-quarter foreground silhouette, no collision defined -->
+<ellipse cx="128" cy="168" rx="106" ry="12" fill="#111d17" opacity=".27"/>
+<g stroke="#333d35" stroke-width="2" stroke-linejoin="round">
+<path d="M31 65 L47 69 L47 160 L31 153Z" fill="url(#edge)"/>
+<path d="M31 65 L41 59 L57 64 L47 69Z" fill="#b8af94"/>
+<path d="M47 69 L57 64 L57 157 L47 160Z" fill="url(#stone)"/>
+<path d="M199 63 L215 68 L215 159 L199 154Z" fill="url(#edge)"/>
+<path d="M199 63 L210 58 L226 63 L215 68Z" fill="#bbb198"/>
+<path d="M215 68 L226 63 L226 156 L215 159Z" fill="url(#stone)"/>
+<path d="M75 53 L91 58 L91 160 L75 153Z" fill="url(#edge)"/>
+<path d="M75 53 L85 48 L101 53 L91 58Z" fill="#b8ac94"/>
+<path d="M91 58 L101 53 L101 157 L91 160Z" fill="url(#stone)"/>
+<path d="M155 51 L171 55 L171 156 L155 151Z" fill="url(#edge)"/>
+<path d="M155 51 L165 46 L181 51 L171 55Z" fill="#b8ac94"/>
+<path d="M171 55 L181 51 L181 153 L171 156Z" fill="url(#stone)"/>
+<path d="M23 51 L214 41 L231 50 L40 62 Z" fill="#76796c"/>
+<path d="M23 51 L40 62 L40 74 L23 62 Z" fill="#39483d"/>
+<path d="M40 62 L231 50 L231 61 L40 74Z" fill="url(#stone)"/>
+<path d="M60 35 L225 29 L235 36 L68 44Z" fill="#8f8b74"/>
+<path d="M68 44 L235 36 L235 44 L68 52Z" fill="#464d44"/>
+</g>
+<g fill="#3b5c3f" opacity=".9">
+<path d="M31 52 Q53 40 68 45 L77 58 Q58 57 45 66 Q34 62 31 52Z"/>
+<path d="M86 41 Q110 22 135 34 Q151 29 169 40 Q148 48 119 44 Q104 55 86 41Z"/>
+<path d="M181 36 Q206 23 229 30 L240 41 Q217 40 203 53 Q191 46 181 36Z"/>
+</g>
+<g fill="none" stroke="#78905e" stroke-width="3" opacity=".85">
+<path d="M44 57 Q49 75 42 92 M119 38 Q117 53 124 65 M210 34 Q215 49 207 61"/>
+</g>
+<g stroke="#a8a082" stroke-width="2" opacity=".35"><path d="M54 87 L54 118 M89 91 L89 121 M219 100 L220 129"/></g>
+</svg>
