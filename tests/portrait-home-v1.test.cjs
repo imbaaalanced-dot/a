@@ -5,7 +5,7 @@ const root=path.join(__dirname,'../dist');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const css=fs.readFileSync(path.join(root,'portrait-home-v1.css'),'utf8');
 const source=fs.readFileSync(path.join(root,'portrait-home-v1.js'),'utf8');
-assert.match(html,/href="portrait-home-v1\.css\?v=style2-portrait1"/);
+assert.match(html,/href="portrait-home-v1\.css\?v=style2-portrait2"/);
 assert.match(html,/src="portrait-home-v1\.js\?v=style2-portrait1"/);
 for(const id of ['menuHomeActions','menuPlayBtn','menuCampaignBtn','menuAnsturmBtn','menuArcadeBtn','menuCharacterBtn','collectionBtn','menuOptionsBtn']){
  assert.match(html,new RegExp('id="'+id+'"'),'missing game navigation destination '+id);
