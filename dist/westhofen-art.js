@@ -39,29 +39,43 @@ function createGround(layout){
 }
 function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
+ // Original-photo-derived memorial: low ivy-covered stone lintels, two tall
+ // rear plaques, central helmet altar and stepped forecourt. Canvas fallback.
  ctx.save();ctx.translate(m.x,m.y);
  const hurt=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
- // Contact shadow and stepped stone pedestal.
- ctx.fillStyle='#1b211f45';ctx.beginPath();ctx.ellipse(0,10,96,24,0,0,7);ctx.fill();
- for(const [w,h,y,c] of [[150,14,6,'#6f6d60'],[118,16,-8,'#7b7867'],[88,120,-72,'#6a685c']]){ctx.fillStyle=c;ctx.fillRect(-w/2,y-h,w,h);ctx.fillStyle='#00000018';ctx.fillRect(-w/2,y-4,w,4);}
- ctx.fillStyle='#827f6f';ctx.fillRect(-74,-96,148,26);
- // Three tablet frames: the central bronze tablet was stolen on 20.07.2026
- // and the frame stands empty; the side tablets remain.
- for(const side of [-1,1]){ctx.fillStyle='#5c5a4e';ctx.fillRect(side*58-24,-92,48,64);ctx.fillStyle='#8d8168';ctx.fillRect(side*58-20,-88,40,56);}
- ctx.fillStyle='#4a483e';ctx.fillRect(-24,-92,48,64);ctx.fillStyle='#2b2a24';ctx.fillRect(-20,-88,40,56);ctx.fillStyle='#9a9077';ctx.fillRect(-24,-30,48,3);
- // Winged bronze helmet resting on top, sword right, round shield left.
- ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(-30,-104);ctx.quadraticCurveTo(0,-150,30,-104);ctx.lineTo(24,-92);ctx.lineTo(-24,-92);ctx.closePath();ctx.fill();
- ctx.fillStyle='#7a6642';ctx.beginPath();ctx.ellipse(0,-108,24,14,0,0,7);ctx.fill();
- ctx.fillStyle='#5d4f35';ctx.beginPath();ctx.moveTo(22,-124);ctx.quadraticCurveTo(52,-116,44,-88);ctx.quadraticCurveTo(34,-102,20,-108);ctx.closePath();ctx.fill();
- ctx.beginPath();ctx.moveTo(-22,-124);ctx.quadraticCurveTo(-52,-116,-44,-88);ctx.quadraticCurveTo(-34,-102,-20,-108);ctx.closePath();ctx.fill();
- ctx.strokeStyle='#8d8168';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(86,-30);ctx.lineTo(62,-118);ctx.stroke();ctx.fillStyle='#8d8168';ctx.beginPath();ctx.moveTo(58,-128);ctx.lineTo(66,-112);ctx.lineTo(72,-124);ctx.closePath();ctx.fill();
- ctx.fillStyle='#7a7458';ctx.beginPath();ctx.arc(-88,-64,26,0,7);ctx.fill();ctx.fillStyle='#5d5744';ctx.beginPath();ctx.arc(-88,-64,17,0,7);ctx.fill();
- // Both fire-bowl pedestals stand bare since the theft; brackets remain.
- for(const side of [-1,1]){ctx.fillStyle='#6f6d60';ctx.fillRect(side*252-20,32,40,56);ctx.fillStyle='#827f6f';ctx.fillRect(side*252-26,26,52,8);ctx.strokeStyle='#00000030';ctx.lineWidth=3;ctx.beginPath();ctx.arc(side*252,22,14,Math.PI,0);ctx.stroke();}
- // Moss and cracks grow with damage, like the neglected real site.
- ctx.fillStyle='#3d4a2e33';ctx.fillRect(-70,-40,50,8);ctx.fillRect(30,-70,36,6);
- if(hurt>.25){ctx.strokeStyle='#00000045';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-40,-96);ctx.lineTo(-30,-40);ctx.lineTo(-42,-2);ctx.stroke();}
- if(hurt>.6){ctx.strokeStyle='#00000060';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(52,-92);ctx.lineTo(44,-30);ctx.stroke();ctx.beginPath();ctx.moveTo(-10,-96);ctx.lineTo(4,-52);ctx.stroke();}
+ const stone='#777568',edge='#4d4e46',light='#a09a84',bronze='#52635a';
+ const block=(x,y,w,h)=>{ctx.fillStyle=edge;ctx.fillRect(x+3,y+4,w,h);ctx.fillStyle=stone;ctx.fillRect(x,y,w,h);ctx.fillStyle=light;ctx.fillRect(x,y,w,4);};
+ // The memorial's broad, low sandstone platform and short entrance steps.
+ ctx.fillStyle='#1b211f66';ctx.beginPath();ctx.ellipse(0,18,210,39,0,0,Math.PI*2);ctx.fill();
+ block(-195,-10,390,20);
+ for(let i=0;i<3;i++)block(-76-i*11,7+i*8,152+i*22,8);
+ // Open pergola: horizontal ivy-covered lintels, never Gothic arches.
+ for(const x of [-172,-95,95,172])block(x-13,-155,26,145);
+ block(-190,-170,380,22);
+ // Side bronze memorial plaques are mounted to rear inner piers.
+ for(const x of [-125,125]){
+  ctx.fillStyle='#343c38';ctx.fillRect(x-25,-143,50,98);
+  ctx.strokeStyle='#87958a';ctx.lineWidth=2;ctx.strokeRect(x-23,-141,46,94);
+  ctx.strokeStyle='#8b9b90';ctx.lineWidth=1;
+  for(let j=0;j<11;j++){ctx.beginPath();ctx.moveTo(x-17,-129+j*7);ctx.lineTo(x+17,-129+j*7);ctx.stroke();}
+ }
+ // Ivy on upper lintel and left pier; keep central silhouette readable.
+ for(let i=0;i<36;i++){const x=-182+i*10,y=-171+(i%4)*4;
+  ctx.fillStyle=i%3?'#394e32':'#607246';ctx.beginPath();ctx.arc(x,y,5+(i%3),0,Math.PI*2);ctx.fill();
+ }
+ for(let i=0;i<15;i++){ctx.fillStyle=i%2?'#344a30':'#596a3c';ctx.beginPath();ctx.arc(-177+(i%3)*5,-155+i*8,5,0,Math.PI*2);ctx.fill();}
+ // Front altar: broad low sandstone block with detachable central plaque.
+ block(-86,-75,172,76);block(-101,-83,202,13);
+ ctx.fillStyle='#404b48';ctx.fillRect(-63,-60,126,46);
+ ctx.strokeStyle='#7c8b80';ctx.lineWidth=2;ctx.strokeRect(-62,-59,124,44);
+ // Horizontal sword, shield and recognizable upward winged helmet.
+ ctx.fillStyle='#827d69';ctx.beginPath();ctx.ellipse(0,-94,58,12,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#9c957d';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-73,-103);ctx.lineTo(75,-103);ctx.stroke();
+ ctx.fillStyle=bronze;ctx.beginPath();ctx.moveTo(-23,-106);ctx.quadraticCurveTo(-27,-142,0,-147);ctx.quadraticCurveTo(27,-142,23,-106);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#202925';ctx.beginPath();ctx.ellipse(0,-110,18,10,0,0,Math.PI*2);ctx.fill();
+ for(const side of [-1,1]){ctx.fillStyle=bronze;ctx.beginPath();ctx.moveTo(side*18,-135);ctx.quadraticCurveTo(side*53,-178,side*49,-148);ctx.quadraticCurveTo(side*43,-128,side*20,-122);ctx.closePath();ctx.fill();}
+ // Subtle damage only, without changing the landmark's recognizable shape.
+ if(hurt>.25){ctx.strokeStyle='#30332b88';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-66,-70);ctx.lineTo(-54,-35);ctx.lineTo(-60,-10);ctx.stroke();}
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
