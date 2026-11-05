@@ -7,6 +7,15 @@ This folder is reserved for two independently cut out, optimized, alpha-transpar
 
 The character portraits were generated and supplied in the ChatGPT conversation. Their final binary source files have **not yet been committed to this branch**.
 
+## Direct GitHub upload (no fal credits required)
+
+Upload the chat PNG sources under the following **exact names** on this feature branch:
+
+- Marcel / blue Adidas hoodie: `marcel-source.png`
+- Kim / black sunglasses and bow: `kim-source.png`
+
+Once both sources are present, `.github/workflows/td2-v5-avatar-optimize.yml` will crop transparent margins, compress them into the two WebP names below, and commit **only those WebP images** to the feature branch. It never merges to `main`.
+
 ## Delivery and acceptance
 
 1. Use the corresponding full-body alpha PNG sources from the conversation. Do not include the chroma-green backgrounds.
