@@ -1,0 +1,98 @@
+name: Verify compact GitHub Pages bundle
+on:
+  push:
+    branches: [fix/pages-size-and-preview-20261106]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  package-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build compact site without publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/td2-pages/site
+          # Root game remains available; keep this separate from the live deployment.
+          cp -a dist/. /tmp/td2-pages/site/
+          git fetch origin integrate/style2-portrait-gallery-review-20261105
+          git worktree add /tmp/td2-pages/integration origin/integrate/style2-portrait-gallery-review-20261105
+          mkdir -p /tmp/td2-pages/site/td2-style2-gallery-preview
+          cp -a /tmp/td2-pages/integration/dist/. /tmp/td2-pages/site/td2-style2-gallery-preview/
+          touch /tmp/td2-pages/site/.nojekyll
+          test -f /tmp/td2-pages/site/index.html
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/index.html
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/level-gallery.js
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/level-gallery.css
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/assets/menu/level-gallery/card-locked.webp
+          du -sh /tmp/td2-pages/site
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('/tmp/td2-pages/site')
+          total=sum(f.stat().st_size for f in root.rglob('*') if f.is_file())
+          print(f'Compact site: {total:,} bytes')
+          assert total < 1_000_000_000, 'Pages bundle exceeds 1 GB'
+          PY
+      - name: Archive compact preview for review (not live)
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-pages-candidate
+          path: /tmp/td2-pages/site
+          retention-days: 7
+
+  deploy-compact:
+    needs: package-check
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/configure-pages@v5
+      - name: Assemble compact deployment preserving recent previews
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/td2-live-site
+          cp -a dist/. /tmp/td2-live-site/
+          git fetch origin integrate/style2-portrait-gallery-review-20261105 gh-pages
+          git worktree add /tmp/td2-integration origin/integrate/style2-portrait-gallery-review-20261105
+          mkdir -p /tmp/td2-live-site/td2-style2-gallery-preview
+          cp -a /tmp/td2-integration/dist/. /tmp/td2-live-site/td2-style2-gallery-preview/
+          git worktree add /tmp/td2-previous-pages origin/gh-pages
+          for path in td2-menu-integration-20261106 td2-ansturm td2-combined td2-all-patches v4-alpha9; do
+            if [ -d "/tmp/td2-previous-pages/$path" ]; then
+              cp -a "/tmp/td2-previous-pages/$path" "/tmp/td2-live-site/$path"
+            fi
+          done
+          touch /tmp/td2-live-site/.nojekyll
+          test -s /tmp/td2-live-site/index.html
+          test -s /tmp/td2-live-site/td2-style2-gallery-preview/index.html
+          test -s /tmp/td2-live-site/td2-style2-gallery-preview/level-gallery.js
+          test -s /tmp/td2-live-site/td2-style2-gallery-preview/level-gallery.css
+          python3 - <<'PY'
+          from pathlib import Path
+          size=sum(f.stat().st_size for f in Path('/tmp/td2-live-site').rglob('*') if f.is_file())
+          print(f'PAGES_BYTES={size}')
+          assert size < 900_000_000, f'Over size limit: {size}'
+          PY
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: /tmp/td2-live-site
+      - name: Deploy compact site
+        id: deploy
+        uses: actions/deploy-pages@v4
