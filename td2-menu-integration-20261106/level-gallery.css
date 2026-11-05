@@ -1,0 +1,22 @@
+/* Campaign gallery skin – all gameplay state remains in game.js. */
+#campaignMenu .map-card-list.level-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#campaignMenu .level-gallery .map-card{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:0;min-width:0;aspect-ratio:0.93;min-height:180px;margin:0;padding:10% 10% 9%;border:0;border-radius:0;background:transparent!important;color:#f5dfb6;opacity:1;text-align:center;isolation:isolate}
+#campaignMenu .level-gallery .map-card[hidden]{display:none!important}
+#campaignMenu .level-gallery .map-card::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/menu/level-gallery/card-unlocked.webp') center/100% 100% no-repeat}
+#campaignMenu .level-gallery .map-card.gallery-locked::before{background-image:url('assets/menu/level-gallery/card-locked.webp')}
+#campaignMenu .level-gallery .map-card:is(:hover,:focus-visible):not(:disabled){filter:brightness(1.13)}
+#campaignMenu .level-gallery .map-card > :not(.level-gallery-visual):not(.level-gallery-title){display:none!important}
+#campaignMenu .level-gallery-visual{position:relative;flex:1;display:grid;place-items:center;min-height:0;overflow:hidden;background:#172027;border:1px solid #ab864e66;border-radius:3px}
+#campaignMenu .level-gallery-visual img{width:100%;height:100%;object-fit:cover}
+#campaignMenu .gallery-locked .level-gallery-visual{background:radial-gradient(ellipse at center,#485055,#202a30 70%,#121c22)}
+#campaignMenu .level-gallery-symbol{color:#c2c5c4;font-size:clamp(34px,8vw,64px);text-shadow:0 3px 8px #000}
+#campaignMenu .level-gallery-title{display:grid;place-items:center;min-height:29px;margin-top:4px;padding:3px 4px;border:1px solid #cba364;border-radius:3px;background:linear-gradient(115deg,#56391d,#90662d,#51371c);font:700 clamp(11px,2.8vw,17px)/1.15 Cinzel,Georgia,serif;color:#ffe3a9;text-shadow:0 2px 3px #17100b;overflow-wrap:anywhere}
+#campaignMenu .gallery-locked .level-gallery-title{color:#cdd0ce;background:linear-gradient(110deg,#333b40,#51575a,#30383d);border-color:#778083}
+#campaignMenu .level-gallery-pages{display:flex;justify-content:center;align-items:center;gap:14px;margin:8px 0 0;font:700 13px Cinzel,Georgia,serif;color:#e2c58b}
+#campaignMenu .level-gallery-pages button{width:48px;height:48px;border:1px solid #bb9552;background:#222b2d;color:#f0ce8f;border-radius:5px;font:700 31px Georgia,serif}
+#campaignMenu .level-gallery-pages button:disabled{opacity:.35;cursor:default}
+#campaignMenu .level-gallery-pages span{min-width:55px;text-align:center}
+#campaignMenu{background:linear-gradient(#0b141ac9,#0b141ad9),url('assets/menu/level-gallery/menu-background.webp') center/cover}
+@media(min-width:700px){#campaignMenu .map-card-list.level-gallery{max-width:680px;margin:auto;width:100%;gap:16px}#campaignMenu .level-gallery .map-card{max-height:320px}}
+@media(max-width:360px){#campaignMenu .map-card-list.level-gallery{gap:6px}#campaignMenu .level-gallery .map-card{min-height:145px;padding:9% 9% 8%}#campaignMenu .level-gallery-title{font-size:11px;min-height:26px}}
+@media(prefers-reduced-motion:reduce){#campaignMenu .level-gallery .map-card{transition:none}}
