@@ -1,0 +1,15 @@
+{
+  "source_sha256": "f453339e836c82c4dcf388e1e445a5d4c302d7ba60d5ee8a13e08cf96944462e",
+  "crop": [
+    265,
+    29,
+    1330,
+    1004
+  ],
+  "size": [
+    768,
+    768
+  ],
+  "reference": "user photo 81513",
+  "anchor": "center bottom at y752"
+}
