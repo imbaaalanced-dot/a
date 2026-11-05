@@ -1,0 +1,54 @@
+name: TD2 V5 isolated preflight (read-only)
+
+on:
+  push:
+    branches:
+      - feature/v5-integration-preflight-20261106
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: td2-v5-preflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    name: Existing gameplay, art, Ansturm and mobile baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout V5 preflight branch
+        uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image test dependencies
+        run: python -m pip install Pillow numpy scipy
+      - name: Python image and asset regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in tests/*.test.py; do python "$file"; done
+      - name: Ansturm regression suite
+        run: npm test --prefix ansturm-alpha1-5
+      - name: Full Node regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in tests/*.test.cjs; do node "$file"; done
+      - name: Mobile logic and save regression suite
+        env:
+          TEST_MOBILE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
+            node "tests/$file"
+          done
