@@ -31,7 +31,7 @@ assert.equal(JSON.stringify(records.ellipses.slice(initial)),first,'dressing is 
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const west=fs.readFileSync(path.join(__dirname,'westhofen.test.cjs'),'utf8');
 const cache=fs.readFileSync(path.join(__dirname,'cache-busting.test.cjs'),'utf8');
-assert.ok(html.includes('westhofen-art.js?v=whmonument2'));
-assert.ok(west.includes('westhofen-art.js?v=whmonument2'));
-assert.ok(cache.includes("['westhofen-art.js', 'whmonument2']"));
+assert.ok(html.includes('westhofen-art.js?v=whlantern1'));
+assert.ok(west.includes('westhofen-art.js?v=whlantern1'));
+assert.ok(cache.includes("['westhofen-art.js', 'whlantern1']"));
 console.log('Westhofen ground vegetation: deterministic, cached and geometry unchanged.');
