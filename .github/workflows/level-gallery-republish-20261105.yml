@@ -1,0 +1,45 @@
+name: TD2 Level Gallery republish preview
+
+on:
+  push:
+    branches: [preview/level-gallery-republish-20261105]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-level-gallery-republish-20261105
+  cancel-in-progress: true
+
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify gallery and regression tests
+        run: |
+          set -e
+          node --check dist/level-gallery.js
+          node --test tests/*.test.cjs
+      - name: Publish isolated level-gallery-v1 preview
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-gallery-pages origin/gh-pages
+          mkdir -p /tmp/td2-gallery-pages/level-gallery-v1
+          cp -R dist/. /tmp/td2-gallery-pages/level-gallery-v1/
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/td2-gallery-pages/level-gallery-v1/source-commit.txt
+          touch /tmp/td2-gallery-pages/.nojekyll
+          cd /tmp/td2-gallery-pages
+          git add level-gallery-v1 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Republish isolated level gallery preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
