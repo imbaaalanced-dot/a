@@ -1,2 +1,8 @@
 __pycache__/
 *.py[cod]
+
+# fal.ai local credentials and unreviewed generated assets
+.env
+.env.*
+!.env.example
+generated/fal-review/
