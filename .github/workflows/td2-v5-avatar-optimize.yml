@@ -27,9 +27,18 @@ jobs:
           python-version: "3.12"
       - name: Prepare Pillow
         run: pip install "Pillow>=10,<12"
-      - name: Convert separate full-body PNGs to mobile WebP
-        run: python tools/optimize-menu-avatars.py
+      - name: Convert when both full-body PNGs are present
+        id: conversion
+        shell: bash
+        run: |
+          if [ ! -f dist/assets/menu/v5-avatars/marcel-source.png ] || [ ! -f dist/assets/menu/v5-avatars/kim-source.png ]; then
+            echo "Waiting for both source portraits; no deployment attempted."
+            exit 0
+          fi
+          python tools/optimize-menu-avatars.py
+          echo "ready=true" >> "$GITHUB_OUTPUT"
       - name: Commit only optimized assets on this feature branch
+        if: steps.conversion.outputs.ready == 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
