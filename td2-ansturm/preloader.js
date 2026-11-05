@@ -3,10 +3,20 @@
   'use strict';
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
+  /* menu-v3b: preload only the scenery the viewport will show (mobile swap at 700px,
+     same breakpoint as menu.css) and only the saved hero banner; the other banner
+     loads on demand when the hero selection changes (game.js already does this). */
+  const mobile = window.matchMedia('(max-width:700px)').matches;
+  let character = 'marcel';
+  try{
+    const envelope = JSON.parse(localStorage.getItem('denkmal-preferences-v1') ?? 'null');
+    if (envelope && envelope.data && (envelope.data.character === 'marcel' || envelope.data.character === 'kim')) character = envelope.data.character;
+    else if (localStorage.getItem('denkmal-character') === 'kim') character = 'kim';
+  }catch{}
   const essential = [
-    'assets/menu/churchyard-quiet-v1.webp',
-    'assets/menu/crest-v2.webp','assets/menu/heroes-marcel-selected-v2.svg',
-    'assets/menu/heroes-kim-selected-v2.svg'
+    mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
+    'assets/menu/crest-v3.webp',
+    'assets/menu/hero-banner-' + character + '-v3.webp'
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

@@ -236,3 +236,84 @@ a.menu-art-button{text-decoration:none;color:inherit}
 
 /* Show both heroes without cropping the selection banner, including mobile. */
 #startScreen .hero-menu-banner{aspect-ratio:6/1;object-fit:contain;object-position:center;min-height:0}
+
+/* ===== Graphics pass patch-a1-ui1: living scenery, gilded hierarchy, tactile commands. ===== */
+/* Backdrop: slow drift keeps the menu plate alive without stealing focus. */
+@media(prefers-reduced-motion:no-preference){
+  .menu-scene img{animation:td2-menu-drift 80s ease-in-out infinite alternate}
+}
+@keyframes td2-menu-drift{from{transform:scale(1.06) translate3d(0,0,0)}to{transform:scale(1.12) translate3d(-1.6%,.8%,0)}}
+/* Vignette: keeps the centre stage readable against bright scenery. */
+.menu-scene:after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 38%,transparent 42%,#05090c8f 100%)}
+/* Wordmark: gilded letters with a safe fallback. */
+@supports(-webkit-background-clip:text){
+  .menu-wordmark{background:linear-gradient(100deg,#efe3c8,#e0cb9c 55%,#d9ae67);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .menu-wordmark b{background:linear-gradient(100deg,#f0d9a2,#c99a54);-webkit-background-clip:text;background-clip:text;color:transparent}
+}
+/* Hero banner: framed like a mounted plate. */
+#startScreen .hero-menu-banner{box-shadow:0 10px 30px #000a,0 0 0 1px #ffffff08,inset 0 1px #ffffff14}
+#menuHeroCaption{color:#cbb98f}
+/* Command cards: tactile gold response. */
+.menu-command{transition:transform .16s ease,border-color .16s ease,background-color .16s ease,box-shadow .16s ease}
+.menu-command:hover{transform:translateY(-1px);border-color:#c9a86a;box-shadow:0 8px 24px #0009,inset 0 1px #ffffff12}
+.menu-command:active{transform:translateY(0);filter:brightness(.94)}
+.menu-command-mark{transition:transform .16s ease,border-color .16s ease,background-color .16s ease}
+.menu-command:hover .menu-command-mark{transform:scale(1.06);border-color:#b4935b}
+.menu-command-arrow{transition:transform .16s ease}
+.menu-command:hover .menu-command-arrow{transform:translateX(3px)}
+.menu-command-primary{border-color:#c8a366;background:linear-gradient(100deg,#2e281af5,#1a1f1ef2 68%);box-shadow:inset 3px 0 #d1ac69,0 7px 22px #0008,0 0 18px #c39a5224}
+.menu-command-primary:hover{border-color:#e8c887;box-shadow:inset 3px 0 #dcb670,0 8px 26px #0009,0 0 26px #c39a5236}
+.menu-command-primary .menu-command-mark{border-color:#c8a366;color:#e9c987;background:#3a301866}
+.menu-command-assault:hover{border-color:#7fa5b3}
+/* Map and channel cards: same lift language. */
+.map-card{transition:transform .14s ease,border-color .14s ease,background-color .14s ease}
+.map-card:hover:not(:disabled){transform:translateY(-1px)}
+.channel-card{transition:transform .15s ease,border-color .15s ease,background-color .15s ease}
+.channel-card:hover{transform:translateY(-1px);border-color:#d2b07c}
+/* Gold focus ring, matching the in-game HUD accent. */
+#startScreen :is(button,a,summary):focus-visible{outline-color:#f3d291}
+/* Entrance choreography: masthead, banner, commands, footer rise in sequence. */
+@media(prefers-reduced-motion:no-preference){
+  #startScreen:not(.hidden) .menu-masthead{animation:td2-menu-rise .45s cubic-bezier(.2,.7,.3,1) both}
+  #startScreen:not(.hidden) .menu-hero-figure{animation:td2-menu-rise .45s cubic-bezier(.2,.7,.3,1) .06s both}
+  #startScreen:not(.hidden) .menu-primary-actions{animation:td2-menu-rise .45s cubic-bezier(.2,.7,.3,1) .12s both}
+  #startScreen:not(.hidden) .channel-card{animation:td2-menu-rise .45s cubic-bezier(.2,.7,.3,1) .2s both}
+  #startScreen:not(.hidden) .menu-footer{animation:td2-menu-rise .45s cubic-bezier(.2,.7,.3,1) .26s both}
+  #startScreen:not(.hidden) .menu-back,#startScreen:not(.hidden) .menu-section{animation:td2-menu-rise .3s ease both}
+  #startScreen:not(.hidden) .menu-section{animation-delay:.05s}
+}
+@keyframes td2-menu-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== menu-v3 redesign: generated memorial-yard scenery, 2:1 hero plates, seal crest ===== */
+#startScreen{background:#070b10}
+#startScreen>.menu-scene{opacity:.55}
+#startScreen .menu-scene img{object-position:72% 42%}
+#startScreen:after{background:linear-gradient(90deg,#060a0ef2 0%,#060a0ed0 30%,#060a0e26 62%,transparent 82%),linear-gradient(0deg,#060a0ef2,transparent 38%),linear-gradient(180deg,#060a0e99,transparent 22%)}
+.menu-scene:after{background:radial-gradient(130% 95% at 55% 36%,transparent 40%,#04070a99 100%)}
+.menu-crest{filter:drop-shadow(0 4px 14px #000c);width:96px;height:96px}
+#startScreen .hero-menu-banner{aspect-ratio:2/1;object-fit:cover;object-position:78% 38%;border-color:#c9a86a66;box-shadow:0 14px 40px #000c,0 0 0 1px #ffffff0a}
+#menuHeroCaption{color:#e3cfa0;text-shadow:0 1px 4px #000}
+.menu-command{background:linear-gradient(180deg,#141d23f5,#0b1116f5);border-color:#6d5f43cc}
+.menu-command:hover{border-color:#e0bd7d}
+.menu-command-primary{background:linear-gradient(100deg,#33291af8,#171b1df5 68%);box-shadow:inset 3px 0 #d9ae67,0 8px 26px #000a}
+.menu-command-mark{background:#241f1566}
+.menu-command:hover .menu-command-mark{border-color:#e0bd7d;color:#f0d9a2;transform:scale(1.06)}
+.map-card{background:#101a20ee;border-color:#7d7257aa}
+.map-card:hover:not(:disabled){border-color:#e0bd7d;background:#1a2a31}
+.map-card-primary{border-color:#f0d498;background:linear-gradient(105deg,#e2c384,#b08a4a);box-shadow:0 6px 24px #b2853830}
+.menu-section{border-color:#d9b77d40;background:linear-gradient(135deg,#0b141be8,#101820e0)}
+.menu-shell{gap:16px}
+.menu-masthead{border-bottom-color:#e0bd7d33}
+@media(max-width:700px){
+  #startScreen>.menu-scene{opacity:.5}
+  #startScreen .menu-scene img{object-position:center 30%}
+  #startScreen .hero-menu-banner{aspect-ratio:2/1;object-position:76% 40%}
+  .menu-crest{width:64px;height:64px}
+}
+
+/* menu-v3: responsive scenery swap without srcset (keeps the asset-existence test simple). */
+.menu-scene .menu-scene-mobile{display:none}
+@media(max-width:700px){
+  #startScreen .menu-scene img:not(.menu-scene-mobile){display:none}
+  .menu-scene .menu-scene-mobile{display:block}
+}

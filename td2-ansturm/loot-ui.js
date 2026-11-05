@@ -16,7 +16,7 @@
   }
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
   function create(model,{editable,onClose,onImport,getHero=()=>'marcel'}){
-    let selected=null,filter='all',sort='rarity',pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
+    let selected=null,filter='all',sort='rarity',slotFilter='all',pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
     const $=id=>document.getElementById(id),root=$('inventoryScreen');
     const can=()=>editable()&&!model.readOnly;
     function button(text,fn,disabled=false,cls='loot-action'){const b=el('button',cls,text);b.type='button';b.disabled=disabled;b.onclick=fn;return b;}
@@ -69,7 +69,7 @@
         (keys.some(k=>(Number(item.stats[k])||0)>(Number(worn.stats[k])||0))|| (!!item.power&&!worn.power));
     }
     function card(item,equipped=false,slot){
-      const b=button('',()=>{ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
+      const b=button('',()=>{if(item.slot.startsWith('ring'))ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
       b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
       b.append(icon(slot||item.slot,false,item.power,item),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
@@ -104,13 +104,14 @@
       bulkBtn.disabled=!can()||bulk.count===0;
       bulkBtn.textContent=`ALLES RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
-      const visible=all.filter(i=>filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      const visible=all.filter(i=>(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot)))).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
       for(const i of visible.slice(0,visibleLimit))grid.append(card(i));
       if(visible.length>visibleLimit)grid.append(button('WEITERE GEGENSTÄNDE',()=>{visibleLimit+=60;render();}));
       for(let n=visible.length;n<30;n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
-      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine Gegenstände für diesen Filter.':'Besiege Bosse, um neue Ausrüstung zu finden.';
+      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine Gegenstände für diesen Filter.':'Besiege Gegner für neue Ausrüstung. Bosse garantieren epische oder legendäre Beute.';
       const overflow=$('lootOverflow');overflow.replaceChildren();overflow.hidden=!p.overflow.length;
-      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GESICHERT`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));const list=el('div','loot-overflow-grid');for(const i of p.overflow.slice(0,60))list.append(card(i));overflow.append(list);if(p.overflow.length>60)overflow.append(el('p','','Die nächsten Funde erscheinen, sobald Plätze frei werden.'))}
+      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GESICHERT`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));overflow.append(el('p','','Alle Überlauffunde sind oben enthalten und können gefiltert werden.'));}
+
       const detail=$('lootDetail');detail.replaceChildren();
       if(item)renderDetail(detail,item,p);else detail.append(el('p','eyebrow','GEGENSTANDSDETAILS'),el('div','loot-detail-empty','◈'),el('h3','','Wähle einen Fund'),el('p','','Vergleiche seine Werte mit deiner Ausrüstung. Neue Beute wirkt erst, wenn du sie im Hauptmenü anlegst.'));
       syncPanels();
@@ -138,7 +139,7 @@
         comparison.append(panel);
       }
       detail.append(comparison);
-      detail.append(el('p','loot-origin',i.source?`Bossbeute · Karte ${i.source.mapId} · Welle ${i.source.wave}`:'Vorhandene Ausrüstung'),el('p','loot-rank',`Schmiedestufe ${i.upgradeRank} / 3`));
+      detail.append(el('p','loot-origin',i.source?`${i.source.kind==='enemy'?'Gegnerfund':'Bossbeute'} · Karte ${i.source.mapId} · Welle ${i.source.wave}`:'Vorhandene Ausrüstung'),el('p','loot-rank',`Schmiedestufe ${i.upgradeRank} / 3`));
       if(usedBy.length)detail.append(el('p','loot-used-by','Angelegt bei '+usedBy.join(' und ')));
       if(worn)detail.append(el('p','loot-tag','ANGELEGT'));
       if(i.slot.startsWith('ring')&&!worn){const group=el('div','loot-ring-choice');for(const target of ['ring1','ring2']){const b=button(L.slots[target],()=>{ringTarget=target;render();},false);b.setAttribute('aria-pressed',String(slot===target));group.append(b);}detail.append(group);}
@@ -168,6 +169,7 @@
       forge.append(improve);detail.append(forge,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':usedBy.length?'Zum Verbessern oder Recyceln bei beiden Helden ablegen.':i.favorite?'Favoriten sind vor Recycling und Verbessern geschützt.':'Schmiedessenz bleibt dauerhaft und ist getrennt von der Kampfessenz.'));
     }
     function download(text,name){if(!text)return;const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a','');if(blob.size>15000000){notice='Export überschreitet die Importgrenze von 15 MB. Vor erneutem Import Sammlung verkleinern.';render();}a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    $('lootSlotFilter').onchange=e=>{slotFilter=e.target.value;visibleLimit=60;render();};
     $('lootFilter').onchange=e=>{filter=e.target.value;visibleLimit=60;render();};$('lootSort').onchange=e=>{sort=e.target.value;render();};
     $('lootSalvageAllBtn').onclick=()=>{
       if(!can())return;

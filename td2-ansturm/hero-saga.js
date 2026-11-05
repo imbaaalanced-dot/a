@@ -34,8 +34,9 @@
   ];
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
+  const pixelMarcel = typeof URLSearchParams === 'function' && new URLSearchParams(globalThis.location?.search || '').get('td2PixelMarcel') === '1';
   const walkAtlases={marcel:new Image(),kim:new Image()};
-  walkAtlases.marcel.src='assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
+  walkAtlases.marcel.src=pixelMarcel ? 'assets/hero/marcel-walk-reference-v1.webp?v=1' : 'assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
   walkAtlases.kim.src='assets/hero/kim-walk-alpha8.webp?v=alpha8a2';
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
@@ -55,7 +56,7 @@
     stopVoice();
     h.loadout=loadout||[];h.gear=globalThis.DenkmalLoot.totals(h.loadout);const p=h.gear.powers;
     h.equipment={weapon:p.echo?'echo':p.ember?'ember':'none',armor:p.ash?'ash':p.oath?'oath':'none',relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
-    h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.hitFlash=0;
+    h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.attackDirection=null;h.hitFlash=0;
     lowHpSpoken=false;storySeen=new Set();pulse=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
@@ -138,7 +139,11 @@
     else api.focusGame();api.updateUI();
   }
   function onKill(enemy) { const h=getHero();h.soul=clamp(h.soul+(enemy.type==='boss'?25:8)+(h.equipment.relic==='bell'?1:0),0,100); }
-  function onAttack() { attackTime=.24; }
+  function onAttack(target) {
+    attackTime=.24;
+    const h=api?.getGame?.()?.hero;if(!h)return;
+    h.attackDirection=directionFromFace({x:target?.x-h.x,y:target?.y-h.y},h.direction||'down');
+  }
   function damage(amount) {
     const h=getHero();h.hp-=amount*stats(h).armor;h.hitFlash=.16;
     if(h.hp>0&&h.hp/h.maxHp<.3&&!lowHpSpoken){lowHpSpoken=true;say('lowhp');}
@@ -166,7 +171,7 @@
       h.faceX=face.x/len;h.faceY=face.y/len;h.direction=directionFromFace(face,h.direction||'down');
     }
     if(moving)walkTime+=dt;else walkTime=0;
-    attackTime=Math.max(0,attackTime-dt);h.hitFlash=Math.max(0,h.hitFlash-dt);
+    attackTime=Math.max(0,attackTime-dt);if(attackTime<=0)h.attackDirection=null;h.hitFlash=Math.max(0,h.hitFlash-dt);
     if(h.hp/h.maxHp>.6)lowHpSpoken=false;
     if(h.dodge>0&&!reduced){trail.push({x:h.x,y:h.y,life:.2,direction:h.direction||'down'});if(trail.length>8)trail.shift();}
     for(const t of trail)t.life-=dt;trail=trail.filter(t=>t.life>0);
@@ -208,7 +213,7 @@
     ctx.translate(0,bob);if(!reduced&&h.dodge>0)ctx.rotate((h.faceX||0)*.14);
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
-    if(!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced)&&!drawSprite(ctx,0,0,direction,1,90,h.character)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    if(!globalThis.TD2DirectionalActions?.hero(ctx,h,attackTime,reduced,animationTime)&&!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced,animationTime)&&!drawSprite(ctx,0,0,direction,1,90,h.character)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;

@@ -20,6 +20,34 @@ case 'READY':if(r.phase==='loading'){r.section++;r.waveInSection=1;r.phase='buil
 case 'FAIL':r.phase='failed';break;
 default:accepted=false;
 }if(accepted)r.revision++;return {run:accepted?valid(r):input,effects:[]};}
-function createStore(storage){return {load(){try{const raw=storage?.getItem(KEY);if(!raw)return {status:'missing'};const r=JSON.parse(raw);if(r.version!==1)return {status:'incompatible'};return {status:'ok',run:valid(r)};}catch{return {status:'corrupt'};}},save(r,expectedRevision){try{valid(r);const raw=storage?.getItem(KEY);const old=raw?JSON.parse(raw):null;if((old?.revision??null)!==expectedRevision)return false;storage.setItem(KEY,JSON.stringify(r));return true;}catch{return false;}}};}
+function createStore(storage){
+  let observed=false,knownRaw=null;
+  function decode(raw){
+    const data=JSON.parse(raw);
+    if(data?.schemaVersion!==undefined){
+      if(data.schemaVersion!==2)return {status:'incompatible'};
+      if(!Number.isFinite(data.lastUpdated))return {status:'corrupt'};
+      try{return {status:'ok',run:valid(data.run)};}catch{return {status:'corrupt'};}
+    }
+    if(data?.version!==1)return {status:'incompatible'};
+    try{return {status:'ok',run:valid(data)};}catch{return {status:'corrupt'};}
+  }
+  return {
+    load(){try{const raw=storage?.getItem(KEY)??null;observed=true;knownRaw=raw;return raw===null?{status:'missing'}:decode(raw);}catch{return {status:'corrupt'};}},
+    save(run,expectedRevision){
+      try{
+        valid(run);
+        if(!storage)return false;
+        const raw=storage.getItem(KEY)??null,old=raw===null?null:decode(raw);
+        if(observed&&raw!==knownRaw)return false;
+        if(old!==null&&old.status!=='ok')return false;
+        if((old?.run.revision??null)!==expectedRevision)return false;
+        const next=JSON.stringify({schemaVersion:2,lastUpdated:Date.now(),run});
+        storage.setItem(KEY,next);observed=true;knownRaw=next;
+        return true;
+      }catch{return false;}
+    }
+  };
+}
 const api={KEY,create,reduce,refund,createStore,validate:valid};root.PortalRun=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
