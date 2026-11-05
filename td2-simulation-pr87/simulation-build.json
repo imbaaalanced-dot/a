@@ -1,8 +1,0 @@
-{
-  "preview": "td2-simulation-pr87",
-  "pullRequest": 87,
-  "sourceCommit": "5950e7de51d5e7c90891b033250b781f6367a23f",
-  "sourceDistTree": "ff391e4eb58d6128c9866860d43f6d1b119edde2",
-  "saveNamespace": "td2-preview-pr87:",
-  "note": "CPU simulation optimizations; physical Android performance approval pending."
-}
