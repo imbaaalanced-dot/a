@@ -21,7 +21,7 @@ const expectedVersions = new Map([
   ['polish.css', 'alpha9a1'],
   ['loot.css', 'icons2'],
   ['menu.css', 'menu-v3-redesign'],
-  ['portrait-home-v1.css', 'style2-portrait2'],
+  ['portrait-home-v1.css', 'style2-portrait3'],
   ['portrait-home-v1.js', 'style2-portrait1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v400a6hud2'],
