@@ -1,0 +1,30 @@
+name: TD2 V5 Duo Avatar Stage CI
+
+on:
+  push:
+    branches: ["feature/td2-v5-duo-avatars-20261106"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check menu scripts
+        run: |
+          node --check dist/portrait-home-v1.js
+          node --check dist/portrait-avatars-v5.js
+          node tests/portrait-avatars-v5.test.cjs
+          node tests/portrait-home-v1.test.cjs
+          node tests/level-gallery.test.cjs
+      - name: Run regression tests
+        run: |
+          for test in tests/*.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
