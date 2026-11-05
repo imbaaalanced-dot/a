@@ -1,0 +1,47 @@
+name: TD2 combined menu QA preview 20261106
+
+on:
+  push:
+    branches: [integration/menu-style2-review-20261106]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-combined-menu-qa-20261106
+  cancel-in-progress: true
+
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax and full Node regression suite
+        run: |
+          set -e
+          node --check dist/portrait-home-v1.js
+          node --check dist/level-gallery.js
+          node --test tests/*.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Publish isolated review build
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-menu-qa-pages origin/gh-pages
+          mkdir -p /tmp/td2-menu-qa-pages/td2-menu-integration-20261106
+          cp -R dist/. /tmp/td2-menu-qa-pages/td2-menu-integration-20261106/
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/td2-menu-qa-pages/td2-menu-integration-20261106/source-commit.txt
+          touch /tmp/td2-menu-qa-pages/.nojekyll
+          cd /tmp/td2-menu-qa-pages
+          git add td2-menu-integration-20261106 .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish isolated menu QA preview ${GITHUB_SHA}"
+            git pull --rebase origin gh-pages
+            git push origin HEAD:gh-pages
+          fi
