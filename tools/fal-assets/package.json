@@ -1,0 +1,12 @@
+{
+  "name": "denkmal-td2-fal-assets",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.mjs",
+    "check": "node --check generate.mjs"
+  },
+  "dependencies": {
+    "@fal-ai/client": "^1.0.0"
+  }
+}
