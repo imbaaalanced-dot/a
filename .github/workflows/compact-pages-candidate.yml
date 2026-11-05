@@ -1,0 +1,48 @@
+name: Verify compact GitHub Pages bundle
+on:
+  push:
+    branches: [fix/pages-size-and-preview-20261106]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build compact site without publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/td2-pages/site
+          # Root game remains available; keep this separate from the live deployment.
+          cp -a dist/. /tmp/td2-pages/site/
+          git fetch origin integrate/style2-portrait-gallery-review-20261105
+          git worktree add /tmp/td2-pages/integration origin/integrate/style2-portrait-gallery-review-20261105
+          mkdir -p /tmp/td2-pages/site/td2-style2-gallery-preview
+          cp -a /tmp/td2-pages/integration/dist/. /tmp/td2-pages/site/td2-style2-gallery-preview/
+          touch /tmp/td2-pages/site/.nojekyll
+          test -f /tmp/td2-pages/site/index.html
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/index.html
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/level-gallery.js
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/level-gallery.css
+          test -f /tmp/td2-pages/site/td2-style2-gallery-preview/assets/menu/level-gallery/card-locked.webp
+          du -sh /tmp/td2-pages/site
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('/tmp/td2-pages/site')
+          total=sum(f.stat().st_size for f in root.rglob('*') if f.is_file())
+          print(f'Compact site: {total:,} bytes')
+          assert total < 1_000_000_000, 'Pages bundle exceeds 1 GB'
+          PY
+      - name: Archive compact preview for review (not live)
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-pages-candidate
+          path: /tmp/td2-pages/site
+          retention-days: 7
