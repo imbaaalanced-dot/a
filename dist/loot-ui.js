@@ -70,7 +70,7 @@
     }
     function card(item,equipped=false,slot){
       const b=button('',()=>{if(item.slot.startsWith('ring'))ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
-      b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
+      b.dataset.itemId=item.id;b.dataset.rarity=item.rarity;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
       b.append(icon(slot||item.slot,false,item.power,item),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
       const target=slot||(selected===item.id&&item.slot.startsWith('ring')?ringTarget:item.slot);
