@@ -1,0 +1,171 @@
+{
+  "node": "v24.22.1",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "rounds": 7,
+  "warmup": 120,
+  "steps": 360,
+  "rendering": false,
+  "gcBetweenRounds": true,
+  "results": [
+    {
+      "ref": "c5d6f21",
+      "mode": "campaign",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.427224969444444,
+      "minMs": 0.3764063250000005,
+      "maxMs": 1.1432483555555557,
+      "hypotPerStep": 933.8888888888889
+    },
+    {
+      "ref": "working-tree",
+      "mode": "campaign",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.25505753888888877,
+      "minMs": 0.21380007222222225,
+      "maxMs": 0.3069831944444445,
+      "hypotPerStep": 129.1472222222222
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "campaign",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.7459539361111107,
+      "minMs": 0.6284213694444437,
+      "maxMs": 0.7965843416666657,
+      "hypotPerStep": 2670.2722222222224
+    },
+    {
+      "ref": "working-tree",
+      "mode": "campaign",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.32678567222222277,
+      "minMs": 0.2866092472222211,
+      "maxMs": 0.3895150055555556,
+      "hypotPerStep": 262.675
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "campaign",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 1.1860788972222205,
+      "minMs": 1.1093014333333333,
+      "maxMs": 1.4719619083333328,
+      "hypotPerStep": 3663.636111111111
+    },
+    {
+      "ref": "working-tree",
+      "mode": "campaign",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 0.4846119472222199,
+      "minMs": 0.3613229222222243,
+      "maxMs": 0.7113486527777796,
+      "hypotPerStep": 429.60555555555555
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "campaign",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 3.0721962694444502,
+      "minMs": 2.5541739972222177,
+      "maxMs": 6.901226666666662,
+      "hypotPerStep": 10532.516666666666
+    },
+    {
+      "ref": "working-tree",
+      "mode": "campaign",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 1.0152467388888908,
+      "minMs": 0.8021551472222199,
+      "maxMs": 1.2782915499999945,
+      "hypotPerStep": 984.1555555555556
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "ansturm",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.1756123805555641,
+      "minMs": 0.12619619166667284,
+      "maxMs": 0.1882434333333246,
+      "hypotPerStep": 535.9083333333333
+    },
+    {
+      "ref": "working-tree",
+      "mode": "ansturm",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.05843146944444015,
+      "minMs": 0.04952206388889964,
+      "maxMs": 0.12240029444443887,
+      "hypotPerStep": 122.90277777777777
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "ansturm",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.3571495638888842,
+      "minMs": 0.31489533055555513,
+      "maxMs": 0.42550100833333193,
+      "hypotPerStep": 1446.6277777777777
+    },
+    {
+      "ref": "working-tree",
+      "mode": "ansturm",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.12071293888887642,
+      "minMs": 0.11516556944445458,
+      "maxMs": 0.14094286944445128,
+      "hypotPerStep": 254.63888888888889
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "ansturm",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 0.7679822027777643,
+      "minMs": 0.6991942972222104,
+      "maxMs": 0.847699449999992,
+      "hypotPerStep": 3535.7444444444445
+    },
+    {
+      "ref": "working-tree",
+      "mode": "ansturm",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 0.2233311999999892,
+      "minMs": 0.18631314722222467,
+      "maxMs": 0.2569561138888983,
+      "hypotPerStep": 518.1111111111111
+    },
+    {
+      "ref": "c5d6f21",
+      "mode": "ansturm",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 1.9321483305555376,
+      "minMs": 1.5077142083333255,
+      "maxMs": 3.8046020472222155,
+      "hypotPerStep": 8307.166666666666
+    },
+    {
+      "ref": "working-tree",
+      "mode": "ansturm",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 0.44289081111112155,
+      "minMs": 0.38585234999999457,
+      "maxMs": 0.834099186111113,
+      "hypotPerStep": 1045.0555555555557
+    }
+  ]
+}
