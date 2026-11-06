@@ -11,10 +11,6 @@ const heights={wraith:62,runner:54,brute:80,archer:62,guardian:80,sapper:64,
  rootrunner:60,stoneguard:86,mistcaller:72,boss:116,uprooted:140,
  shadowwing:86,gargoyle:100,stormwing:94};
 let entry=null;
-/* PoC (perf): live ctx.filter forces a GPU filter pass on every drawImage.
- * Instead, bake each (atlas row, filter) pair once into an offscreen strip and
- * draw from the bake with ctx.filter='none'. Falls back to the live filter if
- * baking is unavailable, so rendering stays identical in every environment. */
 const bakeCache=new Map(),BAKE_CAP=24;
 function bake(img,row,filter){
  if(typeof document==='undefined'||!document.createElement)return null;
@@ -74,7 +70,6 @@ function draw(ctx,e,face=1,time=0,options={}){
    if(!reduced&&death>0)ctx.scale(1,1-death*.78);
   }else if(attack>0)ctx.scale(1+attack*.07,1-attack*.025);
   ctx.scale(face<0?-1:1,1);
-  // PoC (perf): prefer the baked strip over a live ctx.filter pass.
   const liveFilter=ctx.filter&&ctx.filter!=='none'?ctx.filter:null;
   let source=img,sx=frame*cell,sy=row*cell;
   if(liveFilter){

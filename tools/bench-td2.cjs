@@ -157,6 +157,10 @@ function benchAnsturm() {
   for (const f of ['config.js', 'model.js']) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8').replace(/^import .*$/gm, '').replace(/^export /gm, ''), sandbox);
   const s = sandbox.createGame();
   sandbox.startGame(s);
+  // Full combat upgrades: burns on every enemy tick plus pierce/tesla/explosion/frost
+  // are the measured O(n^2) hot paths in late-game endless runs.
+  s.upgrades = {multishot:2, tesla:2, explosion:1, frost:1, shield:1, fire:1, pierce:2};
+  s.tech = {attack:10, tempo:5, hp:10, regen:1, range:2, gold:1};
   const step = sandbox.step;
   // push into late game: many enemies alive at once
   for (let i = 0; i < 200; i++) {
@@ -171,7 +175,7 @@ function benchAnsturm() {
     perStep.push(performance.now() - t0);
     if (s.status !== 'running') break;
   }
-  console.log(`\n[Ansturm] step(1/30) x2000 with ${s.enemies.length} enemies (wave ${s.wave}): ${fmt(stats(perStep))} → ${(stats(perStep).mean * 30).toFixed(2)} ms sim cost per rendered frame at 30 ticks/s`);
+  console.log(`\n[Ansturm] step(1/30) x2000 with ${s.enemies.length} enemies (wave ${s.wave}): ${fmt(stats(perStep))} → ${(stats(perStep).mean * 30).toFixed(2)} ms CPU per second of gameplay at 30 ticks/s`);
 }
 
 // ---- run ----
