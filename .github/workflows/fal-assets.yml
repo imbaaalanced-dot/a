@@ -1,0 +1,83 @@
+name: fal.ai asset pipeline
+
+on:
+  push:
+    branches:
+      - feat/fal-asset-pipeline
+    paths:
+      - tools/fal-assets.mjs
+      - .github/workflows/fal-assets.yml
+  workflow_dispatch:
+    inputs:
+      generate:
+        description: 'Generate one potentially billable test image?'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: node --check tools/fal-assets.mjs
+      - name: Verify CLI rejects missing generation flag without making a request
+        shell: bash
+        run: |
+          set +e
+          node tools/fal-assets.mjs --prompt "test" > /tmp/fal-check.log 2>&1
+          code=$?
+          set -e
+          test "$code" -eq 2
+          grep -q 'Usage:' /tmp/fal-check.log
+      - name: Verify CLI rejects absent key without making a request
+        shell: bash
+        run: |
+          set +e
+          env -u FAL_KEY node tools/fal-assets.mjs --generate --prompt "test" > /tmp/fal-check.log 2>&1
+          code=$?
+          set -e
+          test "$code" -eq 2
+          grep -q 'Missing FAL_KEY' /tmp/fal-check.log
+
+  generate-one-image:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.generate == true }}
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Require configured secret
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+        run: |
+          if [ -z "$FAL_KEY" ]; then
+            echo "::error::Repository secret FAL_KEY is missing"
+            exit 1
+          fi
+      - name: Generate one Style 2 monument image (billable)
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+        run: >
+          node tools/fal-assets.mjs --generate
+          --model fal-ai/flux/schnell
+          --out generated/fal-review
+          --prompt "Premium dark fantasy isometric 2.5D game asset: historically inspired German stone war memorial, moss-covered weathered masonry, antique gold trim, warm amber lantern glow, deep blue forest shadows, cinematic realistic material textures, isolated centered monument, no text, no UI, no people, high detail"
+      - name: Upload generated image for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fal-style2-review
+          path: generated/fal-review/
+          if-no-files-found: warn
+          retention-days: 7

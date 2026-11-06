@@ -1,0 +1,50 @@
+name: fal.ai Style-2 Grafiktest
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_cost:
+        description: 'Kostenpflichtige Einzelgenerierung ausdrücklich bestätigen (YES)'
+        required: true
+        type: choice
+        options:
+          - 'NO'
+          - 'YES'
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    if: ${{ inputs.confirm_cost == 'YES' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FAL_KEY: ${{ secrets.FAL_KEY }}
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify secret is configured
+        run: |
+          if [ -z "$FAL_KEY" ]; then
+            echo "::error::Repository secret FAL_KEY is missing."
+            exit 1
+          fi
+      - name: Generate exactly one review image
+        run: |
+          node tools/fal-assets.mjs --generate \
+            --model fal-ai/flux/schnell \
+            --out generated/fal-review \
+            --prompt "Premium dark fantasy tower defense game asset, isometric 2.5D illustration of a historically inspired German stone war memorial, weathered dark stone, antique gold ornaments, moss-covered masonry, warm amber lantern lighting, deep blue atmospheric shadows, subtle turquoise magical accents, cinematic semi-realistic detailed textures, centered full object, no text, no interface, no watermark, clean neutral background"
+      - name: Upload review asset and request metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fal-style2-review
+          path: generated/fal-review/
+          if-no-files-found: warn
+          retention-days: 7
