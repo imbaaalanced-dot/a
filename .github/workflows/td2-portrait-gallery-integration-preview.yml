@@ -1,0 +1,54 @@
+name: TD2 Style 2 portrait and gallery preview
+on:
+  push:
+    branches: [integrate/style2-portrait-gallery-review-20261105]
+permissions:
+  contents: write
+concurrency:
+  group: td2-style2-portrait-gallery-preview
+  cancel-in-progress: true
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify menu, gallery and regression suites
+        run: |
+          set -e
+          node --check dist/portrait-home-v1.js
+          node --check dist/level-gallery.js
+          node tests/portrait-home-v1.test.cjs
+          node --test tests/level-gallery.test.cjs
+          for test in tests/*.cjs; do node "$test"; done
+          TEST_MOBILE=1 node tests/menu-navigation.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+          test -f dist/assets/menu/level-gallery/card-locked.webp
+          test -f dist/assets/menu/level-gallery/level-03-kirchende.webp
+          test -f dist/ansturm/index.html
+      - name: Publish isolated gallery preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-gallery-combined-pages origin/gh-pages
+          mkdir -p /tmp/td2-gallery-combined-pages/td2-style2-gallery-preview
+          cp -R dist/. /tmp/td2-gallery-combined-pages/td2-style2-gallery-preview/
+          touch /tmp/td2-gallery-combined-pages/.nojekyll
+          cd /tmp/td2-gallery-combined-pages
+          git add td2-style2-gallery-preview .nojekyll
+          if git diff --cached --quiet; then
+            echo "Isolated gallery preview already current."
+            exit 0
+          fi
+          git commit -m "Publish Style 2 portrait gallery preview ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
