@@ -127,20 +127,21 @@
       westhofenSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>=115))westhofenSlots.push(p);
   }
   function getWaveGates(level,wave){
-    if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
-    if(level===7)return wave===25?[0,1]:[0,1,2];
-    if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
-    if(level===5)return wave===17?[0,1]:[0,1,2];
+    if(level===3)return [0,1,2,3].slice(0,wave===41?2:wave===42?3:4);
+    if(level===7)return wave===121?[0,1]:[0,1,2];
+    if(level===4)return [0,1,2,3].slice(0,wave===61?2:wave===62?3:4);
+    if(level===5)return wave===81?[0,1]:[0,1,2];
+    if(level===6)return wave===101?[0,1]:[0,1,2];
     return levels[level].gates.map((_,i)=>i);
   }
   const levels={
-    1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
-    2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
-    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
-    5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,syburgTerrace,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
-    6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
-    7:{name:'KRIEGERDENKMAL WESTHOFEN',gates:westhofenPaths.map(p=>p[0]),paths:westhofenPaths,slots:westhofenSlots,airGate:point(60,940),gateLabels:['REICHSHOFSTRASSE WEST','REICHSHOFSTRASSE OST','GRÜNZUG NORD'],firstWave:25,lastWave:28,startEssence:340,maxTowers:12,approximate:true},
-    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
+    1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1,lastWave:20,startEssence:200,maxTowers:12},
+    2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:21,lastWave:40,startEssence:220,maxTowers:14},
+    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:41,lastWave:60,startEssence:240,maxTowers:16,approximate:true},
+    5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,syburgTerrace,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:81,lastWave:100,startEssence:280,maxTowers:20,approximate:true},
+    6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:101,lastWave:120,startEssence:300,maxTowers:22,approximate:true},
+    7:{name:'KRIEGERDENKMAL WESTHOFEN',gates:westhofenPaths.map(p=>p[0]),paths:westhofenPaths,slots:westhofenSlots,airGate:point(60,940),gateLabels:['REICHSHOFSTRASSE WEST','REICHSHOFSTRASSE OST','GRÜNZUG NORD'],firstWave:121,lastWave:140,startEssence:320,maxTowers:24,approximate:true},
+    4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:61,lastWave:80,startEssence:260,maxTowers:18,approximate:true}
   };
   const progressKey='denkmal-progress-v2',progressVersion=1;
   const progressDefaults={level2:false,level4:false,level5:false,level6:false,level7:false};
