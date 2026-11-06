@@ -1,0 +1,55 @@
+name: Optimize uploaded TD2 V5 hero art
+
+on:
+  push:
+    branches: ["feature/td2-v5-duo-avatars-20261106"]
+    paths:
+      - "dist/assets/menu/v5-avatars/marcel-source.jpg.b64"
+      - "dist/assets/menu/v5-avatars/kim-source.jpg.b64"
+      - "tools/optimize-menu-avatars.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v5-avatar-optimization
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare Pillow
+        run: pip install "Pillow>=10,<12"
+      - name: Convert when both base64 portrait sources are present
+        id: conversion
+        shell: bash
+        run: |
+          if [ ! -f dist/assets/menu/v5-avatars/marcel-source.jpg.b64 ] || [ ! -f dist/assets/menu/v5-avatars/kim-source.jpg.b64 ]; then
+            echo "Waiting for both source portraits; no deployment attempted."
+            exit 0
+          fi
+          python tools/optimize-menu-avatars.py
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+      - name: Commit only optimized assets on this feature branch
+        if: steps.conversion.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/assets/menu/v5-avatars/marcel-guardian-v5.webp
+          git add dist/assets/menu/v5-avatars/kim-marksman-v5.webp
+          if git diff --cached --quiet; then
+            echo "No WebP changes"
+            exit 0
+          fi
+          git commit -m "assets(menu): add optimized V5 hero portraits"
+          git pull --rebase origin feature/td2-v5-duo-avatars-20261106
+          git push origin HEAD:feature/td2-v5-duo-avatars-20261106
