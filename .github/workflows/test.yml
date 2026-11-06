@@ -31,6 +31,8 @@ jobs:
           TEST_MOBILE=1 node tests/alpha8-preview.test.cjs
       - name: Main menu structure and unlock routes
         run: node tests/main-menu.test.cjs
+      - name: Style 2 portrait home integration
+        run: node tests/portrait-home-v1.test.cjs
       - name: Level 1 intro tutorial regression suite
         run: node tests/intro-tutorial.test.cjs
       - name: Preloader startup regression suite
