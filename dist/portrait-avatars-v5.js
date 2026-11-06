@@ -18,8 +18,8 @@
   stage.appendChild(art);
 
   const sources=[
-    {name:'marcel',path:'assets/menu/v5-avatars/marcel-guardian-v5.webp'},
-    {name:'kim',path:'assets/menu/v5-avatars/kim-marksman-v5.webp'}
+    {name:'marcel',path:'assets/menu/v5-avatars/marcel-guardian-v5b.webp?v=v5b1'},
+    {name:'kim',path:'assets/menu/v5-avatars/kim-marksman-v5b.webp?v=v5b1'}
   ];
   let successful=0;
   let failed=false;

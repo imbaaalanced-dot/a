@@ -1,5 +1,20 @@
 # TD2 V5 Hero Menu Assets
 
+## November 6, 2026: V5b imported portraits
+
+The menu now references **new, separately versioned**
+`marcel-guardian-v5b.webp` and `kim-marksman-v5b.webp` (480×660,
+genuine alpha, respectively 35.3 and 38.7 KiB). The independently generated
+PNG masters are in `art/sources/v5/`, with the ten-source review and caveats in
+`docs/qa/V5_UPLOADED_ASSETS_20261106.md`.
+
+The older V5 assets and the workflow documented below remain unchanged as
+rollback references. V5b requires human likeness approval and a real Android
+Chrome check before any main release. It is **menu illustration only**, not
+a gameplay animation atlas.
+
+## Original V5 workflow and source notes
+
 This folder is reserved for two independently cut out, optimized, alpha-transparent WebP files:
 
 - `marcel-guardian-v5.webp` – Marcel with black cap, **blue hoodie**, sword and lion shield, **no sunglasses or backpack**.
