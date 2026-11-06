@@ -9,13 +9,13 @@
     weapon: [
       {id:'ember', name:'Abendrot', label:'Runenstab', wave:1, desc:'Verdichtete Seelengeschosse. +25 % Angriffsschaden.', detail:'Der Denkmalstab bündelt das Licht der bewahrten Erinnerungen.', color:'#ffb36c'},
       {id:'echo', name:'Nachhall', label:'Echo-Stab', wave:4, desc:'30 % kürzere Angriffspausen. Zwei zusätzliche Seelenechos beim Ruf.', detail:'Jeder Schuss antwortet einer Stimme, die du zurückgeholt hast.', color:'#9af8ed'},
-      {id:'bow', name:'Eibenbogen', label:'Bogen', wave:1, desc:'Schnelle Fernangriffe. +30 % Reichweite.', detail:'Kim's Bogen trifft Gegner aus der Distanz mit präzisen Schüssen.', color:'#a4d65e'},
-      {id:'sword', name:'Denkmalschwert', label:'Schwert', wave:1, desc:'+40 % Nahkampfschaden. Kritische Treffer möglich.', detail:'Marcel's Schwert schneidet durch die Feinde der Erinnerung.', color:'#c4a484'}
+      {id:'bow', name:'Eibenbogen', label:'Bogen', wave:1, desc:'Schnelle Fernangriffe. +30 % Reichweite.', detail:'Kims Bogen trifft Gegner aus der Distanz mit präzisen Schüssen.', color:'#a4d65e'},
+      {id:'sword', name:'Denkmalschwert', label:'Schwert', wave:1, desc:'+40 % Nahkampfschaden. Kritische Treffer möglich.', detail:'Marcels Schwert schneidet durch die Feinde der Erinnerung.', color:'#c4a484'}
     ],
     armor: [
       {id:'oath', name:'Steinwacht', label:'Schutzrune', wave:1, desc:'25 % weniger erlittener Schaden.', detail:'Eine Rune schützt Marcel, ohne seine Bewegungsfreiheit einzuschränken.', color:'#e3c489'},
       {id:'ash', name:'Aschenläufer', label:'Bewegungsrune', wave:3, desc:'+20 % Lauftempo. Ausweichen lädt 30 % schneller nach.', detail:'Die Bewegungsrune macht Marcel schneller und beweglicher.', color:'#d87663'},
-      {id:'shield', name:'Eichenschild', label:'Schild', wave:1, desc:'+50 % Blockchance. Reduziert Fernschaden um 20 %.', detail:'Marcel's Schild schützt vor Pfeilen und Magie.', color:'#8b6f47'}
+      {id:'shield', name:'Eichenschild', label:'Schild', wave:1, desc:'+50 % Blockchance. Reduziert Fernschaden um 20 %.', detail:'Marcels Schild schützt vor Pfeilen und Magie.', color:'#8b6f47'}
     ],
     relic: [
       {id:'lantern', name:'Erinnerungslicht', label:'Seelenlicht', wave:1, desc:'Der Seelenruf heilt dich um 25 LP.', detail:'Eine Flamme, die selbst unter der Asche noch deinen Namen kennt.', color:'#8cf0dc'},

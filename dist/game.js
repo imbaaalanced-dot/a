@@ -145,7 +145,6 @@
   };
   const waveSizes=[0,9,12,15,18,21,23,26,29];
   function waveSize(wave){if(inPortal())return portalRun.section===3&&portalRun.waveInSection===2?12:10+portalRun.section*3;const opening=game?.level===5?globalThis.DenkmalHohensyburg.campaignWave(wave,game.mode):game?.level===7?globalThis.DenkmalWesthofen.campaignWave(wave,game.mode):null;return opening?.count??(waveSizes[wave]||Math.min(60,20+Math.floor((wave-1)*0.8)));}
-  function waveSize(wave){if(inPortal())return portalRun.section===3&&portalRun.waveInSection===2?12:10+portalRun.section*3;const opening=game?.level===5?globalThis.DenkmalHohensyburg.campaignWave(wave,game.mode):game?.level===7?globalThis.DenkmalWesthofen.campaignWave(wave,game.mode):null;return opening?.count??(waveSizes[wave]||Math.min(48,30+(wave-8)*3));}
     function enemyTypeForSpawn(wave,index){
     if(game?.mode==='campaign-pilot'){if(wave===8&&index===0)return 'boss';const pool=['wraith','runner',...(wave>=3?['archer']:[]),...(wave>=6?['guardian','sapper']:[])];return pool[index%pool.length];}
     if(inPortal()){if(portalRun.section===3&&portalRun.waveInSection===2&&index===0)return 'boss';const pool=portalRun.section===1?['wraith','wraith','runner']:portalRun.section===2?['wraith','runner','archer']:['wraith','guardian','archer'];return pool[index%pool.length];}
@@ -164,7 +163,7 @@
     if(levelIndex !== -1){
       const waveInLevel = wave - levelStart[levelIndex];
       // Boss at wave 10 and 20 in each level
-      if((waveInLevel === 10 || waveInLevel === 20) && index === 0){
+      if((waveInLevel === 9 || waveInLevel === 19) && index === 0){
         return levelIndex === 2 ? 'uprooted' : 'boss'; // Level 3 has uprooted boss
       }
     }
@@ -184,28 +183,6 @@
       if(wave>=49)pool.push('mistcaller');
       return pool[index%pool.length];
     }
-    const pool=['wraith'];
-    if(wave>=2)pool.push('runner');
-    if(wave>=3)pool.push('brute');
-    if(wave>=4)pool.push('archer');
-    if(wave>=6)pool.push('guardian');
-    if(wave>=7)pool.push('sapper');
-    return pool[(index+wave)%pool.length];
-  }
-    if(inPortal()){if(portalRun.section===3&&portalRun.waveInSection===2&&index===0)return 'boss';const pool=portalRun.section===1?['wraith','wraith','runner']:portalRun.section===2?['wraith','runner','archer']:['wraith','guardian','archer'];return pool[index%pool.length];}
-
-    if(game?.level===6)return globalThis.DenkmalGoethe.enemyType(wave,index);
-    if(game?.level===7)return globalThis.DenkmalWesthofen.enemyType(wave,index,game.mode);
-    if(game?.level===5)return globalThis.DenkmalHohensyburg.enemyType(wave,index,game.mode);
-    if(game?.level===4){
-      if(wave===16&&index===0)return 'boss';
-      const pool=['wraith','runner','guardian'];
-      if(wave>=14)pool.push('archer');
-      if(wave>=15)pool.push('sapper');
-      return pool[(index+wave)%pool.length];
-    }
-    if(game?.level===3){if(wave===12&&index===0)return 'uprooted';const pool=['wraith','rootrunner'];if(wave>=10)pool.push('stoneguard');if(wave>=11)pool.push('mistcaller');return pool[index%pool.length];}
-    if(wave===5&&index===0)return 'boss';
     const pool=['wraith'];
     if(wave>=2)pool.push('runner');
     if(wave>=3)pool.push('brute');

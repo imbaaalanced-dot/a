@@ -1,0 +1,31 @@
+name: TD2 20-wave regression audit
+on:
+  push:
+    branches:
+      - fix/ci-20-waves-20261106
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Collect every Node regression failure
+        shell: bash
+        run: |
+          failures=0
+          for test in tests/*.test.cjs; do
+            if node "$test" > /tmp/td2-test-output.log 2>&1; then
+              echo "PASS $test"
+            else
+              echo "::group::FAIL $test"
+              tail -n 35 /tmp/td2-test-output.log
+              echo "::endgroup::"
+              failures=$((failures + 1))
+            fi
+          done
+          echo "TOTAL FAILURES: $failures"
+          test "$failures" -eq 0

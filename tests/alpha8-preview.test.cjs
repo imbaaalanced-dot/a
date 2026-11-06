@@ -27,7 +27,7 @@ for(const level of [1,2,3,4,5,6]){
  t.startGame(level);if(level===1)saga.continueStory();
  assert.equal(t.game.level,level,'all six maps directly available in Alpha 8');
  const keys=JSON.stringify([...sandbox.localStorage.data].filter(([k])=>/unlocked|completed/.test(k)));
- t.game.wave=[0,5,8,12,16,20,24][level];t.endWave();
+ t.game.wave=sandbox.DenkmalLevels.levels[level].lastWave;t.endWave();
  assert.equal(t.state,'levelcomplete');
  assert.equal(JSON.stringify([...sandbox.localStorage.data].filter(([k])=>/unlocked|completed/.test(k))),keys,'preview must not overwrite campaign unlocks');
 }
