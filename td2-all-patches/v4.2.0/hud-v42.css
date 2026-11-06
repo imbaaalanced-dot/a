@@ -1,0 +1,30 @@
+/* Bounded forecast: the full composition never expands the permanent HUD. */
+.left-hud .hud-label b{white-space:nowrap}
+.objective:has(.wave-preview-details[open]){z-index:25}
+.wave-preview-details{pointer-events:auto;margin-top:3px;text-align:left}
+.wave-preview-details summary{display:flex;align-items:center;justify-content:center;min-height:44px;padding:4px;font:600 10px/1.2 system-ui,sans-serif;letter-spacing:0;white-space:nowrap;color:#e1d3af;border:1px solid #a58e6266;border-radius:4px;background:#132025;cursor:pointer;touch-action:manipulation}
+.wave-preview-details summary::after{content:' ▾';margin-left:4px}
+.wave-preview-details[open] summary::after{content:' ▴'}
+.wave-preview-details summary:focus-visible,.wave-preview-details small:focus-visible{outline:2px solid #f0d69a;outline-offset:2px}
+.objective #wavePreview{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:min(440px,80vw);max-width:none;max-height:min(30dvh,calc(100dvh - 210px));overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;box-sizing:border-box;padding:12px;margin-top:4px;background:#0b1418fa;border:1px solid #a58e6288;border-radius:5px;box-shadow:0 8px 24px #0009;font-size:12px;line-height:1.5;letter-spacing:.02em;color:#e1d3af}
+@media (orientation:portrait) and (max-width:700px){
+ .objective #wavePreview{left:0;transform:none;width:calc(100vw - var(--hud-safe-left) - var(--hud-safe-right))}
+}
+@media (orientation:landscape) and (max-height:500px){
+ .left-hud{width:250px;column-gap:8px;grid-template-columns:1fr 1fr}
+ .left-hud .hud-label,.left-hud .hud-label b{font-size:11px}
+ .objective{top:var(--hud-safe-top);left:50%;right:auto;transform:translateX(-50%);width:180px;padding:6px 8px}
+ .objective>span{font-size:13px}
+ .objective small{font-size:10px}
+ .objective #nextWaveBtn{min-height:44px}
+ .controls,.controls:has(#buildBtn:not(.hidden)),.controls:has(#upgradeBtn:not(.hidden)),.controls:has(#sellBtn:not(.hidden)),.controls:has(#targetBtn:not(.hidden)){
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(330px,46vw);gap:4px;
+ }
+ .controls .action-btn{min-height:44px;padding:5px 4px}
+ .controls .action-btn span{font-size:11px;line-height:1.15}
+ .controls #soulBtn{grid-column:1}.controls #dodgeBtn{grid-column:2}
+ .controls #upgradeBtn{grid-column:3}.controls #sellBtn{grid-column:2}.controls #targetBtn{grid-column:3}
+ .arsenal{bottom:calc(var(--hud-safe-bottom) + 100px)}
+}
+/* Max level is status, not a full-size inactive action. */
+.controls #upgradeBtn.max-level{min-height:24px;align-self:center;padding:3px;background:transparent;border-color:transparent;box-shadow:none;opacity:.75}
