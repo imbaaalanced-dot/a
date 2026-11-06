@@ -4,8 +4,9 @@ on:
   push:
     branches: ["feature/td2-v5-duo-avatars-20261106"]
     paths:
-      - "dist/assets/menu/v5-avatars/marcel-source.png"
-      - "dist/assets/menu/v5-avatars/kim-source.png"
+      - "dist/assets/menu/v5-avatars/marcel-source.jpg.b64"
+      - "dist/assets/menu/v5-avatars/kim-source.jpg.b64"
+      - "tools/optimize-menu-avatars.py"
   workflow_dispatch:
 
 permissions:
@@ -27,11 +28,11 @@ jobs:
           python-version: "3.12"
       - name: Prepare Pillow
         run: pip install "Pillow>=10,<12"
-      - name: Convert when both full-body PNGs are present
+      - name: Convert when both base64 portrait sources are present
         id: conversion
         shell: bash
         run: |
-          if [ ! -f dist/assets/menu/v5-avatars/marcel-source.png ] || [ ! -f dist/assets/menu/v5-avatars/kim-source.png ]; then
+          if [ ! -f dist/assets/menu/v5-avatars/marcel-source.jpg.b64 ] || [ ! -f dist/assets/menu/v5-avatars/kim-source.jpg.b64 ]; then
             echo "Waiting for both source portraits; no deployment attempted."
             exit 0
           fi
