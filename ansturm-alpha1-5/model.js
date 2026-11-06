@@ -36,26 +36,43 @@ function updateBoss(s,e,dt){
  }else if(phase==='protected')setBossPhase(e,'vulnerable',4);
  else setBossPhase(e,'recovery',kind==='boss_colossus'?3:8);
 }
-export function damageEnemy(s,id,amount){const e=s.enemies.find(e=>e.id===id);if(!e||!e.alive||!Number.isFinite(amount)||amount<=0)return;if(e.type==='boss'){initBoss(e);if(e.bossPhase==='protected')amount*=.35;if(e.bossPhase==='vulnerable')amount*=1.35;if(e.spriteKey==='boss_stonebreaker'&&e.bossPhase==='warning'&&Math.hypot(e.x,e.y)>.1){e.bossInterrupt+=amount;if(e.bossInterrupt>=e.maxHp*.08)setBossPhase(e,'recovery',7);}}e.hp-=amount;if(e.hp<=0){e.alive=false;s.kills++;s.gold+=Math.floor(e.gold*getStats(s).goldMultiplier);s.effects.push({x:e.x,y:e.y,life:.45,type:'kill'});}}
+export function damageEnemy(s,id,amount){damageEnemyObject(s,s.enemies.find(e=>e.id===id),amount);}
+// Internal callers already hold the exact enemy; preserve the public ID-based API.
+function damageEnemyObject(s,e,amount){if(!e||!e.alive||!Number.isFinite(amount)||amount<=0)return;if(e.type==='boss'){initBoss(e);if(e.bossPhase==='protected')amount*=.35;if(e.bossPhase==='vulnerable')amount*=1.35;if(e.spriteKey==='boss_stonebreaker'&&e.bossPhase==='warning'&&Math.hypot(e.x,e.y)>.1){e.bossInterrupt+=amount;if(e.bossInterrupt>=e.maxHp*.08)setBossPhase(e,'recovery',7);}}e.hp-=amount;if(e.hp<=0){e.alive=false;s.kills++;s.gold+=Math.floor(e.gold*(1+s.tech.gold*.1));s.effects.push({x:e.x,y:e.y,life:.45,type:'kill'});}}
 export function damageMonument(s,amount){if(s.status!=='running'||!Number.isFinite(amount)||amount<=0)return;let hit=Math.min(s.shield,amount);s.shield-=hit;s.hp=Math.max(0,s.hp-(amount-hit));s.lastDamage=s.elapsed;if(s.hp===0){s.status='lost';s.planned=s.spawned;}}
-function strike(s,target){if(!target||!target.alive)return;const st=getStats(s),damage=st.damage;const shotKey=s.upgrades.tesla?'effect_lightning':s.upgrades.explosion?'effect_blast':s.upgrades.frost?'effect_ice':s.upgrades.fire?'effect_fire':s.upgrades.pierce?'effect_lance':'effect_bolt';s.effects.push({x:0,y:0,tx:target.x,ty:target.y,progress:0,life:.14,total:.14,type:'projectile',spriteKey:shotKey});damageEnemy(s,target.id,damage);s.effects.push({x:target.x,y:target.y,life:.22,type:'impact',spriteKey:shotKey});
+function strike(s,target,st,buffers){if(!target||!target.alive)return;const damage=st.damage;const shotKey=s.upgrades.tesla?'effect_lightning':s.upgrades.explosion?'effect_blast':s.upgrades.frost?'effect_ice':s.upgrades.fire?'effect_fire':s.upgrades.pierce?'effect_lance':'effect_bolt';s.effects.push({x:0,y:0,tx:target.x,ty:target.y,progress:0,life:.14,total:.14,type:'projectile',spriteKey:shotKey});damageEnemyObject(s,target,damage);s.effects.push({x:target.x,y:target.y,life:.22,type:'impact',spriteKey:shotKey});
 if(s.upgrades.fire){target.burnDps=Math.max(target.burnDps,damage*(.12+.08*s.upgrades.fire));target.burnUntil=Math.max(target.burnUntil,s.elapsed+1.5+s.upgrades.fire*.5);}
-if(s.upgrades.pierce){const dx=target.x,dy=target.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;const pierced=s.enemies.filter(e=>e.alive&&e.id!==target.id).map(e=>({e,t:e.x*ux+e.y*uy,perp:Math.abs(e.x*uy-e.y*ux)})).filter(v=>v.t>len&&v.perp<.12).sort((a,b)=>a.t-b.t).slice(0,s.upgrades.pierce);for(const v of pierced){damageEnemy(s,v.e.id,damage*(.55+.15*s.upgrades.pierce));s.effects.push({x:v.e.x,y:v.e.y,life:.2,type:'impact',spriteKey:'effect_lance'});}}
-if(s.upgrades.explosion){for(const e of s.enemies){if(e.id!==target.id&&e.alive&&Math.hypot(e.x-target.x,e.y-target.y)<.1+s.upgrades.explosion*.025)damageEnemy(s,e.id,damage*(.25+.1*s.upgrades.explosion));}}
-if(s.upgrades.frost){for(const e of s.enemies){if(e.alive&&Math.hypot(e.x-target.x,e.y-target.y)<.17)e.slowUntil=Math.max(e.slowUntil,s.elapsed+1+s.upgrades.frost*.5);}}
-if(s.upgrades.tesla){const visited=new Set([target.id]);let last=target;for(let i=0;i<s.upgrades.tesla+2;i++){const cand=s.enemies.filter(e=>e.alive&&!visited.has(e.id)&&Math.hypot(e.x-last.x,e.y-last.y)<.26).sort((a,b)=>Math.hypot(a.x-last.x,a.y-last.y)-Math.hypot(b.x-last.x,b.y-last.y))[0];if(!cand)break;visited.add(cand.id);damageEnemy(s,cand.id,damage*.45);s.effects.push({x:cand.x,y:cand.y,life:.18,type:'tesla',spriteKey:'effect_lightning'});last=cand;}}
+if(s.upgrades.pierce){const dx=target.x,dy=target.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;
+ const hits=buffers.pierced,projections=buffers.projections;hits.length=projections.length=0;
+ for(const e of s.enemies){if(!e.alive||e.id===target.id)continue;const t=e.x*ux+e.y*uy;if(t>len&&Math.abs(e.x*uy-e.y*ux)<.12)insertNearest(hits,projections,e,t,s.upgrades.pierce);}
+ for(const e of hits){damageEnemyObject(s,e,damage*(.55+.15*s.upgrades.pierce));s.effects.push({x:e.x,y:e.y,life:.2,type:'impact',spriteKey:'effect_lance'});}
 }
+if(s.upgrades.explosion){for(const e of s.enemies){if(e.id!==target.id&&e.alive&&Math.hypot(e.x-target.x,e.y-target.y)<.1+s.upgrades.explosion*.025)damageEnemyObject(s,e,damage*(.25+.1*s.upgrades.explosion));}}
+if(s.upgrades.frost){for(const e of s.enemies){if(e.alive&&Math.hypot(e.x-target.x,e.y-target.y)<.17)e.slowUntil=Math.max(e.slowUntil,s.elapsed+1+s.upgrades.frost*.5);}}
+if(s.upgrades.tesla){const visited=buffers.visited;visited.length=0;visited.push(target.id);let last=target;
+ for(let i=0;i<s.upgrades.tesla+2;i++){let cand=null,best=Infinity;
+  for(const e of s.enemies){if(!e.alive||visited.includes(e.id))continue;const d=Math.hypot(e.x-last.x,e.y-last.y);if(d<.26&&d<best){cand=e;best=d;}}
+  if(!cand)break;visited.push(cand.id);damageEnemyObject(s,cand,damage*.45);s.effects.push({x:cand.x,y:cand.y,life:.18,type:'tesla',spriteKey:'effect_lightning'});last=cand;
+ }
+}
+}
+// Per-game scratch space is not serialized and never escapes into game state.
+const combatBuffers=new WeakMap();
+function buffersFor(s){let b=combatBuffers.get(s);if(!b){b={targets:[],distances:[],pierced:[],projections:[],visited:[]};combatBuffers.set(s,b);}return b;}
+// Stable bounded selection: equal scores keep original enemy order, as stable sort did.
+function insertNearest(targets,distances,e,d,limit){let i=targets.length;if(i>=limit&&d>=distances[i-1])return;while(i>0&&distances[i-1]>d){if(i<limit){targets[i]=targets[i-1];distances[i]=distances[i-1];}i--;}targets[i]=e;distances[i]=d;if(targets.length>limit){targets.length=limit;distances.length=limit;}}
+function ageEffects(s,dt,advanceProjectiles){let write=0;for(const f of s.effects){f.life-=dt;if(advanceProjectiles&&f.type==='projectile')f.progress=Math.min(1,f.progress+dt/f.total);if(f.life>0)s.effects[write++]=f;}if(write>120){s.effects.copyWithin(0,write-120,write);write=120;}s.effects.length=write;}
 export function step(s,dt){if(s.status!=='running'&&s.status!=='intermission')return;if(!Number.isFinite(dt)||dt<=0||dt>1/30+1e-6)return; s.elapsed+=dt;
 if(s.status==='intermission'){s.intermission-=dt;if(s.intermission<=0)nextWave(s);return;}
 s.waveElapsed+=dt;s.spawnClock+=dt;while(s.spawned<s.planned&&s.spawnClock>=(25/s.planned)){s.spawnClock-=25/s.planned;spawnEnemy(s);}if(s.spawned===s.planned)s.spawnClock=0;
 const hasteSource=s.enemies.find(e=>e.alive&&e.spriteKey==='boss_stormlord'&&e.bossPhase==='haste');
-for(const e of s.enemies){if(s.status!=='running')break;if(!e.alive)continue;if(e.burnUntil>s.elapsed)damageEnemy(s,e.id,e.burnDps*dt);if(!e.alive)continue;if(e.type==='boss')updateBoss(s,e,dt);if(s.status!=='running')break;let d=Math.hypot(e.x,e.y);let speed=e.speed,dps=e.dps;
+for(const e of s.enemies){if(s.status!=='running')break;if(!e.alive)continue;if(e.burnUntil>s.elapsed)damageEnemyObject(s,e,e.burnDps*dt);if(!e.alive)continue;if(e.type==='boss')updateBoss(s,e,dt);if(s.status!=='running')break;let d=Math.hypot(e.x,e.y);let speed=e.speed,dps=e.dps;
 if(e.spriteKey==='boss_colossus'){speed*=e.bossPhase==='warning'||e.bossPhase==='recovery'?0:e.bossPhase==='charge'?3:.65;if(e.bossPhase==='recovery')dps*=.5;}
 if(hasteSource&&hasteSource.alive&&hasteSource.bossPhase==='haste'&&Math.hypot(hasteSource.x-e.x,hasteSource.y-e.y)<=.45)speed*=1.5;
 if(d>.1){let advance=Math.min(d-.1,speed*(s.elapsed<e.slowUntil?0.52:1)*dt);e.x-=e.x/d*advance;e.y-=e.y/d*advance;}else{damageMonument(s,dps*dt);}}
-if(s.status!=='running'){s.effects=s.effects.filter(f=>(f.life-=dt)>0).slice(-120);return;}
+if(s.status!=='running'){ageEffects(s,dt,false);return;}
 const stats=getStats(s);s.hp=Math.min(stats.maxHp,s.hp+stats.regenPerSecond*dt);if(s.upgrades.shield&&s.elapsed-s.lastDamage>=5)s.shield=Math.min(stats.shieldCapacity,s.shield+(4+s.upgrades.shield*3)*dt);
-s.fireClock+=dt;let shots=0;while(s.fireClock>=1/stats.attacksPerSecond&&shots++<4){s.fireClock-=1/stats.attacksPerSecond;const targets=s.enemies.filter(e=>e.alive&&Math.hypot(e.x,e.y)<=stats.rangeRatio).sort((a,b)=>Math.hypot(a.x,a.y)-Math.hypot(b.x,b.y)).slice(0,1+s.upgrades.multishot);for(const e of targets)strike(s,e);}
-s.enemies=s.enemies.filter(e=>e.alive);s.effects=s.effects.filter(f=>{f.life-=dt;if(f.type==='projectile')f.progress=Math.min(1,f.progress+dt/f.total);return f.life>0;}).slice(-120);
+s.fireClock+=dt;let shots=0;while(s.fireClock>=1/stats.attacksPerSecond&&shots++<4){s.fireClock-=1/stats.attacksPerSecond;const buffers=buffersFor(s),targets=buffers.targets,distances=buffers.distances;targets.length=distances.length=0;for(const e of s.enemies){if(!e.alive)continue;const d=Math.hypot(e.x,e.y);if(d<=stats.rangeRatio)insertNearest(targets,distances,e,d,1+s.upgrades.multishot);}for(const e of targets)strike(s,e,stats,buffers);targets.length=distances.length=buffers.pierced.length=buffers.projections.length=buffers.visited.length=0;}
+let write=0;for(const e of s.enemies)if(e.alive)s.enemies[write++]=e;s.enemies.length=write;ageEffects(s,dt,true);
 if(s.spawned===s.planned&&s.enemies.length===0&&s.waveElapsed>=25){s.status='intermission';s.intermission=5;}
 }

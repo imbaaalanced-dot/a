@@ -1,0 +1,83 @@
+{
+  "ref": "working-tree",
+  "node": "v24.22.1",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "rounds": 7,
+  "warmup": 120,
+  "steps": 360,
+  "rendering": false,
+  "results": [
+    {
+      "mode": "campaign",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.2287190388888888,
+      "minMs": 0.17960017500000006,
+      "maxMs": 0.3910307666666668,
+      "hypotPerStep": 129.1472222222222
+    },
+    {
+      "mode": "campaign",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.2637390694444441,
+      "minMs": 0.24676450833333344,
+      "maxMs": 0.31702190555555554,
+      "hypotPerStep": 262.675
+    },
+    {
+      "mode": "campaign",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 0.42423053888888945,
+      "minMs": 0.3523983694444445,
+      "maxMs": 0.5033175694444443,
+      "hypotPerStep": 429.60555555555555
+    },
+    {
+      "mode": "campaign",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 0.7085377750000008,
+      "minMs": 0.6241749388888896,
+      "maxMs": 0.9467920388888893,
+      "hypotPerStep": 984.1555555555556
+    },
+    {
+      "mode": "ansturm",
+      "enemies": 25,
+      "active": 25,
+      "medianMs": 0.06690179722222132,
+      "minMs": 0.0534929777777759,
+      "maxMs": 0.08475814722222215,
+      "hypotPerStep": 122.90277777777777
+    },
+    {
+      "mode": "ansturm",
+      "enemies": 50,
+      "active": 50,
+      "medianMs": 0.2927482111111102,
+      "minMs": 0.10506708055555565,
+      "maxMs": 1.7149438916666693,
+      "hypotPerStep": 254.63888888888889
+    },
+    {
+      "mode": "ansturm",
+      "enemies": 100,
+      "active": 100,
+      "medianMs": 0.1784457222222247,
+      "minMs": 0.1580601527777819,
+      "maxMs": 0.24492502222222154,
+      "hypotPerStep": 518.1111111111111
+    },
+    {
+      "mode": "ansturm",
+      "enemies": 200,
+      "active": 200,
+      "medianMs": 0.426899266666664,
+      "minMs": 0.35625637222222195,
+      "maxMs": 0.6738985944444469,
+      "hypotPerStep": 1045.0555555555557
+    }
+  ]
+}

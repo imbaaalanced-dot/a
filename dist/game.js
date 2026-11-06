@@ -561,7 +561,7 @@
     const vx=target?.velX||0,vy=target?.velY||0;
     if(!vx&&!vy)return{x:target.x,y:target.y};
     let aim={x:target.x,y:target.y};
-    for(let i=0;i<3;i++){const t=Math.min(1.05,Math.hypot(aim.x-from.x,aim.y-from.y)/speed);aim={x:target.x+vx*t,y:target.y+vy*t};}
+    for(let i=0;i<3;i++){const t=Math.min(1.05,Math.hypot(aim.x-from.x,aim.y-from.y)/speed);aim.x=target.x+vx*t;aim.y=target.y+vy*t;}
     return aim;
   }
   function shoot(from,target,damage,speed=520,color='#e9c477',effect={}){
@@ -755,7 +755,7 @@
     for(let i=gateSurges.length-1;i>=0;i--){gateSurges[i].age+=dt;if(gateSurges[i].age>1.4)gateSurges.splice(i,1);}
     for(const t of game.towers){
       t.fireCd-=dt;
-      const e=towerTarget(t),spec=towerSpecs[t.kind];
+      const e=t.fireCd<=0?towerTarget(t):null,spec=towerSpecs[t.kind];
       if(!spec)continue;
       if(t.kind==='shrine')m.hp=Math.min(m.maxHp,m.hp+spec.heal*dt*t.level);
       if(e&&t.fireCd<=0){
@@ -772,10 +772,13 @@
     for(const b of game.bullets){
       if(b.boomerang)moveBoomerang(b,dt);
       else{b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;}
+      const minX=Math.min(b.prevX,b.x),maxX=Math.max(b.prevX,b.x),minY=Math.min(b.prevY,b.y),maxY=Math.max(b.prevY,b.y);
       const hitOrder=b.pierce?[...game.enemies].sort((a,c)=>segmentProjection(a,b)-segmentProjection(c,b)):game.enemies;
       const hitSet=b.boomerang?(b.collisionPhase==='out'?b.hitOut:b.hitBack):b.hitTargets;
       for(const e of hitOrder){
-        if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(b,e))||hitSet?.has(e)||segmentDistance(e,b)>=e.r+b.r)continue;
+        if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(b,e))||hitSet?.has(e))continue;
+        const radius=e.r+b.r;
+        if(e.x<minX-radius||e.x>maxX+radius||e.y<minY-radius||e.y>maxY+radius||segmentDistance(e,b)>=radius)continue;
         const synergy=projectileSynergy(b,e);
         const shotDamage=b.boomerang?b.damage:b.damage;
         const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,towerShot:!b.heroShot,fixedDamage:!!b.boomerang});

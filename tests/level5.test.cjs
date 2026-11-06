@@ -88,7 +88,7 @@ assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot re
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
-assert.ok(html.includes('levels.js?v=level7b'));
+assert.ok(html.includes('levels.js?v=level7sim1'));
 assert.ok(html.includes('hohensyburg-art.js?v=alpha9a3'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
