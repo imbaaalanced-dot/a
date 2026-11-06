@@ -4,7 +4,7 @@
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const root = path.resolve(__dirname, '../../dist');
 
-function createRenderSandbox({ mobile = false, countOps = true } = {}) {
+function createRenderSandbox({ mobile = false, countOps = true, sourceOverrides = {}, math = Math, initialStorage = {} } = {}) {
   const elements = new Map(), listeners = {};
   const counts = Object.create(null);
   const gradients = { radial: 0, linear: 0 };
@@ -63,8 +63,8 @@ function createRenderSandbox({ mobile = false, countOps = true } = {}) {
     requestAnimationFrame() {}, matchMedia: q => ({ matches: mobile && q === '(pointer:coarse)' }),
     setTimeout: () => 1, clearTimeout() {}, setInterval: () => 1, clearInterval() {},
     addEventListener(name, fn) { listeners[name] = fn; },
-    localStorage: { data: new Map(), getItem(k) { return this.data.get(k) || null; }, setItem(k, v) { this.data.set(k, v); } },
-    Math, console
+    localStorage: { data: new Map(Object.entries(initialStorage)), getItem(k) { return this.data.get(k) || null; }, setItem(k, v) { this.data.set(k, v); } },
+    Math: math, console
   };
   sandbox.window = sandbox; sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
@@ -80,9 +80,9 @@ function createRenderSandbox({ mobile = false, countOps = true } = {}) {
     'westhofen.js', 'westhofen-art.js', 'hohensyburg.js', 'hohensyburg-art.js',
     'campaign-balance.js', 'portal-run.js', 'portal-perks.js', 'map-polish-v410.js'
   ];
-  for (const s of scripts) vm.runInContext(fs.readFileSync(path.join(root, s), 'utf8'), sandbox);
+  for (const s of scripts) vm.runInContext(sourceOverrides[s] ?? fs.readFileSync(path.join(root, s), 'utf8'), sandbox);
 
-  let source = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
+  let source = sourceOverrides['game.js'] ?? fs.readFileSync(path.join(root, 'game.js'), 'utf8');
   source = source.replace(/\}\)\(\);\s*$/,
     `globalThis.test={draw,update,startGame,spawnEnemy,buildTower,selectTower,sellTower,launchWave,resize,getGame:()=>game,hurtEnemy,get zoom(){return zoom},get graphicsMode(){return typeof graphicsMode==='undefined'?null:graphicsMode},get qualityTier(){return typeof qualityTier==='undefined'?null:qualityTier},get lowFX(){return typeof lowFX==='function'?lowFX():null},get medFX(){return typeof medFX==='function'?medFX():null},advanceQualityMonitor:typeof advanceQualityMonitor==='function'?advanceQualityMonitor:null,cycleGraphics:typeof cycleGraphics==='function'?cycleGraphics:null,setGraphicsPreference:typeof setGraphicsPreference==='function'?setGraphicsPreference:null,qualityMonitor:()=>QUALITY_MONITOR};})();`);
   vm.runInContext(source, sandbox);

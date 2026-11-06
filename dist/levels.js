@@ -5,7 +5,7 @@
   const gates=[point(0,-600),point(600,0),point(0,600),point(-600,0)];
   const maze=[[-440,-440],[440,-440],[440,440],[-440,440],[-440,-160],[180,-160],[180,180],[0,180],[0,0]].map(([x,y])=>point(x,y));
   function segmentDistance(p,a,b){const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1)));return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);}
-  function pathDistance(p,path){return Math.min(...path.slice(1).map((b,i)=>segmentDistance(p,path[i],b)));}
+  function pathDistance(p,path){let best=Infinity;for(let i=1;i<path.length;i++)best=Math.min(best,segmentDistance(p,path[i-1],path[i]));return best;}
   const laneSlots=[];
   for(const gate of gates){
     const dx=center.x-gate.x,dy=center.y-gate.y,length=Math.hypot(dx,dy),nx=-dy/length,ny=dx/length;
