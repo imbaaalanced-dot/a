@@ -1003,6 +1003,8 @@
   function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout=polishedLayoutFor(game.level);const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,polishedLayout,lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,polishedLayout,time,{low:lowFX()});drawGateSurges();wrapUsed=0;drawObjs.length=0;if(visible(game.monument,180))drawObjs.push(wrapObj(game.monument,'m'));for(const o of game.towers)if(visible(o,o.range))drawObjs.push(wrapObj(o,'t'));for(const o of game.enemies)if(visible(o,180))drawObjs.push(wrapObj(o,'e'));for(const o of game.deathFx)if(visible(o,180))drawObjs.push(wrapObj(o,'d'));if(visible(game.hero,180))drawObjs.push(wrapObj(game.hero,'h'));drawObjs.sort((a,b)=>a.o.y-b.o.y);for(let ai=0;ai<drawObjs.length;ai++){const a=drawObjs[ai];if(globalThis.Style2Phase6){uprightCurrent=a;globalThis.Style2Phase6.upright(ctx,a.o,uprightPaint);}else paintObj(a);}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=blurFor(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
+  // Fixer Timestep: Logik läuft immer in 1/60-s-Ticks; 2x-Tempo verdoppelt die Ticks.
+  const FIXED_STEP=1/60,MAX_FRAME_SECONDS=.25;let loopAccumulator=0;
   function resetFrameTelemetry(){
     frameCount=0;frameCursor=0;framePrevious=0;
     telemetryFrames=0;telemetryLast=0;
@@ -1089,13 +1091,29 @@
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
+  // Fixer Timestep: Der Akkumulator sammelt Frame-Zeit und arbeitet Logik-Ticks in
+  // fester Größe (FIXED_STEP=1/60 s) ab, unabhängig von der Bildrate. 2x-Tempo
+  // verdoppelt die update()-Aufrufe pro Tick (simulationStepsPerFrame bleibt
+  // die einzige Tempo-Quelle). Frame-Clamp + Tick-Deckel verhindern den Spiral
+  // of Death nach Tab-/App-Pausen; Per-Frame-Systeme (Telemetrie, Qualitäts-
+  // monitor, adaptive Auflösung, Idle-Draw-Drossel) bleiben außerhalb der
+  // Tick-Schleife. Interpolation fürs Rendering ist Phase 2 (separater Patch).
   function loop(now){
     const rawFrameSeconds=(now-last)/1000||0;
-    const dt=Math.min(.034,rawFrameSeconds);
     last=now;
+    const frameSeconds=rawFrameSeconds>MAX_FRAME_SECONDS?MAX_FRAME_SECONDS:rawFrameSeconds;
     const profile=telemetryOn&&state==='playing'&&!document.hidden;
     const simulationStart=profile?performance.now():0;
-    for(let step=0;step<simulationStepsPerFrame();step++)update(dt);
+    if(state==='playing'){
+      loopAccumulator+=frameSeconds;
+      const steps=simulationStepsPerFrame();
+      let ticks=0;
+      while(loopAccumulator>=FIXED_STEP&&ticks<15){
+        for(let s=0;s<steps;s++)update(FIXED_STEP);
+        loopAccumulator-=FIXED_STEP;ticks++;
+      }
+      if(ticks>=15)loopAccumulator=0;
+    }else loopAccumulator=0;
     const renderStart=profile?performance.now():0;
     const shouldDraw=!document.hidden&&(state==='playing'||now-lastIdleDraw>=100);
     if(shouldDraw){draw();lastIdleDraw=now;}
