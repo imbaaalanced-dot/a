@@ -83,6 +83,10 @@
   let W=0,H=0,dpr=1,last=0,time=0,state='start',audioOn=true,shake=0,hitStop=0,toastTimer=0,tutorialActive=false,tutorialPending=false,tutorialStepIndex=0,speedMultiplier=1,levelLoadRequest=0;
   let keys={}, mouse={x:0,y:0}, touch={x:0,y:0}, facing={x:0,y:-1}, moveIntent={x:0,y:0}, hudClock=0,camera={x:0,y:0},cameraLeadState={x:0,y:0};
   let telemetryOn=false,telemetryFrames=0,telemetryLast=0,telemetryFps=0;
+  let adaptiveScale=1,adaptivePrevious=0,adaptiveWindowMs=0,adaptiveWindowFrames=0,adaptiveLastChange=0,adaptiveFastWindows=0;
+  const frameSamples=new Float32Array(120),frameSorted=new Float32Array(120);
+  let frameCount=0,frameCursor=0,framePrevious=0;
+  let simulationTimeTotal=0,drawTimeTotal=0,simulationSamples=0,drawSamples=0;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A tester-only preview must not unlock or complete campaign chapters in shared localStorage.
   const viewDepth=globalThis.Style2Phase6?.depth||1;
@@ -263,7 +267,7 @@
     // A tall phone can otherwise allocate several million canvas pixels even at DPR 1.
     // Choose the buffer size when the viewport/mode changes; never resize it in the render loop.
     const pixelBudget=mobileRender?(qualityTier==='high'?2000000:qualityTier==='medium'?900000:550000):Infinity;
-    dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)));
+    dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)))*(graphicsMode==='auto'&&mobileRender?adaptiveScale:1);
     zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());
     const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);
     const bufferChanged=canvas.width!==pixelWidth||canvas.height!==pixelHeight;
@@ -623,7 +627,7 @@
   }
   function launchWave(){if(inPortal()){if(state!=='playing'||portalRun.phase!=='build')return;if(!portalTransition({type:'START'},portalSnapshot()))return;}if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;updateUI();}}
   function collectWaveLoot(){game.essence+=game.loot.length*4;game.loot=[];}
-  function nearest(from,range){let best=null,bd=range;for(const e of game.enemies){if(e.dead)continue;const d=dist(from,e);if(d<bd){bd=d;best=e}}return best}
+  function nearest(from,range){let best=null,bd=range*range;for(const e of game.enemies){if(e.dead)continue;const dx=from.x-e.x,dy=from.y-e.y,d=dx*dx+dy*dy;if(d<bd){bd=d;best=e}}return best}
   function spark(x,y,color,n=7){if(lowFX())n=Math.min(n,4);else if(medFX())n=Math.min(n,6);for(let i=0;i<n&&game.particles.length<fx.MAX_PARTICLES;i++)game.particles.push({x,y,vx:rand(-90,90),vy:rand(-90,90),life:rand(.2,.6),max:.6,r:rand(1,3),color})}
   function bossPhaseLabel(phase){return ['I','II','III'][clamp((phase||1)-1,0,2)];}
   function updateEnemyPressure(e){
@@ -993,14 +997,108 @@
   function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout=polishedLayoutFor(game.level);const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,polishedLayout,lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,polishedLayout,time,{low:lowFX()});drawGateSurges();wrapUsed=0;drawObjs.length=0;if(visible(game.monument,180))drawObjs.push(wrapObj(game.monument,'m'));for(const o of game.towers)if(visible(o,o.range))drawObjs.push(wrapObj(o,'t'));for(const o of game.enemies)if(visible(o,180))drawObjs.push(wrapObj(o,'e'));for(const o of game.deathFx)if(visible(o,180))drawObjs.push(wrapObj(o,'d'));if(visible(game.hero,180))drawObjs.push(wrapObj(game.hero,'h'));drawObjs.sort((a,b)=>a.o.y-b.o.y);for(let ai=0;ai<drawObjs.length;ai++){const a=drawObjs[ai];if(globalThis.Style2Phase6){uprightCurrent=a;globalThis.Style2Phase6.upright(ctx,a.o,uprightPaint);}else paintObj(a);}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX()});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=blurFor(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawThreatIndicators()}
   let lastIdleDraw=0;
+  function resetFrameTelemetry(){
+    frameCount=0;frameCursor=0;framePrevious=0;
+    telemetryFrames=0;telemetryLast=0;
+    simulationTimeTotal=0;drawTimeTotal=0;simulationSamples=0;drawSamples=0;
+  }
+  function recordCpuFrame(simulationMs,renderMs,didDraw){
+    if(!telemetryOn||document.hidden||state!=='playing')return;
+    simulationTimeTotal+=Math.max(0,simulationMs);
+    simulationSamples++;
+    if(didDraw){drawTimeTotal+=Math.max(0,renderMs);drawSamples++;}
+  }
+  function frameTelemetryStats(){
+    if(!frameCount)return {p95:0,stutters:0,frameCount:0};
+    let stutters=0;
+    for(let i=0;i<frameCount;i++){
+      const value=frameSamples[i];
+      frameSorted[i]=value;
+      if(value>50)stutters++;
+    }
+    const sorted=frameSorted.subarray(0,frameCount);
+    sorted.sort();
+    return {p95:sorted[Math.ceil(frameCount*.95)-1],stutters,frameCount};
+  }
   function updateTelemetry(now){
-    const overlay=$('fpsOverlay');if(!telemetryOn){telemetryFrames=0;telemetryLast=0;overlay.classList.add('hidden');return;}
-    overlay.classList.remove('hidden');if(!telemetryLast)telemetryLast=now;telemetryFrames++;const span=now-telemetryLast;
-    if(span>=500){telemetryFps=Math.round(telemetryFrames*1000/span);telemetryFrames=0;telemetryLast=now;const heap=performance.memory?.usedJSHeapSize;overlay.textContent=`FPS ${telemetryFps} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;}
+    const overlay=$('fpsOverlay');
+    if(!telemetryOn||document.hidden||state!=='playing'){
+      if(!telemetryOn)overlay.classList.add('hidden');
+      resetFrameTelemetry();
+      return;
+    }
+    overlay.classList.remove('hidden');
+    // Use rAF callback timestamps: frame intervals, not CPU render duration.
+    if(framePrevious){
+      const delta=now-framePrevious;
+      if(delta>0&&delta<=1000){
+        frameSamples[frameCursor]=delta;
+        frameCursor=(frameCursor+1)%frameSamples.length;
+        frameCount=Math.min(frameCount+1,frameSamples.length);
+      }
+    }
+    framePrevious=now;
+    if(!telemetryLast)telemetryLast=now;
+    telemetryFrames++;
+    const span=now-telemetryLast;
+    if(span>=500){
+      telemetryFps=Math.round(telemetryFrames*1000/span);
+      telemetryFrames=0;telemetryLast=now;
+      const stats=frameTelemetryStats();
+      const heap=performance.memory?.usedJSHeapSize;
+      const simMs=simulationSamples?simulationTimeTotal/simulationSamples:0;
+      const renderMs=drawSamples?drawTimeTotal/drawSamples:0;
+      overlay.textContent=`FPS ${telemetryFps} · P95 ${stats.p95.toFixed(1)}ms · SIM ${simMs.toFixed(1)}ms · DRAW ${renderMs.toFixed(1)}ms · >50ms ${stats.stutters}/${stats.frameCount} · E ${game?.enemies.length||0} · FX ${game?.particles.length||0}${heap?' · JS '+Math.round(heap/1048576)+' MiB':''}`;
+      simulationTimeTotal=0;drawTimeTotal=0;simulationSamples=0;drawSamples=0;
+    }
+  }
+  // Adapt only the game canvas on touch devices in AUTO mode, never simulation time.
+  // Sustained slow frames downgrade quickly; recovery requires much longer headroom.
+  function updateAdaptiveResolution(now){
+    if(!mobileRender||graphicsMode!=='auto'||document.hidden||state!=='playing'){
+      adaptivePrevious=0;adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;
+      return;
+    }
+    if(!adaptivePrevious){adaptivePrevious=now;return;}
+    const elapsed=now-adaptivePrevious;
+    adaptivePrevious=now;
+    // Ignore background/resume gaps; never treat them as sustained low FPS.
+    if(elapsed<=0||elapsed>200){adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;return;}
+    adaptiveWindowMs+=elapsed;
+    adaptiveWindowFrames++;
+    if(adaptiveWindowMs<3500)return;
+    const fps=adaptiveWindowFrames*1000/adaptiveWindowMs;
+    const enoughCooldown=!adaptiveLastChange||now-adaptiveLastChange>=12000;
+    if(fps<45&&enoughCooldown&&adaptiveScale>.7){
+      adaptiveScale=Math.max(.7,Math.round((adaptiveScale-.15)*100)/100);
+      adaptiveLastChange=now;adaptiveFastWindows=0;resize(false);
+    }else if(fps>=56&&adaptiveScale<1){
+      adaptiveFastWindows++;
+      if(adaptiveFastWindows>=6&&enoughCooldown){
+        adaptiveScale=Math.min(1,Math.round((adaptiveScale+.15)*100)/100);
+        adaptiveLastChange=now;adaptiveFastWindows=0;resize(false);
+      }
+    }else adaptiveFastWindows=0;
+    adaptiveWindowMs=0;adaptiveWindowFrames=0;
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
   function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=speedMultiplier===1?2:1;updateUI();return true;}
-  function loop(now){const rawFrameSeconds=(now-last)/1000||0;const dt=Math.min(.034,rawFrameSeconds);last=now;for(let step=0;step<simulationStepsPerFrame();step++)update(dt);if(!document.hidden&&(state==='playing'||now-lastIdleDraw>=100)){draw();lastIdleDraw=now;}if(state==='playing')advanceQualityMonitor(rawFrameSeconds);updateTelemetry(now);requestAnimationFrame(loop)}
+  function loop(now){
+    const rawFrameSeconds=(now-last)/1000||0;
+    const dt=Math.min(.034,rawFrameSeconds);
+    last=now;
+    const profile=telemetryOn&&state==='playing'&&!document.hidden;
+    const simulationStart=profile?performance.now():0;
+    for(let step=0;step<simulationStepsPerFrame();step++)update(dt);
+    const renderStart=profile?performance.now():0;
+    const shouldDraw=!document.hidden&&(state==='playing'||now-lastIdleDraw>=100);
+    if(shouldDraw){draw();lastIdleDraw=now;}
+    if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
+    if(state==='playing')advanceQualityMonitor(rawFrameSeconds);
+    updateAdaptiveResolution(now);
+    updateTelemetry(now);
+    requestAnimationFrame(loop);
+  }
   function tone(freq,dur=.05,vol=.035){if(!audioOn)return;try{const ac=tone.ac||(tone.ac=new (AudioContext||webkitAudioContext)());if(ac.state==='suspended')void ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch{}}
   addEventListener('resize',()=>{resize(false);positionTutorialArrow();});
   addEventListener('blur',()=>{clearInput();saga.stopVoice();pauseGame();});
@@ -1089,11 +1187,11 @@
   function medFX(){return qualityTier==='medium'&&!reducedMotion;}
   function blurFor(base){return lowFX()?0:medFX()?base*.5:base;}
   function graphicsLabel(){$('menuGraphicsBtn').textContent=$('graphicsBtn').textContent=`GRAFIK: ${{auto:'STANDARD',low:'SPARMODUS',high:'HOCH'}[graphicsMode]}`;}
-  function cycleGraphics(){setGraphicsPreference(graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto');}
+  function cycleGraphics(){setGraphicsPreference(graphicsMode==='auto'?'low':graphicsMode==='low'?'high':'auto');adaptiveScale=1;adaptivePrevious=0;adaptiveWindowMs=0;adaptiveWindowFrames=0;adaptiveFastWindows=0;adaptiveLastChange=0;}
   function zoomLabel(){$('menuZoomBtn').textContent=$('zoomBtn').textContent=`KAMERA: ${zoomMode==='wide'?'WEIT':'STANDARD'}`;}
   function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();savePreference('zoom',zoomMode);zoomLabel();updateCamera();}
   function telemetryLabel(){$('menuTelemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('menuTelemetryBtn').textContent=$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
-  function toggleTelemetry(){telemetryOn=!telemetryOn;telemetryFrames=0;telemetryLast=0;savePreference('telemetry',telemetryOn);telemetryLabel();}
+  function toggleTelemetry(){telemetryOn=!telemetryOn;resetFrameTelemetry();savePreference('telemetry',telemetryOn);telemetryLabel();}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
   const menuEntries={play:'menuPlayBtn',campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
