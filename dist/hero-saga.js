@@ -8,14 +8,11 @@
   const equipment = {
     weapon: [
       {id:'ember', name:'Abendrot', label:'Runenstab', wave:1, desc:'Verdichtete Seelengeschosse. +25 % Angriffsschaden.', detail:'Der Denkmalstab bündelt das Licht der bewahrten Erinnerungen.', color:'#ffb36c'},
-      {id:'echo', name:'Nachhall', label:'Echo-Stab', wave:4, desc:'30 % kürzere Angriffspausen. Zwei zusätzliche Seelenechos beim Ruf.', detail:'Jeder Schuss antwortet einer Stimme, die du zurückgeholt hast.', color:'#9af8ed'},
-      {id:'bow', name:'Eibenbogen', label:'Bogen', wave:1, desc:'Schnelle Fernangriffe. +30 % Reichweite.', detail:'Kim's Bogen trifft Gegner aus der Distanz mit präzisen Schüssen.', color:'#a4d65e'},
-      {id:'sword', name:'Denkmalschwert', label:'Schwert', wave:1, desc:'+40 % Nahkampfschaden. Kritische Treffer möglich.', detail:'Marcel's Schwert schneidet durch die Feinde der Erinnerung.', color:'#c4a484'}
+      {id:'echo', name:'Nachhall', label:'Echo-Stab', wave:4, desc:'30 % kürzere Angriffspausen. Zwei zusätzliche Seelenechos beim Ruf.', detail:'Jeder Schuss antwortet einer Stimme, die du zurückgeholt hast.', color:'#9af8ed'}
     ],
     armor: [
       {id:'oath', name:'Steinwacht', label:'Schutzrune', wave:1, desc:'25 % weniger erlittener Schaden.', detail:'Eine Rune schützt Marcel, ohne seine Bewegungsfreiheit einzuschränken.', color:'#e3c489'},
-      {id:'ash', name:'Aschenläufer', label:'Bewegungsrune', wave:3, desc:'+20 % Lauftempo. Ausweichen lädt 30 % schneller nach.', detail:'Die Bewegungsrune macht Marcel schneller und beweglicher.', color:'#d87663'},
-      {id:'shield', name:'Eichenschild', label:'Schild', wave:1, desc:'+50 % Blockchance. Reduziert Fernschaden um 20 %.', detail:'Marcel's Schild schützt vor Pfeilen und Magie.', color:'#8b6f47'}
+      {id:'ash', name:'Aschenläufer', label:'Bewegungsrune', wave:3, desc:'+20 % Lauftempo. Ausweichen lädt 30 % schneller nach.', detail:'Die Bewegungsrune macht Marcel schneller und beweglicher.', color:'#d87663'}
     ],
     relic: [
       {id:'lantern', name:'Erinnerungslicht', label:'Seelenlicht', wave:1, desc:'Der Seelenruf heilt dich um 25 LP.', detail:'Eine Flamme, die selbst unter der Asche noch deinen Namen kennt.', color:'#8cf0dc'},
@@ -58,28 +55,14 @@
   function reset(h,loadout) {
     stopVoice();
     h.loadout=loadout||[];h.gear=globalThis.DenkmalLoot.totals(h.loadout);const p=h.gear.powers;
-    // Character-specific weapons: Kim gets bow, Marcel gets sword and shield
-    const isKim = (api?.getCharacter?.() || h.character) === 'kim';
-    h.equipment={weapon:isKim?'bow':p.sword?'sword':p.echo?'echo':p.ember?'ember':'none',
-                  armor:isKim?'none':p.shield?'shield':p.ash?'ash':p.oath?'oath':'none',
-                  relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
+    h.equipment={weapon:p.echo?'echo':p.ember?'ember':'none',armor:p.ash?'ash':p.oath?'oath':'none',relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
     h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.attackDirection=null;h.hitFlash=0;
     lowHpSpoken=false;storySeen=new Set();pulse=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
   }
   function stats(h) {
-    const isKim = (api?.getCharacter?.() || h.character) === 'kim';
-    const weaponBonus = h.equipment.weapon==='ember'?1.25:h.equipment.weapon==='echo'?.7:h.equipment.weapon==='bow'?1.3:h.equipment.weapon==='sword'?1.4:1;
-    const armorBonus = h.equipment.armor==='ash'?1.2:h.equipment.armor==='oath'?.75:h.equipment.armor==='shield'?1.5:1;
-    const dodgeBonus = h.equipment.armor==='ash'?.7:h.equipment.armor==='shield'?.6:1;
-    const rangeBonus = h.equipment.weapon==='bow'?1.3:1;
-    return {damage:(h.damage+(h.gear?.damage||0))*weaponBonus, 
-            rate:h.fireRate*(h.equipment.weapon==='echo'?.7:1)/(1+(h.gear?.haste||0)), 
-            speed:h.speed*(h.equipment.armor==='ash'?1.2:1)*(1+(h.gear?.speed||0)), 
-            armor:armorBonus*(1-(h.gear?.defense||0)), 
-            dodge:dodgeBonus,
-            range:h.range*rangeBonus};
+    return {damage:(h.damage+(h.gear?.damage||0))*(h.equipment.weapon==='ember'?1.25:1), rate:h.fireRate*(h.equipment.weapon==='echo'?.7:1)/(1+(h.gear?.haste||0)), speed:h.speed*(h.equipment.armor==='ash'?1.2:1)*(1+(h.gear?.speed||0)), armor:(h.equipment.armor==='oath'?.75:1)*(1-(h.gear?.defense||0)), dodge:h.equipment.armor==='ash'?.7:1};
   }
   function stopVoice() {
     voiceGeneration++;
@@ -199,12 +182,6 @@
       const enemy=api.nearest(from,300);
       if(enemy&&echo.fire<=0){api.shoot(from,enemy,14,520,'#94ffe1');echo.fire=.65;}
     }echoes=echoes.filter(e=>e.life>0);
-    // Bow attacks for Kim
-    if(h.equipment.weapon==='bow'&&attackTime>0&&attackTime<=0.1&&api?.shoot){
-      const from={x:h.x,y:h.y-20};
-      const enemy=api.nearest(from,400);
-      if(enemy)api.shoot(from,enemy,20,600,'#a4d65e');
-    }
   }
   function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,actor='marcel') {
     const walk=walkAtlases[actor]||walkAtlases.marcel;

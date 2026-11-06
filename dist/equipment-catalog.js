@@ -26,7 +26,7 @@
     ['sight-ring','Siegel des Scharfblicks','ring1','crit','damage']
   ];
   const templates=Object.fromEntries(rows.map(([id,name,slot,a,b,power=null])=>[id,Object.freeze({name,slot,keys:Object.freeze([a,b]),power})]));
-  const bossPools={1:['ember-staff','oath-coat','memory-amulet','watch-hood'],2:['splinter-staff','bark-coat','root-boots','grove-gloves'],3:['ward-amulet','guard-boots','soul-hood','bell-amulet'],4:['bastion-ring','architect-hood','light-coat','rift-gloves'],5:['echo-staff','sustain-ring','ash-boots','rune-gloves'],6:['sight-ring','memory-amulet','oath-coat','ember-staff'],7:['bark-coat','ward-amulet','splinter-staff','bastion-ring']};
+  const bossPools={1:['ember-staff','oath-coat','memory-amulet','watch-hood'],3:['bark-coat','root-boots','splinter-staff','grove-gloves'],4:['bell-amulet','ward-amulet','guard-boots','soul-hood'],5:['bastion-ring','architect-hood','light-coat','rift-gloves'],6:['echo-staff','sustain-ring','ash-boots','rune-gloves']};
   Object.values(bossPools).forEach(Object.freeze);
   const round=(key,value)=>Math.round(Math.min(caps[key],value)*(key==='damage'||key==='health'?1:1000))/(key==='damage'||key==='health'?1:1000);
   function choosePool(pool,owned){
@@ -36,7 +36,7 @@
     const min=Math.min(...pool.map(id=>counts.get(id)||0));return pool.filter(id=>(counts.get(id)||0)===min);
   }
   const enemyTypes=Object.freeze(['wraith','runner','brute','archer','guardian','sapper','rootrunner','stoneguard','mistcaller','shadowwing','gargoyle','stormwing']);
-  function validEnemy(c){return !!c&&Number.isInteger(c.mapId)&&c.mapId>=1&&c.mapId<=7&&Number.isFinite(c.wave)&&c.wave>=1&&enemyTypes.includes(c.enemyType);}
+  function validEnemy(c){return !!c&&Number.isInteger(c.mapId)&&c.mapId>=1&&c.mapId<=6&&Number.isFinite(c.wave)&&c.wave>=1&&enemyTypes.includes(c.enemyType);}
   function rollEnemy(context,rng=Math.random,owned=[]){
     if(!validEnemy(context))return null;
     let values;try{values=Array.from({length:4},()=>rng());}catch{return null;}
