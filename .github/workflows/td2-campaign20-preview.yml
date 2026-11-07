@@ -33,6 +33,8 @@ jobs:
           set -e
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
+          node tests/cache-busting.test.cjs
+          node tests/v410-balance.test.cjs
       - name: Publish separate complete TD2 preview
         shell: bash
         run: |
