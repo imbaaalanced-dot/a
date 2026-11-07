@@ -736,7 +736,7 @@
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage*(inPortal()?1+.08*(portalRun.perkRanks.power||0):1),560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack(target);h.fireCd=heroStats.rate}
     if(game.intermission>0&&!inPortal())game.intermission=Math.max(0,game.intermission-dt);
-    else if((!inPortal()||portalRun.phase==='combat')&&game.waveSpawned<game.waveTotal&&countAlive()<40){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=campaign20Plan(game.wave)?.interval??(game.level===5?globalThis.DenkmalHohensyburg.campaignWave(game.wave,game.mode)?.interval:game.level===7?globalThis.DenkmalWesthofen.campaignWave(game.wave,game.mode)?.interval:null)??Math.max(.30,1.02-game.wave*.045))}}
+    else if((!inPortal()||portalRun.phase==='combat')&&game.waveSpawned<game.waveTotal&&countAlive()<40){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=campaign20Plan(game.wave)?.interval??(game.level===5?globalThis.DenkmalHohensyburg.campaignWave(game.wave,game.mode)?.interval:game.level===7?globalThis.DenkmalWesthofen.campaignWave(game.wave,game.mode)?.interval:null)??Math.max(.30,1.02-game.wave*.045)}}
     if(game.level===3)kirchende?.tickSupport(game.enemies,dt);
     let heroPursuers=0;
     for(const e of game.enemies){
