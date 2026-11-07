@@ -1,0 +1,43 @@
+name: Publish TD2 20-wave isolated playtest
+on:
+  push:
+    branches:
+      - feature/td2-20wave-playtest-20261107
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-20wave-playtest-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify isolated planner and files
+        run: |
+          set -e
+          node --check dist/campaign-20-wave-plan.js
+          node tests/campaign-20-wave-plan.test.cjs
+          test -s dist/campaign-20-playtest.html
+      - name: Publish isolated playtest to gh-pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-20wave-pages origin/gh-pages
+          mkdir -p /tmp/td2-20wave-pages/td2-20wave-test
+          cp dist/campaign-20-playtest.html /tmp/td2-20wave-pages/td2-20wave-test/index.html
+          cp dist/campaign-20-wave-plan.js /tmp/td2-20wave-pages/td2-20wave-test/campaign-20-wave-plan.js
+          touch /tmp/td2-20wave-pages/.nojekyll
+          cd /tmp/td2-20wave-pages
+          git add td2-20wave-test .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish isolated 20-wave TD2 test ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
