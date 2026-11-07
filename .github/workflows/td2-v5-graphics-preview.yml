@@ -1,0 +1,74 @@
+name: TD2 V5 graphics Android preview (isolated)
+
+on:
+  push:
+    branches:
+      - feature/td2-v5-asset-qa-20261106
+    paths:
+      - '.github/workflows/td2-v5-graphics-preview.yml'
+      - 'dist/**'
+      - 'tests/**'
+      - 'tools/prepare-v5-graphics-preview.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v5-graphics-preview
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    name: Verify assets and publish isolated Pages path
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout V5 graphics branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image QA dependencies
+        run: python -m pip install Pillow numpy scipy
+      - name: Test all image and game regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in tests/*.test.py; do python "$file"; done
+          for file in tests/*.test.cjs; do node "$file"; done
+          npm test --prefix ansturm-alpha1-5
+      - name: Test mobile navigation and saves
+        env:
+          TEST_MOBILE: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
+            node "tests/$file"
+          done
+      - name: Publish only V5 preview to gh-pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-v5-graphics-pages origin/gh-pages
+          node tools/prepare-v5-graphics-preview.cjs dist /tmp/td2-v5-graphics-pages
+          cd /tmp/td2-v5-graphics-pages
+          git add td2-v5-graphics-preview .nojekyll
+          if git diff --cached --quiet; then
+            echo 'V5 preview is already up to date'
+            exit 0
+          fi
+          git commit -m "Publish isolated V5 graphics tester from ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
