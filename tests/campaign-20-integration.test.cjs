@@ -12,6 +12,7 @@ const exportLine="source=source.replace('lootModel,drawMonument,towerLevelArt,',
 assert.ok(setup.includes(exportLine));
 setup=setup.replace(exportLine,"source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,resetGame:reset,drawMonument,drawEnemy,towerLevelArt,');");
 setup=setup.replace('vm.runInContext(source,sandbox);',"source=source.replace('get state(){return state}', 'get state(){return state},set state(v){state=v}');vm.runInContext(source,sandbox);");
+setup=setup.replace("let source=fs.readFileSync(path.join(root,'game.js'),'utf8');","vm.runInContext(fs.readFileSync(path.join(root,'campaign-balance.js'),'utf8'),sandbox);let source=fs.readFileSync(path.join(root,'game.js'),'utf8');");
 const checks=String.raw`
 const T=sandbox.test, P=sandbox.DenkmalCampaign20;
 assert.ok(P);
