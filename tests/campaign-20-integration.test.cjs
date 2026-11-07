@@ -8,6 +8,9 @@ let setup=original.slice(0,cut);
 const hook="vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);";
 assert.ok(setup.includes(hook),'planner must load before levels');
 setup=setup.replace(hook,"vm.runInContext(fs.readFileSync(path.join(root,'campaign-20-wave-plan.js'),'utf8'),sandbox);"+hook);
+const exportLine="source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');";
+assert.ok(setup.includes(exportLine));
+setup=setup.replace(exportLine,"source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,resetGame:reset,drawMonument,drawEnemy,towerLevelArt,');");
 const checks=String.raw`
 const T=sandbox.test, P=sandbox.DenkmalCampaign20;
 assert.ok(P);
