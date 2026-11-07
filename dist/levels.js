@@ -153,7 +153,25 @@
   const progress=progressLoaded.value;
   if(progress.level7===undefined)progress.level7=false;
   let storageAvailable=progressLoaded.writable;
-  function saveFlag(flag){progress[flag]=true;storageAvailable=progressStore.save(progressKey,progressVersion,progress,validateProgress);return storageAvailable;}
+  function saveFlag(flag){
+    progress[flag]=true;
+    // Another tab (the main game and an isolated preview share this origin)
+    // may have saved since load. Never overwrite that newer record with a stale
+    // snapshot; instead reopen and union the monotonic completion flags.
+    if(progressStore.save(progressKey,progressVersion,progress,validateProgress)){
+      storageAvailable=true;return true;
+    }
+    const freshStore=globalThis.DenkmalPersistence.create(storage);
+    const latest=freshStore.load(progressKey,progressVersion,progressDefaults,validateProgress,
+      s=>Object.fromEntries(Object.entries(oldKeys).map(([field,key])=>[field,s.getItem(key)==='true'])));
+    // Bad, future-version, or inaccessible saves stay untouched.
+    if(!latest.writable){storageAvailable=false;return false;}
+    for(const key of Object.keys(progressDefaults)){
+      progress[key]=Boolean(progress[key]||latest.value[key]);
+    }
+    storageAvailable=freshStore.save(progressKey,progressVersion,progress,validateProgress);
+    return storageAvailable;
+  }
   function unlock(){return saveFlag('level2');}
   function completeLevel4(){return saveFlag('level4');}
   function completeLevel5(){return saveFlag('level5');}
