@@ -1,0 +1,35 @@
+{
+  "project": "Denkmal TD",
+  "version": "hero-reference-lock-2026-11-07",
+  "approvedBy": "Malle",
+  "scope": ["Denkmal TD2", "Denkmal-Ansturm where heroes are shown", "character selection", "menus", "future levels", "promotion"],
+  "status": "approved-reference-only-not-runtime-integrated",
+  "heroes": [
+    {
+      "id": "kim",
+      "name": "Kim die Bewahrerin",
+      "role": "archer",
+      "file": "originals/kim-die-bewahrerin-reference-20261107.png",
+      "originalName": "01-2556.png",
+      "width": 1344,
+      "height": 1792,
+      "mode": "RGBA",
+      "sha256": "eb466ea276c32e9809bf0ffafeafac371be06ce6d4344087c591d12763b24319"
+    },
+    {
+      "id": "marcel",
+      "name": "Marcel der Beschützer",
+      "role": "sword-and-shield",
+      "file": "originals/marcel-der-beschuetzer-reference-20261107.png",
+      "originalName": "02-2555.png",
+      "width": 1344,
+      "height": 1792,
+      "mode": "RGBA",
+      "sha256": "158e3cad3939f37a16cd8dc30536b74ef4574365f2ffc9f0b600b0d69d7b07f5"
+    }
+  ],
+  "lockedConstraints": ["face", "hair-and-headwear", "eyewear", "outfit", "equipment", "silhouette", "identity"],
+  "runtimeIntegration": false,
+  "androidDeviceVerified": false,
+  "autoMergeToMain": false
+}
