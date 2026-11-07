@@ -11,6 +11,7 @@ setup=setup.replace(hook,"vm.runInContext(fs.readFileSync(path.join(root,'campai
 const exportLine="source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');";
 assert.ok(setup.includes(exportLine));
 setup=setup.replace(exportLine,"source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,resetGame:reset,drawMonument,drawEnemy,towerLevelArt,');");
+setup=setup.replace('vm.runInContext(source,sandbox);',"source=source.replace('get state(){return state}', 'get state(){return state},set state(v){state=v}');vm.runInContext(source,sandbox);");
 const checks=String.raw`
 const T=sandbox.test, P=sandbox.DenkmalCampaign20;
 assert.ok(P);
@@ -28,6 +29,7 @@ for(let level=1;level<=7;level++){
   assert.ok(lanes.length>=1&&lanes.length<=g.level+4,'chapter has legal entry lanes');
   assert.equal(T.wavePlan(chapter.lastWave).name.includes('BOSS'),true);
   g.wave=chapter.lastWave-1;
+  T.state='playing'; // Simulate closing the opening story overlay before a wave completes.
   T.endWave();
   assert.equal(T.state,'perk','chapter continues through wave 19');
   T.startGame(1);
@@ -37,6 +39,7 @@ for(let level=1;level<=7;level++){
   T.spawnEnemy();
   assert.equal(final.enemies[0].type,level===3?'uprooted':'boss','live spawn injects the correct chapter boss');
   bosses.push(final.enemies[0].type);
+  T.state='playing';
   T.endWave();
   assert.equal(T.state,'levelcomplete','only wave 20 completes chapter');
 }
