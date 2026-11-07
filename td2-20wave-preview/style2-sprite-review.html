@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Denkmal TD2 | Style-2-Spriteprüfung</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,sans-serif;color:#e8dfcd;background:#151a1d}
+    *{box-sizing:border-box}
+    body{margin:0;padding:clamp(12px,3vw,32px)}
+    main{max-width:1200px;margin:0 auto}
+    h1{font-size:clamp(1.4rem,3vw,2.2rem);margin:0 0 12px}
+    p{color:#bdb9ae;line-height:1.45}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+    button{background:#343b42;color:#f1e8d5;border:1px solid #78818a;border-radius:8px;padding:12px 16px;font:inherit;cursor:pointer}
+    button[aria-pressed=true]{background:#53452e;border-color:#d4b678}
+    #status{padding:12px;border:1px solid #686b68;border-radius:8px;margin-bottom:14px}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+    .variant{border:1px solid #495157;border-radius:12px;padding:12px}
+    .variant h2{font-size:1rem;margin:0 0 10px}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .sample{text-align:center;min-width:0}
+    .sample small{display:block;padding:5px;font-size:.75rem}
+    .well{height:176px;display:grid;place-items:center;border-radius:8px;overflow:hidden}
+    .well.dark{background:#13141c}
+    .well.light{background:#eee9e0}
+    .well img{display:block;max-height:168px;max-width:100%;object-fit:contain}
+    .review{color:#b2d6c2;font-size:.8rem}
+    .error{color:#ffad98}
+    .note{margin:14px 0 0;font-size:.85rem}
+    ul{color:#c2bfb6;padding-left:20px}
+    @media(max-width:420px){.well{height:144px}.well img{max-height:136px}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Style 2 · Rift- und Projektilprüfung</h1>
+  <p>Manuelle Art-QA für PR #51. Bilder stammen unverändert aus den vorhandenen, versionierten Runtime-Dateien.
+    Hier werden keine Assets repariert oder aktiviert. Violette Rift-Energie ist ein beabsichtigter Effekt und darf nicht
+    als störender Farbrand entfernt werden.</p>
+  <nav class="toolbar" aria-label="Spritegruppen">
+    <button type="button" id="rift" aria-pressed="true">Rift-Türme L1–L3</button>
+    <button type="button" id="projectile" aria-pressed="false">Alle 15 Projektile</button>
+  </nav>
+  <div id="status" role="status" aria-live="polite">Lade Vorschaugrafiken …</div>
+  <div id="gallery" class="gallery"></div>
+  <p class="note">Rift-Sprites: 512 × 512 RGBA, Pivot [256,488]; Zoomvergleich 64, 128 und 512 px.
+    Projektile: 256 × 256 RGBA, Zentrum [128,128]; Vergleich 64 und 128 px.
+    Die Bildgröße im Raster wird auf kleinen Bildschirmen begrenzt, damit nichts über den Rand läuft.</p>
+  <h2>Visuelle Abnahme (manuell)</h2>
+  <ul>
+    <li>Hot-Pink nur dort markieren, wo es eine künstliche Freistellungskante ist; echtes Violett behalten.</li>
+    <li>Transparente Ränder, vollständige Silhouette, Kristalle, Lichtführung und Boden-/Mittelpunkt kontrollieren.</li>
+    <li>Auf Android bei Wellen, Turmwechsel und 2× Geschwindigkeit zusätzlich auf Flackern und FPS achten.</li>
+  </ul>
+</main>
+<script>
+(function(){
+  'use strict';
+  const gallery=document.getElementById('gallery');
+  const status=document.getElementById('status');
+  const types=['bow','cannon','mage','rift','boomerang'];
+  const labels={bow:'Bogen',cannon:'Kanone',mage:'Eis/Magie',rift:'Riftlanze',boomerang:'Bumerang'};
+  let mode='rift',loaded=0,failed=0,total=0,generation=0;
+  const src=(kind,tier,type)=>{
+    const id=type+'_'+kind+'_lv'+tier;
+    const version=type==='projectile'&&kind==='mage'&&tier===2?2:1;
+    return 'assets/style2-user-towers-v'+version+'/runtime-webp/'+type+'s/'+id+'.webp?v='+
+      (version===2?'cleanup-2':'user-towers-1');
+  };
+  function imageAudit(img,expected){
+    if(img.naturalWidth!==expected||img.naturalHeight!==expected)return 'Größe abweichend';
+    try{
+      const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+      const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
+      const px=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      const w=canvas.width,h=canvas.height;
+      for(let x=0;x<w;x++)if(px[x*4+3]||px[((h-1)*w+x)*4+3])return 'Rand nicht transparent';
+      for(let y=0;y<h;y++)if(px[y*w*4+3]||px[(y*w+w-1)*4+3])return 'Rand nicht transparent';
+      return 'Größe/Alpharand OK';
+    }catch{return 'Pixeltest nicht verfügbar';}
+  }
+  function showStatus(){
+    status.textContent=loaded+' / '+total+' Ansichten geladen'+(failed?' · '+failed+' Ladefehler':'')+
+      '. Ein bestandener Alpharandtest ersetzt keine visuelle Prüfung.';
+    status.className=failed?'error':'';
+  }
+  function render(){
+    gallery.replaceChildren();loaded=failed=total=0;
+    const currentMode=mode,reviewGeneration=++generation;
+    const samples=currentMode==='rift'?[64,128,512]:[64,128];
+    const variants=currentMode==='rift'?[1,2,3].map(tier=>['rift',tier]):
+      types.flatMap(kind=>[1,2,3].map(tier=>[kind,tier]));
+    total=variants.length*samples.length*2;
+    showStatus();
+    for(const [kind,tier] of variants){
+      const card=document.createElement('section');card.className='variant';
+      const heading=document.createElement('h2');heading.textContent=labels[kind]+' · Stufe '+tier;card.appendChild(heading);
+      const area=document.createElement('div');area.className='samples';card.appendChild(area);
+      for(const size of samples)for(const backdrop of ['dark','light']){
+        const unit=document.createElement('div');unit.className='sample';
+        const well=document.createElement('div');well.className='well '+backdrop;
+        const img=document.createElement('img');img.loading='lazy';img.decoding='async';
+        img.alt=labels[kind]+' Stufe '+tier+' auf '+(backdrop==='dark'?'dunklem':'hellem')+' Hintergrund';
+        img.width=size;img.height=size;
+        const label=document.createElement('small');label.textContent=size+' px · '+(backdrop==='dark'?'dunkel':'hell');
+        const audit=document.createElement('div');audit.className='review';audit.textContent='…';
+        img.onload=()=>{
+          if(reviewGeneration!==generation)return;
+          loaded++;audit.textContent=imageAudit(img,currentMode==='rift'?512:256);showStatus();
+          if(audit.textContent!=='Größe/Alpharand OK')audit.classList.add('error');
+        };
+        img.onerror=()=>{if(reviewGeneration!==generation)return;failed++;audit.textContent='Bild konnte nicht geladen werden';audit.classList.add('error');showStatus();};
+        img.src=src(kind,tier,currentMode==='rift'?'tower':'projectile');
+        well.appendChild(img);unit.append(well,label,audit);area.appendChild(unit);
+      }
+      gallery.appendChild(card);
+    }
+  }
+  for(const type of ['rift','projectile']){
+    document.getElementById(type).addEventListener('click',()=>{
+      mode=type;
+      document.getElementById('rift').setAttribute('aria-pressed',String(type==='rift'));
+      document.getElementById('projectile').setAttribute('aria-pressed',String(type==='projectile'));
+      render();
+    });
+  }
+  render();
+})();
+</script>
+</body>
+</html>
