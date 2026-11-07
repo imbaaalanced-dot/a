@@ -1,0 +1,52 @@
+name: TD2 20-wave full-game preview
+on:
+  push:
+    branches:
+      - feature/td2-campaign20-runtime-20261107
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-campaign20-preview-publish
+  cancel-in-progress: false
+jobs:
+  qa-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and 20-wave planner tests
+        run: |
+          set -e
+          node --check dist/game.js
+          node --check dist/levels.js
+          node --check dist/campaign-20-wave-plan.js
+          node tests/campaign-20-wave-plan.test.cjs
+      - name: Real TD2 chapter and boss integration checks
+        run: node tests/campaign-20-integration.test.cjs
+      - name: Legacy desktop and Android simulation regressions
+        run: |
+          set -e
+          node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Publish separate complete TD2 preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/campaign20-pages origin/gh-pages
+          mkdir -p /tmp/campaign20-pages/td2-campaign20-preview
+          cp -R dist/. /tmp/campaign20-pages/td2-campaign20-preview/
+          touch /tmp/campaign20-pages/.nojekyll
+          cd /tmp/campaign20-pages
+          git add td2-campaign20-preview .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish complete TD2 20-wave preview ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
