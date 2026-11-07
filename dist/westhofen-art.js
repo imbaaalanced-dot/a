@@ -6,6 +6,48 @@
 (()=>{'use strict';
 let ground=null;
 const C={x:1536,y:1536};
+/* V5_SCENERY_ATLAS_START */
+// Single 320px atlas, decoded only in Level 7. Scenery is baked into the
+// existing 1536px ground canvas, never drawn separately each game frame.
+// Coordinates are 512px design-sheet coordinates, scaled to actual WebP size.
+const v5Scenery=[
+ {type:'stone',crop:[355,0,154,155],dx:900,dy:-500,w:180,h:180,low:true},
+ {type:'bank',crop:[0,0,265,219],dx:-700,dy:-440,w:142,h:117,low:false},
+ {type:'lantern',crop:[273,0,77,270],dx:-780,dy:-180,w:55,h:194,low:false},
+ {type:'wall',crop:[0,285,270,121],dx:840,dy:-150,w:205,h:93,low:false}
+];
+let v5Sheet=null,v5LoadState=0,v5Epoch=0;
+function v5LoadScenery(){
+ if(v5LoadState)return;
+ v5LoadState=1;
+ if(typeof Image==='undefined'){v5LoadState=2;return;}
+ const epoch=++v5Epoch,im=new Image();
+ im.decoding='async';
+ im.onload=()=>{
+  if(epoch!==v5Epoch)return;
+  v5Sheet=im.naturalWidth>0?im:null;
+  v5LoadState=2;
+  if(v5Sheet)ground=null; // Build one fresh background on next frame.
+ };
+ im.onerror=()=>{if(epoch===v5Epoch)v5LoadState=2;};
+ im.src='assets/scenery/v5/westhofen-props-atlas.webp?v=v5-scene-atlas1';
+}
+function v5PaintScenery(q,layout,lowLayer){
+ if(!v5Sheet)return; // Procedural ground remains the offline fallback.
+ const ratio=v5Sheet.naturalWidth/512;
+ for(const item of v5Scenery){
+  if(item.low!==lowLayer)continue;
+  const {dx,dy,w,h,crop}=item,x=C.x+dx,y=C.y+dy;
+  const clearance=Math.max(w,h)*.5+86;
+  // These decorative images must never overlap enemy routes or build slots.
+  if(layout.paths.some(path=>globalThis.DenkmalLevels.pathDistance({x,y},path)<clearance))continue;
+  if(layout.slots.some(slot=>Math.hypot(slot.x-x,slot.y-y)<clearance))continue;
+  if(Math.hypot(dx,dy)<320+clearance)continue;
+  q.drawImage(v5Sheet,crop[0]*ratio,crop[1]*ratio,crop[2]*ratio,crop[3]*ratio,x-w*.5,y-h*.5,w,h);
+ }
+}
+/* V5_SCENERY_ATLAS_END */
+
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
@@ -25,6 +67,7 @@ function createGround(layout){
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
+ v5PaintScenery(q,layout,true);
  // Gravel apron around the memorial leaves the objective and build pads free.
  q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
  for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
@@ -35,9 +78,10 @@ function createGround(layout){
  // Trees: northern green corridor and the street side, off authored lanes/pads.
  for(let i=0;i<30;i++){const north=i<20,x=north?C.x-1000+rnd()*2000:C.x-1050+rnd()*730,y=north?C.y-980+rnd()*520:C.y+430+rnd()*180,r=70+rnd()*80;const p={x,y};if(layout.paths.some(l=>globalThis.DenkmalLevels.pathDistance(p,l)<r+75)||layout.slots.some(s=>Math.hypot(x-s.x,y-s.y)<r+60))continue;
   q.fillStyle='#12231c55';q.beginPath();q.ellipse(x+25,y+55,r,r*.5,0,0,7);q.fill();globalThis.DenkmalForest?.drawCrown?.(q,x,y,r,i);}
+ v5PaintScenery(q,layout,false);
  return canvas;
 }
-function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
+function drawGround(ctx,layout){v5LoadScenery();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
  // Original-photo-derived memorial: low ivy-covered stone lintels, two tall
  // rear plaques, central helmet altar and stepped forecourt. Canvas fallback.
@@ -79,4 +123,4 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){ground=null;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){ground=null;v5Epoch++;v5Sheet=null;v5LoadState=0;}};})();
