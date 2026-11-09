@@ -289,11 +289,12 @@
   function drawSite(ctx,center){
     if(!site)site=createSite();ctx.drawImage(site,center.x-200,center.y-190);
   }
-  function drawCanopies(ctx,center,actors){
+  function drawCanopies(ctx,center,actors,shielded){
     ctx.save();ctx.translate(center.x,center.y);
     trees.forEach(([x,y,r],i)=>{
       const near=actors?.some(a=>Math.hypot(a.x-center.x-x,a.y-center.y-y)<r+25);
-      ctx.globalAlpha=near?.22:1;
+      const blocked=shielded?.some(a=>Math.hypot(a.x-center.x-x,a.y-center.y-y)<r+30);
+      ctx.globalAlpha=blocked?0:(near?.22:1);
       if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){
         ctx.fillStyle='#3f5838';ctx.beginPath();ctx.arc(x,y-43,r,0,7);ctx.fill();
       }
