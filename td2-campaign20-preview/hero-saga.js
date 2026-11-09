@@ -187,7 +187,9 @@
     }echoes=echoes.filter(e=>e.life>0);
   }
   function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,actor='marcel') {
-    const walk=walkAtlases[actor]||walkAtlases.marcel;
+    // Marcel's generated walk sheets currently contain visible blue cell artifacts.
+    // Keep Kim's validated walk sheet; Marcel uses the stable directional lantern atlas below.
+    const walk=actor==='marcel'?null:walkAtlases[actor];
     if(ready(walk)){
       const width=walk.naturalWidth/3,height=walk.naturalHeight/4;
       const frame=walkTime>0&&!reduced?Math.floor(walkTime*9)%3:1;
