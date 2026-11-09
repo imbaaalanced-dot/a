@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
   <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
+<style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -110,7 +111,7 @@
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span id="menuVersionTop" aria-label="Spielversion V5" style="display:inline-block;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028e8;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.06em;white-space:nowrap">V5 · DEV</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
         <div class="menu-content">
           <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/hero-banner-marcel-v3.webp" width="1440" height="720" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
@@ -213,7 +214,7 @@
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
-        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · DEV MODE · 2026-11-09</span></footer>
+        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · ALPHA · 2026-11-09</span></footer>
       </div>
     </section>
 
