@@ -34,10 +34,12 @@
   ];
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
-  const pixelMarcel = typeof URLSearchParams === 'function' && new URLSearchParams(globalThis.location?.search || '').get('td2PixelMarcel') === '1';
+  const heroParams=typeof URLSearchParams==='function'?new URLSearchParams(globalThis.location?.search||''):null;
+  const useWeaponWalk=heroParams?.get('td2WeaponWalk')==='1';
   const walkAtlases={marcel:new Image(),kim:new Image()};
-  // Lade die neuen Walk-Animationen mit Waffen
-  walkAtlases.marcel.src=pixelMarcel ? 'assets/hero/marcel-walk-reference-v1.webp?v=1' : 'assets/hero/marcel-sword-walk.webp';
+  // The weapon atlas remains opt-in until its transparent cells pass visual QA.
+  // Default to the stable 4x3 Marcel reference to avoid blue/empty sprite rectangles.
+  walkAtlases.marcel.src=useWeaponWalk?'assets/hero/marcel-sword-walk.webp':'assets/hero/marcel-walk-reference-v1.webp?v=2';
   walkAtlases.kim.src='assets/hero/kim-bow-walk.webp';
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
