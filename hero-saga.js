@@ -32,11 +32,11 @@
     {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
     {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Das Kapitel entscheidet sich.',text:'Der Kapitelboss führt den letzten Angriff. Halte Türme, Hüter und Denkmal bis zum Ende dieser Welle stand.',objective:'Besiege den Kapitelboss und schließe alle 20 Wellen ab.',reward:'DIE NAMEN SIND FREI'}
   ];
-  // A single on-demand movement atlas. Loading two 1152x1536 sheets on the
-  // start menu previously retained about 13.5 MiB of decoded pixels on Android.
+  // A single on-demand movement atlas. The V5b 768x1024 sheets need only
+  // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
   const walkPaths={
-    marcel:'assets/hero/marcel-walk-alpha9.webp?v=v5-style2a1',
-    kim:'assets/hero/kim-walk-alpha8.webp?v=v5-style2a1'
+    marcel:'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
+    kim:'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
   };
   let activeWalkActor=null,activeWalkImage=null,heroAtlas=null;
   function walkAtlas(actor){
@@ -45,6 +45,7 @@
       activeWalkActor=actor;
       activeWalkImage=new Image();activeWalkImage.decoding='async';
       activeWalkImage.src=walkPaths[actor];
+      globalThis.TD2DirectionalActions?.preloadHeroSide?.(actor);
     }
     return activeWalkImage;
   }
