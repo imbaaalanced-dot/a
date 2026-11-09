@@ -290,6 +290,19 @@
     button.setAttribute('aria-label',`${button.querySelector('.map-copy strong')?.textContent||'Karte'} · ${unlocked?'freigeschaltet':'gesperrt'}`);
   }
 
+  let devNoticeTimer=null;
+  function showDeveloperNotice(message){
+    let notice=document.getElementById('td2DeveloperNotice');
+    if(!notice){
+      notice=document.createElement('div');notice.id='td2DeveloperNotice';
+      notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');
+      notice.style.cssText='position:fixed;top:max(18px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:100001;max-width:90vw;padding:14px 22px;background:#142b28;color:#f3e2b6;border:2px solid #b99a58;border-radius:12px;box-shadow:0 8px 30px #0009;font:bold 18px system-ui;text-align:center;pointer-events:none';
+      document.body.append(notice);
+    }
+    notice.textContent=message;notice.hidden=false;
+    if(devNoticeTimer)clearTimeout(devNoticeTimer);
+    devNoticeTimer=setTimeout(()=>{notice.hidden=true;devNoticeTimer=null;},2200);
+  }
   let developerMode=false;
   // Brief synthesized activation cue, generated locally without downloading audio assets.
   function playDeveloperActivationSound(){
@@ -325,7 +338,7 @@
       p.innerHTML='<h2>DEV MODE · TEST</h2><p>Nur diese Sitzung. Keine Änderung der Level-Freischaltungen im Spielstand.</p><p id="td2DevStatus"></p><div id="td2DevLevels" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div><p><button id="td2DevToggle">Modus umschalten</button> <button id="td2DevClose">Schließen</button></p>';
       document.body.append(p);
       for(let level=1;level<=7;level++){const b=document.createElement('button');b.textContent='Level '+level;b.onclick=()=>{if(!developerMode&&level!==1)return;p.hidden=true;startGame(level);};document.getElementById('td2DevLevels').append(b);}
-      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;if(developerMode)playDeveloperActivationSound();menuStatus();devMenu();};
+      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;if(developerMode)playDeveloperActivationSound();showDeveloperNotice(developerMode?'DEV MODE · Aktiviert':'DEV MODE · Deaktiviert');menuStatus();devMenu();};
       document.getElementById('td2DevClose').onclick=()=>p.hidden=true;
       p.querySelectorAll('button').forEach(b=>b.style.cssText='min-height:48px;padding:10px;border:1px solid #b99a58;border-radius:8px;background:#27343a;color:white;font:inherit');
     }
