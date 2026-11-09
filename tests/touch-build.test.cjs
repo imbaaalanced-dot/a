@@ -56,7 +56,7 @@ assert.match(lootCss,/appearance:none;-webkit-appearance:none/,'filter dropdowns
 assert.match(lootCss,/#loadoutStats\{display:flex;flex-direction:column;gap:7px;font-size:12px/,'build stats grow into badges');
 
 // Cache keys for every changed file.
-assert.match(html,/game\.js\?v=v410a1perftouch1/);
+// Current game.js cache key is audited centrally in cache-busting.test.cjs.
 assert.match(html,/levels\.js\?v=level7btouch1/);
 assert.match(html,/loot-ui\.js\?v=contrastglow1/);
 assert.match(html,/loot\.css\?v=contrastglow1/);
