@@ -25,6 +25,7 @@ const expectedVersions = new Map([
   ['portrait-home-v1.css', 'style2-portrait4'],
   ['portrait-avatars-v5.css', 'duo-v5a1'],
   ['combat-hud-v2.css', 'v5hud2a1'],
+  ['style2-v5-ui-refinement.css', '20261109a'],
   ['portrait-home-v1.js', 'style2-portrait2'],
   ['portrait-avatars-v5.js', 'duo-v5a2'],
   ['level-gallery.js', 'v5-style2a1'],
