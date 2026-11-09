@@ -38,7 +38,7 @@
     marcel:'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
     kim:'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
   };
-  let activeWalkActor=null,activeWalkImage=null,heroAtlas=null;
+  let activeWalkActor=null,activeWalkImage=null;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;
     if(activeWalkActor!==actor){
@@ -49,17 +49,7 @@
     }
     return activeWalkImage;
   }
-  function legacyAtlas(){
-    if(!heroAtlas){heroAtlas=new Image();heroAtlas.src='assets/hero/marcel-lantern-sprite-v1.webp';}
-    return heroAtlas;
-  }
   const walkRows={down:0,up:1,left:2,right:3};
-  const heroCells = {
-    up:[0,0],
-    down:[128,0],
-    left:[0,128],
-    right:[128,128]
-  };
   let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing';
   let selectedTab='equipment', lowHpSpoken=false, storySeen=new Set(), animationTime=0;
   let pulse=null, echoes=[], trail=[], attackTime=0, walkTime=0;
@@ -210,15 +200,9 @@
       ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
       ctx.restore();return true;
     }
-    // Legacy lantern art is Marcel-only; never render a male sprite for Kim.
-    if(actor==='marcel'&&ready(legacyAtlas())){
-      const [sx,sy]=heroCells[direction]||heroCells.down;
-      ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
-      ctx.drawImage(heroAtlas,sx,sy,128,128,-size/2,12-size,size,size);
-      ctx.restore();return true;
-    }
-    const fallbackFace=direction==='left'?-1:1;
-    return !!globalThis.DenkmalArt?.draw(ctx,'hero',x,y,size,fallbackFace,opacity);
+    // Keep the actor visually stable while the canonical walk sheet decodes.
+    // The caller paints a neutral loading marker; no other hero art is loaded.
+    return false;
   }
   function draw(ctx,h) {
     const moving=h.moving&&!reduced,direction=h.direction||'down';
@@ -233,7 +217,10 @@
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
     const action=(h.hp<=0||h.hitFlash>0||attackTime>0)&&globalThis.TD2DirectionalActions?.hero(ctx,h,attackTime,reduced,animationTime);
-    if(!action&&!drawSprite(ctx,0,0,direction,1,90,h.character)&&!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced,animationTime)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    if(!action&&!drawSprite(ctx,0,0,direction,1,90,h.character)){
+      ctx.save();ctx.globalAlpha=.65;ctx.fillStyle=h.character==='kim'?'#91c4d5':'#d5b881';
+      ctx.beginPath();ctx.ellipse(0,-29,9,17,0,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;

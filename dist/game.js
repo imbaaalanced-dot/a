@@ -16,24 +16,6 @@
   monumentImage.src = 'assets/monument-level1-v2.webp';
   const hellscape = new Image();
   const art = {};
-  const towerArt = { bow:new Image(), cannon:new Image(), ballista:new Image(), mage:new Image(), mortar:new Image(), rift:new Image(), shrine:new Image() };
-  const towerLevelArt = {
-    bow:[new Image(),new Image(),new Image()],
-    cannon:[new Image(),new Image(),new Image()],
-    ballista:[new Image(),new Image(),new Image()],
-    rift:[new Image(),new Image(),new Image()],
-    boomerang:[new Image()]
-  };
-  // Visible bounds of the original transparent PNGs; retain their source bytes.
-  // Rendering ignores uneven transparent margins and keeps each base on its slot.
-  const towerSpriteBounds = {
-    bow:[[242,118,772,1061],[216,63,852,1165],[238,13,945,1222]],
-    cannon:[[202,185,877,937],[156,55,977,1155],[123,30,1009,1205]],
-    ballista:[[195,67,916,1127],[134,10,1026,1234],[57,44,1169,1190]]
-  };
-  // Large legacy PNGs are fallback art, requested only if their renderer is needed.
-  const legacyTowerFiles={bow:'tower-bow-infernal-v1.webp',cannon:'tower-cannon-ash-v1.webp',ballista:'tower-ballista-rift-v1.png',mage:'tower-mage-hellfire-v1.png',mortar:'tower-mortar-volcanic-v1.png',rift:'tower-rift-lance-v1.webp',shrine:'tower-warden-shrine-v1.png'};
-  towerLevelArt.boomerang[0].src='assets/tower-boomerang-atlas.webp?v=v400a5combined1';
   atlas.src = 'assets/asset-atlas.webp';
   // All six maps render their own ground; do not decode the unused 1254px legacy terrain.
   const WORLD_W=3072,WORLD_H=3072;
@@ -71,7 +53,6 @@
       q.putImageData(im,0,0);art[name]=c;
     };
     cut('monument',22,76,390,425,44);
-    cut('bow',446,35,86,105);cut('cannon',442,158,100,118);cut('ballista',443,286,101,124);cut('mage',442,425,104,102);
     cut('infantry',795,35,66,90);cut('archer',797,121,70,84);cut('brute',918,205,104,95);cut('boss',795,397,130,132);
   };
   const $ = id => document.getElementById(id);
@@ -986,7 +967,7 @@
     if(isBoss(e)&&e.hp<e.maxHp){const hpRatio=clamp(e.hp/e.maxHp,0,1),bw=78,by=e.y-(e.type==='uprooted'?134:106);ctx.fillStyle='#0d1417';ctx.fillRect(e.x-bw/2,by,bw,6);ctx.fillStyle=e.phase>=3?'#e0533d':e.phase===2?'#e89a4e':'#d8b45e';ctx.fillRect(e.x-bw/2,by,bw*hpRatio,6);ctx.strokeStyle='#f2dca055';ctx.lineWidth=1;ctx.strokeRect(e.x-bw/2+.5,by+.5,bw-1,5);}
     if(e.type!=='boss'&&e.armor>0){const sx=e.x+e.r+8,sy=e.y+20;ctx.save();ctx.translate(sx,sy);ctx.fillStyle=e.shieldBroken?'#817b68':'#d4bd72';ctx.beginPath();ctx.moveTo(0,-6);ctx.lineTo(5,-3);ctx.lineTo(4,3);ctx.lineTo(0,7);ctx.lineTo(-4,3);ctx.lineTo(-5,-3);ctx.closePath();ctx.fill();ctx.restore();}
   }
-  const towerCache=new WeakMap(),towerFireFx=new WeakMap();
+  const towerFireFx=new WeakMap();
   function drawTower(t){
     const fireAnim=towerFireFx.get(t)||0;
     const recoil=!reducedMotion&&fireAnim>0?Math.sin(Math.PI*clamp(1-fireAnim/.18,0,1))*.055:0;
@@ -1000,55 +981,11 @@
     if(globalThis.UserStyle2Towers?.drawTower?.(ctx,t.kind,t.x,t.y,t.level)){
       globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;
     }
-    // Style 2 cannon tiers are self-contained, cached 2.5D sprites.
-    if(t.kind==='cannon'&&globalThis.Style2Cannon?.drawTower?.(ctx,t.x,t.y,t.level,lowFX())){
-      globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;
-    }
-    if(globalThis.Style2Towers?.drawTower?.(ctx,t.kind,t.x,t.y,t.level,lowFX())){
-      globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;
-    }
-    if(t.kind==='boomerang'){
-      if(globalThis.ElementalSprites?.drawTower(ctx,'boomerang',t.x,t.y,t.level)){globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());return;}
-      const level=Math.max(1,Math.min(3,t.level||1)),sprite=towerLevelArt.boomerang[0];
-      ctx.save();ctx.translate(t.x,t.y);
-      if(sprite?.complete&&sprite.naturalWidth>0){const height=[92,102,110][level-1],frameWidth=sprite.naturalWidth/3,frameHeight=sprite.naturalHeight,width=height*frameWidth/frameHeight;ctx.drawImage(sprite,frameWidth*(level-1),0,frameWidth,frameHeight,-width/2,20-height,width,height);}
-      else{ctx.fillStyle=['#825a34','#bf722c','#616875'][level-1];ctx.fillRect(-19,-45,38,64);ctx.strokeStyle='#e4c18b';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(-18,-50);ctx.lineTo(0,-62);ctx.lineTo(18,-50);ctx.stroke();}
-      ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,level,lowFX());return;
-    }
-    const kind=t.kind||'bow',level=Math.max(1,Math.min(3,t.level||1)),index=level-1;
-    // Disabled ballista assets load only if this tower is actually rendered.
-    const levelSprite=towerLevelArt[kind]?.[index];
-    if(levelSprite&&!levelSprite.src){
-      levelSprite.src=kind==='rift'?`assets/tower-rift-lance-l${level}.webp`:`assets/tower-${kind}-l${level}-v2.${kind==='bow'||kind==='cannon'?'webp':'png'}`;
-    }
-    const premium=towerArt[kind];
-    if(premium&&!premium.src&&legacyTowerFiles[kind])premium.src='assets/'+legacyTowerFiles[kind];
-    const sprite=levelSprite?.complete&&levelSprite.naturalWidth?levelSprite:
-      (premium?.complete&&premium.naturalWidth?premium:art[kind]);
-    if(sprite){
-      const base={bow:78,cannon:82,ballista:88,mage:92,mortar:96,rift:94,shrine:96}[kind]||88;
-      const size=base*(1+index*.09);
-      ctx.save();ctx.translate(t.x,t.y);ctx.filter='none';
-      if(t===selectedTowerFrame){
-        ctx.fillStyle='#c7b67a09';ctx.strokeStyle='#cfbc7b38';ctx.beginPath();ctx.arc(0,0,t.range,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.strokeStyle='#f0cb7a99';ctx.setLineDash([4,5]);ctx.beginPath();
-        ctx.arc(0,0,28+level*3,0,7);ctx.stroke();ctx.setLineDash([]);
-      }
-      ctx.shadowBlur=blurFor(["mage","rift","shrine"].includes(kind)?22:12);
-      ctx.shadowColor=kind==='shrine'?'#5be8d1':kind==='rift'?'#e846ff':kind==='mage'?'#f04b30':'#000';
-      const bounds=sprite===levelSprite?towerSpriteBounds[kind]?.[index]:null;
-      if(bounds){
-        const [sx,sy,sw,sh]=bounds,height=size*sh/sw;
-        let cached=towerCache.get(sprite);
-        if(!cached&&sprite.complete&&sprite.naturalWidth){cached=document.createElement('canvas');cached.width=192;cached.height=Math.ceil(192*sh/sw);const q=cached.getContext('2d');q.filter='saturate(.8) brightness(.93)';q.drawImage(sprite,sx,sy,sw,sh,0,0,cached.width,cached.height);towerCache.set(sprite,cached);}
-        if(cached)ctx.drawImage(cached,-size/2,20-height,size,height);else ctx.drawImage(sprite,sx,sy,sw,sh,-size/2,20-height,size,height);
-      }else{
-        ctx.drawImage(sprite,-size/2,-size*.7,size,size);
-      }
-      ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,level,lowFX());return;
-    }
+    // Exactly one approved Style-2 family per tower. Until its tier image is
+    // decoded, draw the same neutral shape for every kind; do not swap art.
     ctx.save();ctx.translate(t.x,t.y);
     diamond(0,8,23,12,'#4c514c','#9e8d68');ctx.fillStyle='#333b38';
-    ctx.fillRect(-11,-20,22,27);ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());
+    ctx.fillRect(-11,-27,22,34);ctx.restore();globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());
   }
 
   function drawBoomerangProjectile(b){

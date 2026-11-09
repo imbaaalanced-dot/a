@@ -1,4 +1,4 @@
-/* Procedural combat assets: no downloads, no runtime dependencies. */
+/* Procedural fallbacks for the one canonical Style-2 projectile family. */
 (() => {
   'use strict';
   // V4 alpha.4 FX pass: impact rings, directional debris, muzzle flashes and visible chain bolts.
@@ -6,10 +6,6 @@
   // 8-voice cap, no audio before the first user gesture, life===max on every particle.
   const MAX_PARTICLES = 240;
   const MAX_DAMAGE_TEXTS = 24, MAX_DAMAGE_TEXTS_REDUCED = 8;
-  const SPRITE_W=176,SPRITE_H=146;
-  const spriteRows={cannon:0,rift:1,mage:2,bow:3};
-  const projectileAtlas=typeof Image!=='undefined'?new Image():null;
-  if(projectileAtlas)projectileAtlas.src='assets/projectile-fx-v3.svg';
   let audio, master, voices = 0;
   const lastSound = new Map();
   function unlock() {
@@ -75,18 +71,8 @@
           color:bullet.color,kind:bullet.kind,level:bullet.level||1,
           reduced:!!reduced,userStyle2Impact:true});
       }
-      if(!userImpact&&bullet.kind==='cannon'&&globalThis.Style2Cannon?.drawImpact){
-        const life=reduced?.17:.3;
-        push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,cannonImpact:true,level:bullet.level||1});
-      }
-      if(!userImpact&&['bow','mage','rift'].includes(bullet.kind)&&globalThis.Style2Towers?.drawImpact){
-        const life=reduced?.15:.25;
-        push(game,{x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:0,color:bullet.color,style2Impact:true,kind:bullet.kind,level:bullet.level||1});
-      }
-      if (!userImpact && spriteRows[bullet.kind] !== undefined && (bullet.kind!=='cannon'||!globalThis.Style2Cannon?.drawImpact) && (!['bow','mage','rift'].includes(bullet.kind)||!globalThis.Style2Towers?.drawImpact) && game.particles.length < MAX_PARTICLES) {
-        const life = reduced ? .16 : .28;
-        game.particles.push({x:bullet.x,y:bullet.y,vx:0,vy:0,life,max:life,r:22,color:bullet.color,spriteFx:true,kind:bullet.kind});
-      }
+      // The existing ring, debris and core flash are the loading fallback.
+      // Never add another tower theme's impact atlas as a second layer.
       if (heavy) emit(game, bullet.x, bullet.y, '#81776b', reduced ? 3 : 9, true, reduced);
       else emit(game, bullet.x, bullet.y, bullet.color, reduced ? 2 : 4, false, reduced);
     } else {
@@ -132,21 +118,8 @@
     ctx.translate(d.x,d.y);ctx.scale(scale,scale);ctx.strokeText(String(d.amount),0,0);ctx.fillText(String(d.amount),0,0);ctx.restore();}
   }
   const getContext=()=>audio,getMaster=()=>master;
-  function drawSprite(ctx,kind,frame,x,y,angle=0,scale=1,alpha=1){
-    const row=spriteRows[kind];
-    if(row===undefined||!projectileAtlas?.complete||!projectileAtlas.naturalWidth)return false;
-    const f=Math.max(0,Math.min(6,frame|0));
-    ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.globalAlpha*=alpha;
-    const w=70*scale,h=58*scale;
-    ctx.drawImage(projectileAtlas,f*SPRITE_W,row*SPRITE_H,SPRITE_W,SPRITE_H,-w/2,-h/2,w,h);
-    ctx.restore();return true;
-  }
   function draw(ctx,b,reduced) {
-    if(b.kind==='cannon'&&globalThis.Style2Cannon?.drawProjectile?.(ctx,b,reduced))return;
-    if(globalThis.Style2Towers?.drawProjectile?.(ctx,b,reduced))return;
     const kind=b.kind||'magic', level=b.level||1, arrow=kind==='bow'||kind==='ballista',heavy=kind==='cannon'||kind==='mortar';
-    const travelFrame=1+(Math.floor(Math.max(0,1.1-(b.life??1.1))*12)%3);
-    if(drawSprite(ctx,kind,travelFrame,b.x,b.y,Math.atan2(b.vy,b.vx),.8+level*.08,1))return;
     ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx));
     ctx.strokeStyle=b.color;ctx.fillStyle=b.color;ctx.lineWidth=1+level*.45;
     // Motion streak grows with speed so fast shells read as fast.
@@ -165,13 +138,6 @@
   function drawParticle(ctx,p){
     if(!p)return false;
     if(p.userStyle2Impact&&globalThis.UserStyle2Towers?.drawImpact?.(ctx,p))return true;
-    if(p.cannonImpact&&globalThis.Style2Cannon?.drawImpact?.(ctx,p))return true;
-    if(p.style2Impact&&globalThis.Style2Towers?.drawImpact?.(ctx,p))return true;
-    if(p.spriteFx){
-      const progress=1-Math.max(0,p.life)/Math.max(.001,p.max);
-      const frame=4+Math.min(2,Math.floor(progress*3));
-      return drawSprite(ctx,p.kind,frame,p.x,p.y,0,1.05,Math.max(0,p.life/p.max));
-    }
     const t=Math.max(0,Math.min(1,p.life/p.max));
     if(p.ring){
       const progress=1-t;

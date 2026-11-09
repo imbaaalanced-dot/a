@@ -50,7 +50,7 @@ assert.notEqual(first[0],second[0],'moving enemy changes walk frame');
 
 const gameSource=fs.readFileSync('dist/game.js','utf8');
 assert.ok(!gameSource.slice(gameSource.indexOf('function upgradeTower('),gameSource.indexOf('function sellTower(')).includes('ElementalSprites'),'tower upgrades never depend on image readiness');
-assert.ok(gameSource.slice(gameSource.indexOf('function drawTower('),gameSource.indexOf('function drawBoomerangProjectile(')).includes("drawTower(ctx,'boomerang'"),'boomerang rendering uses atlas');
+assert.ok(gameSource.slice(gameSource.indexOf('function drawTower('),gameSource.indexOf('function drawBoomerangProjectile(')).includes('UserStyle2Towers?.drawTower'),'boomerang rendering uses canonical Style-2 tower family');
 
 const cannon={kind:'cannon',level:3,x:10,y:20,vx:1,vy:0};
 assert.equal(art.drawProjectile(ctx,cannon),false);

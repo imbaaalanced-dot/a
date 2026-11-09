@@ -13,7 +13,8 @@ const atlasContext={};atlasContext.globalThis=atlasContext;
 vm.runInNewContext(directionalSource,atlasContext);
 vm.runInNewContext(heroPatchSource,atlasContext);
 for(const name of ['kim','marcel']){
- const atlas=atlasContext.TD2DirectionalAssets[name];
+ assert.equal(atlasContext.TD2DirectionalAssets[name],undefined,`${name} legacy action set must be disabled`);
+ const atlas=atlasContext.TD2HeroSideAssets[name];
  const asset=path.join(dist,atlas.file.split('?')[0]);
  assert.ok(fs.existsSync(asset),`${name} action image must exist`);
  // Both extended VP8X and lossless VP8L WebP dimension encodings are supported.
@@ -22,7 +23,7 @@ for(const name of ['kim','marcel']){
  const header=pixels.readUInt32LE(21);
  const dims=format==='VP8L' ? [(header&0x3fff)+1,((header>>>14)&0x3fff)+1] :
    [pixels.readUIntLE(24,3)+1,pixels.readUIntLE(27,3)+1];
- assert.deepEqual(dims,[atlas.cell*4,atlas.cell*12],`${name} runtime action atlas dimensions`);
+ assert.deepEqual(dims,[atlas.cell*6,atlas.cell*6],`${name} canonical side action atlas dimensions`);
 }
 assert.match(portraitSource,/marcel-guardian-v6\.webp/);
 assert.match(portraitSource,/kim-marksman-v6\.webp/);

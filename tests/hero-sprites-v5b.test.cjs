@@ -31,7 +31,7 @@ async function drain(){for(let n=0;n<10;n++){await new Promise(r=>setImmediate(r
   for(const hero of ['marcel','kim']){
     const spec=specs[hero];
     const dir=spec.facing;
-    // First render must fall back to the existing directional atlas while decoding.
+    // A cold action sheet must defer to the same V5b walking identity.
     assert.equal(box.TD2DirectionalActions.drawHeroSide(ctx(),hero,'attack',dir,.3,0,0,70),false);
     await drain();
     for(const [kind,row] of Object.entries({attack:2,hit:4,death:5})){
@@ -43,8 +43,8 @@ async function drain(){for(let n=0;n<10;n++){await new Promise(r=>setImmediate(r
         assert.equal(c.flips.length,0,'asymmetric gear is never mirrored');
       }
     }
-    assert.equal(box.TD2DirectionalActions.drawHeroSide(ctx(),hero,'attack',dir==='right'?'left':'right',.5,0,0,70),false,'unpainted opposite direction uses old atlas');
-    assert.equal(box.TD2DirectionalActions.drawHeroSide(ctx(),hero,'attack','down',.5,0,0,70),false,'front direction uses old atlas');
+    assert.equal(box.TD2DirectionalActions.drawHeroSide(ctx(),hero,'attack',dir==='right'?'left':'right',.5,0,0,70),false,'unpainted opposite direction uses V5b walk');
+    assert.equal(box.TD2DirectionalActions.drawHeroSide(ctx(),hero,'attack','down',.5,0,0,70),false,'front direction uses V5b walk');
   }
   const alpha=ctx();
   assert.equal(box.TD2DirectionalActions.drawHeroSide(alpha,'marcel','death','right',.5,0,0,70),true);
@@ -52,5 +52,5 @@ async function drain(){for(let n=0;n<10;n++){await new Promise(r=>setImmediate(r
   const broken=ctx();broken.drawImage=()=>{throw Error('draw context lost');};
   assert.equal(box.TD2DirectionalActions.drawHeroSide(broken,'kim','hit','left',.3,0,0,70),false);
   assert.equal(broken.depth,0,'Canvas restore after exception');
-  console.log('Uploaded hero 6x6 side actions: real frames, correct facing, fallbacks and Canvas symmetry passed');
+  console.log('Canonical hero 6x6 side actions: real frames, correct facing, walk fallback and Canvas symmetry passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});

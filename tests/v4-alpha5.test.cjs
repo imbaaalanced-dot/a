@@ -41,14 +41,16 @@ function enemy(x,y,armor=0){
     hp:500,maxHp:500,armor,damage:0,speed:0,attackCd:99,attackCooldown:1,
     focusMonument:false};
 }
-check('Three distinct WebP boomerang sprites and upgrades stay connected',()=>{
+check('Three approved Style-2 boomerang sprites and upgrades stay connected',()=>{
   const gameSource=fs.readFileSync(path.join(root,'game.js'),'utf8');
-  const atlas=path.join(root,'assets','tower-boomerang-atlas.webp');
-  assert.ok(fs.existsSync(atlas),'missing three-stage transparent boomerang atlas');
-  assert.ok(fs.statSync(atlas).size>5000,'empty or truncated atlas');
-  assert.ok(gameSource.includes('towerLevelArt.boomerang[0]'));
-  assert.ok(gameSource.includes('frameWidth*(level-1)'));
-  assert.ok(gameSource.includes('v400a5combined1'));
+  const canonical=fs.readFileSync(path.join(root,'style2-user-towers.js'),'utf8');
+  for(let level=1;level<=3;level++){
+    const sprite=path.join(root,'assets/style2-user-towers-v3/runtime-webp/towers',`tower_boomerang_lv${level}.webp`);
+    assert.ok(fs.existsSync(sprite),`canonical boomerang tier ${level} missing`);
+    assert.ok(fs.statSync(sprite).size>5000,`canonical boomerang tier ${level} truncated`);
+  }
+  assert.ok(canonical.includes('tower_boomerang_lv1'));
+  assert.ok(!gameSource.includes('tower-boomerang-atlas.webp'),'obsolete boomerang atlas must not be requested');
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   // Current game.js cache key is audited centrally in cache-busting.test.cjs.
   assert.ok(gameSource.includes('DenkmalTerrain?.drawStars'),'star count follows level');

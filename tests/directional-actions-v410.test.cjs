@@ -21,8 +21,14 @@ const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r))
  const fleeing={x:0,y:0,velX:-15,velY:0,attackAnim:.2};
  assert.equal(api.enemyDirection(fleeing,{x:100,y:0}),'right','attacking archer aims toward target while moving away');
  assert.equal(api.enemyDirection({...fleeing,deathDirection:'up'},{x:100,y:0},'death'),'up','death preserves captured direction');
- const attackingHero={hp:20,character:'marcel',direction:'down',attackDirection:'left'};const aimed=ctx();api.hero(aimed,attackingHero,.2,false,0);assert.equal(aimed.draws[0][2],3*192,'hero attack uses captured aim, not movement');
- attackingHero.hitFlash=.1;const hit=ctx();api.hero(hit,attackingHero,.2,false,0);assert.equal(hit.draws[0][2],192,'hit uses movement facing rather than attack aim');
+ box.TD2HeroSideAssets={marcel:{file:'marcel-v5b.webp',cell:128,frames:6,facing:'right',rows:{attack:2,hit:4,death:5},anchor:[64,116],height:95}};
+ const attackingHero={hp:20,character:'marcel',direction:'down',attackDirection:'left'};
+ assert.equal(api.hero(ctx(),attackingHero,.2,false,0),false,'unpainted action facing must preserve canonical walk identity');
+ attackingHero.attackDirection='right';assert.equal(api.hero(ctx(),attackingHero,.2,false,0),false,'cold side atlas defers to walking set');
+ await drain();ready.set('marcel-v5b.webp',{naturalWidth:768,naturalHeight:768});
+ const aimed=ctx();assert.equal(api.hero(aimed,attackingHero,.2,false,0),true);assert.equal(aimed.draws[0][2],2*128,'hero attack uses authored side row only');
+ attackingHero.hitFlash=.1;assert.equal(api.hero(ctx(),attackingHero,.2,false,0),false,'unpainted hit facing does not switch atlas');
+ attackingHero.direction='right';const hit=ctx();assert.equal(api.hero(hit,attackingHero,.2,false,0),true);assert.equal(hit.draws[0][2],4*128,'hit uses movement facing when authored');
  const heroState={x:30,y:40,hp:100,maxHp:100,direction:'down',dodge:0,faceX:0,faceY:1,equipment:{},gear:{},speed:1,damage:1,fireRate:1};
  const node={classList:{add(){},remove(){}},setAttribute(){}};
  const sagaBox={Math,Image:class{},matchMedia:()=>({matches:false}),document:{getElementById:()=>node},localStorage:{getItem:()=>null},clearTimeout(){},setTimeout(){},location:{search:''}};
@@ -33,12 +39,12 @@ const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r))
  saga.onAttack();assert.equal(heroState.attackDirection,'down','legacy no-argument attack uses facing safely');
  const h={hp:0,character:'marcel',direction:'right'};
  const first=ctx();api.hero(first,h,0,false,10);assert.equal(first.draws[0][1],0);
- h.direction='down';const pause=ctx();api.hero(pause,h,0,false,10);assert.equal(pause.draws[0][2],8*192,'death keeps initial facing despite later movement-facing changes');assert.equal(pause.draws[0][1],0,'paused simulation clock holds death pose');
+ h.direction='down';const pause=ctx();api.hero(pause,h,0,false,10);assert.equal(pause.draws[0][2],5*128,'death keeps initial authored facing');assert.equal(pause.draws[0][1],0,'paused simulation clock holds death pose');
  const later=ctx();api.hero(later,h,0,false,10.4);assert.equal(later.draws[0][1],384,'simulation clock advances death');
- const last=ctx();api.hero(last,h,0,false,20);assert.equal(last.draws[0][1],576,'death frame clamps rather than wraps');h.hp=1;api.hero(ctx(),h,0,false,20);h.hp=0;const again=ctx();api.hero(again,h,0,false,30);assert.equal(again.draws[0][1],0,'revival resets death clock');
- const reduced=ctx();api.draw(reduced,'marcel','death','up',.1,0,0,70,{reduced:true,alphaApplied:true});assert.equal(reduced.draws[0][1],576);assert.equal(reduced.globalAlpha,1,'caller-applied fade is not doubled');
+ const last=ctx();api.hero(last,h,0,false,20);assert.equal(last.draws[0][1],640,'death frame clamps rather than wraps');h.hp=1;api.hero(ctx(),h,0,false,20);h.hp=0;h.direction='right';const again=ctx();api.hero(again,h,0,false,30);assert.equal(again.draws[0][1],0,'revival resets death clock');
+ const reduced=ctx();api.drawHeroSide(reduced,'marcel','death','right',.1,0,0,70,{reduced:true,alphaApplied:true});assert.equal(reduced.draws[0][1],640);assert.equal(reduced.globalAlpha,1,'caller-applied fade is not doubled');
  const enemy={type:'runner',x:0,y:0,velX:-10,velY:0,attackAnim:.11};assert.equal(api.enemy(ctx(),enemy,{level:1}),false);await drain();const e=ctx();assert(api.enemy(e,enemy,{level:1}));assert.equal(e.draws[0][2],384);const archer=ctx();assert(api.enemy(archer,enemy,{level:1,target:{x:100,y:0}}));assert.equal(archer.draws[0][2],6*128,'active attack selects actual target row even against movement');const corpse=ctx();assert(api.enemy(corpse,{...enemy,deathDirection:'up'},{level:1,target:{x:100,y:0},deathProgress:.5}));assert.equal(corpse.draws[0][2],11*128,'death draw uses captured row');api.setLevel(2);assert(releases.length>0,'level transition releases enemy groups');
- // Integration retains both earlier optional fallbacks and supplies simulation time.
+ // Integration retains enemy fallback paths and supplies simulation time.
  assert.match(fs.readFileSync('dist/hero-saga.js','utf8'),/TD2DirectionalActions\?\.hero\(ctx,h,attackTime,reduced,animationTime\)/);
  assert.match(fs.readFileSync('dist/enemy-animations.js','utf8'),/TD2DirectionalActions\?\.enemy\(ctx,e,options\)/);
  assert.doesNotMatch(fs.readFileSync('dist/v2-expansion.js','utf8'),/performance\.now/);

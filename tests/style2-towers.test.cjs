@@ -54,9 +54,9 @@ for(const kind of kinds)for(let level=1;level<=3;level++){
   const before=game.particles.length;
   fx.burst(game,{kind,level,x:20,y:30,vx:400,vy:5,color:'#cba9e9'},true,false,false);
   const particles=game.particles.slice(before);
-  assert.equal(particles.filter(p=>p.style2Impact).length,1,kind+level+' impact exactly once');
-  const p=particles.find(p=>p.style2Impact);
-  assert.equal(p.level,level,'impact retains upgrade level');
+  assert.equal(particles.filter(p=>p.style2Impact).length,0,kind+level+' must not request old specialty atlas');
+  const p=particles.find(p=>p.ring);
+  assert.ok(p,'neutral impact ring remains present');
   assert.equal(p.life,p.max,'particle lifetime initialized');
   assert.equal(fx.drawParticle(main,p),true);
   assert.equal(fx.draw(main,{kind,level,x:20,y:30,vx:400,vy:0,color:'#fff',life:.7},false),undefined);
@@ -65,12 +65,12 @@ for(let i=0;i<500;i++)fx.burst(game,{kind:'rift',level:3,x:20,y:30,vx:10,vy:10,c
 assert.ok(game.particles.length<=fx.MAX_PARTICLES,'existing particle budget applies to new FX');
 assert.ok(game.particles.every(p=>p.max===p.life),'all burst particles begin with valid lifetimes');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.match(html,/style2-towers\.js\?v=v400a6elemental1/);
-assert.ok(html.indexOf('style2-towers.js')<html.indexOf('game.js?v='),
-  'tower renderer loaded before main game');
-assert.match(html,/combat-fx\.js\?v=v400a6s2t5/);
+assert.doesNotMatch(html,/src="style2-towers\.js/,'legacy tower renderer must be absent from production page');
+assert.ok(html.indexOf('style2-user-towers.js')<html.indexOf('game.js?v='),
+  'canonical tower renderer loaded before main game');
+assert.match(html,/combat-fx\.js\?v=v5-projectile-canonical1/);
 const gameCode=fs.readFileSync(path.join(root,'game.js'),'utf8');
-assert.match(gameCode,/Style2Towers\?\.drawTower/,'tower game renderer integrated');
+assert.match(gameCode,/UserStyle2Towers\?\.drawTower/,'canonical tower renderer integrated');
 assert.match(gameCode,/location\?\.pathname\?\.includes\('\/v4-style2-towers\/'\)/,'test-only campaign preview path');
 for(const kind of kinds)assert.match(gameCode,new RegExp(kind+":\\{name:"),'existing tower balance still defined');
 console.log('Style 2 towers: 9 silhouettes, 9 projectiles, 45 impacts, hot-cache rendering, capped FX passed.');

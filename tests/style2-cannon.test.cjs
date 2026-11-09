@@ -64,21 +64,20 @@ for(let level=1;level<=3;level++){
   const before=game.particles.length;
   fx.burst(game,{kind:'cannon',level,x:101,y:102,vx:400,vy:50,color:'#d7a16c'},true,false,false);
   const newParticles=game.particles.slice(before);
-  const impacts=newParticles.filter(p=>p.cannonImpact);
-  assert.equal(impacts.length,1,'exactly one Level '+level+' specialty impact');
-  assert.equal(impacts[0].level,level,'impacts respect the fired cannon tier');
-  assert.ok(impacts[0].life===impacts[0].max,'all impacts start fully alive');
-  assert.equal(fx.drawParticle(ctx,impacts[0]),true,'tier impact is recognized');
+  assert.equal(newParticles.filter(p=>p.cannonImpact).length,0,'no old specialty impact when canonical atlas is cold');
+  const ring=newParticles.find(p=>p.ring);
+  assert.ok(ring,'cannon retains a cheap neutral impact ring');
+  assert.equal(fx.drawParticle(ctx,ring),true,'neutral impact remains visible');
   assert.equal(fx.draw(ctx,{kind:'cannon',level,x:400,y:400,vx:1,vy:2,color:'#d7a16c',life:1},false),undefined);
 }
 for(let i=0;i<1000;i++)fx.burst(game,{kind:'cannon',level:3,x:0,y:0,vx:1,vy:0,color:'#ffb060'},true,false,true);
 assert.ok(game.particles.length<=fx.MAX_PARTICLES,'cannon impacts respect the global particle budget');
 assert.ok(game.particles.every(p=>Number.isFinite(p.life)&&p.life===p.max),'particle lifecycle invariant stays intact');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.match(html,/style2-cannon\.js\?v=alpha8cannon2/);
-assert.match(html,/combat-fx\.js\?v=v400a6s2t5/);
+assert.doesNotMatch(html,/src="style2-cannon\.js/,'legacy cannon renderer is no longer loaded in the production game');
+assert.match(html,/combat-fx\.js\?v=v5-projectile-canonical1/);
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
-assert.match(gameplay,/Style2Cannon\?\.drawTower/,'cannon graphics must be used by gameplay');
+assert.match(gameplay,/UserStyle2Towers\?\.drawTower/,'canonical cannon graphics must be used by gameplay');
 assert.match(gameplay,/location\?\.pathname\?\.includes\('\/v4-style2-cannon\/'\)/,'dedicated test preview must work');
 assert.match(gameplay,/cannon:\{name:'KANONENTURM',cost:35,damage:34,rate:1\.15,range:275/,'cannon base balance remains unchanged');
 console.log('Style 2 cannon: three towers, three shells, 18 cached impact frames, capped FX and unchanged stats passed.');
