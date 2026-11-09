@@ -4,7 +4,7 @@ const context=new Proxy({drawImage(...args){draws.push(args);},createLinearGradi
 function element(id){
   if(elements.has(id))return elements.get(id);
   const classes=new Set();
-  const e={id,style:{},dataset:{},children:[],inert:false,disabled:false,textContent:'',firstElementChild:{style:{}},classList:{add(...cs){cs.forEach(c=>classes.add(c));},remove(...cs){cs.forEach(c=>classes.delete(c));},toggle(c,b){if(b===undefined)b=!classes.has(c);b?classes.add(c):classes.delete(c);},contains:c=>classes.has(c)},focus(){document.activeElement=this;},setAttribute(k,v){this[k]=v;},querySelector(){return element(id+'Button');},addEventListener(name,fn){this[name]=fn;},appendChild(b){this.children.push(b);},getBoundingClientRect:()=>({left:0,top:0,width:sandbox.innerWidth,height:sandbox.innerHeight}),getContext:()=>context};
+  const e={id,style:{},dataset:{},children:[],inert:false,disabled:false,textContent:'',firstElementChild:{style:{}},classList:{add(...cs){cs.forEach(c=>classes.add(c));},remove(...cs){cs.forEach(c=>classes.delete(c));},toggle(c,b){if(b===undefined)b=!classes.has(c);b?classes.add(c):classes.delete(c);},contains:c=>classes.has(c)},focus(){document.activeElement=this;},setAttribute(k,v){this[k]=v;},querySelector(selector){return element(id+':'+selector);},addEventListener(name,fn){this[name]=fn;},appendChild(b){this.children.push(b);},replaceChildren(...children){this.children=children;},getBoundingClientRect:()=>({left:0,top:0,width:sandbox.innerWidth,height:sandbox.innerHeight}),getContext:()=>context};
   Object.defineProperty(e,'innerHTML',{set(v){this._html=v;this.children=[];},get(){return this._html||'';}});
   elements.set(id,e);return e;
 }
@@ -21,6 +21,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sand
 vm.runInContext(fs.readFileSync(path.join(root,'flight-enemies.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'directional-actions-v410.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
@@ -85,6 +86,36 @@ check('Level 1 monument uses the new sprite with undistorted gameplay proportion
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
 check('Start resources and clean restart',()=>{assert.equal(t.game.essence,70);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);});
+check('Mobile combat strip reflects current hero, monument, essence and wave',()=>{
+  t.game.hero.hp=66;t.game.monument.hp=420;t.game.essence=77;t.game.wave=3;
+  t.update(.15);
+  assert.equal(element('compactHp').textContent,`66 / ${t.game.hero.maxHp}`);
+  assert.equal(element('compactMonument').textContent,'420 / 500');
+  assert.equal(element('compactEssence').textContent,'77');
+  assert.equal(element('compactWave').textContent,'3');
+  assert.equal(element('compactSoul').textContent,`${Math.ceil(t.game.hero.soul)}%`);
+  assert.equal(element('compactHud').classList.contains('hidden'),false);
+});
+check('Mobile canvas tap selects a pad, then builds only after tower choice',()=>{
+  if(process.env.TEST_MOBILE!=='1')return;
+  const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.essence=100;
+  const origin=t.screenToWorld(0,0),stepX=t.screenToWorld(1,0).x-origin.x,stepY=t.screenToWorld(0,1).y-origin.y;
+  const canvas=element('game'),choices=element('touchContext:.touch-context-options');
+  function tap(world){const e={pointerType:'touch',clientX:(world.x-origin.x)/stepX,clientY:(world.y-origin.y)/stepY};canvas.pointerdown(e);canvas.pointerup(e);}
+  tap(slot);
+  assert.equal(t.game.towers.length,0,'the first tap never spends essence');
+  assert.equal(choices.children.length,4,'four production towers can be chosen');
+  const bow=choices.children.find(b=>b.dataset.tower==='bow');
+  assert.ok(bow,'bow option appears at the touched slot');bow.onclick();
+  assert.equal(t.game.towers.length,1,'choosing a tower builds exactly once');
+  assert.equal(t.game.towers[0].kind,'bow');
+  assert.equal(t.game.essence,75);
+  const built=t.game.towers[0];t.game.hero.x=2800;t.game.hero.y=2800;
+  tap(built);
+  assert.equal(choices.children.length,3,'occupied pad opens tower management');
+  choices.children.find(b=>b.textContent.startsWith('ZIEL')).onclick();
+  assert.equal(built.targetMode,'strongest','tap actions target the selected tower even when hero is far away');
+});
 check('Level 1 uses fixed build pads and rejects occupied or off-pad placement',()=>{const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),true);t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,45);t.game.essence=100;t.buildTower();assert.equal(t.game.towers.length,1);t.game.hero.x=3060;t.game.hero.y=3060;t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,100);});
 check('Pause freezes simulation and clears held movement',()=>{listeners.keydown({code:'KeyD'});t.pauseGame();const x=t.game.hero.x;t.update(10);assert.equal(t.game.elapsed,0);assert.equal(t.game.hero.x,x);t.resumeGame();t.update(.01);assert.equal(t.game.hero.x,x);});
 check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.hero.x;listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);assert.ok(t.game.hero.x>x);listeners.keyup({code:'ArrowRight'});t.dodge();const x2=t.game.hero.x;t.update(.02);assert.ok(t.game.hero.x>x2);const cd=t.game.hero.dodgeCd;t.dodge();assert.equal(t.game.hero.dodgeCd,cd);});

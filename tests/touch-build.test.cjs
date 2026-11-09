@@ -5,14 +5,19 @@ const root=path.resolve(__dirname,'../dist');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const game=read('game.js'),levelsSource=read('levels.js'),lootUI=read('loot-ui.js'),lootCss=read('loot.css'),portraitCss=read('portrait-patch.css'),html=read('index.html');
 
-// Tap-to-build: touch only, playing only, drag threshold, modal and menu guards.
+// Tap-to-select: touch only, playing only, drag threshold, modal and menu guards.
 assert.match(game,/function buildTowerAt\(p\)\{/,'buildTowerAt must exist');
 assert.match(game,/function buildTower\(\)\{buildTowerAt\(towerPosition\(\)\);\}/,'the build button keeps delegating to the hero-facing slot');
-assert.match(game,/e\.pointerType==='mouse'\|\|state!=='playing'\|\|!tapDown/,'taps from a mouse or outside the playing state must never build');
-assert.match(game,/Math\.hypot\(e\.clientX-tapDown\.x,e\.clientY-tapDown\.y\)>14/,'drag gestures must not build');
+assert.match(game,/e\.pointerType==='mouse'\|\|state!=='playing'\|\|!tapDown/,'mouse or paused taps must not open build controls');
+assert.match(game,/Math\.hypot\(e\.clientX-tapDown\.x,e\.clientY-tapDown\.y\)>14/,'drag gestures must not open build controls');
 assert.match(game,/nearestSlot\(screenToWorld\(e\.clientX,e\.clientY\),game\.level,120\)/,'taps snap with a thumb-friendly radius');
 assert.match(game,/tapDown=null;\n    if\(document\.querySelector\('\.modal:not\(\.hidden\)'\)\)return;/,'an open modal must swallow taps after the drag check');
 assert.match(game,/const menu=\$\('hudMenu'\);if\(menu\?\.open\)return;/,'an open HUD menu must swallow taps');
+assert.match(game,/function openTouchBuildContext\(slot\)/,'free pads must open the tower selector');
+assert.match(game,/function openTouchTowerContext\(tower\)/,'existing towers must open targeted actions');
+assert.match(game,/if\(tower\)openTouchTowerContext\(tower\)/,'tower interaction takes priority over empty pad selection');
+assert.match(game,/else if\(slot\)openTouchBuildContext\(slot\)/,'taps on free pads select instead of buying');
+assert.doesNotMatch(game,/if\(slot\)buildTowerAt\(slot\)/,'one touch must never immediately spend essence');
 
 // Stable build controls: visible during play, dimmed without a build context.
 assert.match(game,/setHidden\(\$\('arsenal'\),!playing\)/,'the arsenal stays in place while playing');

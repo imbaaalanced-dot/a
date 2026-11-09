@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="portrait-home-v1.css?v=style2-portrait4" />
   <link rel="stylesheet" href="level-gallery.css?v=gallery-combined1" />
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
+  <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -36,6 +37,18 @@
       <div class="wave-seal"><small id="levelLabel">EINLEITUNG</small><strong id="wave">1</strong></div>
       <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu" id="hudMenu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Beute-Inventar öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2x umschalten" aria-pressed="false">TEMPO: 1×</button><button id="menuPauseBtn" class="icon-btn" aria-label="Spiel pausieren">PAUSE</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="Tester FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button></div></details></div>
     </header>
+
+    <section id="compactHud" class="compact-hud hidden" aria-label="Kompakter Kampfstatus">
+      <div class="compact-hud-values">
+        <span><small>LEBEN</small><b id="compactHp">100 / 100</b></span>
+        <span><small>DENKMAL</small><b id="compactMonument">500 / 500</b></span>
+        <span><small>ESSENZ</small><b id="compactEssence">0</b></span>
+        <span><small>WELLE</small><b id="compactWave">1</b></span>
+      </div>
+      <div class="compact-hud-bars"><span><i id="compactHpBar"></i></span><span><i id="compactMonumentBar"></i></span></div>
+      <div id="compactObjective" class="compact-objective hidden" aria-live="polite"></div>
+      <button id="mobileNextWaveBtn" class="compact-next-wave hidden" type="button">WELLE STARTEN</button>
+    </section>
 
     <section class="left-hud">
       <div class="hero-hud-name"><span id="heroHudPortrait" class="hud-portrait" aria-hidden="true"></span><div><strong id="heroDisplayName">MARCEL</strong><small id="heroGearLabel">Abendrot · Erinnerungslicht</small></div></div>
@@ -74,11 +87,15 @@
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
-      <button id="soulBtn" class="action-btn soul-action"><kbd>F</kbd><span id="soulText">SEELENRUF</span></button>
-      <button id="dodgeBtn" class="action-btn"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span></button>
+      <button id="soulBtn" class="action-btn soul-action" aria-label="Seelenruf"><kbd>F</kbd><span id="soulText">SEELENRUF</span><small class="compact-soul-charge" id="compactSoul">100%</small></button>
+      <button id="dodgeBtn" class="action-btn" aria-label="Ausweichen"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span></button>
       <button id="buildBtn" class="action-btn"><kbd>E</kbd><span id="buildText">BOGENTURM · 25</span></button>
       <button id="upgradeBtn" class="action-btn"><kbd>Q</kbd><span id="upgradeText">AUFWERTEN</span></button>
       <button id="sellBtn" class="action-btn"><kbd>X</kbd><span id="sellText">VERKAUFEN</span></button><button id="targetBtn" class="action-btn hidden"><kbd>T</kbd><span id="targetText">ZIEL · ERSTER</span></button>
+    </section>
+    <section id="touchContext" class="touch-context hidden" hidden aria-hidden="true" aria-label="Turm-Aktionen">
+      <div class="touch-context-heading"><strong class="touch-context-title">TURM BAUEN</strong><button class="touch-context-close" type="button" aria-label="Turmauswahl schließen">×</button></div>
+      <div class="touch-context-options"></div>
     </section>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div><div id="waveBanner" class="wave-banner" aria-live="polite"></div>
@@ -312,7 +329,8 @@
   <script src="portal-run.js?v=save2"></script>
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
-  <script src="game.js?v=v5-style2-mobilea1"></script>
+  <script src="touch-context-hud.js?v=v5hud2a1"></script>
+  <script src="game.js?v=v5-style2-hud2a1"></script>
   <script src="portrait-home-v1.js?v=style2-portrait2"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
