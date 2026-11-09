@@ -70,7 +70,7 @@
     }
     function card(item,equipped=false,slot){
       const b=button('',()=>{if(item.slot.startsWith('ring'))ringTarget=slot||item.slot;choose(item.id);},false,'loot-item'+(selected===item.id?' selected':'')+(equipped?' worn':''));
-      b.dataset.itemId=item.id;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
+      b.dataset.itemId=item.id;b.dataset.rarity=item.rarity;b.style.setProperty('--rarity',L.rarities[item.rarity].color);b.setAttribute('aria-pressed',String(selected===item.id));
       b.setAttribute('aria-label',`${item.name}, ${L.rarities[item.rarity].label}, ${L.slots[slot||item.slot]}, Stufe ${item.level}${item.favorite?', Favorit':''}${equipped?', angelegt':''}`);
       b.append(icon(slot||item.slot,false,item.power,item),el('strong','',item.name),el('small','',equipped?L.slots[slot]:`ST. ${item.level} · ${L.rarities[item.rarity].label}`));
       const target=slot||(selected===item.id&&item.slot.startsWith('ring')?ringTarget:item.slot);
@@ -85,7 +85,7 @@
       const kim=getHero()==='kim';
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
       $('lootHeroRole').textContent=kim?'DIE BEWAHRERIN':'DER BESCHÜTZER';
-      $('lootHeroPortrait').src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
+      $('lootHeroPortrait').src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
       $('lootHeroPortrait').alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
       const p={...model.profile,...model.view(getHero())},all=p.all,item=all.find(i=>i.id===selected);
       if(selected&&!item)selected=null;

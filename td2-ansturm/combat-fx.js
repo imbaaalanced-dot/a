@@ -124,7 +124,7 @@
   function updateDamage(game,dt){
     const list=game?.damageTexts;if(!list)return;
     for(const d of list){d.y+=d.vy*dt;d.vy*=Math.pow(.9,dt*60);d.life-=dt;}
-    game.damageTexts=list.filter(d=>d.life>0);
+    {let w=0;for(let i=0;i<list.length;i++){if(list[i].life>0)list[w++]=list[i];}list.length=w;game.damageTexts=list;}
   }
   function drawDamage(ctx,game){
     for(const d of game?.damageTexts||[]){const t=Math.max(0,d.life/d.maxLife);const pop=Math.min(1,(d.maxLife-d.life)*12);const scale=.6+.4*pop;

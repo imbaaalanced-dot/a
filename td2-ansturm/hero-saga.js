@@ -27,17 +27,32 @@
     ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 5 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Überstehe Welle 5 und beschütze das Denkmal.',reward:'NACH WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
+    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Bereite deine Verteidigung auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
     {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
-    {wave:16,id:'ending',kicker:'DIE WACHT BESTEHT',title:'Die Erinnerung bleibt.',text:'Marcel hat den Aschenkönig zurückgeschlagen. Das Denkmal steht. Die Wacht geht als endlose Herausforderung weiter.',objective:'Verstärke deine Verteidigung für die kommenden Wellen.',reward:'DIE NAMEN SIND FREI'}
+    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Das Kapitel entscheidet sich.',text:'Der Kapitelboss führt den letzten Angriff. Halte Türme, Hüter und Denkmal bis zum Ende dieser Welle stand.',objective:'Besiege den Kapitelboss und schließe alle 20 Wellen ab.',reward:'DIE NAMEN SIND FREI'}
   ];
-  const heroAtlas = new Image();
-  heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
-  const pixelMarcel = typeof URLSearchParams === 'function' && new URLSearchParams(globalThis.location?.search || '').get('td2PixelMarcel') === '1';
-  const walkAtlases={marcel:new Image(),kim:new Image()};
-  walkAtlases.marcel.src=pixelMarcel ? 'assets/hero/marcel-walk-reference-v1.webp?v=1' : 'assets/hero/marcel-walk-alpha9.webp?v=alpha9a1';
-  walkAtlases.kim.src='assets/hero/kim-walk-alpha8.webp?v=alpha8a2';
+  // A single on-demand movement atlas. The V5b 768x1024 sheets need only
+  // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
+  const walkPaths={
+    marcel:'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
+    kim:'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
+  };
+  let activeWalkActor=null,activeWalkImage=null,heroAtlas=null;
+  function walkAtlas(actor){
+    if(!walkPaths[actor])return null;
+    if(activeWalkActor!==actor){
+      activeWalkActor=actor;
+      activeWalkImage=new Image();activeWalkImage.decoding='async';
+      activeWalkImage.src=walkPaths[actor];
+      globalThis.TD2DirectionalActions?.preloadHeroSide?.(actor);
+    }
+    return activeWalkImage;
+  }
+  function legacyAtlas(){
+    if(!heroAtlas){heroAtlas=new Image();heroAtlas.src='assets/hero/marcel-lantern-sprite-v1.webp';}
+    return heroAtlas;
+  }
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
     up:[0,0],
@@ -89,6 +104,9 @@
   function chapter(wave) {
     const entry=story.find(s=>s.wave===wave);
     if(!entry||storySeen.has(entry.id))return false;
+    const kim=(api.getCharacter?.()||api.getGame?.()?.hero?.character)==='kim';
+    const portrait=$('storyPortrait');
+    if(portrait){portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';}
     stopVoice();storySeen.add(entry.id);currentStory=entry;
     api.setState('story');api.clearInput();
     $('storyKicker').textContent=entry.kicker;$('storyTitle').textContent=entry.title;
@@ -108,7 +126,7 @@
     const kim=(api.getCharacter?.()||h.character)==='kim';
     $('characterTitle').textContent=kim?'KIM':'MARCEL';
     const portrait=$('characterPortrait');
-    portrait.src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
+    portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
     portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
     $('characterStats').textContent=`${Math.round(s.damage)} Schaden · ${(1/s.rate).toFixed(1)} Angriffe/s · ${Math.round(s.speed)} Tempo`;
     $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?(kim?'HÜTERIN DER ERINNERUNG':'HÜTER DER ERINNERUNG'):(kim?'DIE BEWAHRERIN':'DER BESCHÜTZER')}`;
@@ -184,15 +202,16 @@
     }echoes=echoes.filter(e=>e.life>0);
   }
   function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,actor='marcel') {
-    const walk=walkAtlases[actor]||walkAtlases.marcel;
-    if(ready(walk)){
+    const walk=walkAtlas(actor);
+    if(ready(walk)&&walk.naturalWidth%3===0&&walk.naturalHeight%4===0&&walk.naturalWidth>=384&&walk.naturalHeight>=512){
       const width=walk.naturalWidth/3,height=walk.naturalHeight/4;
       const frame=walkTime>0&&!reduced?Math.floor(walkTime*9)%3:1;
       ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
       ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
       ctx.restore();return true;
     }
-    if(ready(heroAtlas)){
+    // Legacy lantern art is Marcel-only; never render a male sprite for Kim.
+    if(actor==='marcel'&&ready(legacyAtlas())){
       const [sx,sy]=heroCells[direction]||heroCells.down;
       ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
       ctx.drawImage(heroAtlas,sx,sy,128,128,-size/2,12-size,size,size);
@@ -213,7 +232,8 @@
     ctx.translate(0,bob);if(!reduced&&h.dodge>0)ctx.rotate((h.faceX||0)*.14);
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
-    if(!globalThis.TD2DirectionalActions?.hero(ctx,h,attackTime,reduced,animationTime)&&!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced,animationTime)&&!drawSprite(ctx,0,0,direction,1,90,h.character)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    const action=(h.hp<=0||h.hitFlash>0||attackTime>0)&&globalThis.TD2DirectionalActions?.hero(ctx,h,attackTime,reduced,animationTime);
+    if(!action&&!drawSprite(ctx,0,0,direction,1,90,h.character)&&!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced,animationTime)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;
@@ -223,7 +243,7 @@
     }
     if(h.equipment.weapon==='echo'){ctx.fillStyle='#a4ffed';ctx.beginPath();ctx.arc((h.faceX||0)*25,-24+(h.faceY||0)*14,3,0,Math.PI*2);ctx.fill();}
     ctx.restore();
-    for(const echo of echoes)drawSprite(ctx,h.x+Math.cos(echo.angle)*70,h.y+Math.sin(echo.angle)*42,direction,Math.min(.42,echo.life*.42),78);
+    for(const echo of echoes)drawSprite(ctx,h.x+Math.cos(echo.angle)*70,h.y+Math.sin(echo.angle)*42,direction,Math.min(.42,echo.life*.42),78,h.character);
     if(pulse){ctx.save();ctx.globalAlpha=pulse.life/pulse.max;ctx.strokeStyle='#9affdf';ctx.lineWidth=4;ctx.beginPath();ctx.arc(pulse.x,pulse.y,reduced?270:270*(1-pulse.life/pulse.max),0,Math.PI*2);ctx.stroke();ctx.restore();}
   }
   function updateUI() {

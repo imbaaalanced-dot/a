@@ -24,7 +24,10 @@
     const sw=img.naturalWidth,sh=img.naturalHeight,sx=0,sy=0;
     const width=height*sw/sh;ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.globalAlpha*=opacity;ctx.drawImage(img,sx,sy,sw,sh,-width/2,12-height,width,height);ctx.restore();return true;
   }
-  function crownOpacity(tree,actors){return actors.some(a=>Math.hypot(a.x-tree.x,a.y-tree.y)<tree.r+25)?.25:1;}
+  function crownOpacity(tree,actors,shielded){
+    if(shielded?.some(a=>Math.hypot(a.x-tree.x,a.y-tree.y)<tree.r+30))return 0;
+    return actors.some(a=>Math.hypot(a.x-tree.x,a.y-tree.y)<tree.r+25)?.25:1;
+  }
   // Photo-derived atmosphere, not a surveyed reconstruction. Gameplay coordinates stay separate.
   const trees=[[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
   const shrubs=[[-90,195,45],[-95,260,45],[-95,325,45],[95,195,32],[95,255,32],[95,315,32],[-555,-310,65],[-360,-505,72],[360,-200,60],[520,-385,80],[-580,75,75],[535,90,75]];
@@ -41,7 +44,7 @@
     }
     for(let i=0;i<2800;i++){const x=-136+(i*73%270),y=-96+(i*131%220);q.fillStyle=i%2?'#bbb18a1c':'#40523924';q.fillRect(x,y,1+i%3,1);}
     // Low stone edging, worn joints and three shallow treads at the paved approach.
-    q.strokeStyle='#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
+    q.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
     for(let i=0;i<3;i++){
       q.fillStyle='#383e3388';q.fillRect(-44,138+i*11,128,11);
       q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-44,134+i*11,128,8);
@@ -77,7 +80,7 @@
       q.beginPath();q.ellipse(x,y,1+random()*4,.7+random()*2,random()*Math.PI,0,Math.PI*2);q.fill();
     }
     const dapple=q.createRadialGradient(-115,-90,6,-115,-90,186);
-    dapple.addColorStop(0,'#f1bd7522');
+    dapple.addColorStop(0,globalThis.TD2Style2Materials?.warmLight||'#f1bd7522');
     dapple.addColorStop(.55,'#cfa5650c');
     dapple.addColorStop(1,'#f1bd7500');
     q.fillStyle=dapple;q.fillRect(-140,-100,280,232);
@@ -190,7 +193,7 @@
     }
     ctx.drawImage(sprite,x-30,y-30);
   }
-  function drawScenery(ctx,center,actors,{crowns=false,low=false}={}){
+  function drawScenery(ctx,center,actors,{crowns=false,low=false,shielded=null}={}){
     ctx.save();ctx.translate(center.x,center.y);
     if(!crowns){
       // Village-edge hints remain outside the clearing, partly screened by vegetation.
@@ -208,8 +211,8 @@
         ctx.strokeStyle='#68694d';ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(x,y+9);ctx.lineTo(x-18+i*18,y+24+Math.abs(i-1)*5);ctx.stroke();}
       }
     }else{
-      shrubs.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors);globalThis.DenkmalForest?.drawShrub(ctx,x,y,r,i);});
-      trees.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors);if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){ctx.fillStyle='#506241';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();}});
+      shrubs.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);globalThis.DenkmalForest?.drawShrub(ctx,x,y,r,i);});
+      trees.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){ctx.fillStyle='#506241';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();}});
     }
     ctx.restore();
   }

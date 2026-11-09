@@ -1,5 +1,5 @@
 import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=menu4';
-import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1';import {renderArena} from './render.js?v=v410a1';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1';import {sprite} from './sprites.js';
+import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=v5-style2a1';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v5-style2a1';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=document.hidden,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return null}})();
 let savedRun=readRun(storage), pendingStart=false, lastSaveTime=0;
 const storageWarning='Fortsetzen kann auf diesem Gerät gerade nicht gespeichert werden.';

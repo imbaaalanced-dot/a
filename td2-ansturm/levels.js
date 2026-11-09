@@ -5,7 +5,7 @@
   const gates=[point(0,-600),point(600,0),point(0,600),point(-600,0)];
   const maze=[[-440,-440],[440,-440],[440,440],[-440,440],[-440,-160],[180,-160],[180,180],[0,180],[0,0]].map(([x,y])=>point(x,y));
   function segmentDistance(p,a,b){const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1)));return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);}
-  function pathDistance(p,path){return Math.min(...path.slice(1).map((b,i)=>segmentDistance(p,path[i],b)));}
+  function pathDistance(p,path){let best=Infinity;for(let i=1;i<path.length;i++)best=Math.min(best,segmentDistance(p,path[i-1],path[i]));return best;}
   const laneSlots=[];
   for(const gate of gates){
     const dx=center.x-gate.x,dy=center.y-gate.y,length=Math.hypot(dx,dy),nx=-dy/length,ny=dx/length;
@@ -126,7 +126,16 @@
     if(Math.hypot(x,y)>=190&&westhofenPaths.every(path=>pathDistance(p,path)>=90)&&
       westhofenSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>=115))westhofenSlots.push(p);
   }
-  function getWaveGates(level,wave){
+  function getWaveGates(level,wave,mode){
+    const p=mode==='campaign'?globalThis.DenkmalCampaign20?.describe(level,wave,'campaign'):null;
+    if(p){
+      // Expand the historic approach lanes during each 20-wave chapter.
+      if(level===3||level===4){
+        const n=p.localWave<=3?2:p.localWave<=7?3:4;
+        return [0,1,2,3].slice(0,n);
+      }
+      if(level===5||level===7)return p.localWave<=3?[0,1]:[0,1,2];
+    }
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
     if(level===7)return wave===25?[0,1]:[0,1,2];
     if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
@@ -159,7 +168,7 @@
   function completeLevel5(){return saveFlag('level5');}
   function completeLevel6(){return saveFlag('level6');}
   function completeLevel7(){return saveFlag('level7');}
-  function nearestSlot(p,level=2){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=88?best:null;}
+  function nearestSlot(p,level=2,radius=88){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=radius?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
   globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,completeLevel7,get level5Completed(){return progress.level5;},get level6Completed(){return progress.level6;},get level7Completed(){return progress.level7;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return progress.level4;},get unlocked(){return progress.level2;},get storageAvailable(){return storageAvailable;}};
 })();

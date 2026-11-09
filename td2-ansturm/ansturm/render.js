@@ -1,5 +1,5 @@
-import {sprite} from './sprites.js';
-import {ENEMY} from './config.js';import {getStats} from './model.js?v=v410a1';
+import {sprite} from './sprites.js?v=v5-style2a1';
+import {ENEMY} from './config.js';import {getStats} from './model.js?v=v410a1sim1';
 export function renderArena(ctx,s,{width,height,pixelRatio=1}){const dpr=Math.min(2,pixelRatio),c=ctx.canvas;if(c.width!==Math.round(width*dpr)||c.height!==Math.round(height*dpr)){c.width=Math.round(width*dpr);c.height=Math.round(height*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);const w=width,h=height,cx=w/2,cy=h/2,unit=Math.min(w*.44,h*.44);ctx.clearRect(0,0,w,h);
 let grad=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*.75);grad.addColorStop(0,'#34403e');grad.addColorStop(1,'#111923');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
 // The floor is screen anchored: scaling it with the world unit would repeat hard seams.

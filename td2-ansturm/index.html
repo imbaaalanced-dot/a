@@ -10,15 +10,19 @@
   <meta name="description" content="Verteidige als Marcel der Denkmalschützer das Denkmal: vier Tore, vier Turmrollen, sechs Gegnertypen und ein Labyrinth." />
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
-  <link rel="stylesheet" href="polish.css?v=alpha9a1" />
-  <link rel="stylesheet" href="loot.css?v=icons2" />
+  <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
+  <link rel="stylesheet" href="loot.css?v=contrastglow1" />
   <link rel="stylesheet" href="menu.css?v=menu-v3-redesign" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
-  <link rel="stylesheet" href="portrait-patch.css?v=v400a6hud2" />
+  <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
   <link rel="stylesheet" href="portal-ui.css?v=expansion2" />
-  <link rel="stylesheet" href="portrait-home-v1.css?v=style2-portrait3" />
+  <link rel="stylesheet" href="portrait-home-v1.css?v=style2-portrait4" />
   <link rel="stylesheet" href="level-gallery.css?v=gallery-combined1" />
+  <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
+  <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
+  <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
+<style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -35,6 +39,18 @@
       <div class="wave-seal"><small id="levelLabel">EINLEITUNG</small><strong id="wave">1</strong></div>
       <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu" id="hudMenu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Beute-Inventar öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2x umschalten" aria-pressed="false">TEMPO: 1×</button><button id="menuPauseBtn" class="icon-btn" aria-label="Spiel pausieren">PAUSE</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="Tester FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button></div></details></div>
     </header>
+
+    <section id="compactHud" class="compact-hud hidden" aria-label="Kompakter Kampfstatus">
+      <div class="compact-hud-values">
+        <span><small>LEBEN</small><b id="compactHp">100 / 100</b></span>
+        <span><small>DENKMAL</small><b id="compactMonument">500 / 500</b></span>
+        <span><small>ESSENZ</small><b id="compactEssence">0</b></span>
+        <span><small>WELLE</small><b id="compactWave">1</b></span>
+      </div>
+      <div class="compact-hud-bars"><span><i id="compactHpBar"></i></span><span><i id="compactMonumentBar"></i></span></div>
+      <div id="compactObjective" class="compact-objective hidden" aria-live="polite"></div>
+      <button id="mobileNextWaveBtn" class="compact-next-wave hidden" type="button">WELLE STARTEN</button>
+    </section>
 
     <section class="left-hud">
       <div class="hero-hud-name"><span id="heroHudPortrait" class="hud-portrait" aria-hidden="true"></span><div><strong id="heroDisplayName">MARCEL</strong><small id="heroGearLabel">Abendrot · Erinnerungslicht</small></div></div>
@@ -73,11 +89,15 @@
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
-      <button id="soulBtn" class="action-btn soul-action"><kbd>F</kbd><span id="soulText">SEELENRUF</span></button>
-      <button id="dodgeBtn" class="action-btn"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span></button>
+      <button id="soulBtn" class="action-btn soul-action" aria-label="Seelenruf"><kbd>F</kbd><span id="soulText">SEELENRUF</span><small class="compact-soul-charge" id="compactSoul">100%</small></button>
+      <button id="dodgeBtn" class="action-btn" aria-label="Ausweichen"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span></button>
       <button id="buildBtn" class="action-btn"><kbd>E</kbd><span id="buildText">BOGENTURM · 25</span></button>
       <button id="upgradeBtn" class="action-btn"><kbd>Q</kbd><span id="upgradeText">AUFWERTEN</span></button>
       <button id="sellBtn" class="action-btn"><kbd>X</kbd><span id="sellText">VERKAUFEN</span></button><button id="targetBtn" class="action-btn hidden"><kbd>T</kbd><span id="targetText">ZIEL · ERSTER</span></button>
+    </section>
+    <section id="touchContext" class="touch-context hidden" hidden aria-hidden="true" aria-label="Turm-Aktionen">
+      <div class="touch-context-heading"><strong class="touch-context-title">TURM BAUEN</strong><button class="touch-context-close" type="button" aria-label="Turmauswahl schließen">×</button></div>
+      <div class="touch-context-options"></div>
     </section>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div><div id="waveBanner" class="wave-banner" aria-live="polite"></div>
@@ -91,7 +111,7 @@
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
         <div class="menu-content">
           <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/hero-banner-marcel-v3.webp" width="1440" height="720" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
@@ -116,25 +136,25 @@
               <button id="menuArcadeBtn" class="campaign-endless-link" type="button" aria-controls="endlessMenu">Endlos verteidigen <span aria-hidden="true">∞ ›</span></button>
               <div class="map-card-list">
                 <button id="startBtn" class="map-card map-card-primary" type="button">
-                  <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Tutorial · Vier Tore · Wellen 1–5</span></span><span class="map-arrow" aria-hidden="true">➜</span>
+                  <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Tutorial · Vier Tore · 20 Wellen</span></span><span class="map-arrow" aria-hidden="true">➜</span>
                 </button>
                 <button id="level2Btn" class="map-card" type="button" disabled>
-                  <span class="map-number">02</span><span class="map-copy"><small>KAPITEL II · LEVEL 2</small><strong>DAS LABYRINTH</strong><span>Wellen 6–8 · Verteidige die Wegkreuzung</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">02</span><span class="map-copy"><small>KAPITEL II · LEVEL 2</small><strong>DAS LABYRINTH</strong><span>20 Wellen · Verteidige die Wegkreuzung</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="level3Btn" class="map-card map-card-kirchende" type="button" disabled>
                   <span class="map-number">03</span><span class="map-copy"><small>KAPITEL III · LEVEL 3</small><strong>KRIEGERDENKMAL KIRCHENDE</strong><span>Wurzeln, Steinwacht und der Hainkern</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="level4Btn" class="map-card map-card-kirchende" type="button" disabled>
-                  <span class="map-number">04</span><span class="map-copy"><small>KAPITEL IV · LEVEL 4</small><strong>ENDER DORFKIRCHE</strong><span>Schlafender Löwe · Kirchhof · Wellen 13–16</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">04</span><span class="map-copy"><small>KAPITEL IV · LEVEL 4</small><strong>ENDER DORFKIRCHE</strong><span>Schlafender Löwe · Kirchhof · 20 Wellen</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="level5Btn" class="map-card map-card-kirchende" type="button" disabled>
-                  <span class="map-number">05</span><span class="map-copy"><small>KAPITEL V · LEVEL 5</small><strong>HOHENSYBURG</strong><span>Kaiser-Wilhelm-Denkmal · Terrasse + Luftangriff · Wellen 17–20</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">05</span><span class="map-copy"><small>KAPITEL V · LEVEL 5</small><strong>HOHENSYBURG</strong><span>Kaiser-Wilhelm-Denkmal · Terrasse + Luftangriff · 20 Wellen</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="level6Btn" class="map-card map-card-kirchende" type="button" disabled>
-                  <span class="map-number">06</span><span class="map-copy"><small>KAPITEL VI · LEVEL 6</small><strong>HERDECKE GOETHESTRASSE</strong><span>Ehrenmal · Drei Wege + Luftangriff · Wellen 21–24</span><span>Nach Hohensyburg</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">06</span><span class="map-copy"><small>KAPITEL VI · LEVEL 6</small><strong>HERDECKE GOETHESTRASSE</strong><span>Ehrenmal · Drei Wege + Luftangriff · 20 Wellen</span><span>Nach Hohensyburg</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="level7Btn" class="map-card map-card-kirchende" type="button" disabled>
-                  <span class="map-number">07</span><span class="map-copy"><small>KAPITEL VII · LEVEL 7</small><strong>KRIEGERDENKMAL WESTHOFEN</strong><span>Geflügelter Helm · Zwei Straßenzuläufe + Luftangriff · Wellen 25–28</span><span>Nach Goethestraße</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">07</span><span class="map-copy"><small>KAPITEL VII · LEVEL 7</small><strong>KRIEGERDENKMAL WESTHOFEN</strong><span>Geflügelter Helm · Zwei Straßenzuläufe + Luftangriff · 20 Wellen</span><span>Nach Goethestraße</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
               </div>
             </section>
@@ -151,16 +171,16 @@
                   <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 3</small><strong>KIRCHENDE</strong><span>Unbegrenzte Wellen · Endlosmodus</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="endless4Btn" class="map-card map-card-endless" type="button" disabled>
-                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 4</small><strong>DORFKIRCHE &amp; LÖWE</strong><span>Nach Welle 16 freischaltbar</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 4</small><strong>DORFKIRCHE &amp; LÖWE</strong><span>Nach Kapitelwelle 20 freischaltbar</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="endless5Btn" class="map-card map-card-endless" type="button" disabled>
-                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 5</small><strong>HOHENSYBURG</strong><span>Nach Welle 20 · Bergterrasse und Flugmonster</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 5</small><strong>HOHENSYBURG</strong><span>Nach Kapitelwelle 20 · Bergterrasse und Flugmonster</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="endless6Btn" class="map-card map-card-endless" type="button" disabled>
-                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 6</small><strong>GOETHESTRASSE</strong><span>Nach Welle 24 · Boden- und Luftgegner</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 6</small><strong>GOETHESTRASSE</strong><span>Nach Kapitelwelle 20 · Boden- und Luftgegner</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
                 <button id="endless7Btn" class="map-card map-card-endless" type="button" disabled>
-                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 7</small><strong>WESTHOFEN</strong><span>Nach Welle 28 · Boden- und Luftgegner</span></span><span class="map-status" data-map-status>GESPERRT</span>
+                  <span class="map-number">∞</span><span class="map-copy"><small>ENDLOS · LEVEL 7</small><strong>WESTHOFEN</strong><span>Nach Kapitelwelle 20 · Boden- und Luftgegner</span></span><span class="map-status" data-map-status>GESPERRT</span>
                 </button>
               </div>
             </section>
@@ -181,6 +201,7 @@
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+            <button id="menuDeveloperBtn" class="icon-btn" type="button" aria-pressed="false">DEVELOPER-MODUS: AUS</button>
             <details class="menu-save-details"><summary>Spielstand &amp; Speicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Deine Sammlung wird auf diesem Gerät gespeichert. Export und Import findest du in der Rüstkammer.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
@@ -194,7 +215,7 @@
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
-        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span></footer>
+        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · ALPHA · 2026-11-09</span></footer>
       </div>
     </section>
 
@@ -208,7 +229,7 @@
         </div>
         <button id="lootDetailBackdrop" class="loot-detail-backdrop" type="button" aria-label="Gegenstandsvergleich schließen" hidden></button>
         <div class="loot-columns">
-          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
+          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
           <section id="lootBagPanel" class="loot-panel loot-bag" role="tabpanel" aria-labelledby="lootBagTab"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="upgrades">↑ Verbesserungen</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSlotFilter" aria-label="Ausrüstungsplatz filtern"><option value="all">Alle Plätze</option><option value="weapon">Waffen</option><option value="head">Kopf</option><option value="armor">Rüstungen</option><option value="gloves">Handschuhe</option><option value="boots">Stiefel</option><option value="amulet">Amulette</option><option value="rings">Ringe</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Sammlung durchsehen – einschließlich Ausrüstung beider Helden · Gegenstand antippen zum Vergleichen</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
           <aside class="loot-panel" id="lootDetail" role="region" tabindex="-1" aria-label="Gegenstandsvergleich"></aside>
         </div>
@@ -218,7 +239,7 @@
     </section>
 
     <section id="storyScreen" class="modal story-screen hidden" role="dialog" aria-modal="true" aria-labelledby="storyTitle">
-      <div class="story-card"><div class="story-portrait"><img src="assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1" alt="Marcel"/></div><div class="story-copy">
+      <div class="story-card"><div class="story-portrait"><img id="storyPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer"/></div><div class="story-copy">
         <p class="eyebrow" id="storyKicker"></p><h2 id="storyTitle"></h2><p id="storyBody"></p><blockquote id="storyQuote"></blockquote>
         <p id="storyReward" class="story-reward"></p><p id="storyObjective" class="story-objective"></p>
         <div class="story-actions"><button id="storyContinue" class="primary">WEITER ZUR WACHT</button><button id="storyReplay" class="icon-btn">ANHÖREN</button><button id="voiceBtn" class="icon-btn" aria-pressed="false">STIMME: AUS</button></div>
@@ -228,7 +249,7 @@
 
     <section id="characterScreen" class="modal character-screen hidden" role="dialog" aria-modal="true" aria-labelledby="characterTitle">
       <div class="character-shell"><header class="character-header"><div><p class="eyebrow" id="characterLevel"></p><h2 id="characterTitle">MARCEL</h2></div><button id="characterClose" class="icon-btn">ZURÜCK <kbd>H / ESC</kbd></button></header>
-        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
+        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
           <div class="character-detail"><div class="character-tabs" role="tablist" aria-label="Heldendetails"><button id="equipmentTab" role="tab" aria-controls="equipmentPanel" aria-selected="true">KAMPFPROFIL</button><button id="journalTab" role="tab" aria-controls="journalPanel" aria-selected="false">CHRONIK</button></div>
             <div id="equipmentPanel" role="tabpanel" aria-labelledby="equipmentTab"><p class="gear-hint">Kampfwerte und Chronik werden hier angezeigt. Beute und Ausrüstung findest du im Hauptmenü unter BEUTE &amp; AUSRÜSTUNG.</p><div id="gearGrid"></div></div>
             <div id="journalPanel" class="hidden" role="tabpanel" aria-labelledby="journalTab"><div id="journalEntries"></div></div>
@@ -270,46 +291,106 @@
     </section>
   </main>
   <script src="persisted-state.js?v=save1"></script>
-  <script src="levels.js?v=level7b"></script>
+  <script src="campaign-20-wave-plan.js?v=campaign20-runtime1"></script>
+  <script src="levels.js?v=level7btouch1campaign20"></script>
   <script src="visuals.js?v=expansion2"></script>
   <script src="equipment-catalog.js?v=loot-v2-20261029"></script>
   <script src="loot.js?v=loot-v2-20261029"></script>
   <script src="v2-expansion-data.js?v=expansion2"></script>
   <script src="directional-assets-v410.js?v=v410a1"></script>
-  <script src="directional-actions-v410.js?v=v410a1"></script>
+  <script src="directional-hero-assets-v5.js?v=v5-heroes-b1"></script>
+  <script src="directional-actions-v410.js?v=v5-heroes-b1"></script>
   <script src="v2-expansion.js?v=v410a1"></script>
-  <script src="loot-ui.js?v=loot-v2-20261029"></script>
-  <script src="hero-saga.js?v=v410a1"></script>
+  <script src="loot-ui.js?v=v5-style2a1"></script>
+  <script src="hero-saga.js?v=v5-heroes-b1"></script>
   <script src="combat-fx.js?v=v400a6s2t5"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
   <script src="elemental-sprites.js?v=alpha8a2"></script>
   <script src="style2-impact-atlas.js?v=reference-refresh-1"></script>
-  <script src="style2-user-towers.js?v=reference-refresh-1"></script>
+  <script src="style2-user-towers.js?v=v5-style2a1"></script>
   <script src="enemy-animations.js?v=v410a1"></script>
   <script src="style2-towers.js?v=v400a6elemental1"></script>
   <script src="style2-maps.js?v=v400a6markers1"></script>
   <script src="kirchende-combat.js?v=v400a5combined1"></script>
   <script src="terrain-polish.js?v=v400a6s2ground3"></script>
   <script src="forest-crowns.js?v=v400a6s2foliage4"></script>
-  <script src="kirchende-art.js?v=v400a6s2polish5"></script>
-  <script src="church-art.js?v=alpha8a2"></script>
+  <script src="style2-environment-palette.js?v=v5-style2a1"></script>
+  <script src="kirchende-art.js?v=v5-style2a1"></script>
+  <script src="church-art.js?v=v5-style2a1"></script>
   <script src="style2-level4-reference.js?v=ref4a1"></script>
   <script src="style2-phase6.js?v=alpha9a5"></script>
   <script src="style2-markers.js?v=markers2"></script>
   <script src="style2-ambience.js?v=alpha9a2"></script>
   <script src="flight-enemies.js?v=flight2"></script>
   <script src="goethestrasse.js?v=goethe2"></script>
-  <script src="goethestrasse-art.js?v=goethe1"></script>
+  <script src="goethestrasse-art.js?v=v5-style2a1"></script>
   <script src="westhofen.js?v=westhofen2"></script>
-  <script src="westhofen-art.js?v=westhofen-v44-originalfotos"></script>
+  <script src="westhofen-art.js?v=v5-style2a1"></script>
   <script src="hohensyburg.js?v=syburg-balance2"></script>
-  <script src="hohensyburg-art.js?v=alpha9a3"></script>
+  <script src="hohensyburg-art.js?v=v5-style2a1"></script>
   <script src="campaign-balance.js?v=portal1"></script>
   <script src="portal-run.js?v=save2"></script>
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
-  <script src="game.js?v=v410a1perf1"></script>
-  <script src="portrait-home-v1.js?v=style2-portrait1"></script>
-  <script src="level-gallery.js?v=gallery-combined1"></script>
+  <script src="touch-context-hud.js?v=v5hud2a1"></script>
+  <script src="game.js?v=v5-style2-hud2a1"></script>
+  <script src="portrait-home-v1.js?v=style2-portrait2"></script>
+  <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
+  <script src="level-gallery.js?v=v5-style2a1"></script>
+<script id="td2-android-developer-toggle">
+(function(){
+  'use strict';
+  const KEY='td2_developer_mode_enabled';
+  const HOLD=3000;
+  let timer=null, activated=false, startX=0, startY=0, audio=null;
+  const logo=document.querySelector('#startScreen .menu-wordmark');
+  if(!logo)return;
+  const optionButton=document.getElementById('menuDeveloperBtn');
+  logo.style.touchAction='manipulation';
+  logo.style.userSelect='none';
+  logo.setAttribute('title','3 Sekunden halten: Entwicklermodus');
+  function clear(){if(timer!==null){clearTimeout(timer);timer=null;}}
+  function beep(){
+    try{
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
+      audio=audio||new C();
+      if(audio.state==='suspended')audio.resume();
+      const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
+      o.type='sine';o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(780,t+.18);
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+.25);
+      o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.26);
+    }catch(e){}
+  }
+  function notify(message){
+    let el=document.getElementById('td2DevToast');
+    if(!el){el=document.createElement('div');el.id='td2DevToast';el.setAttribute('role','status');el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+    Object.assign(el.style,{position:'fixed',top:'max(18px,env(safe-area-inset-top))',left:'50%',transform:'translateX(-50%)',zIndex:'2147483647',padding:'14px 20px',background:'#14231d',border:'1px solid #d6b36c',borderRadius:'12px',color:'#f5e6bf',font:'700 15px system-ui',boxShadow:'0 8px 32px #000a',pointerEvents:'none',whiteSpace:'nowrap'});
+    el.textContent=message;el.hidden=false;
+    clearTimeout(el._hide);el._hide=setTimeout(()=>{el.hidden=true;},2200);
+  }
+  function render(){if(optionButton){optionButton.textContent='DEVELOPER-MODUS: '+(window.TD2DeveloperMode?'AN':'AUS');optionButton.setAttribute('aria-pressed',String(!!window.TD2DeveloperMode));}}
+  function toggle(){
+    activated=true;
+    const next=localStorage.getItem(KEY)!=='true';
+    try{localStorage.setItem(KEY,String(next));}catch(e){}
+    window.TD2DeveloperMode=next;
+    render();beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
+    window.dispatchEvent(new CustomEvent('td2:developer-mode',{detail:{enabled:next}}));
+  }
+  try{window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';}catch(e){window.TD2DeveloperMode=false;}
+  render();
+  if(optionButton)optionButton.addEventListener('click',toggle);
+  logo.addEventListener('pointerdown',e=>{
+    if(e.button!==0&&e.pointerType==='mouse')return;
+    clear();activated=false;startX=e.clientX;startY=e.clientY;
+    timer=setTimeout(()=>{timer=null;toggle();},HOLD);
+  });
+  logo.addEventListener('pointermove',e=>{if(Math.hypot(e.clientX-startX,e.clientY-startY)>16)clear();});
+  ['pointerup','pointercancel','pointerleave'].forEach(name=>logo.addEventListener(name,clear));
+  logo.addEventListener('contextmenu',e=>{e.preventDefault();});
+  logo.addEventListener('click',e=>{if(activated){e.preventDefault();e.stopPropagation();activated=false;}},true);
+})();
+</script>
 </body>
 </html>
