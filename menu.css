@@ -427,3 +427,8 @@ a.menu-art-button{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){
   #startScreen .menu-command,#startScreen .menu-command-mark,#startScreen .menu-command-arrow{animation:none!important;transition:none!important}
 }
+
+/* TD2 V5: Kim & Marcel shared artwork stays decorative; buttons remain native HTML. */
+#startScreen .menu-hero-figure{background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/kim-marcel-command-hub-v5.webp");background-position:center,center 19%;background-size:cover,cover}
+#startScreen .menu-hero-figure .hero-menu-banner{opacity:0;pointer-events:none}
+@media(max-width:700px){#startScreen .menu-hero-figure{background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/kim-marcel-command-hub-v5.webp");background-position:center,center 17%;background-size:cover,cover}}
