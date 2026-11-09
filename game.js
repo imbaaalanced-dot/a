@@ -291,6 +291,32 @@
   }
 
   let developerMode=false;
+  // Brief synthesized activation cue, generated locally without downloading audio assets.
+  function playDeveloperActivationSound(){
+    try{
+      const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+      if(!AudioContextClass)return;
+      const ctx=new AudioContextClass();
+      const start=ctx.currentTime;
+      const tones=[523.25,659.25,987.77];
+      tones.forEach((frequency,index)=>{
+        const oscillator=ctx.createOscillator();
+        const gain=ctx.createGain();
+        const at=start+index*0.085;
+        oscillator.type='sine';
+        oscillator.frequency.setValueAtTime(frequency,at);
+        gain.gain.setValueAtTime(0.0001,at);
+        gain.gain.exponentialRampToValueAtTime(0.075,at+0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001,at+0.17);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(at);
+        oscillator.stop(at+0.18);
+      });
+      const closeAfter=tones.length*0.085+0.25;
+      window.setTimeout(()=>{ctx.close().catch(()=>{});},Math.ceil(closeAfter*1000));
+    }catch(_error){/* Audio is optional; developer mode still works when muted or blocked. */}
+  }
   function devMenu(){
     let p=document.getElementById('td2DevMenu');
     if(!p){
@@ -299,7 +325,7 @@
       p.innerHTML='<h2>DEV MODE · TEST</h2><p>Nur diese Sitzung. Keine Änderung der Level-Freischaltungen im Spielstand.</p><p id="td2DevStatus"></p><div id="td2DevLevels" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div><p><button id="td2DevToggle">Modus umschalten</button> <button id="td2DevClose">Schließen</button></p>';
       document.body.append(p);
       for(let level=1;level<=7;level++){const b=document.createElement('button');b.textContent='Level '+level;b.onclick=()=>{if(!developerMode&&level!==1)return;p.hidden=true;startGame(level);};document.getElementById('td2DevLevels').append(b);}
-      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;menuStatus();devMenu();};
+      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;if(developerMode)playDeveloperActivationSound();menuStatus();devMenu();};
       document.getElementById('td2DevClose').onclick=()=>p.hidden=true;
       p.querySelectorAll('button').forEach(b=>b.style.cssText='min-height:48px;padding:10px;border:1px solid #b99a58;border-radius:8px;background:#27343a;color:white;font:inherit');
     }
