@@ -1,0 +1,40 @@
+name: TD2 HUD 2.0 Chromium QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/game.js'
+      - 'dist/index.html'
+      - 'dist/combat-hud-v2.css'
+      - 'dist/touch-context-hud.js'
+      - 'tools/verify-hud2-browser.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Core HUD and mobile gameplay regressions
+        run: |
+          node tests/context-hud.test.cjs
+          node tests/touch-build.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Install Chromium and run desktop/mobile visual smoke
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+          node tools/verify-hud2-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: td2-hud2-browser-screenshots
+          path: /tmp/td2-hud2-qa
