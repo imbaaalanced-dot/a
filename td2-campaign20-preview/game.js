@@ -268,10 +268,10 @@
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/(zoom*viewDepth)+camera.y};}
   function resize(pauseOnResize=true){
     W=innerWidth;H=innerHeight;
-    const cap=graphicsMode==='high'?1.75:qualityTier==='high'?(mobileRender?1:1.5):qualityTier==='medium'?(mobileRender?1:1.25):.85;
+    const cap=graphicsMode==='high'?1.75:qualityTier==='high'?(mobileRender?1:1.5):qualityTier==='medium'?(mobileRender?.85:1.25):mobileRender?.70:.85;
     // A tall phone can otherwise allocate several million canvas pixels even at DPR 1.
     // Choose the buffer size when the viewport/mode changes; never resize it in the render loop.
-    const pixelBudget=mobileRender?(qualityTier==='high'?2000000:qualityTier==='medium'?900000:550000):Infinity;
+    const pixelBudget=mobileRender?(qualityTier==='high'?1400000:qualityTier==='medium'?650000:320000):Infinity;
     dpr=Math.min(cap,devicePixelRatio||1,Math.sqrt(pixelBudget/Math.max(1,W*H)))*(graphicsMode==='auto'&&mobileRender?adaptiveScale:1);
     zoom=zoomForMode();$('app').classList.toggle('portrait',portraitLayout());
     const pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);
