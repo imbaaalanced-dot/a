@@ -14,7 +14,7 @@ assert.ok(html.includes('<meta name="application-version" content="v4.1.0-alpha.
 // and the expected key updated here; unchanged files keep their existing keys.
 const expectedVersions = new Map([
   ['directional-assets-v410.js','v410a1'],
-  ['directional-actions-v410.js','v410a1'],
+  ['directional-actions-v410.js','v5-heroes-b1'],
   ['map-polish-v410.js','v410a1'],
   ['styles.css', 'v400a4merge1'],
   ['hero.css', 'v400a4merge1'],
@@ -41,8 +41,8 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'v5-style2a1'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
-  ['hero-saga.js', 'v5style2a1'],
-  ['directional-hero-assets-v5.js','v5-hero-actions-a1'],
+  ['hero-saga.js', 'v5-heroes-b1'],
+  ['directional-hero-assets-v5.js','v5-heroes-b1'],
   ['combat-fx.js', 'v400a6s2t5'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],

@@ -58,6 +58,26 @@ function draw(ctx,actor,kind,facing,progress,x,y,height,options={}){
   return true;
  }catch{return false;}finally{ctx.restore();}
 }
+function drawHeroSide(ctx,actor,kind,facing,progress,x,y,height,options={}){
+ const spec=globalThis.TD2HeroSideAssets?.[actor];
+ if(!spec||spec.facing!==facing||!actions.includes(kind)||!Number.isFinite(progress)||
+    spec.frames!==6||spec.cell!==128||!Number.isInteger(spec.rows?.[kind])||
+    !Array.isArray(spec.anchor)||!spec.anchor.every(Number.isFinite)||!(spec.height>0))return false;
+ const art=image(spec,actor),cell=spec.cell;
+ if(!art||art.naturalWidth!==cell*6||art.naturalHeight!==cell*6)return false;
+ const frame=options.reduced||options.low?(kind==='death'?5:kind==='hit'?2:3):Math.min(5,Math.floor(clamp(progress)*6));
+ const scale=height/spec.height;
+ ctx.save();try{
+  ctx.translate(x,y);
+  if(kind==='death'&&!options.alphaApplied)ctx.globalAlpha=(ctx.globalAlpha??1)*(1-clamp(progress));
+  ctx.drawImage(art,frame*cell,spec.rows[kind]*cell,cell,cell,-spec.anchor[0]*scale,-spec.anchor[1]*scale,cell*scale,cell*scale);
+  return true;
+ }catch{return false;}finally{ctx.restore();}
+}
+function preloadHeroSide(actor){
+ const spec=globalThis.TD2HeroSideAssets?.[actor];
+ if(spec)image(spec,actor);
+}
 function enemy(ctx,e,options={}){
  setLevel(options.level);
  const skin=globalThis.DenkmalEnemyAnimations?.select(e,options.level);if(skin==null||skin<0)return false;
@@ -74,7 +94,9 @@ function hero(ctx,h,attackTime,reduced=false,time=0){
  if(h.hp<=0){kind='death';if(!deaths.has(h))deaths.set(h,{time,direction:h.direction});progress=(time-deaths.get(h).time)/.65;}
  else {deaths.delete(h);if(h.hitFlash>0){kind='hit';progress=1-h.hitFlash/.16;}else if(attackTime>0){kind='attack';progress=1-attackTime/.24;}else return false;}
  const facing=kind==='attack'?(direction(0,0,h.attackDirection)||h.direction):kind==='death'?deaths.get(h).direction:h.direction;
- return draw(ctx,h.character==='kim'?'kim':'marcel',kind,facing,progress,0,0,70,{reduced});
+ const actor=h.character==='kim'?'kim':'marcel';
+ return drawHeroSide(ctx,actor,kind,facing,progress,0,0,70,{reduced})||
+        draw(ctx,actor,kind,facing,progress,0,0,70,{reduced});
 }
-globalThis.TD2DirectionalActions={draw,enemy,hero,direction,enemyDirection,setLevel};
+globalThis.TD2DirectionalActions={draw,drawHeroSide,preloadHeroSide,enemy,hero,direction,enemyDirection,setLevel};
 })();

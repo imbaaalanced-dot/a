@@ -77,7 +77,10 @@ jobs:
           node tests/style2-level4-reference.test.cjs
           node tests/style2-church-sprite.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
-        run: node tests/portrait-hud.test.cjs
+        run: |
+          node tests/portrait-hud.test.cjs
+          node tests/hero-style2-v5.test.cjs
+          node tests/hero-sprites-v5b.test.cjs
       - name: Portalreise and campaign pilot
         run: |
           node tests/portal-run.test.cjs
@@ -119,6 +122,7 @@ jobs:
       - name: Verify hero image decoding
         run: |
           python -m pip install Pillow numpy scipy
+          python tests/hero-sprites-v5b.test.py
           python tests/assets.test.py
           python tests/style2-v2-assets.test.py
           python tests/v2-expansion-assets.test.py
