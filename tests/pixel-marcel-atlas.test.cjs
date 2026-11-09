@@ -3,7 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'dist', 'hero-saga.js'), 'utf8');
-assert.match(source, /get\('td2WeaponWalk'\)==='1'/);
-assert.match(source, /const walk=actor==='marcel'\?null:walkAtlases\[actor\]/);
-assert.match(source, /walkAtlases\.kim\.src='assets\/hero\/kim-bow-walk\.webp'/);
-console.log('Marcel atlas: generated sheets bypassed, lantern fallback and Kim path verified');
+assert.match(source,/marcel:'assets\/hero\/marcel-walk-alpha9\.webp/);
+assert.match(source,/kim:'assets\/hero\/kim-walk-alpha8\.webp/);
+assert.match(source,/walk\.naturalWidth%3===0&&walk\.naturalHeight%4===0/);
+assert.match(source,/actor==='marcel'&&ready\(legacyAtlas\(\)\)/,'old lantern fallback must be Marcel-only and lazy');
+console.log('V5 hero walk: only dimensionally valid 3x4 atlases drawn, old fallback guarded');

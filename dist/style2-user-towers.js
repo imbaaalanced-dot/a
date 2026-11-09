@@ -12,6 +12,7 @@
   // BOTH paths must stay bounded instead of retaining every variant visited.
   const known=new Map();
   const fallbackImages=new Map();
+  const prewarmedProjectiles=new Set();
   const cacheLimit=12;
   const maxConcurrentLoads=4;
   const retryDelayMs=10000;
@@ -103,8 +104,13 @@
   }
   function drawTower(ctx,kind,x,y,tier){
     const img=get(kind,tier,'tower');
-    // Warm only this visible variant, not the full 18.75 MiB decoded pack.
-    get(kind,tier,'projectile');
+    // Preserve first-shot visual quality, but only warm each projectile variant
+    // once rather than re-touching its image LRU for every tower every frame.
+    const warmKey=`${kind}:${level(tier)}`;
+    if(enabled&&kinds.has(kind)&&!prewarmedProjectiles.has(warmKey)){
+      prewarmedProjectiles.add(warmKey);
+      get(kind,tier,'projectile');
+    }
     if(!img){if(debug)diagnostics.towerFallbacks++;return false;}
     const size=112,pivotY=488/512;
     ctx.save();try{ctx.drawImage(img,x-size/2,y+13-size*pivotY,size,size);}catch{if(debug)diagnostics.drawErrors++;return false;}finally{ctx.restore();}

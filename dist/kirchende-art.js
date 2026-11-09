@@ -41,7 +41,7 @@
     }
     for(let i=0;i<2800;i++){const x=-136+(i*73%270),y=-96+(i*131%220);q.fillStyle=i%2?'#bbb18a1c':'#40523924';q.fillRect(x,y,1+i%3,1);}
     // Low stone edging, worn joints and three shallow treads at the paved approach.
-    q.strokeStyle='#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
+    q.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
     for(let i=0;i<3;i++){
       q.fillStyle='#383e3388';q.fillRect(-44,138+i*11,128,11);
       q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-44,134+i*11,128,8);
@@ -77,7 +77,7 @@
       q.beginPath();q.ellipse(x,y,1+random()*4,.7+random()*2,random()*Math.PI,0,Math.PI*2);q.fill();
     }
     const dapple=q.createRadialGradient(-115,-90,6,-115,-90,186);
-    dapple.addColorStop(0,'#f1bd7522');
+    dapple.addColorStop(0,globalThis.TD2Style2Materials?.warmLight||'#f1bd7522');
     dapple.addColorStop(.55,'#cfa5650c');
     dapple.addColorStop(1,'#f1bd7500');
     q.fillStyle=dapple;q.fillRect(-140,-100,280,232);

@@ -5,7 +5,7 @@ const C={x:1536,y:1536};
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
- q.fillStyle='#354935';q.fillRect(0,0,3072,3072);
+ q.fillStyle=globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);
  let seed=18631;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<2300;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#69795424','#b09b6330','#1c322b32'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Street along the park's east and front edges. Flight does not receive a ground road.

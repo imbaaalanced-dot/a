@@ -248,7 +248,7 @@
     const pad=70,x=Math.max(0,cam.x-pad),y=Math.max(0,cam.y-pad);
     const w=Math.min(3072-x,width+2*pad),h=Math.min(3072-y,height+2*pad);
     if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h);
-    else{ctx.fillStyle='#3c4b37';ctx.fillRect(x,y,w,h);}
+    else{ctx.fillStyle=globalThis.TD2Style2Materials?.terrain||'#3c4b37';ctx.fillRect(x,y,w,h);}
   }
   function drawGrave(ctx,x,y,index){
     ctx.save();ctx.translate(x,y);
@@ -284,7 +284,7 @@
   }
   function drawRoad(ctx,path){
     if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:'slabs'});
-    ctx.save();ctx.lineJoin='round';ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#444b4088';ctx.lineWidth=80;ctx.stroke();ctx.strokeStyle='#999586';ctx.lineWidth=69;ctx.stroke();ctx.restore();
+    ctx.save();ctx.lineJoin='round';ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#444b4088';ctx.lineWidth=80;ctx.stroke();ctx.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999586';ctx.lineWidth=69;ctx.stroke();ctx.restore();
   }
   function drawSite(ctx,center){
     if(!site)site=createSite();ctx.drawImage(site,center.x-200,center.y-190);

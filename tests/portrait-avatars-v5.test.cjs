@@ -10,9 +10,9 @@ const css=fs.readFileSync(path.join(root,'portrait-avatars-v5.css'),'utf8');
 const source=fs.readFileSync(path.join(root,'portrait-avatars-v5.js'),'utf8');
 
 assert.match(html,/portrait-avatars-v5\.css\?v=duo-v5a1/);
-assert.match(html,/portrait-avatars-v5\.js\?v=duo-v5a1/);
-assert.match(source,/marcel-guardian-v5\.webp/);
-assert.match(source,/kim-marksman-v5\.webp/);
+assert.match(html,/portrait-avatars-v5\.js\?v=duo-v5a2/);
+assert.match(source,/marcel-guardian-v6\.webp/);
+assert.match(source,/kim-marksman-v6\.webp/);
 assert.match(source,/successful===sources\.length/);
 assert.match(source,/stage\.remove\(\)/);
 assert.doesNotMatch(source,/localStorage|startGame\(|fetch\(|requestAnimationFrame\(/);

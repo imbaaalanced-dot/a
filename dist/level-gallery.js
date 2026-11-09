@@ -14,7 +14,7 @@
     {id:4, city:'Herdecke', name:'Ender Dorfkirche', image:'level-04-ender-dorfkirche.webp'},
     {id:5, city:'Dortmund', name:'Hohensyburg', image:'level-05-hohensyburg.webp'},
     {id:6, city:'Herdecke', name:'Goethestraße', image:'level-06-goethestrasse.webp'},
-    {id:7, city:'Schwerte', name:'Westhofen', image:null}
+    {id:7, city:'Schwerte', name:'Westhofen', image:'level-07-westhofen.webp'}
   ];
   function visibleLevel(id, unlocked) {
     const level = levelMeta.find(entry => entry.id === id);
