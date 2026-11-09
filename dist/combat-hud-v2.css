@@ -56,7 +56,7 @@
   .fps-overlay{bottom:calc(var(--hud-safe-bottom,12px) + 130px)!important;left:var(--hud-safe-left,12px)!important;max-width:calc(100vw - 2 * var(--hud-safe-left,12px));font-size:9px!important;overflow-wrap:anywhere}
 
   .touch-context{display:block;position:fixed;bottom:calc(var(--hud-safe-bottom,12px) + 86px);right:var(--hud-safe-right,12px);width:min(242px,65vw);box-sizing:border-box;padding:9px;z-index:10;border:1px solid #b9a06e88;border-radius:10px;background:linear-gradient(145deg,#132223f5,#0b1315f7);box-shadow:0 7px 26px #000b}
-  .touch-context{max-height:calc(100dvh - var(--hud-safe-top,12px) - var(--hud-safe-bottom,12px) - 170px);overflow-y:auto;overscroll-behavior:contain}
+  #touchContext{max-height:calc(100dvh - var(--hud-safe-top,12px) - var(--hud-safe-bottom,12px) - 170px);overflow-y:auto;overscroll-behavior:contain}
   .touch-context.hidden{display:none!important}
   .touch-context-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;color:#e3d0ad}
   .touch-context-title{font:700 12px/1.2 Georgia,serif;letter-spacing:.07em}
