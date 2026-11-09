@@ -201,6 +201,7 @@
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+            <button id="menuDeveloperBtn" class="icon-btn" type="button" aria-pressed="false">DEVELOPER-MODUS: AUS</button>
             <details class="menu-save-details"><summary>Spielstand &amp; Speicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Deine Sammlung wird auf diesem Gerät gespeichert. Export und Import findest du in der Rüstkammer.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
@@ -344,6 +345,7 @@
   let timer=null, activated=false, startX=0, startY=0, audio=null;
   const logo=document.querySelector('#startScreen .menu-wordmark');
   if(!logo)return;
+  const optionButton=document.getElementById('menuDeveloperBtn');
   logo.style.touchAction='manipulation';
   logo.style.userSelect='none';
   logo.setAttribute('title','3 Sekunden halten: Entwicklermodus');
@@ -367,15 +369,18 @@
     el.textContent=message;el.hidden=false;
     clearTimeout(el._hide);el._hide=setTimeout(()=>{el.hidden=true;},2200);
   }
+  function render(){if(optionButton){optionButton.textContent='DEVELOPER-MODUS: '+(window.TD2DeveloperMode?'AN':'AUS');optionButton.setAttribute('aria-pressed',String(!!window.TD2DeveloperMode));}}
   function toggle(){
     activated=true;
     const next=localStorage.getItem(KEY)!=='true';
     try{localStorage.setItem(KEY,String(next));}catch(e){}
     window.TD2DeveloperMode=next;
-    beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
+    render();beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
     window.dispatchEvent(new CustomEvent('td2:developer-mode',{detail:{enabled:next}}));
   }
-  window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';
+  try{window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';}catch(e){window.TD2DeveloperMode=false;}
+  render();
+  if(optionButton)optionButton.addEventListener('click',toggle);
   logo.addEventListener('pointerdown',e=>{
     if(e.button!==0&&e.pointerType==='mouse')return;
     clear();activated=false;startX=e.clientX;startY=e.clientY;
