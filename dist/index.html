@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="portal-ui.css?v=expansion2" />
   <link rel="stylesheet" href="level-gallery.css?v=gallery-combined1" />
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
-  <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
+  <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a2" />
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
 <style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
@@ -47,6 +47,7 @@
         <span><small>WELLE</small><b id="compactWave">1</b></span>
       </div>
       <div class="compact-hud-bars"><span><i id="compactHpBar"></i></span><span><i id="compactMonumentBar"></i></span></div>
+      <div class="compact-hud-detail"><span id="compactEnemies">0 FEINDE</span><span id="compactTowers">0 / 4 TÜRME</span></div>
       <div id="compactObjective" class="compact-objective hidden" aria-live="polite"></div>
       <button id="mobileNextWaveBtn" class="compact-next-wave hidden" type="button">WELLE STARTEN</button>
     </section>
@@ -89,7 +90,7 @@
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
       <button id="soulBtn" class="action-btn soul-action" aria-label="Seelenruf"><kbd>F</kbd><span id="soulText">SEELENRUF</span><small class="compact-soul-charge" id="compactSoul">100%</small></button>
-      <button id="dodgeBtn" class="action-btn" aria-label="Ausweichen"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span></button>
+      <button id="dodgeBtn" class="action-btn" aria-label="Ausweichen"><kbd>LEER</kbd><span id="dodgeText">AUSWEICHEN</span><small class="compact-dodge-charge" id="compactDodge">BEREIT</small></button>
       <button id="buildBtn" class="action-btn"><kbd>E</kbd><span id="buildText">BOGENTURM · 25</span></button>
       <button id="upgradeBtn" class="action-btn"><kbd>Q</kbd><span id="upgradeText">AUFWERTEN</span></button>
       <button id="sellBtn" class="action-btn"><kbd>X</kbd><span id="sellText">VERKAUFEN</span></button><button id="targetBtn" class="action-btn hidden"><kbd>T</kbd><span id="targetText">ZIEL · ERSTER</span></button>
@@ -328,7 +329,7 @@
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
-  <script src="game.js?v=v5-command-hub1"></script>
+  <script src="game.js?v=v5-command-hud-feedback1"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-android-developer-toggle">
