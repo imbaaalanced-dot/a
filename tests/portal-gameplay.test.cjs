@@ -9,6 +9,8 @@ assert.equal(h.getPortalRun().phase,'build');h.launchWave();assert.equal(h.getPo
 t.game.enemies=[];t.game.waveSpawned=t.game.waveTotal;h.endWave();assert.equal(h.getPortalRun().waveInSection,2);assert.equal(h.getPortalRun().phase,'build');
 h.launchWave();h.endWave();assert.equal(h.getPortalRun().phase,'perk');assert.equal(sandbox.document.getElementById('perkGrid').children.length,3);
 sandbox.document.getElementById('perkGrid').children[0].onclick();assert.equal(h.getPortalRun().phase,'exit');
+assert.equal(sandbox.document.getElementById('mobileNextWaveBtn').classList.contains('hidden'),true,'portal exit must not show an invalid next-wave button');
+assert.equal(sandbox.document.getElementById('compactObjective').textContent,'↑ PORTAL OBEN · GEHE HINDURCH','mobile HUD must preserve the portal exit instruction');
 const expectedHeal=45+t.game.hero.maxHp*(.1+.03*(h.getPortalRun().perkRanks.recovery||0));t.game.hero.hp=45;t.game.essence=10;t.game.towers=[{spent:25},{spent:60}];h.enterPortal();assert.equal(h.getPortalRun().section,2);assert.equal(t.game.essence,113.75);assert.equal(t.game.hero.hp,expectedHeal);h.enterPortal();assert.equal(h.getPortalRun().section,2);
 assert.equal(t.lootModel.profile.level2,false);assert.equal(t.lootModel.count,0);
 console.log('portal gameplay: waves, perk UI, physical exit accounting and unlock isolation passed');
