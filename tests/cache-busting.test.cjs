@@ -40,7 +40,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'contrastglow1'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
-  ['hero-saga.js', 'v5campaign20copy1'],
+  ['hero-saga.js', 'v5spritefix1'],
   ['combat-fx.js', 'v400a6s2t5'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
@@ -55,7 +55,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js', 'goethe1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js', 'westhofen-v44-originalfotos'],
-  ['game.js', 'v410a1perftouch1campaign20'],
+  ['game.js', 'v5mobilefps1'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
   ['campaign-balance.js','portal1'],
@@ -95,4 +95,9 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
+const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
+assert.match(heroSagaSource,/useWeaponWalk\?'assets\/hero\/marcel-sword-walk\.webp':'assets\/hero\/marcel-walk-reference-v1\.webp\?v=2'/,'stable Marcel atlas is the default');
+const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
+assert.match(gameSource,/mobileRender&&lowFX\(\)\?1000\/30:0/,'mobile low FX caps rendering at 30 FPS');
+assert.match(gameSource,/for\(let s=0;s<steps;s\+\+\)update\(FIXED_STEP\)/,'simulation stays on the fixed 60 Hz path');
 console.log('TD2 V4.1 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');
