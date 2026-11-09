@@ -1,36 +1,20 @@
 'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=path.join(__dirname,'../dist');
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-const css=fs.readFileSync(path.join(root,'portrait-home-v1.css'),'utf8');
-const source=fs.readFileSync(path.join(root,'portrait-home-v1.js'),'utf8');
-assert.match(html,/href="portrait-home-v1\.css\?v=style2-portrait4"/);
-assert.match(html,/src="portrait-home-v1\.js\?v=style2-portrait2"/);
-for(const id of ['menuHomeActions','menuPlayBtn','menuCampaignBtn','menuAnsturmBtn','menuArcadeBtn','menuCharacterBtn','collectionBtn','menuOptionsBtn']){
- assert.match(html,new RegExp('id="'+id+'"'),'missing game navigation destination '+id);
-}
-assert.match(css,/@media\s*\(orientation:portrait\)/);
-assert.match(css,/#startScreen #menuHomeActions\[hidden\]/);
-assert.doesNotMatch(source,/localStorage|\.save\(|startGame\(/,'portrait decorator must not write game saves or start levels directly');
-let actions=[],listeners={},elements={};
-function el(id){
- if(!elements[id])elements[id]={id,clicked:0,click(){this.clicked++},querySelector(){return null},append(child){this.child=child},addEventListener(type,fn){listeners[type]=fn}};
- return elements[id];
-}
-const body={className:'',innerHTML:'',listeners:{},addEventListener(type,fn){this.listeners[type]=fn}};
-const doc={getElementById(id){return id==='menuHomeActions'?el(id):el(id)},createElement(){return body}};
-vm.runInNewContext(source,{document:doc});
-assert.equal(el('menuHomeActions').child,body);
-const trigger=(target)=>{body.listeners.click({target:{closest:()=>({dataset:{td2Target:target},disabled:false})}})};
-trigger('campaign');assert.equal(el('menuPlayBtn').clicked,1);assert.equal(el('menuCampaignBtn').clicked,1);
-trigger('endless');assert.equal(el('menuArcadeBtn').clicked,1);
-trigger('rush');assert.equal(el('menuAnsturmBtn').clicked,1);
-trigger('inventory');assert.equal(el('collectionBtn').clicked,1);
-trigger('options');assert.equal(el('menuOptionsBtn').clicked,1);
-trigger('equipment');trigger('heroes');assert.equal(el('menuCharacterBtn').clicked,2);
-console.log('Portrait home: existing game routes, no save mutations, CSS wiring passed');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.resolve(__dirname, '../dist');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'menu.css'), 'utf8');
 
-// Layout regression: logo must participate in flow, not overlay the first button.
-assert.match(css,/\.td2-portrait-logo\s*\{[^}]*position:static!important/s);
-assert.match(css,/#startScreen #menuHomeActions:not\(\[hidden\]\)\s*\{[^}]*padding-top:0!important/s);
+// One native menu works for portrait, landscape, keyboard and screen readers.
+// The old JS decorator duplicated navigation and concealed original cards.
+assert.doesNotMatch(html, /<script[^>]+portrait-home-v1\.js/);
+assert.doesNotMatch(html, /<link[^>]+portrait-home-v1\.css/);
+const home = html.match(/<nav id="menuHomeActions"[\s\S]*?<\/nav>/)?.[0] || '';
+for (const id of ['menuCampaignBtn', 'menuAnsturmBtn', 'menuCharacterBtn', 'menuOptionsBtn']) {
+  assert.match(home, new RegExp('id="'+id+'"'), 'missing portrait route '+id);
+}
+assert.match(css, /@media\(max-width:420px\)/);
+assert.match(css, /#startScreen \.menu-home-actions\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important/);
+assert.match(css, /#startScreen \.menu-command:focus-visible/);
+console.log('Portrait home: unified native responsive navigation passed');

@@ -35,7 +35,7 @@
  section.addEventListener('click',event=>{
    const button=event.target.closest('[data-td2-target]');if(!button||button.disabled)return;
    switch(button.dataset.td2Target){
-    case 'campaign':click('menuPlayBtn');click('menuCampaignBtn');break;
+    case 'campaign':click('menuCampaignBtn');break;
     case 'rush':{const a=document.getElementById('menuAnsturmBtn');if(a)a.click();break;}
     case 'endless':click('menuArcadeBtn');break;
     case 'equipment':click('menuCharacterBtn');break;
