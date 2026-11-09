@@ -2,7 +2,7 @@ name: Publish Denkmal TD tester build
 
 on:
   push:
-    branches: ["feature/td2-v4-alpha9-performance-style2", "feature/td2-enemy-animation-pack", "feature/td2-menu-hero-banner", "main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/v4-level4-church-lion", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018", "feature/td2-v4-alpha8-environment-character"]
+    branches: ["feature/td2-v4-alpha9-performance-style2", "feature/td2-enemy-animation-pack", "feature/td2-menu-hero-banner", "main", "feature/td2-v4-main-menu-refresh", "v4-kirchende", "feature/td2-terrain-stars-alpha5", "feature/v4-alpha5-unified-kirchende", "feature/v4-level4-church-lion", "feature/style2-kirchende-pass2-20261016", "feature/style2-cannon-pass3-20261016", "feature/style2-towers-pass4-20261016", "feature/style2-maps-pass5-20261016", "feature/style2-phase6-20261016", "feature/style2-phase7-ambience-20261018", "feature/level5-hohensyburg-20261018", "integrate/td2-v4-20261018", "feature/td2-v4-alpha8-environment-character", "vibe/td2-v5-graphics-fixes-43f2cf"]
   workflow_dispatch:
 
 permissions:
