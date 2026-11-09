@@ -40,7 +40,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'contrastglow1'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
-  ['hero-saga.js', 'v5spritefix1'],
+  ['hero-saga.js', 'v5spritefix2'],
   ['combat-fx.js', 'v400a6s2t5'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
@@ -96,7 +96,7 @@ for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
 const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
-assert.match(heroSagaSource,/useWeaponWalk\?'assets\/hero\/marcel-sword-walk\.webp':'assets\/hero\/marcel-walk-reference-v1\.webp\?v=2'/,'stable Marcel atlas is the default');
+assert.match(heroSagaSource,/const walk=actor==='marcel'\?null:walkAtlases\[actor\]/,'Marcel bypasses generated walk sheets with blue cell artifacts');
 const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
 assert.match(gameSource,/mobileRender&&lowFX\(\)\?1000\/30:0/,'mobile low FX caps rendering at 30 FPS');
 assert.match(gameSource,/for\(let s=0;s<steps;s\+\+\)update\(FIXED_STEP\)/,'simulation stays on the fixed 60 Hz path');
