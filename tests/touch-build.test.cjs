@@ -63,7 +63,7 @@ assert.match(lootCss,/#loadoutStats\{display:flex;flex-direction:column;gap:7px;
 // Cache keys for every changed file.
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
 assert.match(html,/levels\.js\?v=level7btouch1/);
-assert.match(html,/loot-ui\.js\?v=contrastglow1/);
+assert.match(html,/loot-ui\.js\?v=v5-style2a1/);
 assert.match(html,/loot\.css\?v=contrastglow1/);
 assert.match(html,/portrait-patch\.css\?v=v410a1touch1/);
 console.log('TD2 touch build, stable build controls and armory contrast checks passed');

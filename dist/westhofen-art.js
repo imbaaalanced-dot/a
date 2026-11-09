@@ -5,7 +5,18 @@
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
 let ground=null;
+let memorialSprite=null,memorialRequested=false;
 const C={x:1536,y:1536};
+function readyMemorial(){
+ if(!memorialRequested){
+  memorialRequested=true;
+  if(typeof Image==='function'){
+   memorialSprite=new Image();
+   memorialSprite.src='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+  }
+ }
+ return !!(memorialSprite?.complete&&memorialSprite.naturalWidth&&memorialSprite.naturalHeight);
+}
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
@@ -39,6 +50,15 @@ function createGround(layout){
 }
 function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
+ if(readyMemorial()){
+  // Identical objective anchor and collision footprint; bitmap is visual only.
+  ctx.save();try{
+   ctx.drawImage(memorialSprite,m.x-225,m.y-265,450,300);
+   const damage=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
+   if(damage>.25){ctx.strokeStyle='#332d2666';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(m.x-43,m.y-54);ctx.lineTo(m.x-35,m.y-36);ctx.lineTo(m.x-41,m.y-19);ctx.stroke();}
+  }finally{ctx.restore();}
+  return;
+ }
  // Original-photo-derived memorial: low ivy-covered stone lintels, two tall
  // rear plaques, central helmet altar and stepped forecourt. Canvas fallback.
  ctx.save();ctx.translate(m.x,m.y);
@@ -79,4 +99,4 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){ground=null;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,release(){ground=null;memorialSprite=null;memorialRequested=false;}};})();

@@ -1,0 +1,23 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const src=fs.readFileSync(path.join(__dirname,'../dist/style2-user-towers.js'),'utf8');
+const requests=[];
+const box={location:{search:''},URLSearchParams,Date,Promise,Math,
+  DenkmalAssets:{retain(group,urls){requests.push(...urls);return Promise.resolve();},ready(){return null;},release(){}}};
+box.globalThis=box;
+vm.runInNewContext(src,box);
+const drawCtx={save(){},restore(){},drawImage(){},translate(){},rotate(){}};
+box.UserStyle2Towers.drawTower(drawCtx,'rift',0,0,3);
+assert.equal(requests.length,2,'first visible tower warms its projectile once for first-shot quality');
+assert.match(requests[0],/tower_rift_lv3/);
+assert.match(requests[1],/projectile_rift_lv3/);
+box.UserStyle2Towers.drawTower(drawCtx,'rift',0,0,3);
+assert.equal(requests.length,2,'subsequent frame must not re-warm the projectile');
+box.UserStyle2Towers.drawProjectile(drawCtx,{kind:'rift',level:3,x:0,y:0,vx:1,vy:0});
+assert.equal(requests.length,2,'projectile load is deduplicated');
+assert.match(requests[1],/projectile_rift_lv3/);
+assert.doesNotMatch(src.split('function drawImpact(ctx,p)')[1],/new Image\(/,'impacts should remain texture-free');
+console.log('Style2 lazy projectile residence and bounded fallbacks passed');

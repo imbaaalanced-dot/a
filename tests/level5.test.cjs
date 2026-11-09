@@ -89,7 +89,7 @@ const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
-assert.ok(html.includes('hohensyburg-art.js?v=alpha9a3'));
+assert.ok(html.includes('hohensyburg-art.js?v=v5-style2a1'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));

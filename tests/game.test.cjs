@@ -490,7 +490,7 @@ assert.ok(polish.includes('@media (orientation:portrait)'));
 assert.ok(polish.includes('v3.0.0-alpha.6 — portrait-first mobile combat layout'));assert.ok(polish.includes('v3.1.0-alpha.2 — mobile combat polish'));assert.ok(polish.includes('v3.1.0-alpha.3 — combat variety + boss escalation'));
 for(const m of html.matchAll(/(?:src|srcset|href)="([^"?#]+)(?:\?[^\"]*)?"/g))if(!/^https?:/.test(m[1]))assert.ok(fs.existsSync(path.join(root,m[1])),m[1]);
 assert.equal(html.includes('KAEL'),false);
-assert.ok(html.includes('marcel-portrait-alpha9.webp'));
+assert.ok(html.includes('marcel-guardian-v6.webp'));
 assert.equal(html.includes('marcel-portrait-v27.png'),false);
 assert.ok(fs.existsSync(path.join(root,'assets/hero/marcel-lantern-sprite-v1.webp')));
 for(const id of ['graphicsBtn','zoomBtn','telemetryBtn','fpsOverlay','wavePreview','targetBtn','waveBanner'])assert.ok(html.includes(`id="${id}"`));
