@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const prefix = 'assets/loading/';
-  const portraits = ['storm.webp','gate.webp','journey.webp'];
+  const portraits = ['kim-marcel-loading-v5.webp','gate.webp','journey.webp'];
   /* Command Hub V5: preload viewport scenery and only the selected approved hero.
      The other character's art loads on demand when switching in the menu. */
   const mobile = window.matchMedia('(max-width:700px)').matches;
