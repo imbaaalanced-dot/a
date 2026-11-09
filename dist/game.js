@@ -740,7 +740,7 @@
     return {x:p.x,y:p.y,kind:game.selectedTower,cost:spec.cost,range:spec.range,color:spec.color,role:role.label,icon:role.icon,affordable:game.essence>=spec.cost&&game.towers.length<game.maxTowers,valid:placementError(p)===''};
   }
   function buildContextActive(){if(state!=='playing')return false;return placementError(towerPosition())==='';}
-  function placementError(p){const level=campaign.levels[game.level];if(level.slots.length&&!level.slots.some(s=>dist(s,p)<1))return 'NUR AUF MARKIERTEN BAUPLÄTZEN';if(level.gates.some(g=>dist(g,p)<75))return 'TOR FREIHALTEN';if(p.x<28||p.x>WORLD_W-28||p.y<28||p.y>WORLD_H-28)return 'ZU NAH AM WELTRAND';if(level.paths.some(path=>campaign.pathDistance(p,path)<64))return 'NEBEN DEM WEG BAUEN';if(dist(p,game.monument)<110)return 'ZU NAH AM MONUMENT';if(game.towers.some(t=>dist(p,t)<62))return 'BAUPLATZ BELEGT';return '';}
+  function placementError(p){const level=campaign.levels[game.level];if(level.slots.length&&!level.slots.some(s=>dist(s,p)<1))return 'NUR AUF MARKIERTEN BAUPLÄTZEN';if(level.gates.some(g=>dist(g,p)<75))return 'TOR FREIHALTEN';if(p.x<28||p.x>WORLD_W-28||p.y<28||p.y>WORLD_H-28)return 'ZU NAH AM WELTRAND';if(level.paths.some(path=>campaign.pathDistance(p,path)<64))return 'NEBEN DEM WEG BAUEN';if(dist(p,game.monument)<110)return 'ZU NAH AM MONUMENT';if(dist(p,game.hero)<game.hero.r+18)return 'ZU NAH AM HELDEN';if(game.towers.some(t=>dist(p,t)<62))return 'BAUPLATZ BELEGT';return '';}
   function buildTowerAt(p){
     if(state!=='playing')return;
     if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;
@@ -800,6 +800,15 @@
     return x+r>c.x+q.left&&x-r<c.x+q.right&&
       y+r>c.y+q.top&&y-r<c.y+q.bottom;
   }
+  function towerBlocks(x,y,fromX,fromY,r=13){
+    for(const t of game.towers){
+      const radius=r+(t.r||18),dx=x-t.x,dy=y-t.y;
+      const fromDx=fromX-t.x,fromDy=fromY-t.y;
+      const nextDistance=dx*dx+dy*dy;
+      if(nextDistance<radius*radius&&nextDistance<fromDx*fromDx+fromDy*fromDy)return true;
+    }
+    return false;
+  }
   // Perf pass: per-frame compaction without array re-allocation (was 5x .filter() per frame).
   function compactKeep(list,keep){let w=0;for(let i=0;i<list.length;i++){if(keep(list[i]))list[w++]=list[i];}list.length=w;}
   function countAlive(){let n=0;for(const en of game.enemies)if(!en.dead)n++;return n;}
@@ -810,8 +819,8 @@
     if(state!=='playing'||tutorialPending||tutorialActive)return;if(inPortal()&&portalTick(dt))return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);else if(medFX()&&game.particles.length>170)game.particles.splice(0,game.particles.length-170);time+=dt;routeTick++;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
     h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
     let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed*(inPortal()?1+.05*(portalRun.perkRanks.step||0):1);if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};{const nx=clamp(h.x+dx*sp*dt,26,WORLD_W-26),ny=clamp(h.y+dy*sp*dt,26,WORLD_H-26);
-      if(!churchBlocks(nx,h.y,h.r))h.x=nx;
-      if(!churchBlocks(h.x,ny,h.r))h.y=ny;
+      if(!churchBlocks(nx,h.y,h.r)&&!towerBlocks(nx,h.y,h.x,h.y,h.r))h.x=nx;
+      if(!churchBlocks(h.x,ny,h.r)&&!towerBlocks(h.x,ny,h.x,h.y,h.r))h.y=ny;
     }updateCamera(dt);saga.update(dt,len>0||h.dodge>0,facing);
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage*(inPortal()?1+.08*(portalRun.perkRanks.power||0):1),560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack(target);h.fireCd=heroStats.rate}

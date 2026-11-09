@@ -105,6 +105,10 @@ jobs:
           node tests/ansturm-source-parity.test.cjs
       - name: Gameplay regression suite
         run: node tests/game.test.cjs
+      - name: Hero and tower overlap regression
+        run: |
+          node tests/hero-tower-overlap.test.cjs
+          TEST_MOBILE=1 node tests/hero-tower-overlap.test.cjs
       - name: Mobile gameplay regression suite
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite

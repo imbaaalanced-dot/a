@@ -87,7 +87,9 @@ function createRenderSandbox({ mobile = false, countOps = true, sourceOverrides 
     `globalThis.test={draw,update,startGame,spawnEnemy,buildTower,selectTower,sellTower,launchWave,resize,getGame:()=>game,hurtEnemy,get zoom(){return zoom},get graphicsMode(){return typeof graphicsMode==='undefined'?null:graphicsMode},get qualityTier(){return typeof qualityTier==='undefined'?null:qualityTier},get lowFX(){return typeof lowFX==='function'?lowFX():null},get medFX(){return typeof medFX==='function'?medFX():null},advanceQualityMonitor:typeof advanceQualityMonitor==='function'?advanceQualityMonitor:null,cycleGraphics:typeof cycleGraphics==='function'?cycleGraphics:null,setGraphicsPreference:typeof setGraphicsPreference==='function'?setGraphicsPreference:null,qualityMonitor:()=>QUALITY_MONITOR};})();`);
   vm.runInContext(source, sandbox);
 
-  return { sandbox, test: sandbox.test, element, counts, gradients, resetCounts() { for (const k of Object.keys(counts)) delete counts[k]; gradients.radial = gradients.linear = 0; } };
+  return { sandbox, test: sandbox.test, element, counts, gradients,
+    dispatch(type, event) { if (!listeners[type]) throw new Error('No listener for ' + type); listeners[type](event); },
+    resetCounts() { for (const k of Object.keys(counts)) delete counts[k]; gradients.radial = gradients.linear = 0; } };
 }
 
 // Aufwendiges, deterministisches Szenario: Türme auf allen Slots, 40 Gegner, Projektile,
