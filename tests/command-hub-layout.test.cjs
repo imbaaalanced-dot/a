@@ -1,0 +1,20 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const dir = path.resolve(__dirname, '../dist');
+const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+const css = fs.readFileSync(path.join(dir, 'menu.css'), 'utf8');
+
+const home = html.match(/<nav id="menuHomeActions"[\s\S]*?<\/nav>/)?.[0] || '';
+assert.equal((home.match(/class="menu-command(?:\s|")/g) || []).length, 4, 'exactly four native command cards');
+assert.doesNotMatch(html, /<script[^>]+portrait-home-v1\.js/, 'no duplicating portrait navigation script');
+assert.doesNotMatch(html, /<link[^>]+portrait-home-v1\.css/, 'no hidden portrait command cards');
+assert.match(css, /\/\* Command Hub V5 \*\//);
+assert.match(css, /#startScreen \.menu-home-actions\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+assert.match(css, /#startScreen \.menu-command\s*\{[^}]*min-height:\s*(?:[5-9]\d|\d{3})px/s);
+assert.match(css, /@media\s*\(max-width:\s*420px\)/);
+assert.match(css, /@media\s*\(max-height:\s*430px\)\s*and\s*\(orientation:\s*landscape\)/);
+assert.match(html, /id="menuVersion"[^>]*>[^<]+<\/span>/, 'visible version/build label');
+assert.match(css, /prefers-reduced-motion:\s*reduce/);
+console.log('Command Hub: four native cards, responsive grid, version and mobile accessibility passed');

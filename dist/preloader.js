@@ -3,9 +3,8 @@
   'use strict';
   const prefix = 'assets/loading/';
   const portraits = ['storm.webp','gate.webp','journey.webp'];
-  /* menu-v3b: preload only the scenery the viewport will show (mobile swap at 700px,
-     same breakpoint as menu.css) and only the saved hero banner; the other banner
-     loads on demand when the hero selection changes (game.js already does this). */
+  /* Command Hub V5: preload viewport scenery and only the selected approved hero.
+     The other character's art loads on demand when switching in the menu. */
   const mobile = window.matchMedia('(max-width:700px)').matches;
   let character = 'marcel';
   try{
@@ -16,7 +15,7 @@
   const essential = [
     mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
     'assets/menu/crest-v3.webp',
-    'assets/menu/hero-banner-' + character + '-v3.webp'
+    'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

@@ -11,13 +11,12 @@
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
-  <link rel="stylesheet" href="loot.css?v=contrastglow1" />
-  <link rel="stylesheet" href="menu.css?v=menu-v3-redesign" />
+  <link rel="stylesheet" href="loot.css?v=v5-armory-hub1" />
+  <link rel="stylesheet" href="menu.css?v=v5-command-hub1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
   <link rel="stylesheet" href="portal-ui.css?v=expansion2" />
-  <link rel="stylesheet" href="portrait-home-v1.css?v=style2-portrait4" />
   <link rel="stylesheet" href="level-gallery.css?v=gallery-combined1" />
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
   <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
@@ -27,7 +26,7 @@
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="asset-manager.js?v=alpha9a3"></script>
-  <script src="preloader.js?v=menu-v3b-preload"></script>
+  <script src="preloader.js?v=v5-hero-refs-hub1"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal 3D. WASD oder Pfeiltasten bewegen, Leertaste ausweichen, E Turm bauen, Escape pausieren."></canvas>
 
@@ -111,26 +110,20 @@
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
         <div class="menu-content">
-          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/hero-banner-marcel-v3.webp" width="1440" height="720" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
+          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" width="661" height="1050" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sieben spielbare Karten. Deine Wacht. Bewahre, was bleiben soll.</p>
           <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
-            <button id="menuPlayBtn" class="menu-command menu-command-primary" type="button" aria-controls="playMenu"><span class="menu-command-mark" aria-hidden="true">◆</span><span><strong>Spielen</strong><small>Kampagne oder Denkmal-Ansturm</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+            <button id="menuCampaignBtn" class="menu-command menu-command-primary" type="button" aria-controls="campaignMenu"><span class="menu-command-mark" aria-hidden="true">Ⅰ</span><span><strong>Kampagne</strong><small>Sieben Schauplätze · Geschichte und Fortschritt</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
+            <a id="menuAnsturmBtn" class="menu-command menu-command-assault" href="ansturm/index.html"><span class="menu-command-mark" aria-hidden="true">⚔</span><span><strong>Denkmal-Ansturm</strong><small>Verteidige das Denkmal gegen Gegnerwellen</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></a>
             <button id="menuCharacterBtn" class="menu-command" type="button" aria-controls="heroMenu"><span class="menu-command-mark" aria-hidden="true">♜</span><span><strong>Helden &amp; Ausrüstung</strong><small>Wächter wählen und Rucksack verwalten</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
             <button id="menuOptionsBtn" class="menu-command menu-command-quiet" type="button" aria-controls="optionsMenu"><span class="menu-command-mark" aria-hidden="true">⚙</span><span><strong>Optionen</strong><small>Ton, Grafik und Spielstand</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
           </nav>
           <button id="campaignPilotBtn" class="menu-command" type="button" hidden><span>Kampagnenpilot · 8 Wellen</span></button><button id="portalNewBtn" class="menu-command" type="button" hidden><span>Portalreise · Neuer Durchlauf</span></button><button id="portalResumeBtn" class="menu-command" type="button" hidden><span>Portalreise · Fortsetzen</span></button>
           <button id="menuBackBtn" class="menu-back" type="button" hidden>‹ Zurück zum Hauptmenü</button>
           <div class="menu-actions" aria-label="Spielmodi">
-            <section class="menu-section play-menu" id="playMenu" hidden aria-labelledby="playMenuTitle">
-              <div class="menu-section-heading"><div><p class="menu-kicker">WÄHLE DEINE WACHT</p><h2 id="playMenuTitle">SPIELEN</h2></div><span class="menu-section-mark" aria-hidden="true">II</span></div>
-              <div class="mode-choice-list">
-                <button id="menuCampaignBtn" class="menu-command menu-command-primary" type="button" aria-controls="campaignMenu"><span class="menu-command-mark" aria-hidden="true">Ⅰ</span><span><strong>Kampagne</strong><small>Sieben Schauplätze · Fortschritt und Geschichte</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
-                <a id="menuAnsturmBtn" class="menu-command menu-command-assault" href="ansturm/index.html"><span class="menu-command-mark" aria-hidden="true">⚔</span><span><strong>Denkmal-Ansturm</strong><small>Direkter Kampf · Überlebe den Angriff</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></a>
-              </div>
-            </section>
             <section class="menu-section campaign-menu" id="campaignMenu" hidden aria-labelledby="campaignTitle">
               <div class="menu-section-heading"><div><p class="menu-kicker">DEIN WEG DURCH DIE KAMPAGNE</p><h2 id="campaignTitle">KAMPAGNE</h2></div><span class="menu-section-mark" aria-hidden="true">I–VII</span></div>
               <button id="menuArcadeBtn" class="campaign-endless-link" type="button" aria-controls="endlessMenu">Endlos verteidigen <span aria-hidden="true">∞ ›</span></button>
@@ -188,7 +181,7 @@
           <section id="heroMenu" class="menu-section" hidden aria-labelledby="heroMenuTitle">
             <h2 id="heroMenuTitle">Held wechseln / Inventar</h2>
           <div class="hero-choice" role="group" aria-label="Spielfigur wählen">
-            <span>DEINE WACHT</span><button id="chooseMarcel" type="button" aria-pressed="true">MARCEL · DER BESCHÜTZER</button><button id="chooseKim" type="button" aria-pressed="false">KIM · DIE BEWAHRERIN</button>
+            <span>DEINE WACHT</span><button id="chooseMarcel" type="button" aria-pressed="true">MARCEL · DER BESCHÜTZER</button><button id="chooseKim" type="button" aria-pressed="false">KIM · DIE TREFFSICHERE</button>
           </div>
           <div class="menu-utility" aria-label="Held und Spielstand">
             <button id="collectionBtn" class="menu-inventory"><span aria-hidden="true">◈</span><span><strong>BEUTE &amp; AUSRÜSTUNG</strong><small>Rucksack, Gegenstände und Ausrüsten.</small></span><span aria-hidden="true">›</span></button>
@@ -226,14 +219,16 @@
         <div class="loot-tabs" role="tablist" aria-label="Inventaransicht">
           <button id="lootEquipmentTab" type="button" role="tab" aria-selected="false" aria-controls="lootEquipmentPanel">Ausrüstung</button>
           <button id="lootBagTab" type="button" role="tab" aria-selected="true" aria-controls="lootBagPanel">Rucksack</button>
+          <button id="lootForgeTab" type="button" role="tab" aria-selected="false" aria-controls="lootForgePanel">Schmiede</button>
         </div>
         <button id="lootDetailBackdrop" class="loot-detail-backdrop" type="button" aria-label="Gegenstandsvergleich schließen" hidden></button>
         <div class="loot-columns">
-          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
-          <section id="lootBagPanel" class="loot-panel loot-bag" role="tabpanel" aria-labelledby="lootBagTab"><h3 id="backpackCount"></h3><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="upgrades">↑ Verbesserungen</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSlotFilter" aria-label="Ausrüstungsplatz filtern"><option value="all">Alle Plätze</option><option value="weapon">Waffen</option><option value="head">Kopf</option><option value="armor">Rüstungen</option><option value="gloves">Handschuhe</option><option value="boots">Stiefel</option><option value="amulet">Amulette</option><option value="rings">Ringe</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select><button id="lootSalvageAllBtn" class="loot-action" type="button">ALLES RECYCELN</button></div><p class="loot-scroll-hint">Sammlung durchsehen – einschließlich Ausrüstung beider Helden · Gegenstand antippen zum Vergleichen</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
+          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-hero-switch" role="group" aria-label="Wächter auswählen"><button id="lootSelectMarcel" type="button" aria-pressed="true">Marcel</button><button id="lootSelectKim" type="button" aria-pressed="false">Kim</button></div><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
+          <section id="lootBagPanel" class="loot-panel loot-bag" role="tabpanel" aria-labelledby="lootBagTab"><h3 id="backpackCount"></h3><div class="loot-searchbar"><input id="lootSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Ausrüstung suchen …" aria-label="Gegenstand nach Namen suchen"/><button id="lootClearFilters" type="button" class="loot-action">ZURÜCKSETZEN</button></div><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="upgrades">↑ Verbesserungen</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSlotFilter" aria-label="Ausrüstungsplatz filtern"><option value="all">Alle Plätze</option><option value="weapon">Waffen</option><option value="head">Kopf</option><option value="armor">Rüstungen</option><option value="gloves">Handschuhe</option><option value="boots">Stiefel</option><option value="amulet">Amulette</option><option value="rings">Ringe</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select></div><p class="loot-scroll-hint"><span id="lootResultCount" aria-live="polite"></span> · Gegenstand antippen zum Vergleichen · Ausrüstung beider Helden</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
+          <section id="lootForgePanel" class="loot-panel loot-forge-panel" role="tabpanel" aria-labelledby="lootForgeTab" hidden><h3>DEINE SCHMIEDE</h3><p>Verbessere ausgewählte Gegenstände bis zur Schmiedestufe III. Die vorhandenen Kosten und Regeln bleiben unverändert.</p><div class="loot-forge-essence" id="lootForgeBalance"></div><div class="loot-forge-tools"><h4>Rucksack recyceln</h4><p>Nur Gegenstände, die weder angelegt noch favorisiert sind. Vor dem Zerlegen wird die Anzahl und Essenz angezeigt und eine Bestätigung verlangt.</p><button id="lootSalvageAllBtn" class="loot-action" type="button">RECYCLING PRÜFEN</button></div><p>Einzelne Gegenstände wählst du im Rucksack aus. Im Vergleich findest du ihre Verbesserungsvorschau.</p></section>
           <aside class="loot-panel" id="lootDetail" role="region" tabindex="-1" aria-label="Gegenstandsvergleich"></aside>
         </div>
-        <p id="lootNotice" role="status" aria-live="polite"></p><div id="lootConfirm" class="loot-confirm" role="group" aria-label="Aktion bestätigen" hidden></div>
+        <p id="lootNotice" role="status" aria-live="polite"></p><div id="lootConfirm" class="loot-confirm" role="alertdialog" aria-modal="true" aria-label="Änderung am Spielstand bestätigen" hidden></div>
         <footer class="loot-footer"><button id="lootExportBtn" class="loot-action">SPIELSTAND EXPORTIEREN</button><button id="lootImportBtn" class="loot-action">IMPORTIEREN</button><button id="lootPreMigrationBtn" class="loot-action" hidden>VORHERIGE VERSION EXPORTIEREN</button><button id="lootRecoveryBtn" class="loot-action" hidden>ROHSICHERUNG EXPORTIEREN</button><input id="lootImportFile" type="file" accept="application/json,.json" hidden/><p>Beute bleibt nach Niederlagen erhalten. Ausrüstung nur im Hauptmenü wechseln. Exportiere eine Sicherung für einen Gerätewechsel. I / Esc: schließen.</p></footer>
       </div>
     </section>
@@ -301,7 +296,7 @@
   <script src="directional-hero-assets-v5.js?v=v5-heroes-b1"></script>
   <script src="directional-actions-v410.js?v=v5-heroes-b1"></script>
   <script src="v2-expansion.js?v=v410a1"></script>
-  <script src="loot-ui.js?v=v5-style2a1"></script>
+  <script src="loot-ui.js?v=v5-armory-hub1"></script>
   <script src="hero-saga.js?v=v5-heroes-b1"></script>
   <script src="combat-fx.js?v=v400a6s2t5"></script>
   <script src="style2-cannon.js?v=alpha8cannon2"></script>
@@ -333,8 +328,7 @@
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=v410a1"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
-  <script src="game.js?v=v5-style2-hud2a1"></script>
-  <script src="portrait-home-v1.js?v=style2-portrait2"></script>
+  <script src="game.js?v=v5-command-hub1"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-android-developer-toggle">
