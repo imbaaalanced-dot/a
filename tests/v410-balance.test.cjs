@@ -16,7 +16,7 @@ test('campaign opening analysis evaluates current source rules including loot bo
  assert.equal(c.openings.twoBow.remaining,20);assert.equal(c.openings.twoCannon.remaining,0);
  assert.equal(c.waves.length,5);assert.equal(c.waves[0].count,9);
  assert.equal(c.waves[0].bounty,18);assert.equal(c.waves[0].lootUpperBound,36);
- assert.equal(c.waves[4].types.boss,1);
+ assert.equal(c.waves[4].types.boss||0,0,'regular fifth wave has no boss in 20-wave campaign');
  assert.ok(c.waves.every(w=>w.lootUpperBound>=0));
 });
 test('audit matrix covers early, middle and high waves with reproducible distinct profiles',async()=>{

@@ -27,17 +27,19 @@
     ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 5 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Überstehe Welle 5 und beschütze das Denkmal.',reward:'NACH WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
+    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Bereite deine Verteidigung auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
     {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
-    {wave:16,id:'ending',kicker:'DIE WACHT BESTEHT',title:'Die Erinnerung bleibt.',text:'Marcel hat den Aschenkönig zurückgeschlagen. Das Denkmal steht. Die Wacht geht als endlose Herausforderung weiter.',objective:'Verstärke deine Verteidigung für die kommenden Wellen.',reward:'DIE NAMEN SIND FREI'}
+    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Das Kapitel entscheidet sich.',text:'Der Kapitelboss führt den letzten Angriff. Halte Türme, Hüter und Denkmal bis zum Ende dieser Welle stand.',objective:'Besiege den Kapitelboss und schließe alle 20 Wellen ab.',reward:'DIE NAMEN SIND FREI'}
   ];
   const heroAtlas = new Image();
   heroAtlas.src = 'assets/hero/marcel-lantern-sprite-v1.webp';
-  const pixelMarcel = typeof URLSearchParams === 'function' && new URLSearchParams(globalThis.location?.search || '').get('td2PixelMarcel') === '1';
+  const heroParams=typeof URLSearchParams==='function'?new URLSearchParams(globalThis.location?.search||''):null;
+  const useWeaponWalk=heroParams?.get('td2WeaponWalk')==='1';
   const walkAtlases={marcel:new Image(),kim:new Image()};
-  // Lade die neuen Walk-Animationen mit Waffen
-  walkAtlases.marcel.src=pixelMarcel ? 'assets/hero/marcel-walk-reference-v1.webp?v=1' : 'assets/hero/marcel-sword-walk.webp';
+  // The weapon atlas remains opt-in until its transparent cells pass visual QA.
+  // Default to the stable 4x3 Marcel reference to avoid blue/empty sprite rectangles.
+  walkAtlases.marcel.src=useWeaponWalk?'assets/hero/marcel-sword-walk.webp':'assets/hero/marcel-walk-reference-v1.webp?v=2';
   walkAtlases.kim.src='assets/hero/kim-bow-walk.webp';
   const walkRows={down:0,up:1,left:2,right:3};
   const heroCells = {
@@ -185,7 +187,9 @@
     }echoes=echoes.filter(e=>e.life>0);
   }
   function drawSprite(ctx,x,y,direction='down',opacity=1,size=86,actor='marcel') {
-    const walk=walkAtlases[actor]||walkAtlases.marcel;
+    // Marcel's generated walk sheets currently contain visible blue cell artifacts.
+    // Keep Kim's validated walk sheet; Marcel uses the stable directional lantern atlas below.
+    const walk=actor==='marcel'?null:walkAtlases[actor];
     if(ready(walk)){
       const width=walk.naturalWidth/3,height=walk.naturalHeight/4;
       const frame=walkTime>0&&!reduced?Math.floor(walkTime*9)%3:1;

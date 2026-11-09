@@ -49,9 +49,9 @@ export function campaignOpening(){
  const collect=between(text,'function collectWaveLoot()','\n');
  const lootValue=Number(collect.match(/game\.loot\.length\*(\d+)/)[1]);
  const drop=Number(text.match(/isBoss\(e\)\?(\d+):1/)[1]);
- const bonus=Number(text.match(/game\.wave===4\|\|game\.wave===8\)\{game\.essence\+=(\d+)/)[1]);
+ const bonus=Number(text.match(/(?:campaignWaveLabel\(game\.wave\)|game\.wave)===4\|\|(?:campaignWaveLabel\(game\.wave\)|game\.wave)===8\)\{game\.essence\+=(\d+)/)[1]);
  const ctx={game:{level:1,mode:'campaign'},inPortal:()=>false,globalThis:{FlightEnemies:{specs:{}}},definition:{},level:1};
- vm.createContext(ctx);vm.runInContext(`${towers}\n${enemies}\n${waves}\nglobalThis.result={towerSpecs,enemySpecs,waveSize,enemyTypeForSpawn,start:${startExpr}}`,ctx);
+ vm.createContext(ctx);vm.runInContext(source('dist/campaign-20-wave-plan.js'),ctx);vm.runInContext(`const campaign20=globalThis.DenkmalCampaign20;\n${towers}\n${enemies}\n${waves}\nglobalThis.result={towerSpecs,enemySpecs,waveSize,enemyTypeForSpawn,start:${startExpr}}`,ctx);
  const {towerSpecs,enemySpecs,waveSize,enemyTypeForSpawn,start}=ctx.globalThis.result;
  const rows=Array.from({length:5},(_,i)=>{const wave=i+1,count=waveSize(wave),types={};let bounty=0,loot=0;for(let j=0;j<count;j++){const type=enemyTypeForSpawn(wave,j);types[type]=(types[type]||0)+1;bounty+=enemySpecs[type].bounty;loot+=type==='boss'?drop:1;}return {wave,count,types,bounty,lootLowerBound:0,lootUpperBound:loot*lootValue,chapterBonusOnEntry:wave===4?bonus:0};});
  const costs=Object.fromEntries(Object.entries(towerSpecs).map(([id,s])=>[id,s.cost]));

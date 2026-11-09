@@ -126,7 +126,16 @@
     if(Math.hypot(x,y)>=190&&westhofenPaths.every(path=>pathDistance(p,path)>=90)&&
       westhofenSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>=115))westhofenSlots.push(p);
   }
-  function getWaveGates(level,wave){
+  function getWaveGates(level,wave,mode){
+    const p=mode==='campaign'?globalThis.DenkmalCampaign20?.describe(level,wave,'campaign'):null;
+    if(p){
+      // Expand the historic approach lanes during each 20-wave chapter.
+      if(level===3||level===4){
+        const n=p.localWave<=3?2:p.localWave<=7?3:4;
+        return [0,1,2,3].slice(0,n);
+      }
+      if(level===5||level===7)return p.localWave<=3?[0,1]:[0,1,2];
+    }
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
     if(level===7)return wave===25?[0,1]:[0,1,2];
     if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);

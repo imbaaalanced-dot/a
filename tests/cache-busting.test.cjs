@@ -32,14 +32,15 @@ const expectedVersions = new Map([
   ['asset-manager.js', 'alpha9a3'],
   ['preloader.js', 'menu-v3b-preload'],
   ['persisted-state.js', 'save1'],
-  ['levels.js', 'level7btouch1'],
+  ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
+  ['levels.js', 'level7btouch1campaign20'],
   ['visuals.js', 'expansion2'],
   ['equipment-catalog.js', 'loot-v2-20261029'],
   ['loot.js', 'loot-v2-20261029'],
   ['loot-ui.js', 'contrastglow1'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
-  ['hero-saga.js', 'v410a1'],
+  ['hero-saga.js', 'v5spritefix2'],
   ['combat-fx.js', 'v400a6s2t5'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
@@ -54,7 +55,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js', 'goethe1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js', 'westhofen-v44-originalfotos'],
-  ['game.js', 'v410a1perftouch1'],
+  ['game.js', 'v410a1perftouch1campaign20mobilefps2'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
   ['campaign-balance.js','portal1'],
@@ -94,4 +95,11 @@ for (const resource of resources) {
 for (const file of expectedVersions.keys()) {
   assert.ok(seen.has(file), 'required static asset not included: ' + file);
 }
+const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
+assert.match(heroSagaSource,/const walk=actor==='marcel'\?null:walkAtlases\[actor\]/,'Marcel bypasses generated walk sheets with blue cell artifacts');
+const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
+assert.match(gameSource,/mobileRender&&lowFX\(\)\?1000\/30:0/,'mobile low FX caps rendering at 30 FPS');
+assert.match(gameSource,/qualityTier==='medium'\?\(mobileRender\?\.85:1\.25\):mobileRender\?\.70:\.85/,'mobile renderer uses conservative DPR caps');
+assert.match(gameSource,/qualityTier==='high'\?1400000:qualityTier==='medium'\?650000:320000/,'mobile low tier stays within a 320k pixel budget');
+assert.match(gameSource,/for\(let s=0;s<steps;s\+\+\)update\(FIXED_STEP\)/,'simulation stays on the fixed 60 Hz path');
 console.log('TD2 V4.1 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');
