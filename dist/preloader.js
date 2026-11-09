@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const prefix = 'assets/loading/';
-  const portraits = ['kim-marcel-loading-v5.webp'];
+  const portraits = ['kim-marcel-loading-v5.webp','gate.webp','journey.webp'];
   /* Command Hub V5: preload viewport scenery and only the selected approved hero.
      The other character's art loads on demand when switching in the menu. */
   const mobile = window.matchMedia('(max-width:700px)').matches;
@@ -13,7 +13,7 @@
     else if (localStorage.getItem('denkmal-character') === 'kim') character = 'kim';
   }catch{}
   const essential = [
-    'assets/menu/kim-marcel-command-hub-v5.webp',
+    mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
     'assets/menu/crest-v3.webp',
     'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
   ];
