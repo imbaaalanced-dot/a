@@ -201,6 +201,7 @@
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+            <button id="menuDeveloperBtn" class="icon-btn" type="button" aria-pressed="false">DEVELOPER-MODUS: AUS</button>
             <details class="menu-save-details"><summary>Spielstand &amp; Speicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Deine Sammlung wird auf diesem Gerät gespeichert. Export und Import findest du in der Rüstkammer.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
@@ -336,5 +337,60 @@
   <script src="portrait-home-v1.js?v=style2-portrait2"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
+<script id="td2-android-developer-toggle">
+(function(){
+  'use strict';
+  const KEY='td2_developer_mode_enabled';
+  const HOLD=3000;
+  let timer=null, activated=false, startX=0, startY=0, audio=null;
+  const logo=document.querySelector('#startScreen .menu-wordmark');
+  if(!logo)return;
+  const optionButton=document.getElementById('menuDeveloperBtn');
+  logo.style.touchAction='manipulation';
+  logo.style.userSelect='none';
+  logo.setAttribute('title','3 Sekunden halten: Entwicklermodus');
+  function clear(){if(timer!==null){clearTimeout(timer);timer=null;}}
+  function beep(){
+    try{
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
+      audio=audio||new C();
+      if(audio.state==='suspended')audio.resume();
+      const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
+      o.type='sine';o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(780,t+.18);
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+.25);
+      o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.26);
+    }catch(e){}
+  }
+  function notify(message){
+    let el=document.getElementById('td2DevToast');
+    if(!el){el=document.createElement('div');el.id='td2DevToast';el.setAttribute('role','status');el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+    Object.assign(el.style,{position:'fixed',top:'max(18px,env(safe-area-inset-top))',left:'50%',transform:'translateX(-50%)',zIndex:'2147483647',padding:'14px 20px',background:'#14231d',border:'1px solid #d6b36c',borderRadius:'12px',color:'#f5e6bf',font:'700 15px system-ui',boxShadow:'0 8px 32px #000a',pointerEvents:'none',whiteSpace:'nowrap'});
+    el.textContent=message;el.hidden=false;
+    clearTimeout(el._hide);el._hide=setTimeout(()=>{el.hidden=true;},2200);
+  }
+  function render(){if(optionButton){optionButton.textContent='DEVELOPER-MODUS: '+(window.TD2DeveloperMode?'AN':'AUS');optionButton.setAttribute('aria-pressed',String(!!window.TD2DeveloperMode));}}
+  function toggle(){
+    activated=true;
+    const next=localStorage.getItem(KEY)!=='true';
+    try{localStorage.setItem(KEY,String(next));}catch(e){}
+    window.TD2DeveloperMode=next;
+    render();beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
+    window.dispatchEvent(new CustomEvent('td2:developer-mode',{detail:{enabled:next}}));
+  }
+  try{window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';}catch(e){window.TD2DeveloperMode=false;}
+  render();
+  if(optionButton)optionButton.addEventListener('click',toggle);
+  logo.addEventListener('pointerdown',e=>{
+    if(e.button!==0&&e.pointerType==='mouse')return;
+    clear();activated=false;startX=e.clientX;startY=e.clientY;
+    timer=setTimeout(()=>{timer=null;toggle();},HOLD);
+  });
+  logo.addEventListener('pointermove',e=>{if(Math.hypot(e.clientX-startX,e.clientY-startY)>16)clear();});
+  ['pointerup','pointercancel','pointerleave'].forEach(name=>logo.addEventListener(name,clear));
+  logo.addEventListener('contextmenu',e=>{e.preventDefault();});
+  logo.addEventListener('click',e=>{if(activated){e.preventDefault();e.stopPropagation();activated=false;}},true);
+})();
+</script>
 </body>
 </html>
