@@ -1,0 +1,62 @@
+name: Import TD2 V5 approved artwork
+on:
+  push:
+    branches: [feature/td2-v5-kim-marcel-hero-loading-assets]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch approved artwork and verify SHA-256
+        env:
+          SHARE_ID: G7y1pBSsHNuc
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, urllib.request
+          from pathlib import Path
+          assets = [
+            ("01a1c29d4ca1744d83fc521e20e607f2", "dist/assets/menu/kim-marcel-command-hub-v5.webp", "98e05d5889f6ffbbac728f766b5fbccea1d5f02ab816bed278e336e79785f9e7"),
+            ("01a1c29d8a18777fab0dc95668ad20f3", "dist/assets/loading/kim-marcel-loading-v5.webp", "dacfb95b6d3037dbabda6c48f71b1edcc43fbfed6426abecade722868e47b330")
+          ]
+          for file_id, destination, expected in assets:
+              p=Path(destination)
+              if p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==expected:
+                  print(f"Already verified: {destination}")
+                  continue
+              endpoint=f"https://api.firestorage.ai/dev/file/shares/{os.environ['SHARE_ID']}/files/{file_id}/download"
+              req=urllib.request.Request(endpoint,headers={"User-Agent":"TD2-asset-import/1.0","Accept":"application/json"})
+              with urllib.request.urlopen(req, timeout=35) as resp:
+                  content=resp.read()
+                  content_type=resp.headers.get("Content-Type","")
+              if "json" in content_type or content.startswith(b"{"):
+                  data=json.loads(content)
+                  def urls(obj):
+                      if isinstance(obj,str) and obj.startswith("https://"): yield obj
+                      elif isinstance(obj,dict):
+                          for v in obj.values(): yield from urls(v)
+                      elif isinstance(obj,list):
+                          for v in obj: yield from urls(v)
+                  download_urls=[u for u in urls(data) if "wasabisys.com" in u or "X-Amz-Signature" in u or "/download/" in u]
+                  if not download_urls: raise RuntimeError("No signed asset URL in download response: "+str(list(data) if isinstance(data,dict) else type(data)))
+                  with urllib.request.urlopen(download_urls[0],timeout=50) as resp: content=resp.read()
+              digest=hashlib.sha256(content).hexdigest()
+              if digest != expected: raise RuntimeError(f"SHA mismatch for {destination}: {digest} != {expected}")
+              if not content.startswith(b"RIFF") or content[8:12]!=b"WEBP": raise RuntimeError("Invalid WebP header")
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_bytes(content)
+              print(f"Verified {destination}: {len(content)} bytes, SHA256 {digest}")
+          PY
+      - name: Commit binary artwork to feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/assets/menu/kim-marcel-command-hub-v5.webp dist/assets/loading/kim-marcel-loading-v5.webp
+          if git diff --cached --quiet; then echo "No new artwork changes"; exit 0; fi
+          git commit -m "assets: import verified Kim and Marcel WebP artwork"
+          git push origin HEAD:feature/td2-v5-kim-marcel-hero-loading-assets
