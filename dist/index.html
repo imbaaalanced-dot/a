@@ -366,7 +366,7 @@
   function render(){if(optionButton){optionButton.textContent='DEVELOPER-MODUS: '+(window.TD2DeveloperMode?'AN':'AUS');optionButton.setAttribute('aria-pressed',String(!!window.TD2DeveloperMode));}}
   function toggle(){
     activated=true;
-    const next=localStorage.getItem(KEY)!=='true';
+    const next=!window.TD2DeveloperMode;
     try{localStorage.setItem(KEY,String(next));}catch(e){}
     window.TD2DeveloperMode=next;
     render();beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
@@ -374,6 +374,7 @@
   }
   try{window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';}catch(e){window.TD2DeveloperMode=false;}
   render();
+  window.dispatchEvent(new CustomEvent('td2:developer-mode',{detail:{enabled:window.TD2DeveloperMode}}));
   if(optionButton)optionButton.addEventListener('click',toggle);
   logo.addEventListener('pointerdown',e=>{
     if(e.button!==0&&e.pointerType==='mouse')return;

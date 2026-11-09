@@ -29,6 +29,8 @@ jobs:
           node tests/startup-loading.test.cjs
           node tests/alpha8-preview.test.cjs
           TEST_MOBILE=1 node tests/alpha8-preview.test.cjs
+      - name: Developer mode restore and blocked storage
+        run: node tests/developer-restore.test.cjs
       - name: Main menu structure and unlock routes
         run: node tests/main-menu.test.cjs
       - name: Style 2 portrait home integration
