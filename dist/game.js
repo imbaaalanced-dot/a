@@ -807,7 +807,18 @@
   function wavePreviewText(){const key=game.level+'|'+game.wave+'|'+(inPortal()?portalRun.section+'|'+portalRun.phase:'');if(wavePreviewTextCache.key===key)return wavePreviewTextCache.text;wavePreviewTextCache={key,text:wavePreview(game.wave)};return wavePreviewTextCache.text;}
   let wavePreviewTextCache={key:'',text:''};
   function update(dt){
-    if(state!=='playing'||tutorialPending||tutorialActive)return;if(inPortal()&&portalTick(dt))return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);else if(medFX()&&game.particles.length>170)game.particles.splice(0,game.particles.length-170);time+=dt;routeTick++;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
+    if(state!=='playing'||tutorialPending||tutorialActive)return;if(inPortal()&&portalTick(dt))return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);else if(medFX()&&game.particles.length>170)game.particles.splice(0,game.particles.length-170);time+=dt;routeTick++;game.elapsed+=dt;
+    const h=game.hero,m=game.monument,heroStats=saga.stats(h);
+    tickHero(dt,h,heroStats);
+    tickWaveSpawning(dt);
+    tickEnemies(dt,h,m);
+    tickGateSurges(dt);
+    tickTowers(dt,h,m);
+    tickBullets(dt,h);
+    tickLootAndFx(dt,h);
+    if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
+  }
+  function tickHero(dt,h,heroStats){
     h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
     let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed*(inPortal()?1+.05*(portalRun.perkRanks.step||0):1);if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};{const nx=clamp(h.x+dx*sp*dt,26,WORLD_W-26),ny=clamp(h.y+dy*sp*dt,26,WORLD_H-26);
       if(!churchBlocks(nx,h.y,h.r))h.x=nx;
@@ -815,8 +826,12 @@
     }updateCamera(dt);saga.update(dt,len>0||h.dodge>0,facing);
 
     const target=nearest(h,h.range);if(target&&h.fireCd<=0){shoot(h,target,heroStats.damage*(inPortal()?1+.08*(portalRun.perkRanks.power||0):1),560,h.equipment.weapon==='echo'?'#9affdf':'#83cfff');saga.onAttack(target);h.fireCd=heroStats.rate}
+  }
+  function tickWaveSpawning(dt){
     if(game.intermission>0&&!inPortal())game.intermission=Math.max(0,game.intermission-dt);
     else if((!inPortal()||portalRun.phase==='combat')&&game.waveSpawned<game.waveTotal&&countAlive()<40){game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy();game.spawnTimer=campaign20Plan(game.wave)?.interval??(game.level===5?globalThis.DenkmalHohensyburg.campaignWave(game.wave,game.mode)?.interval:game.level===7?globalThis.DenkmalWesthofen.campaignWave(game.wave,game.mode)?.interval:null)??Math.max(.30,1.02-game.wave*.045)}}
+  }
+  function tickEnemies(dt,h,m){
     if(game.level===3)kirchende?.tickSupport(game.enemies,dt);
     let heroPursuers=0;
     for(const e of game.enemies){
@@ -852,7 +867,11 @@
     compactKeep(game.enemies,e=>!e.dead);
     // V4 alpha.4: measure real per-frame velocity after movement so towers can lead targets.
     for(const e of game.enemies){if(dt>0){e.velX=(e.x-(e.prevX??e.x))/dt;e.velY=(e.y-(e.prevY??e.y))/dt;}e.prevX=e.x;e.prevY=e.y;if(e.ghostHp>e.hp)e.ghostHp=Math.max(e.hp,e.ghostHp-(e.ghostHp-e.hp)*Math.min(1,dt*2.6));else e.ghostHp=e.hp;}
+  }
+  function tickGateSurges(dt){
     for(let i=gateSurges.length-1;i>=0;i--){gateSurges[i].age+=dt;if(gateSurges[i].age>1.4)gateSurges.splice(i,1);}
+  }
+  function tickTowers(dt,h,m){
     for(const t of game.towers){
       t.fireCd-=dt;
       const fireAnim=towerFireFx.get(t)||0;
@@ -871,6 +890,8 @@
         towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*(dist(t,h)<=h.r*6?1+perkStats().circle:1):1);
       }
     }
+  }
+  function tickBullets(dt,h){
     for(const b of game.bullets){
       if(b.boomerang)moveBoomerang(b,dt);
       else{b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;}
@@ -895,9 +916,10 @@
       }
     }
     compactKeep(game.bullets,b=>b.life>0);
+  }
+  function tickLootAndFx(dt,h){
     for(const l of game.loot){l.life-=dt;const d=dist(l,h);if(d<170){l.x+=(h.x-l.x)*dt*7;l.y+=(h.y-l.y)*dt*7}if(l.life>0&&d<20){game.essence+=4;l.life=0;tone(l.kind==='item'?760:640,.04,.03)}}compactKeep(game.loot,l=>l.life>0);
     for(const p of game.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}compactKeep(game.particles,p=>p.life>0);for(const d of game.deathFx)d.life-=dt;compactKeep(game.deathFx,d=>d.life>0);fx.updateDamage?.(game,dt);
-    if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
   }
   function segmentProjection(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;return ((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1);}
   function segmentDistance(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;const t=clamp(((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(e.x-(b.prevX+t*dx),e.y-(b.prevY+t*dy));}
