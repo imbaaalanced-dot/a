@@ -19,7 +19,7 @@ const server=http.createServer((request,response)=>{
   fs.mkdirSync(output,{recursive:true});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url=`http://127.0.0.1:${server.address().port}/index.html`;
-  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
+  const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_PATH||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
   const results=[];
   try{
     for(const test of [
@@ -44,14 +44,17 @@ const server=http.createServer((request,response)=>{
         assert.equal(await page.locator('#mobileNextWaveBtn').isVisible(),false,test.name+' wave-start action hides during combat');
         assert.equal(await page.locator('#arsenal').isVisible(),false,test.name+' full arsenal hidden');
         assert.equal(await page.locator('#buildBtn').isVisible(),false,test.name+' duplicate build button hidden');
+        assert.equal(await page.locator('#compactEnemies').isVisible(),true,test.name+' enemies readable');
+        assert.equal(await page.locator('#compactDodge').isVisible(),true,test.name+' dodge recovery readable');
         assert.equal(await page.locator('#soulBtn').isVisible(),true,test.name+' soul button shown');
         assert.equal(await page.locator('#dodgeBtn').isVisible(),true,test.name+' dodge button shown');
         const bounds=await page.locator('#compactHud').boundingBox();
         assert.ok(bounds&&bounds.height<78&&bounds.width<test.width*.92,test.name+' compact HUD stays narrow');
         const closeSize=await page.locator('#touchContext .touch-context-close').evaluate(el=>({w:getComputedStyle(el).minWidth,h:getComputedStyle(el).minHeight}));
         assert.equal(closeSize.w,'48px');assert.equal(closeSize.h,'48px');
-        await page.locator('#touchContext').evaluate(el=>{el.hidden=false;el.classList.remove('hidden');});
+        await page.locator('#touchContext').evaluate(el=>{el.hidden=false;el.classList.remove('hidden');const options=el.querySelector('.touch-context-options');for(let i=0;i<5;i++){const button=document.createElement('button');button.textContent='TURM · 25';options.appendChild(button);}});
         const panel=await page.locator('#touchContext').boundingBox(),soul=await page.locator('#soulBtn').boundingBox();
+        assert.ok(panel&&panel.y>=0,test.name+' populated tower menu stays on screen');
         assert.ok(panel&&soul&&panel.y+panel.height<=soul.y,test.name+' temporary tower menu clears ability controls');
         await page.locator('#touchContext').evaluate(el=>{el.hidden=true;el.classList.add('hidden');});
       }else{

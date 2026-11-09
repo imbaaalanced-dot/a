@@ -96,6 +96,15 @@ check('Mobile combat strip reflects current hero, monument, essence and wave',()
   assert.equal(element('compactSoul').textContent,`${Math.ceil(t.game.hero.soul)}%`);
   assert.equal(element('compactHud').classList.contains('hidden'),false);
 });
+check('Compact HUD reports enemies, capacity and dodge recovery',()=>{
+ t.game.waveTotal=20;t.game.waveKilled=7;t.game.hero.dodgeCd=2;t.update(.15);
+ assert.equal(element('compactEnemies').textContent,'13 FEINDE');
+ assert.equal(element('compactTowers').textContent,`${t.game.towers.length} / ${t.game.maxTowers} TÜRME`);
+ assert.equal(element('compactDodge').textContent,'1.9s');
+ t.game.hero.dodgeCd=0;t.game.waveKilled=25;t.update(.15);
+ assert.equal(element('compactEnemies').textContent,'0 FEINDE');
+ assert.equal(element('compactDodge').textContent,'BEREIT');
+});
 check('Mobile canvas tap selects a pad, then builds only after tower choice',()=>{
   if(process.env.TEST_MOBILE!=='1')return;
   const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.essence=100;
