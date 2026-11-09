@@ -30,7 +30,7 @@ jobs:
                   print(f"Already verified: {destination}")
                   continue
               endpoint=f"https://api.firestorage.ai/dev/file/shares/{os.environ['SHARE_ID']}/files/{file_id}/download"
-              req=urllib.request.Request(endpoint,headers={"User-Agent":"TD2-asset-import/1.0","Accept":"application/json"})
+              req=urllib.request.Request(endpoint,data=b"{}",method="POST",headers={"User-Agent":"TD2-asset-import/1.0","Accept":"application/json","Content-Type":"application/json"})
               with urllib.request.urlopen(req, timeout=35) as resp:
                   content=resp.read()
                   content_type=resp.headers.get("Content-Type","")
