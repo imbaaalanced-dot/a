@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
   <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a1" />
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
+<style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Startgrafiken werden vorgeladen"><img id="td2LoadArt" class="td2-load-image" src="assets/menu/warden-mobile-v2.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL · DER DENKMALSCHÜTZER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Grafiken werden vorbereitet …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -109,7 +110,7 @@
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersion" class="menu-version">V5 · ALPHA</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
         <div class="menu-content">
           <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" width="661" height="1050" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
@@ -193,6 +194,7 @@
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
+            <button id="menuDeveloperBtn" class="icon-btn" type="button" aria-pressed="false">DEVELOPER-MODUS: AUS</button>
             <details class="menu-save-details"><summary>Spielstand &amp; Speicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Deine Sammlung wird auf diesem Gerät gespeichert. Export und Import findest du in der Rüstkammer.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
@@ -206,7 +208,7 @@
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
-        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span>UI-REVISION 09.11.2026</span></footer>
+        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · ALPHA · 2026-11-09</span></footer>
       </div>
     </section>
 
@@ -329,5 +331,60 @@
   <script src="game.js?v=v5-command-hub1"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
+<script id="td2-android-developer-toggle">
+(function(){
+  'use strict';
+  const KEY='td2_developer_mode_enabled';
+  const HOLD=3000;
+  let timer=null, activated=false, startX=0, startY=0, audio=null;
+  const logo=document.querySelector('#startScreen .menu-wordmark');
+  if(!logo)return;
+  const optionButton=document.getElementById('menuDeveloperBtn');
+  logo.style.touchAction='manipulation';
+  logo.style.userSelect='none';
+  logo.setAttribute('title','3 Sekunden halten: Entwicklermodus');
+  function clear(){if(timer!==null){clearTimeout(timer);timer=null;}}
+  function beep(){
+    try{
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
+      audio=audio||new C();
+      if(audio.state==='suspended')audio.resume();
+      const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
+      o.type='sine';o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(780,t+.18);
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+.25);
+      o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.26);
+    }catch(e){}
+  }
+  function notify(message){
+    let el=document.getElementById('td2DevToast');
+    if(!el){el=document.createElement('div');el.id='td2DevToast';el.setAttribute('role','status');el.setAttribute('aria-live','polite');document.body.appendChild(el);}
+    Object.assign(el.style,{position:'fixed',top:'max(18px,env(safe-area-inset-top))',left:'50%',transform:'translateX(-50%)',zIndex:'2147483647',padding:'14px 20px',background:'#14231d',border:'1px solid #d6b36c',borderRadius:'12px',color:'#f5e6bf',font:'700 15px system-ui',boxShadow:'0 8px 32px #000a',pointerEvents:'none',whiteSpace:'nowrap'});
+    el.textContent=message;el.hidden=false;
+    clearTimeout(el._hide);el._hide=setTimeout(()=>{el.hidden=true;},2200);
+  }
+  function render(){if(optionButton){optionButton.textContent='DEVELOPER-MODUS: '+(window.TD2DeveloperMode?'AN':'AUS');optionButton.setAttribute('aria-pressed',String(!!window.TD2DeveloperMode));}}
+  function toggle(){
+    activated=true;
+    const next=localStorage.getItem(KEY)!=='true';
+    try{localStorage.setItem(KEY,String(next));}catch(e){}
+    window.TD2DeveloperMode=next;
+    render();beep();notify(next?'Developer-Modus aktiviert':'Developer-Modus deaktiviert');
+    window.dispatchEvent(new CustomEvent('td2:developer-mode',{detail:{enabled:next}}));
+  }
+  try{window.TD2DeveloperMode=localStorage.getItem(KEY)==='true';}catch(e){window.TD2DeveloperMode=false;}
+  render();
+  if(optionButton)optionButton.addEventListener('click',toggle);
+  logo.addEventListener('pointerdown',e=>{
+    if(e.button!==0&&e.pointerType==='mouse')return;
+    clear();activated=false;startX=e.clientX;startY=e.clientY;
+    timer=setTimeout(()=>{timer=null;toggle();},HOLD);
+  });
+  logo.addEventListener('pointermove',e=>{if(Math.hypot(e.clientX-startX,e.clientY-startY)>16)clear();});
+  ['pointerup','pointercancel','pointerleave'].forEach(name=>logo.addEventListener(name,clear));
+  logo.addEventListener('contextmenu',e=>{e.preventDefault();});
+  logo.addEventListener('click',e=>{if(activated){e.preventDefault();e.stopPropagation();activated=false;}},true);
+})();
+</script>
 </body>
 </html>
