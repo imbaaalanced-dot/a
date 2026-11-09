@@ -1,5 +1,11 @@
 'use strict';
 const assert=require('node:assert/strict');
+const heroSagaSource=fs.readFileSync(path.join(__dirname,'../dist/hero-saga.js'),'utf8');
+const indexSource=fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8');
+assert.doesNotMatch(heroSagaSource,/Nach Welle 5|Überstehe Welle 5/,'campaign story must describe the 20-wave chapter');
+assert.match(heroSagaSource,/Nach Welle 20 wird das Labyrinth freigeschaltet/);
+assert.match(indexSource,/Tutorial · Vier Tore · 20 Wellen/);
+assert.doesNotMatch(indexSource,/Nach Welle (16|24|28)/,'endless unlock labels use local chapter wave 20');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const original=fs.readFileSync(path.join(__dirname,'game.test.cjs'),'utf8');
 const cut=original.indexOf("if(process.env.TEST_MOBILE==='1'){");
