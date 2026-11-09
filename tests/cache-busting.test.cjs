@@ -40,7 +40,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'contrastglow1'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'v410a1'],
-  ['hero-saga.js', 'v410a1'],
+  ['hero-saga.js', 'v5campaign20copy1'],
   ['combat-fx.js', 'v400a6s2t5'],
   ['style2-cannon.js', 'alpha8cannon2'],
   ['style2-towers.js', 'v400a6elemental1'],
