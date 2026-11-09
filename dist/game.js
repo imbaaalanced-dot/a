@@ -289,23 +289,43 @@
     if(status)status.textContent=unlocked?'FREIGESCHALTET':'GESPERRT';
     button.setAttribute('aria-label',`${button.querySelector('.map-copy strong')?.textContent||'Karte'} · ${unlocked?'freigeschaltet':'gesperrt'}`);
   }
+
+  let developerMode=false;
+  function devMenu(){
+    let p=document.getElementById('td2DevMenu');
+    if(!p){
+      p=document.createElement('section');p.id='td2DevMenu';p.hidden=true;
+      p.style.cssText='position:fixed;inset:8% 5%;z-index:99999;overflow:auto;padding:20px;background:#111b20;color:#f3e2b6;border:2px solid #b99a58;border-radius:16px;box-shadow:0 0 0 100vmax #000b;font:16px system-ui';
+      p.innerHTML='<h2>DEV MODE · TEST</h2><p>Nur diese Sitzung. Keine Änderung der Level-Freischaltungen im Spielstand.</p><p id="td2DevStatus"></p><div id="td2DevLevels" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div><p><button id="td2DevToggle">Modus umschalten</button> <button id="td2DevClose">Schließen</button></p>';
+      document.body.append(p);
+      for(let level=1;level<=7;level++){const b=document.createElement('button');b.textContent='Level '+level;b.onclick=()=>{if(!developerMode&&level!==1)return;p.hidden=true;startGame(level);};document.getElementById('td2DevLevels').append(b);}
+      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;menuStatus();devMenu();};
+      document.getElementById('td2DevClose').onclick=()=>p.hidden=true;
+      p.querySelectorAll('button').forEach(b=>b.style.cssText='min-height:48px;padding:10px;border:1px solid #b99a58;border-radius:8px;background:#27343a;color:white;font:inherit');
+    }
+    document.getElementById('td2DevStatus').textContent=developerMode?'AKTIV · Alle 7 Level testbar':'INAKTIV';
+    p.querySelectorAll('#td2DevLevels button').forEach((b,i)=>b.disabled=!developerMode&&i!==0);
+    return p;
+  }
+  let devTaps=0,devTapAt=0;
+  document.querySelector('.menu-wordmark')?.addEventListener('click',()=>{const now=Date.now();devTaps=now-devTapAt<2500?devTaps+1:1;devTapAt=now;if(devTaps>=5){devTaps=0;devMenu().hidden=false;}});
   function menuStatus(){
-    setMapStatus('level2Btn',campaign.unlocked||alpha8Preview);
-    setMapStatus('level3Btn',lootModel.profile.level3||style2Preview);
+    setMapStatus('level2Btn',developerMode||campaign.unlocked||alpha8Preview);
+    setMapStatus('level3Btn',developerMode||lootModel.profile.level3||style2Preview);
     if(style2Preview&&!lootModel.profile.level3){
       const label=$('level3Btn')?.querySelector('[data-map-status]');
       if(label)label.textContent='TESTVORSCHAU';
     }
-    setMapStatus('level4Btn',lootModel.profile.kirchendeCompleted||level4Preview);
+    setMapStatus('level4Btn',developerMode||lootModel.profile.kirchendeCompleted||level4Preview);
     if(level4Preview&&!lootModel.profile.kirchendeCompleted){
       const label=$('level4Btn')?.querySelector('[data-map-status]');
       if(label)label.textContent='TESTVORSCHAU';
     }
-    setMapStatus('level5Btn',campaign.level4Completed||level5Preview);
+    setMapStatus('level5Btn',developerMode||campaign.level4Completed||level5Preview);
     if(level5Preview&&!campaign.level4Completed){const label=$('level5Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
-    setMapStatus('level6Btn',campaign.level5Completed||campaign.level6Completed||style2Preview);
+    setMapStatus('level6Btn',developerMode||campaign.level5Completed||campaign.level6Completed||style2Preview);
     if(style2Preview&&!campaign.level5Completed){const label=$('level6Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
-    setMapStatus('level7Btn',campaign.level6Completed||campaign.level7Completed||style2Preview);
+    setMapStatus('level7Btn',developerMode||campaign.level6Completed||campaign.level7Completed||style2Preview);
     if(style2Preview&&!campaign.level6Completed){const label=$('level7Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
     setMapStatus('endless5Btn',campaign.level5Completed);
     setMapStatus('endless6Btn',campaign.level6Completed);
@@ -486,11 +506,11 @@
   function startGame(level=1,mode='campaign'){
     if(mode==='portal')return startPortalRun({resume:false});
     level=[1,2,3,4,5,6,7].includes(level)?level:1;
-    if(level===5&&!campaign.level4Completed&&!level5Preview)return;
-    if(level===6&&!campaign.level5Completed&&!campaign.level6Completed&&!style2Preview)return;
-    if(level===7&&!campaign.level6Completed&&!campaign.level7Completed&&!style2Preview)return;
-    if(level===2&&!campaign.unlocked&&!alpha8Preview||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
-    if(mode==='endless'&&(level===6&&!campaign.level6Completed||level===7&&!campaign.level7Completed||level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed||level===5&&!campaign.level5Completed))return;
+    if(!developerMode&&level===5&&!campaign.level4Completed&&!level5Preview)return;
+    if(!developerMode&&level===6&&!campaign.level5Completed&&!campaign.level6Completed&&!style2Preview)return;
+    if(!developerMode&&level===7&&!campaign.level6Completed&&!campaign.level7Completed&&!style2Preview)return;
+    if(!developerMode&&(level===2&&!campaign.unlocked&&!alpha8Preview||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview))return;
+    if(!developerMode&&mode==='endless'&&(level===6&&!campaign.level6Completed||level===7&&!campaign.level7Completed||level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed||level===5&&!campaign.level5Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
     if(level===3&&art?.ready&&!art.ready('monument')){
       const fromState=state;showToast('Denkmal wird geladen …');
@@ -527,13 +547,13 @@
   function isBoss(e){return e.type==='boss'||e.type==='uprooted';}
   function completeLevel(){
     collectWaveLoot();rewardWave();
-    if(game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
-    else if(game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
+    if(!developerMode&&game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
+    else if(!developerMode&&game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
     else if(game.level===3&&!style2Preview)lootModel.claimKirchendeCompletion();
-    else if(game.level===4&&!level4Preview)campaign.completeLevel4();
-    else if(game.level===5&&!level5Preview)campaign.completeLevel5();
-    else if(game.level===6&&!style2Preview)campaign.completeLevel6();
-    else if(game.level===7&&!style2Preview)campaign.completeLevel7();
+    else if(!developerMode&&game.level===4&&!level4Preview)campaign.completeLevel4();
+    else if(!developerMode&&game.level===5&&!level5Preview)campaign.completeLevel5();
+    else if(!developerMode&&game.level===6&&!style2Preview)campaign.completeLevel6();
+    else if(!developerMode&&game.level===7&&!style2Preview)campaign.completeLevel7();
     saga.stopVoice();state='levelcomplete';clearInput();game.enemies=[];game.bullets=[];game.loot=[];
     $('levelCompleteTitle').textContent=game.level===7?'WESTHOFEN IST SICHER':game.level===6?'DIE GOETHESTRASSE IST SICHER':game.level===5?'HOHENSYBURG IST SICHER':game.level===1?'DAS LABYRINTH IST OFFEN':game.level===2?'KIRCHENDE IST OFFEN':game.level===3?'DIE DORFKIRCHE IST OFFEN':'DER SCHLAFENDE LÖWE IST SICHER';
     $('levelSaveNote').textContent=(style2Preview&&game.level===6||level5Preview&&game.level===5||style2Preview&&game.level===7)?'Testvorschau abgeschlossen · keine Kampagnenfreischaltung gespeichert.':lootModel.status||(!campaign.storageAvailable?'Speichern blockiert · Freischaltung nur für diese Sitzung.':'Freischaltung und Beute gespeichert.');
