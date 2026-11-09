@@ -1138,9 +1138,17 @@
     }else loopAccumulator=0;
     const renderStart=profile?performance.now():0;
     const renderInterval=targetRenderInterval();
-    const gameplayDrawDue=state!=='playing'||!renderInterval||now-lastGameplayDraw>=renderInterval;
+    // Keep the fractional render interval; resetting to now drifts below 30 fps.
+    // The tiny tolerance only absorbs timestamp floating-point rounding.
+    const renderElapsed=now-lastGameplayDraw;
+    const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+.01>=renderInterval;
     const shouldDraw=!document.hidden&&(state==='playing'?gameplayDrawDue:now-lastIdleDraw>=100);
-    if(shouldDraw){draw();lastIdleDraw=now;if(state==='playing')lastGameplayDraw=now;}
+    if(shouldDraw){
+      draw();lastIdleDraw=now;
+      if(state==='playing')lastGameplayDraw=renderInterval
+        ?lastGameplayDraw+Math.floor((renderElapsed+.01)/renderInterval)*renderInterval
+        :now;
+    }
     if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
     if(state==='playing')advanceQualityMonitor(rawFrameSeconds);
     updateAdaptiveResolution(now);
