@@ -12,14 +12,14 @@
   const stage=document.createElement('div');
   stage.className='td2-v5-duo-stage';
   stage.setAttribute('role','img');
-  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Schwert und Schild; Kim, die Zielsichere, mit Bogen');
+  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Schwert und Schild; Kim, die Bewahrerin, mit Bogen');
   const art=document.createElement('div');
   art.className='td2-v5-duo-art';
   stage.appendChild(art);
 
   const sources=[
-    {name:'marcel',path:'assets/menu/v5-avatars/marcel-guardian-v5.webp'},
-    {name:'kim',path:'assets/menu/v5-avatars/kim-marksman-v5.webp'}
+    {name:'marcel',path:'assets/menu/v5-avatars/marcel-guardian-v6.webp'},
+    {name:'kim',path:'assets/menu/v5-avatars/kim-marksman-v6.webp'}
   ];
   let successful=0;
   let failed=false;
@@ -45,7 +45,7 @@
   const names=document.createElement('div');
   names.className='td2-v5-duo-names';
   names.setAttribute('aria-hidden','true');
-  names.innerHTML='<span>Marcel <small>DER BESCHÜTZER</small></span><span>Kim <small>DIE ZIELSICHERE</small></span>';
+  names.innerHTML='<span>Marcel <small>DER BESCHÜTZER</small></span><span>Kim <small>DIE BEWAHRERIN</small></span>';
   stage.appendChild(names);
   home.insertBefore(stage,actions);
 })();

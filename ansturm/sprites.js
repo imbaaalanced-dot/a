@@ -1,4 +1,4 @@
-import manifest from './asset-manifest.js';
+import manifest from './asset-manifest.js?v=v5-style2a1';
 
 // One image pipeline for the entire renderer. At most four active downloads.
 const entries = new Map(Object.entries(manifest).map(([key,url])=>[key,{url,status:'queued',img:null}]));

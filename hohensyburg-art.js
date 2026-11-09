@@ -23,7 +23,7 @@
     const rand=randomGenerator(1902),t=level.syburgTerrace;
     const c=C,r=t.raised,f=t.forecourt;
     // Woodland surrounds the north-facing Y junction. South is the wooded drop.
-    q.fillStyle='#202f29';q.fillRect(0,0,SIZE,SIZE);
+    q.fillStyle=globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);
     for(let i=0;i<1600;i++){
       const x=rand()*SIZE,y=rand()*SIZE,rx=15+rand()*92;
       q.fillStyle=['#74826417','#354f3b30','#a5a1810f','#172a233a'][i%4];
@@ -39,7 +39,7 @@
     // Three lanes are authored in levels.js, so rendered paths and AI agree.
     for(const lane of level.paths){
       stroke(q,lane,'#182820',122);stroke(q,lane,'#626c54',105);
-      stroke(q,lane,'#a39b7d',84);
+      stroke(q,lane,globalThis.TD2Style2Materials?.stone||'#a39b7d',84);
       for(let i=1;i<lane.length;i++){
         const a=lane[i-1],b=lane[i],d=Math.hypot(b.x-a.x,b.y-a.y);
         if(d<1)continue;

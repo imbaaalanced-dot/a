@@ -12,12 +12,20 @@
   // BOTH paths must stay bounded instead of retaining every variant visited.
   const known=new Map();
   const fallbackImages=new Map();
+  const prewarmedProjectiles=new Set();
   const cacheLimit=12;
   const maxConcurrentLoads=4;
   const retryDelayMs=10000;
   const diagnostics={towerFallbacks:0,projectileFallbacks:0,drawErrors:0};
   const debug=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2Style2Debug')==='1';
   const level=n=>Math.max(1,Math.min(3,Math.floor(Number(n)||1)));
+  // A projectile is prewarmed only when its request actually enters a cache.
+  // Eviction/retry must unlock prewarming for the next visible tower.
+  const warmKey=(kind,tier)=>`${kind}:${level(tier)}`;
+  function forgetProjectile(url){
+    const match=url.match(/\/projectile_([a-z]+)_lv([1-3])\.webp/);
+    if(match)prewarmedProjectiles.delete(`${match[1]}:${match[2]}`);
+  }
   const cleanupOverrides=new Set(['tower_cannon_lv1','projectile_mage_lv2']);
   const cleanupPass3=new Set(['tower_bow_lv1','tower_bow_lv2','tower_bow_lv3','tower_cannon_lv2','tower_cannon_lv3','tower_mage_lv1','tower_mage_lv2','tower_mage_lv3','tower_boomerang_lv1','tower_boomerang_lv2','tower_boomerang_lv3']);
   function get(kind,tier,type){
@@ -38,6 +46,7 @@
           if(Date.now()-current.failedAt>=retryDelayMs){
             assets.release?.(current.group);
             known.delete(url);
+            forgetProjectile(url);
           }
           return null;
         }
@@ -55,11 +64,13 @@
         const victim=[...known].find(([,e])=>!e.loading);
         if(!victim)return null;
         known.delete(victim[0]);
+        forgetProjectile(victim[0]);
         assets.release?.(victim[1].group);
       }
       // Independently releasable group per sprite, not an ever-growing group.
       current={group:'td2-user-tower:'+url,loading:true,failedAt:0};
       known.set(url,current);
+      if(type==='projectile')prewarmedProjectiles.add(warmKey(kind,tier));
       try{
         Promise.resolve(assets.retain(current.group,[url])).then(
           ()=>{current.loading=false;},
@@ -78,9 +89,11 @@
         const evict=[...fallbackImages].find(([,e])=>e.ready||e.failed);
         if(!evict)return null;
         fallbackImages.delete(evict[0]);
+        forgetProjectile(evict[0]);
       }
       entry={img:new Image(),ready:false,failed:false,failedAt:0};
       fallbackImages.set(url,entry);
+      if(type==='projectile')prewarmedProjectiles.add(warmKey(kind,tier));
       entry.img.decoding='async';
       entry.img.onload=async()=>{
         try{if(typeof entry.img.decode==='function')await entry.img.decode();if(entry.img.naturalWidth>0)entry.ready=true;else{entry.failed=true;entry.failedAt=Date.now();}}
@@ -91,6 +104,7 @@
     }
     if(entry.failed&&Date.now()-entry.failedAt>=retryDelayMs){
       fallbackImages.delete(url);
+      forgetProjectile(url);
       return null; // Next request retries; legacy drawing remains available.
     }
     if(entry.ready&&!entry.failed){
@@ -103,8 +117,11 @@
   }
   function drawTower(ctx,kind,x,y,tier){
     const img=get(kind,tier,'tower');
-    // Warm only this visible variant, not the full 18.75 MiB decoded pack.
-    get(kind,tier,'projectile');
+    // Preserve first-shot visual quality, but only warm each projectile variant
+    // once rather than re-touching its image LRU for every tower every frame.
+    if(enabled&&kinds.has(kind)&&!prewarmedProjectiles.has(warmKey(kind,tier))){
+      get(kind,tier,'projectile');
+    }
     if(!img){if(debug)diagnostics.towerFallbacks++;return false;}
     const size=112,pivotY=488/512;
     ctx.save();try{ctx.drawImage(img,x-size/2,y+13-size*pivotY,size,size);}catch{if(debug)diagnostics.drawErrors++;return false;}finally{ctx.restore();}

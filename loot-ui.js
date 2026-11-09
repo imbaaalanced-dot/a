@@ -85,7 +85,7 @@
       const kim=getHero()==='kim';
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
       $('lootHeroRole').textContent=kim?'DIE BEWAHRERIN':'DER BESCHÜTZER';
-      $('lootHeroPortrait').src=kim?'assets/hero/kim-inventory-portrait-v1.webp':'assets/hero/marcel-portrait-alpha9.webp?v=alpha9a1';
+      $('lootHeroPortrait').src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
       $('lootHeroPortrait').alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
       const p={...model.profile,...model.view(getHero())},all=p.all,item=all.find(i=>i.id===selected);
       if(selected&&!item)selected=null;
