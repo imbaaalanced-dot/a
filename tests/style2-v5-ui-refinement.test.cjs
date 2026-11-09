@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.join(__dirname,'../dist');
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const css=fs.readFileSync(path.join(root,'style2-v5-ui-refinement.css'),'utf8');
+assert.match(html,/combat-hud-v2\.css[^\n]*\n\s*<link rel="stylesheet" href="style2-v5-ui-refinement\.css\?v=20261109a"/);
+assert.match(css,/\.compact-hud-values\s*\{/);
+assert.match(css,/\.hud-menu-panel \{ overflow-y:auto/);
+assert.match(css,/\.touch-context \{ max-height:calc/);
+assert.match(css,/@media \(prefers-reduced-motion:reduce\)/);
+console.log('Style 2 V5 menu/HUD refinement wiring passed');
