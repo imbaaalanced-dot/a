@@ -37,7 +37,13 @@ const server=http.createServer((req,res)=>{
         const ctx=canvas.getContext('2d');let rendered=0;
         for(const kind of kinds)for(let tier=1;tier<=3;tier++){
           ctx.clearRect(0,0,180,180);
-          if(!UserStyle2Towers.drawTower(ctx,kind,90,120,tier))throw Error(`canonical ${kind}/${tier} did not render`);
+          // The Android-oriented adapter permits only a few concurrent image
+          // loads. Wait for its bounded queue; a cold image is not a failure.
+          const started=performance.now();
+          while(!UserStyle2Towers.drawTower(ctx,kind,90,120,tier)){
+            if(performance.now()-started>15000)throw Error(`canonical ${kind}/${tier} did not render within 15 s`);
+            await new Promise(resolve=>setTimeout(resolve,35));
+          }
           if(!ctx.getImageData(0,0,180,180).data.some((value,i)=>i%4===3&&value>16))throw Error(`blank ${kind}/${tier}`);
           rendered++;
         }
