@@ -27,10 +27,10 @@
     ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Bereite deine Verteidigung auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
-    {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
-    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Das Kapitel entscheidet sich.',text:'Der Kapitelboss führt den letzten Angriff. Halte Türme, Hüter und Denkmal bis zum Ende dieser Welle stand.',objective:'Besiege den Kapitelboss und schließe alle 20 Wellen ab.',reward:'DIE NAMEN SIND FREI'}
+    {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Beschütze das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift automatisch an. Nutze die Baupause, um dich auf den nächsten Angriff vorzubereiten.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Beute für deinen nächsten Durchlauf. Bogentürme treffen einzelne Gegner präzise, Kanonen treffen ganze Gruppen. Verstärke deine Türme, bevor der Belagerer erscheint.',objective:'Bereite dich auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:8,id:'chapter3',kicker:'WELLE 8 · DER WEG ZUM LABYRINTH',title:'Halte die Stellung.',text:'Die Gegner folgen festen Wegen zum Denkmal. Deine Türme greifen bevorzugt Gegner an, die dem Denkmal bereits nahe sind.',objective:'Nutze die markierten Bauplätze und kombiniere Bogentürme mit Kanonen.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Jetzt entscheidet sich alles.',text:'Der Kapitelboss führt den letzten Angriff an. Schütze deinen Helden und das Denkmal mit allen verfügbaren Türmen.',objective:'Besiege den Kapitelboss und überstehe die 20. Welle.',reward:'DIE NAMEN SIND FREI'}
   ];
   // A single on-demand movement atlas. The V5b 768x1024 sheets need only
   // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
@@ -98,7 +98,7 @@
     if(!entry||storySeen.has(entry.id))return false;
     const kim=(api.getCharacter?.()||api.getGame?.()?.hero?.character)==='kim';
     const portrait=$('storyPortrait');
-    if(portrait){portrait.src=portraitFor(kim?'kim':'marcel');portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';}
+    if(portrait){portrait.src=portraitFor(kim?'kim':'marcel');portrait.alt=kim?'Kim die Treffsichere':'Marcel der Beschützer';}
     stopVoice();storySeen.add(entry.id);currentStory=entry;
     api.setState('story');api.clearInput();
     $('storyKicker').textContent=entry.kicker;$('storyTitle').textContent=entry.title;

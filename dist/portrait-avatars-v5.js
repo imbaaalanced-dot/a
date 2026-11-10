@@ -12,7 +12,7 @@
   const stage=document.createElement('div');
   stage.className='td2-v5-duo-stage';
   stage.setAttribute('role','img');
-  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Schwert und Schild; Kim, die Bewahrerin, mit Bogen');
+  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Schwert und Schild; Kim, die Treffsichere, mit Bogen');
   const art=document.createElement('div');
   art.className='td2-v5-duo-art';
   stage.appendChild(art);
@@ -45,7 +45,7 @@
   const names=document.createElement('div');
   names.className='td2-v5-duo-names';
   names.setAttribute('aria-hidden','true');
-  names.innerHTML='<span>Marcel <small>DER BESCHÜTZER</small></span><span>Kim <small>DIE BEWAHRERIN</small></span>';
+  names.innerHTML='<span>Marcel <small>DER BESCHÜTZER</small></span><span>Kim <small>DIE TREFFSICHERE</small></span>';
   stage.appendChild(names);
   home.insertBefore(stage,actions);
 })();

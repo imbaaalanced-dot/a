@@ -5,7 +5,7 @@ const heroSagaSource=fs.readFileSync(path.join(__dirname,'../dist/hero-saga.js')
 const indexSource=fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8');
 assert.doesNotMatch(heroSagaSource,/Nach Welle 5|Überstehe Welle 5/,'campaign story must describe the 20-wave chapter');
 assert.match(heroSagaSource,/Nach Welle 20 wird das Labyrinth freigeschaltet/);
-assert.match(indexSource,/Tutorial · Vier Tore · 20 Wellen/);
+assert.match(indexSource,/Die Grundlagen · Vier Tore · 20 Wellen/);
 assert.doesNotMatch(indexSource,/Wellen (6–8|13–16|17–20|21–24|25–28)|Nach Welle (16|24|28)/,'campaign and endless labels use local 20-wave chapters');
 assert.match(heroSagaSource,/wave:20,id:'ending'/,'final story beat belongs to wave 20');
 const original=fs.readFileSync(path.join(__dirname,'game.test.cjs'),'utf8');

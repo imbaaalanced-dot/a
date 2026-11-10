@@ -27,7 +27,7 @@ for(const name of ['kim','marcel']){
 }
 assert.match(portraitSource,/marcel-guardian-v6\.webp/);
 assert.match(portraitSource,/kim-marksman-v6\.webp/);
-assert.match(portraitSource,/DIE BEWAHRERIN/);
+assert.match(portraitSource,/DIE TREFFSICHERE/);
 
 const loaded=[];
 class FakeImage{

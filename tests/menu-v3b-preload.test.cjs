@@ -28,7 +28,7 @@ assert.match(scene, /memorial-yard-v3\.webp[^>]*loading="lazy"/, 'desktop scener
 assert.match(scene, /memorial-yard-mobile-v3\.webp[^>]*loading="lazy"/, 'mobile scenery is lazy');
 
 // Cache key bumped for the changed preloader.
-assert.match(html, /preloader\.js\?v=v5-canonical-art1/);
+assert.match(html, /preloader\.js\?v=copy-20261110a/);
 
 // The CSS swap breakpoint stays in sync with the preloader breakpoint.
 assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*?menu-scene-mobile/, 'CSS scenery swap at 700px');

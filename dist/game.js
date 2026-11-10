@@ -272,107 +272,48 @@
     button.setAttribute('aria-label',`${button.querySelector('.map-copy strong')?.textContent||'Karte'} · ${unlocked?'freigeschaltet':'gesperrt'}`);
   }
 
-  let devNoticeTimer=null;
-  function showDeveloperNotice(message){
-    let notice=document.getElementById('td2DeveloperNotice');
-    if(!notice){
-      notice=document.createElement('div');notice.id='td2DeveloperNotice';
-      notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');
-      notice.style.cssText='position:fixed;top:max(18px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:100001;max-width:90vw;padding:14px 22px;background:#142b28;color:#f3e2b6;border:2px solid #b99a58;border-radius:12px;box-shadow:0 8px 30px #0009;font:bold 18px system-ui;text-align:center;pointer-events:none';
-      document.body.append(notice);
-    }
-    notice.textContent=message;notice.hidden=false;
-    if(devNoticeTimer)clearTimeout(devNoticeTimer);
-    devNoticeTimer=setTimeout(()=>{notice.hidden=true;devNoticeTimer=null;},2200);
-  }
-  let developerMode=globalThis.TD2DeveloperMode===true;
-  window.addEventListener('td2:developer-mode',event=>{developerMode=event.detail?.enabled===true; if(!developerMode&&speedMultiplier===3)speedMultiplier=1;menuStatus();if(state==='playing')updateUI();});
-  // Brief synthesized activation cue, generated locally without downloading audio assets.
-  function playDeveloperActivationSound(){
-    try{
-      const AudioContextClass=window.AudioContext||window.webkitAudioContext;
-      if(!AudioContextClass)return;
-      const ctx=new AudioContextClass();
-      const start=ctx.currentTime;
-      const tones=[523.25,659.25,987.77];
-      tones.forEach((frequency,index)=>{
-        const oscillator=ctx.createOscillator();
-        const gain=ctx.createGain();
-        const at=start+index*0.085;
-        oscillator.type='sine';
-        oscillator.frequency.setValueAtTime(frequency,at);
-        gain.gain.setValueAtTime(0.0001,at);
-        gain.gain.exponentialRampToValueAtTime(0.075,at+0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001,at+0.17);
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-        oscillator.start(at);
-        oscillator.stop(at+0.18);
-      });
-      const closeAfter=tones.length*0.085+0.25;
-      window.setTimeout(()=>{ctx.close().catch(()=>{});},Math.ceil(closeAfter*1000));
-    }catch(_error){/* Audio is optional; developer mode still works when muted or blocked. */}
-  }
-  function devMenu(){
-    let p=document.getElementById('td2DevMenu');
-    if(!p){
-      p=document.createElement('section');p.id='td2DevMenu';p.hidden=true;
-      p.style.cssText='position:fixed;inset:8% 5%;z-index:99999;overflow:auto;padding:20px;background:#111b20;color:#f3e2b6;border:2px solid #b99a58;border-radius:16px;box-shadow:0 0 0 100vmax #000b;font:16px system-ui';
-      p.innerHTML='<h2>DEV MODE · TEST</h2><p>Nur diese Sitzung. Keine Änderung der Level-Freischaltungen im Spielstand.</p><p id="td2DevStatus"></p><div id="td2DevLevels" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div><p><button id="td2DevToggle">Modus umschalten</button> <button id="td2DevClose">Schließen</button></p>';
-      document.body.append(p);
-      for(let level=1;level<=7;level++){const b=document.createElement('button');b.textContent='Level '+level;b.onclick=()=>{if(!developerMode&&level!==1)return;p.hidden=true;startGame(level);};document.getElementById('td2DevLevels').append(b);}
-      document.getElementById('td2DevToggle').onclick=()=>{developerMode=!developerMode;if(developerMode)playDeveloperActivationSound();showDeveloperNotice(developerMode?'DEV MODE · Aktiviert':'DEV MODE · Deaktiviert');menuStatus();devMenu();};
-      document.getElementById('td2DevClose').onclick=()=>p.hidden=true;
-      p.querySelectorAll('button').forEach(b=>b.style.cssText='min-height:48px;padding:10px;border:1px solid #b99a58;border-radius:8px;background:#27343a;color:white;font:inherit');
-    }
-    document.getElementById('td2DevStatus').textContent=developerMode?'AKTIV · Alle 7 Level testbar':'INAKTIV';
-    p.querySelectorAll('#td2DevLevels button').forEach((b,i)=>b.disabled=!developerMode&&i!==0);
-    return p;
-  }
-  let devTaps=0,devTapAt=0;
-  document.querySelector('.menu-wordmark')?.addEventListener('click',()=>{const now=Date.now();devTaps=now-devTapAt<2500?devTaps+1:1;devTapAt=now;if(devTaps>=5){devTaps=0;devMenu().hidden=false;}});
   function menuStatus(){
-    setMapStatus('level2Btn',developerMode||campaign.unlocked||alpha8Preview);
-    setMapStatus('level3Btn',developerMode||lootModel.profile.level3||style2Preview);
+    setMapStatus('level2Btn',campaign.unlocked||alpha8Preview);
+    setMapStatus('level3Btn',lootModel.profile.level3||style2Preview);
     if(style2Preview&&!lootModel.profile.level3){
       const label=$('level3Btn')?.querySelector('[data-map-status]');
       if(label)label.textContent='TESTVORSCHAU';
     }
-    setMapStatus('level4Btn',developerMode||lootModel.profile.kirchendeCompleted||level4Preview);
+    setMapStatus('level4Btn',lootModel.profile.kirchendeCompleted||level4Preview);
     if(level4Preview&&!lootModel.profile.kirchendeCompleted){
       const label=$('level4Btn')?.querySelector('[data-map-status]');
       if(label)label.textContent='TESTVORSCHAU';
     }
-    setMapStatus('level5Btn',developerMode||campaign.level4Completed||level5Preview);
+    setMapStatus('level5Btn',campaign.level4Completed||level5Preview);
     if(level5Preview&&!campaign.level4Completed){const label=$('level5Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
-    setMapStatus('level6Btn',developerMode||campaign.level5Completed||campaign.level6Completed||style2Preview);
+    setMapStatus('level6Btn',campaign.level5Completed||campaign.level6Completed||style2Preview);
     if(style2Preview&&!campaign.level5Completed){const label=$('level6Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
-    setMapStatus('level7Btn',developerMode||campaign.level6Completed||campaign.level7Completed||style2Preview);
+    setMapStatus('level7Btn',campaign.level6Completed||campaign.level7Completed||style2Preview);
     if(style2Preview&&!campaign.level6Completed){const label=$('level7Btn')?.querySelector('[data-map-status]');if(label)label.textContent='TESTVORSCHAU';}
     setMapStatus('endless5Btn',campaign.level5Completed);
-    setMapStatus('endless6Btn',developerMode||campaign.level6Completed);
-    setMapStatus('endless7Btn',developerMode||campaign.level7Completed);
-    setMapStatus('endless1Btn',developerMode||campaign.unlocked);
-    setMapStatus('endlessBtn',developerMode||lootModel.profile.level3);
-    setMapStatus('endless3Btn',developerMode||lootModel.profile.kirchendeCompleted);
-    setMapStatus('endless4Btn',developerMode||campaign.level4Completed);
-    const chapter=campaign.level7Completed?'Kampagne abgeschlossen':`Kampagne · Level ${campaign.level6Completed?7:campaign.level5Completed?6:campaign.level4Completed?5:lootModel.profile.kirchendeCompleted?4:lootModel.profile.level3?3:campaign.unlocked?2:1}`;
-    $('menuCompactStatus').textContent=`${chapter} · Rucksack ${lootModel.view(selectedCharacter).bag.length}/30${lootModel.view(selectedCharacter).overflow.length?' · +'+lootModel.view(selectedCharacter).overflow.length+' Überlauf':''}`;
+    setMapStatus('endless6Btn',campaign.level6Completed);
+    setMapStatus('endless7Btn',campaign.level7Completed);
+    setMapStatus('endless1Btn',campaign.unlocked);
+    setMapStatus('endlessBtn',lootModel.profile.level3);
+    setMapStatus('endless3Btn',lootModel.profile.kirchendeCompleted);
+    setMapStatus('endless4Btn',campaign.level4Completed);
+    const chapter=campaign.level7Completed?'Kampagne abgeschlossen':`Kampagne · Kapitel ${campaign.level6Completed?7:campaign.level5Completed?6:campaign.level4Completed?5:lootModel.profile.kirchendeCompleted?4:lootModel.profile.level3?3:campaign.unlocked?2:1} von 7`;
+    $('menuCompactStatus').textContent=`${chapter} · Rucksack: ${lootModel.view(selectedCharacter).bag.length}/30${lootModel.view(selectedCharacter).overflow.length?' · '+lootModel.view(selectedCharacter).overflow.length+' weitere Gegenstände':''}`;
     $('menuStorageWarning').textContent=lootModel.status;
     $('menuStorageWarning').hidden=!lootModel.status;
-    if($('collectionSummary'))$('collectionSummary').textContent=`${lootModel.view(selectedCharacter).bag.length}/30 im Rucksack · ${lootModel.view(selectedCharacter).overflow.length} im Überlauf · Ausrüstung nur hier wechseln`;
-    if($('saveStatus'))$('saveStatus').textContent=lootModel.status||'Beute und Ausrüstung werden auf diesem Gerät gespeichert.';
-    $('levelProgress').textContent=campaign.level7Completed?'Westhofen verteidigt · Endlosmodus Level 7 verfügbar':campaign.level6Completed?'Goethestraße verteidigt · Level 7 Westhofen und Endlosmodus Level 6 verfügbar':campaign.level5Completed?'Hohensyburg verteidigt · Goethestraße und Endlosmodus Level 5 verfügbar':campaign.level4Completed?'Dorfkirche verteidigt · Hohensyburg und Endlosmodus Level 4 verfügbar':lootModel.profile.kirchendeCompleted?'Level 4 Dorfkirche freigeschaltet · verteidige den schlafenden Löwen':lootModel.profile.level3?'Kirchende freigeschaltet · Level 3 und Endlosmodus verfügbar':campaign.unlocked?(campaign.storageAvailable?'Level 2 freigeschaltet · jederzeit hier starten':'Level 2 freigeschaltet · Speichern blockiert, nur für diese Sitzung'):'Level 2 wird nach Kapitelwelle 20 freigeschaltet.';
+    if($('collectionSummary'))$('collectionSummary').textContent=`${lootModel.view(selectedCharacter).bag.length} von 30 Plätzen belegt · ${lootModel.view(selectedCharacter).overflow.length} weitere Gegenstände · Ausrüstung im Hauptmenü wechseln`;
+    if($('saveStatus'))$('saveStatus').textContent=lootModel.status||'Deine Beute und Ausrüstung werden auf diesem Gerät gespeichert.';
+    $('levelProgress').textContent=campaign.level7Completed?'Westhofen verteidigt · Endlosmodus für Level 7 freigeschaltet':campaign.level6Completed?'Goethestraße verteidigt · Level 7 und Endlosmodus für Level 6 freigeschaltet':campaign.level5Completed?'Hohensyburg verteidigt · Level 6 und Endlosmodus für Level 5 freigeschaltet':campaign.level4Completed?'Dorfkirche verteidigt · Level 5 und Endlosmodus für Level 4 freigeschaltet':lootModel.profile.kirchendeCompleted?'Dorfkirche freigeschaltet · Beschütze den schlafenden Löwen':lootModel.profile.level3?'Kirchende freigeschaltet · Level 3 und Endlosmodus verfügbar':campaign.unlocked?(campaign.storageAvailable?'Labyrinth freigeschaltet · Level 2 ist jederzeit spielbar':'Labyrinth freigeschaltet · Fortschritt gilt nur für diese Sitzung'):'Schließe Kapitel I ab, um das Labyrinth freizuschalten.';
   }
   // V4 alpha.4: the HUD menu is a <details> overlay; every screen switch must close it.
   function closeHudMenu(){const menu=$('hudMenu');if(menu)menu.open=false;return true;}
   function closeScreens(){closeHudMenu();tutorialActive=false;tutorialPending=false;saga.stopVoice();for(const id of ['startScreen','pauseScreen','perkScreen','gameover','levelComplete','storyScreen','characterScreen','inventoryScreen','introTutorial'])$(id).classList.add('hidden');}
   const introTutorialSteps=[
-    {title:'Bewegen und automatisch angreifen',text:'Am PC bewegst du deinen Helden mit WASD oder den Pfeiltasten. Auf dem Handy ziehst du den linken Steuerstick. Dein Runenstab greift Gegner automatisch an.',target:()=>mobileRender?$('joystick'):$('game')},
-    {title:'Seelenruf und Ausweichen',text:'Der Seelenruf (F oder antippen) trifft Gegner in deiner Nähe und schützt dich kurz. Mit Leertaste oder AUSWEICHEN weichst du Angriffen aus.',target:()=>$('soulBtn')},
-    {title:'Türme wählen und bauen',text:mobileRender?'Tippe auf einen freien Bauplatz und wähle dann deinen Turm. Tippe einen gebauten Turm an, um ihn aufzuwerten, die Zielwahl zu ändern oder ihn zu verkaufen.':'Wähle einen Turmtyp in der Leiste. Baue auf markierten Bauplätzen mit E oder BAUEN. Türme kosten Essenz; nahe Türme kannst du aufwerten oder verkaufen.',target:()=>mobileRender?$('game'):$('arsenal')},
-    {title:'Wellen und Baupause',text:mobileRender?'Während der Baupause kannst du Türme setzen. Starte die nächste Welle über WELLE STARTEN in der schmalen Statusleiste oder warte kurz.':'Während der Baupause kannst du Türme setzen. Starte die nächste Welle mit WELLE STARTEN oder warte kurz. Halte Gegner vom Denkmal fern.',target:()=>mobileRender?$('compactHud'):$('objective')},
-    {title:'Beute und Inventar',text:'Gefundene Beute bleibt auch nach einer Niederlage erhalten. Öffne den Rucksack mit I oder über MENÜ · BEUTE. Ausrüstung wechselst du im Hauptmenü.',target:()=>document.querySelector('.hud-menu summary')}
+    {title:'Bewegen & angreifen',text:'Bewege deinen Helden am PC mit WASD oder den Pfeiltasten. Auf dem Handy nutzt du den linken Steuerstick. Dein Held greift Gegner automatisch an.',target:()=>mobileRender?$('joystick'):$('game')},
+    {title:'Seelenruf & Ausweichen',text:'Der Seelenruf trifft Gegner in deiner Nähe und bietet kurzzeitig Schutz. Aktiviere ihn mit F oder per Touch. Mit der Leertaste oder der Ausweich-Taste entgehst du Angriffen.',target:()=>$('soulBtn')},
+    {title:'Türme bauen & verbessern',text:mobileRender?'Tippe auf einen freien Bauplatz, wähle einen Turm und bestätige den Bau. Tippe auf einen fertigen Turm, um ihn aufzuwerten, sein Ziel zu ändern oder ihn zu verkaufen.':'Wähle einen Turm in der Leiste und errichte ihn mit E auf einem markierten Bauplatz. Dafür benötigst du Essenz. Bereits gebaute Türme kannst du aufwerten oder verkaufen.',target:()=>mobileRender?$('game'):$('arsenal')},
+    {title:'Wellen & Spieltempo',text:mobileRender?'In der Baupause kannst du Türme errichten und die nächste Welle früh starten. Ab Level 2 lässt sich das Tempo zwischen 1× und 2× umschalten.':'Nutze die Baupause, um deine Verteidigung vorzubereiten. Starte die nächste Welle mit WELLE STARTEN. Ab Level 2 sind 1× und 2× Tempo verfügbar.',target:()=>mobileRender?$('compactHud'):$('objective')},
+    {title:'Beute & Ausrüstung',text:'Beute bleibt auch nach Niederlagen erhalten. Öffne deinen Rucksack mit I oder über MENÜ → BEUTE. Ausrüstung wechselst du im Hauptmenü.',target:()=>document.querySelector('.hud-menu summary')}
   ];
   function tutorialSeen(){return preferences.tutorialSeen;}
   function positionTutorialArrow(){
@@ -528,18 +469,18 @@
   function startGame(level=1,mode='campaign'){
     if(mode==='portal')return startPortalRun({resume:false});
     level=[1,2,3,4,5,6,7].includes(level)?level:1;
-    if(!developerMode&&level===5&&!campaign.level4Completed&&!level5Preview)return;
-    if(!developerMode&&level===6&&!campaign.level5Completed&&!campaign.level6Completed&&!style2Preview)return;
-    if(!developerMode&&level===7&&!campaign.level6Completed&&!campaign.level7Completed&&!style2Preview)return;
-    if(!developerMode&&(level===2&&!campaign.unlocked&&!alpha8Preview||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview))return;
-    if(!developerMode&&mode==='endless'&&(level===6&&!campaign.level6Completed||level===7&&!campaign.level7Completed||level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed||level===5&&!campaign.level5Completed))return;
+    if(level===5&&!campaign.level4Completed&&!level5Preview)return;
+    if(level===6&&!campaign.level5Completed&&!campaign.level6Completed&&!style2Preview)return;
+    if(level===7&&!campaign.level6Completed&&!campaign.level7Completed&&!style2Preview)return;
+    if(level===2&&!campaign.unlocked&&!alpha8Preview||level===3&&!lootModel.profile.level3&&!style2Preview||level===4&&!lootModel.profile.kirchendeCompleted&&!level4Preview)return;
+    if(mode==='endless'&&(level===6&&!campaign.level6Completed||level===7&&!campaign.level7Completed||level===1&&!campaign.unlocked||level===2&&!lootModel.profile.level3||level===3&&!lootModel.profile.kirchendeCompleted||level===4&&!campaign.level4Completed||level===5&&!campaign.level5Completed))return;
     const request=++levelLoadRequest,art=globalThis.KirchendeArt;
     if(level===3&&art?.ready&&!art.ready('monument')){
-      const fromState=state;showToast('Denkmal wird geladen …');
+      const fromState=state;showToast('Denkmalgrafik wird geladen …');
       art.load(true).then(()=>{
         if(request!==levelLoadRequest||state!==fromState)return;
         if(art.ready('monument'))startGame(level,mode);
-        else showToast('Denkmalgrafik nicht verfügbar · bitte Level erneut starten');
+        else showToast('Denkmalgrafik nicht verfügbar · starte das Level erneut');
       });
       return;
     }
@@ -569,18 +510,18 @@
   function isBoss(e){return e.type==='boss'||e.type==='uprooted';}
   function completeLevel(){
     collectWaveLoot();rewardWave();
-    if(!developerMode&&game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
-    else if(!developerMode&&game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
+    if(game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
+    else if(game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
     else if(game.level===3&&!style2Preview)lootModel.claimKirchendeCompletion();
-    else if(!developerMode&&game.level===4&&!level4Preview)campaign.completeLevel4();
-    else if(!developerMode&&game.level===5&&!level5Preview)campaign.completeLevel5();
-    else if(!developerMode&&game.level===6&&!style2Preview)campaign.completeLevel6();
-    else if(!developerMode&&game.level===7&&!style2Preview)campaign.completeLevel7();
+    else if(game.level===4&&!level4Preview)campaign.completeLevel4();
+    else if(game.level===5&&!level5Preview)campaign.completeLevel5();
+    else if(game.level===6&&!style2Preview)campaign.completeLevel6();
+    else if(game.level===7&&!style2Preview)campaign.completeLevel7();
     saga.stopVoice();state='levelcomplete';clearInput();game.enemies=[];game.bullets=[];game.loot=[];
     $('levelCompleteTitle').textContent=game.level===7?'WESTHOFEN IST SICHER':game.level===6?'DIE GOETHESTRASSE IST SICHER':game.level===5?'HOHENSYBURG IST SICHER':game.level===1?'DAS LABYRINTH IST OFFEN':game.level===2?'KIRCHENDE IST OFFEN':game.level===3?'DIE DORFKIRCHE IST OFFEN':'DER SCHLAFENDE LÖWE IST SICHER';
-    $('levelSaveNote').textContent=(style2Preview&&game.level===6||level5Preview&&game.level===5||style2Preview&&game.level===7)?'Testvorschau abgeschlossen · keine Kampagnenfreischaltung gespeichert.':lootModel.status||(!campaign.storageAvailable?'Speichern blockiert · Freischaltung nur für diese Sitzung.':'Freischaltung und Beute gespeichert.');
-    $('levelCompleteInfo').textContent=game.level===7?'Kriegerdenkmal verteidigt · Endlosmodus Westhofen verfügbar.':game.level===6?'Ehrenmal verteidigt · Level 7 Westhofen ist jetzt spielbar.':game.level===5?'Kaiser-Wilhelm-Denkmal verteidigt · Level 6 Goethestraße ist jetzt spielbar.':game.level===1?'Level 2 · Welle 6 · 130 Essenz':game.level===2?'Level 3 · Welle 9 · 180 Essenz · acht Türme':game.level===3?'Kirchende verteidigt. Level 4 · Welle 13 · 245 Essenz · zehn Turmplätze':'Löwendenkmal verteidigt · Endlosmodus Dorfkirche verfügbar.';
-    if(campaign20Plan(game.wave))$('levelCompleteInfo').textContent=game.level===7?'20/20 Wellen geschafft · Westhofen-Endlosmodus freigeschaltet.':`20/20 Wellen geschafft · Level ${game.level+1} kann gestartet werden.`;
+    $('levelSaveNote').textContent=(style2Preview&&game.level===6||level5Preview&&game.level===5||style2Preview&&game.level===7)?'Testvorschau abgeschlossen · Kampagnenfortschritt wurde nicht verändert.':lootModel.status||(!campaign.storageAvailable?'Speichern nicht möglich · Fortschritt gilt nur für diese Sitzung.':'Fortschritt und Beute wurden gespeichert.');
+    $('levelCompleteInfo').textContent=game.level===7?'Westhofen verteidigt · Endlosmodus freigeschaltet.':game.level===6?'Ehrenmal verteidigt · Westhofen ist jetzt spielbar.':game.level===5?'Kaiser-Wilhelm-Denkmal verteidigt · Goethestraße ist jetzt spielbar.':game.level===1?'Das Labyrinth ist freigeschaltet. Bereite dich auf neue Wege vor.':game.level===2?'Kirchende ist freigeschaltet. Verteidige das Kriegerdenkmal.':game.level===3?'Kirchende verteidigt · Die Ender Dorfkirche ist freigeschaltet.':'Löwendenkmal verteidigt · Endlosmodus für die Dorfkirche freigeschaltet.';
+    if(campaign20Plan(game.wave))$('levelCompleteInfo').textContent=game.level===7?'Alle 20 Wellen geschafft · Endlosmodus für Westhofen freigeschaltet.':`Alle 20 Wellen geschafft · Kapitel ${game.level+1} ist freigeschaltet.`;
     $('nextLevelBtn').textContent=game.level===7?'WESTHOFEN ENDLOS':game.level===6?(style2Preview&&!campaign.level6Completed?'GOETHESTRASSE ENDLOS':'LEVEL 7 STARTEN'):game.level===5?(level5Preview?'HOHENSYBURG ENDLOS':'LEVEL 6 STARTEN'):game.level===4?'LEVEL 5 STARTEN':game.level===1?'LEVEL 2 STARTEN':game.level===2?'LEVEL 3 STARTEN':game.level===3?'LEVEL 4 STARTEN':'DORFKIRCHE ENDLOS';
     $('continueEndlessBtn').classList.toggle('hidden',game.level===1);
     $('levelComplete').classList.remove('hidden');focusModal($('levelComplete'));updateUI();
@@ -763,15 +704,15 @@
   }
   function endWave(){if(state!=='playing')return;if(game.mode==='campaign-pilot'&&game.wave===8){collectWaveLoot();state='gameover';$('gameoverTitle').textContent='KAMPAGNENPILOT GESCHAFFT';ui.gameoverStats.textContent='8 Wellen · Keine Kampagnenfreischaltungen verändert';ui.gameover.classList.remove('hidden');return;}if(inPortal()){endPortalWave();return;}if(!['endless','campaign-pilot'].includes(game.mode)&&(campaign20Plan(game.wave)?game.wave===campaign20Plan(game.wave).lastWave:(game.level===1&&game.wave===5||game.level===2&&game.wave===8||game.level===3&&game.wave===12||game.level===4&&game.wave===16||game.level===5&&game.wave===20||game.level===6&&game.wave===24||game.level===7&&game.wave===28))){completeLevel();return;}saga.stopVoice();state='perk';collectWaveLoot();rewardWave();game.enemies.length=0;game.bullets.length=0;ui.objectiveText.textContent='WELLE ABGESCHLOSSEN';const perks=getPerks();ui.perkGrid.innerHTML='';perks.forEach((p,i)=>{const b=document.createElement('button');b.className='perk';b.innerHTML=`<span class="num">${i+1}</span><div class="perk-icon">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p>`;b.onclick=()=>selectPerk(p);ui.perkGrid.appendChild(b)});ui.perk.classList.remove('hidden');focusModal(ui.perk);tone(440,.18)}
   function getPerks(){const pool=[
-    {name:'Eiserner Eid',icon:'✦',desc:'+25 maximale und aktuelle Hüter-LP.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
-    {name:'Runenmeister',icon:'◆',desc:'+30 % Feuerrate des Hüters.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
+    {name:'Eiserner Eid',icon:'✦',desc:'+25 maximale Lebenspunkte und 25 Heilung für deinen Helden.',apply:g=>{g.hero.maxHp+=25;g.hero.hp+=25}},
+    {name:'Runenmeister',icon:'◆',desc:'Dein Held greift 30 % schneller an.',apply:g=>g.hero.fireRate=Math.max(.09,g.hero.fireRate/1.3)},
     {name:'Kraft des Stabes',icon:'✧',desc:'+6 Schaden pro Geschoss.',apply:g=>g.hero.damage+=6},
-    {name:'Steinmetzsegen',icon:'⬟',desc:'Heilt das Monument um 140 LP.',apply:g=>g.monument.hp=Math.min(g.monument.maxHp,g.monument.hp+140)},
-    {name:'Festungsplan',icon:'▲',desc:'+1 maximales Turmlimit und 20 Essenz.',apply:g=>{g.maxTowers++;g.essence+=20}},
+    {name:'Steinmetzsegen',icon:'⬟',desc:'Stellt 140 Lebenspunkte des Denkmals wieder her.',apply:g=>g.monument.hp=Math.min(g.monument.maxHp,g.monument.hp+140)},
+    {name:'Festungsplan',icon:'▲',desc:'Ein zusätzlicher Turmplatz und 20 Essenz.',apply:g=>{g.maxTowers++;g.essence+=20}},
     {name:'Marschtritt',icon:'➹',desc:'+15 % Bewegungstempo.',apply:g=>g.hero.speed*=1.15}
   ];for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}return pool.slice(0,3)}
   function selectPerk(p){if(state!=='perk')return;if(inPortal()){choosePortalPerk(typeof p==='string'?p:p.id);return;}p.apply(game);game.wave++;game.waveSpawned=0;game.waveKilled=0;game.waveTotal=waveSize(game.wave);game.spawnTimer=1.2;game.intermission=6;game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);if(campaignWaveLabel(game.wave)===4||campaignWaveLabel(game.wave)===8){game.essence+=35;showToast(`${chapter().name} · +35 ESSENZ`)}else showToast(`WELLE ${campaignWaveLabel(game.wave)}`);state='playing';ui.perk.classList.add('hidden');focusGame();saga.chapter(game.wave);updateUI()}
-  function gameOver(){if(state==='gameover')return;if(inPortal())portalTransition({type:'FAIL'});collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS MONUMENT IST GEFALLEN':'DER HÜTER IST GEFALLEN';ui.gameoverStats.textContent=`${campaign20Plan(game.wave)?campaignWaveLabel(game.wave)-1:game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Minuten`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
+  function gameOver(){if(state==='gameover')return;if(inPortal())portalTransition({type:'FAIL'});collectWaveLoot();saga.stopVoice();state='gameover';$('gameoverTitle').textContent=game.monument.hp<=0?'DAS DENKMAL IST GEFALLEN':'DEIN HELD IST GEFALLEN';ui.gameoverStats.textContent=`${campaign20Plan(game.wave)?campaignWaveLabel(game.wave)-1:game.wave-1} Wellen überstanden · ${game.kills} Feinde besiegt · Spielzeit ${Math.floor(game.elapsed/60)}:${String(Math.floor(game.elapsed%60)).padStart(2,'0')} Min.`;ui.gameover.classList.remove('hidden');focusModal(ui.gameover);tone(75,.5);}
 
 
   // The church blocks the player, even during a dodge. Movement resolves each
@@ -893,7 +834,7 @@
   }
   function segmentProjection(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;return ((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1);}
   function segmentDistance(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;const t=clamp(((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(e.x-(b.prevX+t*dx),e.y-(b.prevY+t*dy));}
-  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';setHidden($('compactHud'),!playing);setText($('compactHp'),`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setText($('compactMonument'),`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText($('compactEssence'),game.essence);setText($('compactWave'),campaignWaveLabel(game.wave));setText($('compactSoul'),`${Math.ceil(h.soul)}%`);setText($('compactEnemies'),`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE`);setText($('compactTowers'),`${game.towers.length} / ${game.maxTowers} TÜRME`);setText($('compactDodge'),h.dodgeCd>0?`${h.dodgeCd.toFixed(1)}s`:'BEREIT');setWidth($('compactHpBar'),`${clamp(h.hp/h.maxHp*100,0,100)}%`);setWidth($('compactMonumentBar'),`${clamp(m.hp/m.maxHp*100,0,100)}%`);setHidden($('mobileNextWaveBtn'),!playing||game.intermission<=0||(inPortal()&&portalRun.phase!=='build'));setHidden($('compactObjective'),!playing||!inPortal()||portalRun.phase!=='exit');setText($('compactObjective'),inPortal()&&portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'');const speedBtn=$('speedBtn'),speedAvailable=game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier!==1));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreviewText()}${campaign20Plan(game.wave)?'':game.level===7?' · '+globalThis.DenkmalWesthofen.warning(game.wave,game.mode):game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave,game.mode):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave,game.mode).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,campaignWaveLabel(game.wave));setText($('levelLabel'),game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);const hpPct=clamp(h.hp/h.maxHp*100,0,100);setWidth(ui.playerHp,hpPct+'%');ui.playerHp.classList.toggle('low',hpPct<50&&hpPct>=25);ui.playerHp.classList.toggle('critical',hpPct<25);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);const mPct=clamp(m.hp/m.maxHp*100,0,100);setWidth(ui.monumentHp,mPct+'%');ui.monumentHp.classList.toggle('low',mPct<50&&mPct>=25);ui.monumentHp.classList.toggle('critical',mPct<25);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);const objPanel=$('objective');objPanel.classList.toggle('urgent',playing&&game.intermission>0&&game.intermission<=5&&!inPortal());setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:campaign20Plan(game.wave)?.boss||game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${campaignWaveLabel(game.wave)}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===7?'WESTHOFEN · ZWEI STRASSEN + GRÜNZUG + LUFTANGRIFF':game.level===6?'GOETHESTRASSE · DREI WEGE + LUFTANGRIFF':game.level===4?'DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · FESTE BAUPLÄTZE':`VIER TORE · FESTE BAUPLÄTZE · WELLE ${campaignWaveLabel(game.wave)} / ${campaign20Plan(game.wave)?20:5}`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);{const button=$('tower-boomerang');if(button){const available=game.level>=3;button.hidden=!available;button.disabled=!playing||!available;}}const buildContext=buildContextActive();setHidden($('arsenal'),!playing);setHidden($('buildBtn'),!playing);setDisabled($('buildBtn'),!playing||!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${(inPortal()?nearby.spent*(portalRun.phase==='build'?1:.75):Math.floor(nearby.spent*.6))}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');if(game.mode==='campaign-pilot'){setText($('levelLabel'),'KAMPAGNENPILOT');setText(ui.storyText,'DREI KAMPFPHASEN · WELLE '+game.wave+' / 8');}if(inPortal()){setText($('wavePreview'),portalRun.phase==='build'?'VORSCHAU · '+wavePreviewText()+' · ZULÄUFE '+[[3],[2,4],[2,3,4]][portalRun.section-1].join(', '):'');setText($('levelLabel'),'PORTALREISE '+portalRun.section+' / 3');setText(ui.storyText,portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'VERTEIDIGE DEN SCHUTZPUNKT');setText(ui.objectiveText,portalRun.phase==='exit'?'ABSCHNITT GESICHERT':portalRun.phase==='build'?'BAUPHASE · BEREIT?':'WELLE '+portalRun.waveInSection+' / 2');setText(ui.essence,Number(game.essence.toFixed(2)));setHidden($('nextWaveBtn'),portalRun.phase!=='build');setHidden($('arsenal'),!playing||portalRun.phase==='exit');setHidden($('buildBtn'),!playing||portalRun.phase==='exit');setDisabled($('buildBtn'),!playing||!buildContext||portalRun.phase==='exit');}}
+  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';setHidden($('compactHud'),!playing);setText($('compactHp'),`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setText($('compactMonument'),`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText($('compactEssence'),game.essence);setText($('compactWave'),campaignWaveLabel(game.wave));setText($('compactSoul'),`${Math.ceil(h.soul)}%`);setText($('compactEnemies'),`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE`);setText($('compactTowers'),`${game.towers.length} / ${game.maxTowers} TÜRME`);setText($('compactDodge'),h.dodgeCd>0?`${h.dodgeCd.toFixed(1)}s`:'BEREIT');setWidth($('compactHpBar'),`${clamp(h.hp/h.maxHp*100,0,100)}%`);setWidth($('compactMonumentBar'),`${clamp(m.hp/m.maxHp*100,0,100)}%`);setHidden($('mobileNextWaveBtn'),!playing||game.intermission<=0||(inPortal()&&portalRun.phase!=='build'));setHidden($('compactObjective'),!playing||!inPortal()||portalRun.phase!=='exit');setText($('compactObjective'),inPortal()&&portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'');const speedBtn=$('speedBtn'),speedAvailable=game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier!==1));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreviewText()}${campaign20Plan(game.wave)?'':game.level===7?' · '+globalThis.DenkmalWesthofen.warning(game.wave,game.mode):game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave,game.mode):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave,game.mode).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,campaignWaveLabel(game.wave));setText($('levelLabel'),game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);const hpPct=clamp(h.hp/h.maxHp*100,0,100);setWidth(ui.playerHp,hpPct+'%');ui.playerHp.classList.toggle('low',hpPct<50&&hpPct>=25);ui.playerHp.classList.toggle('critical',hpPct<25);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);const mPct=clamp(m.hp/m.maxHp*100,0,100);setWidth(ui.monumentHp,mPct+'%');ui.monumentHp.classList.toggle('low',mPct<50&&mPct>=25);ui.monumentHp.classList.toggle('critical',mPct<25);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);const objPanel=$('objective');objPanel.classList.toggle('urgent',playing&&game.intermission>0&&game.intermission<=5&&!inPortal());setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:campaign20Plan(game.wave)?.boss||game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${campaignWaveLabel(game.wave)}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===7?'WESTHOFEN · ZWEI STRASSEN · GRÜNZUG · LUFTANGRIFFE':game.level===6?'GOETHESTRASSE · DREI WEGE · LUFTANGRIFFE':game.level===4?'ENDER DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · MARKIERTE BAUPLÄTZE':`VIER TORE · MARKIERTE BAUPLÄTZE · WELLE ${campaignWaveLabel(game.wave)} / ${campaign20Plan(game.wave)?20:5}`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);{const button=$('tower-boomerang');if(button){const available=game.level>=3;button.hidden=!available;button.disabled=!playing||!available;}}const buildContext=buildContextActive();setHidden($('arsenal'),!playing);setHidden($('buildBtn'),!playing);setDisabled($('buildBtn'),!playing||!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${(inPortal()?nearby.spent*(portalRun.phase==='build'?1:.75):Math.floor(nearby.spent*.6))}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');if(game.mode==='campaign-pilot'){setText($('levelLabel'),'KAMPAGNENPILOT');setText(ui.storyText,'DREI KAMPFPHASEN · WELLE '+game.wave+' / 8');}if(inPortal()){setText($('wavePreview'),portalRun.phase==='build'?'VORSCHAU · '+wavePreviewText()+' · ZULÄUFE '+[[3],[2,4],[2,3,4]][portalRun.section-1].join(', '):'');setText($('levelLabel'),'PORTALREISE '+portalRun.section+' / 3');setText(ui.storyText,portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'VERTEIDIGE DEN SCHUTZPUNKT');setText(ui.objectiveText,portalRun.phase==='exit'?'ABSCHNITT GESICHERT':portalRun.phase==='build'?'BAUPHASE · BEREIT?':'WELLE '+portalRun.waveInSection+' / 2');setText(ui.essence,Number(game.essence.toFixed(2)));setHidden($('nextWaveBtn'),portalRun.phase!=='build');setHidden($('arsenal'),!playing||portalRun.phase==='exit');setHidden($('buildBtn'),!playing||portalRun.phase==='exit');setDisabled($('buildBtn'),!playing||!buildContext||portalRun.phase==='exit');}}
 
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
@@ -1143,7 +1084,12 @@
     adaptiveWindowMs=0;adaptiveWindowFrames=0;
   }
   function simulationStepsPerFrame(){return state==='playing'&&game&&(game.level>=2||game.mode==='endless')?speedMultiplier:1;}
-  function toggleSpeed(){if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;speedMultiplier=developerMode?(speedMultiplier===1?2:speedMultiplier===2?3:1):(speedMultiplier===1?2:1);updateUI();return true;}
+  function toggleSpeed(){
+    if(state!=='playing'||!game||(game.level<2&&game.mode!=='endless'))return false;
+    speedMultiplier=speedMultiplier===1?2:1;
+    $('speedBtn').setAttribute('aria-label',`Spieltempo auf ${speedMultiplier===1?'2×':'1×'} umschalten`);
+    updateUI();return true;
+  }
   // Fixer Timestep: Der Akkumulator sammelt Frame-Zeit und arbeitet Logik-Ticks in
   // fester Größe (FIXED_STEP=1/60 s) ab, unabhängig von der Bildrate. 2x-Tempo
   // verdoppelt die update()-Aufrufe pro Tick (simulationStepsPerFrame bleibt
