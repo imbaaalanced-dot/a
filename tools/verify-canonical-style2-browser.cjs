@@ -1,0 +1,65 @@
+/* Chromium smoke: canonical hero/tower art, desktop and touch emulation. */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const http=require('node:http');
+const {chromium}=require('playwright');
+const root=path.join(__dirname,'../dist');
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json'};
+const server=http.createServer((req,res)=>{
+  const file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
+  if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}
+  fs.readFile(file,(error,data)=>{res.writeHead(error?404:200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});res.end(error?'not found':data);});
+});
+(async()=>{
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
+  const results=[];
+  try{
+    for(const mobile of [false,true]){
+      const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
+      const page=await context.newPage(),errors=[],missing=[],requests=[];
+      page.on('pageerror',error=>errors.push(error.message));
+      page.on('response',response=>{if(response.status()>=400)missing.push(response.url());});
+      page.on('request',request=>requests.push(request.url()));
+      await page.goto(`http://127.0.0.1:${server.address().port}/index.html`,{waitUntil:'networkidle'});
+      await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
+      const output=await page.evaluate(async()=>{
+        const kinds=['bow','cannon','mage','rift','boomerang'],urls=[];
+        for(const kind of kinds)for(let tier=1;tier<=3;tier++){
+          const id=`tower_${kind}_lv${tier}`;
+          const version=kind==='rift'?1:kind==='cannon'&&tier===1?2:3;
+          urls.push(`assets/style2-user-towers-v${version}/runtime-webp/towers/${id}.webp?v=${version===1?'user-towers-1':'cleanup-'+version}`);
+        }
+        await DenkmalAssets.retain('canonical-browser-qa',urls);
+        const canvas=document.createElement('canvas');canvas.width=180;canvas.height=180;
+        const ctx=canvas.getContext('2d');let rendered=0;
+        for(const kind of kinds)for(let tier=1;tier<=3;tier++){
+          ctx.clearRect(0,0,180,180);
+          // The Android-oriented adapter permits only a few concurrent image
+          // loads. Wait for its bounded queue; a cold image is not a failure.
+          const started=performance.now();
+          while(!UserStyle2Towers.drawTower(ctx,kind,90,120,tier)){
+            if(performance.now()-started>15000)throw Error(`canonical ${kind}/${tier} did not render within 15 s`);
+            await new Promise(resolve=>setTimeout(resolve,35));
+          }
+          if(!ctx.getImageData(0,0,180,180).data.some((value,i)=>i%4===3&&value>16))throw Error(`blank ${kind}/${tier}`);
+          rendered++;
+        }
+        DenkmalTestHooks.startGame(1);HeroSaga.continueStory();
+        return {rendered,level:DenkmalTestHooks.getGame()?.level};
+      });
+      await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+      assert.equal(output.rendered,15);
+      assert.equal(output.level,1);
+      const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
+      assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
+      assert.deepEqual(errors,[],'no JavaScript exceptions');
+      assert.deepEqual(missing,[],'no HTTP errors');
+      results.push({mobileTouchEmulation:mobile,...output,errors,missing,legacyRequests:0});
+      await context.close();
+    }
+    console.log(JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,results},null,2));
+  }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());

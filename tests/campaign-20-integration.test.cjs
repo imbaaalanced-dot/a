@@ -15,9 +15,9 @@ let setup=original.slice(0,cut);
 const hook="vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);";
 assert.ok(setup.includes(hook),'planner must load before levels');
 setup=setup.replace(hook,"vm.runInContext(fs.readFileSync(path.join(root,'campaign-20-wave-plan.js'),'utf8'),sandbox);"+hook);
-const exportLine="source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');";
+const exportLine="source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');";
 assert.ok(setup.includes(exportLine));
-setup=setup.replace(exportLine,"source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,resetGame:reset,drawMonument,drawEnemy,towerLevelArt,');");
+setup=setup.replace(exportLine,"source=source.replace('lootModel,drawMonument,','lootModel,resetGame:reset,drawMonument,drawEnemy,');");
 setup=setup.replace('vm.runInContext(source,sandbox);',"source=source.replace('get state(){return state}', 'get state(){return state},set state(v){state=v}');vm.runInContext(source,sandbox);");
 setup=setup.replace("let source=fs.readFileSync(path.join(root,'game.js'),'utf8');","vm.runInContext(fs.readFileSync(path.join(root,'campaign-balance.js'),'utf8'),sandbox);let source=fs.readFileSync(path.join(root,'game.js'),'utf8');");
 const checks=String.raw`

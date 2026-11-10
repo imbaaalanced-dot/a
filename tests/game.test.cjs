@@ -25,8 +25,8 @@ vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),s
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,towerLevelArt,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
-source=source.replace('lootModel,drawMonument,towerLevelArt,','lootModel,drawMonument,drawEnemy,towerLevelArt,');
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 if(process.env.TEST_MOBILE==='1'){
   sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
@@ -37,7 +37,7 @@ if(process.env.TEST_MOBILE==='1'){
   assert.equal(gameCanvas.width,width);assert.equal(gameCanvas.height,height,'stable dimensions preserve the backing canvas');
   sandbox.innerWidth=1280;sandbox.innerHeight=800;sandbox.devicePixelRatio=1;t.resize(false);
 }
-for(const kind of ['bow','cannon','rift','ballista'])for(const image of t.towerLevelArt[kind])assert.ok(!image.src,'large legacy tower PNGs must not download at startup');
+assert.ok(!fs.readFileSync(path.join(root,'game.js'),'utf8').includes('tower-boomerang-atlas.webp'),'legacy tower atlases must not load on startup');
 let rewardSerial=0;function bossReward(){return t.lootModel.claimBoss({mapId:1,wave:5,bossType:'boss',runId:'inventory-fixture',spawnId:String(++rewardSerial)}).item;}
 const tests=[];function check(name,fn){t.startGame();saga.continueStory();fn();tests.push(name);}
 check('Cosmetic hero choice switches Kim and Marcel without changing combat stats',()=>{
@@ -173,7 +173,7 @@ check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.
 check('Soul call has bounded range heal and resource use',()=>{const h=t.game.hero;h.hp=50;const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};t.game.enemies=[near,far];assert.equal(saga.unleash(),true);assert.ok(near.hp<1000);assert.equal(far.hp,1000);assert.equal(h.hp,75);assert.equal(h.soul,0);assert.equal(saga.unleash(),false);saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1);});
 check('Soul call cannot trigger in pause or wardrobe',()=>{t.pauseGame();assert.equal(saga.unleash(),false);assert.equal(t.game.hero.soul,100);t.resumeGame();saga.openCharacter();assert.equal(saga.unleash(),false);});
 check('Story milestones pause and never repeat; final stand begins at wave 20',()=>{t.game.wave=3;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Siegel/);saga.continueStory();assert.equal(saga.chapter(4),false);t.game.wave=19;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Kapitel entscheidet/);saga.continueStory();assert.equal(t.state,'playing');assert.equal(element('sagaComplete').classList.contains('hidden'),false);});
-check('Marcel falls back to the stable lantern direction atlas',()=>{const h=t.game.hero,asset='marcel-lantern-sprite-v1.webp';draws.length=0;saga.draw(context,h);let draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(h.direction,'down');assert.equal(draw[1],128);assert.equal(draw[2],0);draws.length=0;saga.update(.24,true,{x:0,y:-1});assert.equal(h.direction,'up');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[1],0);assert.equal(draw[2],0);draws.length=0;saga.update(.24,true,{x:1,y:0});assert.equal(h.direction,'right');saga.draw(context,h);draw=draws.find(d=>d[0].src?.endsWith(asset));assert.ok(draw);assert.equal(draw[1],128);assert.equal(draw[2],128);});
+check('Marcel never uses an unrelated legacy sprite while V5b decodes',()=>{const h=t.game.hero;draws.length=0;saga.draw(context,h);assert.ok(!draws.some(d=>d[0].src?.includes('marcel-lantern-sprite-v1')));});
 check('Marcels dialogue replaces the old character and respects mute',()=>{assert.match(saga.lines.intro,/Marcel/);assert.equal(Object.values(saga.lines).some(s=>s.includes('Kael')),false);t.startGame();element('soundBtn').onclick();element('voiceBtn').onclick();saga.continueStory();assert.equal(t.state,'playing');element('soundBtn').onclick();});
 check('Four fixed gates ignore hero position and viewport',()=>{
   t.game.hero.x=120;t.game.hero.y=200;
@@ -425,39 +425,23 @@ check('Persistent loot survives restart and inventory is read-only in a run',()=
   t.startGame();saga.continueStory();assert.equal(t.lootModel.profile.owned.length,before+1);assert.equal(t.game.hero.damage,damage);
 });
 check('Menu inventory permits equip and next run snapshots it',()=>{t.mainMenu();t.openInventory();assert.equal(t.state,'inventory');const i=bossReward();assert.equal(t.lootModel.equip(i.id,i.slot),true);t.closeInventory();assert.equal(t.state,'start');t.startGame();saga.continueStory();assert.ok(t.game.hero.loadout.some(x=>x.id===i.id));t.mainMenu();t.openInventory();t.lootModel.unequip(i.slot);const defaults={weapon:'starter-ember',armor:'starter-oath',amulet:'starter-lantern'};if(defaults[i.slot])t.lootModel.equip(defaults[i.slot],i.slot);t.closeInventory();});
-check('Rift tower selects the matching level graphic',()=>{
-  for(let level=1;level<=3;level++){
-    draws.length=0;t.drawTower({kind:'rift',level,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-rift-lance-l${level}.webp`)));
+check('All five playable tower kinds have exactly three authored Style-2 sprites',()=>{
+  for(const kind of ['bow','cannon','mage','rift','boomerang'])for(let level=1;level<=3;level++){
+    const version=kind==='rift'?1:kind==='cannon'&&level===1?2:3;
+    const file=path.join(root,`assets/style2-user-towers-v${version}/runtime-webp/towers/tower_${kind}_lv${level}.webp`);
+    assert.ok(fs.existsSync(file),`${kind} stage ${level} missing`);
   }
 });
-check('Tower upgrades select distinct sprites and preserve their base anchor',()=>{
-  for(const kind of ['bow','cannon','ballista']){
-    const sprites=new Set();
-    for(let level=1;level<=3;level++){
-      t.towerLevelArt[kind][level-1]=new sandbox.Image();
-      draws.length=0;t.drawTower({kind,level,x:250,y:350});
-      const draw=draws.find(d=>d[0].src?.endsWith(`tower-${kind}-l${level}-v2.${kind==='ballista'?'png':'webp'}`));
-      const rendered=draws.find(d=>d.length===5&&d[0].width===192);
-      assert.ok(draw,`${kind} ${level} sprite missing`);sprites.add(draw[0].src);
-      assert.equal(draw.length,9);assert.ok(draw[3]>0&&draw[4]>0);
-      assert.ok(rendered,'cached sprite not drawn');assert.ok(Math.abs(rendered[2]+rendered[4]-20)<1e-9,'base shifts on upgrade');
-      assert.ok(Math.abs(rendered[3]/rendered[4]-draw[3]/draw[4])<1e-9,'sprite distorted');
-      assert.ok(fs.existsSync(path.join(root,draw[0].src)));
-    }
-    assert.equal(sprites.size,3);
-  }
+check('Consecutive frames keep the same neutral tower while canonical art decodes',()=>{
+  const tower={kind:'bow',level:1,x:250,y:350};
+  draws.length=0;t.drawTower(tower);const before=draws.length;
+  draws.length=0;t.drawTower(tower);assert.equal(draws.length,before);
 });
-check('Tower crop is reused on consecutive frames',()=>{const tower={kind:'bow',level:1,x:250,y:350};t.drawTower(tower);draws.length=0;t.drawTower(tower);assert.ok(!draws.some(d=>d[0]===t.towerLevelArt.bow[0]));assert.ok(draws.some(d=>d.length===5&&d[0].width===192));});
 check('Terrain cache is reused and offscreen actors are culled',()=>{t.draw();draws.length=0;t.draw();const baseline=draws.length;t.game.enemies=[{x:-10000,y:-10000,type:'boss',hp:100,maxHp:100,r:34}];draws.length=0;t.draw();assert.equal(draws.length,baseline);assert.ok(!draws.some(d=>d[0].src?.endsWith('stone-terrain-v27.png')));});
-check('Loading or failed tower upgrades retain a usable fallback sprite',()=>{
-  for(const [kind,fallback] of [['bow','infernal'],['cannon','ash'],['ballista','rift']]){
+check('Loading or failed tower upgrades never select a different historic design',()=>{
+  for(const kind of ['bow','cannon','mage','rift','boomerang']){
     draws.length=0;t.drawTower({kind,level:2,x:250,y:350});
-    const image=t.towerLevelArt[kind][1];
-    const width=image.naturalWidth;image.complete=false;image.naturalWidth=0;
-    draws.length=0;t.drawTower({kind,level:2,x:250,y:350});
-    assert.ok(draws.some(d=>d[0].src?.endsWith(`tower-${kind}-${fallback}-v1.${['bow','cannon','rift'].includes(kind)?'webp':'png'}`)));
-    image.complete=true;image.naturalWidth=width;
+    assert.ok(!draws.some(d=>/tower-(?:bow|cannon|mage|rift|boomerang)-/i.test(d[0]?.src||'')));
   }
 });
 check('Zoom maps screen coordinates back to world coordinates',()=>{const point=t.screenToWorld(sandbox.innerWidth/2,sandbox.innerHeight/2);assert.ok(Math.abs(point.x-t.game.hero.x)<1e-8);assert.ok(Math.abs(point.y-t.game.hero.y)<1e-8);t.game.hero.x=26;t.game.hero.y=26;t.resize();const corner=t.screenToWorld(0,0);assert.equal(corner.x,0);assert.equal(corner.y,0);});

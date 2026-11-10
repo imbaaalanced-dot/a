@@ -1,0 +1,39 @@
+name: TD2 canonical hero and tower art QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/hero-saga.js'
+      - 'dist/directional-hero-assets-v5.js'
+      - 'dist/directional-actions-v410.js'
+      - 'dist/game.js'
+      - 'dist/combat-fx.js'
+      - 'dist/index.html'
+      - 'tests/canonical-style2-runtime.test.cjs'
+      - 'tools/verify-canonical-style2-browser.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Canonical hero and tower tests
+        run: |
+          node tests/canonical-style2-runtime.test.cjs
+          node tests/hero-style2-v5.test.cjs
+          node tests/hero-sprites-v5b.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Chromium desktop and emulated touch portrait
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+          node tools/verify-canonical-style2-browser.cjs

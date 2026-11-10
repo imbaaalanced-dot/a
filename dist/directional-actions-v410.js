@@ -95,8 +95,9 @@ function hero(ctx,h,attackTime,reduced=false,time=0){
  else {deaths.delete(h);if(h.hitFlash>0){kind='hit';progress=1-h.hitFlash/.16;}else if(attackTime>0){kind='attack';progress=1-attackTime/.24;}else return false;}
  const facing=kind==='attack'?(direction(0,0,h.attackDirection)||h.direction):kind==='death'?deaths.get(h).direction:h.direction;
  const actor=h.character==='kim'?'kim':'marcel';
- return drawHeroSide(ctx,actor,kind,facing,progress,0,0,70,{reduced})||
-        draw(ctx,actor,kind,facing,progress,0,0,70,{reduced});
+ // Only the V5b side sheet is authorized. Unsupported angles remain the
+ // V5b walk sheet (painted by HeroSaga), never the older 4x12 hero atlas.
+ return drawHeroSide(ctx,actor,kind,facing,progress,0,0,70,{reduced});
 }
 globalThis.TD2DirectionalActions={draw,drawHeroSide,preloadHeroSide,enemy,hero,direction,enemyDirection,setLevel};
 })();
