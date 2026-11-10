@@ -20,9 +20,9 @@ test('Ansturm dialogs use the same primary and secondary command hierarchy',()=>
   assert.match(css,/\.secondary-command/);
 });
 
-test('intro presents Ansturm as the second shared play mode',()=>{
+test('intro presents Ansturm as a dedicated play mode',()=>{
   const intro=html.match(/<div class="overlay" id="intro">[\s\S]*?<\/div><\/div>/)?.[0]||'';
-  assert.match(intro,/SPIELEN · MODUS II/);
+  assert.match(intro,/SPIELMODUS · ANSTURM/);
   assert.match(intro,/id="introBest"/);
   assert.match(intro,/class="intro-actions"[\s\S]*id="start"[\s\S]*class="secondary-command intro-menu-return"/);
   assert.doesNotMatch(intro,/class="symbol">♜/);

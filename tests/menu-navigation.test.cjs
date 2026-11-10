@@ -46,7 +46,7 @@ element('chooseKim').onclick();
 assert.match(element('menuHeroBanner').src,/kim-marksman-v6/);
 assert.match(element('menuHeroBanner').alt,/Kim/);
 assert.match(element('menuHeroCaption').textContent,/Kim · Die Treffsichere/);
-assert.match(element('menuCompactStatus').textContent,/Rucksack 0\/30/);
+assert.match(element('menuCompactStatus').textContent,/Rucksack: 0\/30/);
 assert.equal(element('chooseKim')['aria-pressed'],'true');
 assert.equal(JSON.parse(sandbox.localStorage.getItem('denkmal-preferences-v1')).data.character,'kim');
 saga.openCharacter();

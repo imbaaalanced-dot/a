@@ -79,6 +79,9 @@ let environmentLevel=0;
 function environment(ctx,level,layout,low=false){
  globalThis.TD2DirectionalActions?.setLevel(level);
  if(environmentLevel&&environmentLevel!==level){const name='environment-'+environmentLevel+'.webp';globalThis.DenkmalAssets?.release('expansion-v2:'+name);pending.delete(url(name));}environmentLevel=level;
+ // The expansion atlas currently contains environment sheets for levels 1–6 only.
+ // Later maps use their own environment renderer; do not request missing files.
+ if(level<1||level>6)return false;
  const art=image('environment-'+level+'.webp');if(!art)return false;
  const ground={1:[3,5],2:[4,5,7],3:[6,7],4:[4,5],5:[4,5],6:[1,5,6]};
  const points=placements(level,layout);for(let i=0;i<points.length;i++){if(low&&i%2)continue;const p=points[i],paint=()=>ctx.drawImage(art,p.index%4*128,Math.floor(p.index/4)*128,128,128,p.x-p.size/2,p.y-p.size*.75,p.size,p.size);if(!ground[level]?.includes(p.index)&&globalThis.Style2Phase6?.upright)globalThis.Style2Phase6.upright(ctx,p,paint);else paint();}

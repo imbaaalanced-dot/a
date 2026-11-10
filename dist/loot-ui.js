@@ -117,9 +117,9 @@
       }
       const p={...model.profile,...model.view(getHero())},all=p.all,item=all.find(i=>i.id===selected);
       if(selected&&!item)selected=null;
-      $('inventoryMode').textContent=editable()?'RÜSTKAMMER · BEREIT FÜR DIE NÄCHSTE WACHT':'BEUTE GESICHERT · AUSRÜSTUNG IM HAUPTMENÜ WECHSELN';
+      $('inventoryMode').textContent=editable()?'RÜSTKAMMER · BEREITE DEINE NÄCHSTE WACHT VOR':'BEUTE ANSEHEN · AUSRÜSTUNG IM HAUPTMENÜ WECHSELN';
       $('inventoryClose').textContent=editable()?'ZURÜCK':'ZUR WACHT';
-      $('lootSaveState').textContent=model.status||'Automatisch gespeichert · auf diesem Gerät';$('lootSaveState').classList.toggle('warning',!!model.status);
+      $('lootSaveState').textContent=model.status||'Automatisch auf diesem Gerät gespeichert';$('lootSaveState').classList.toggle('warning',!!model.status);
       $('lootNotice').textContent=notice;$('forgeEssence').textContent=`${p.essence} SCHMIEDESSENZ`;
       $('lootForgeBalance').textContent=`${p.essence} · VERFÜGBARE SCHMIEDESSENZ`;
       const equipment=$('loadoutSlots');equipment.replaceChildren();
@@ -127,20 +127,20 @@
       const stats=L.totals(p.items),summary=$('loadoutStats');summary.replaceChildren();
       for(const [k,v] of Object.entries(stats)){if(k==='powers'||!v)continue;summary.append(el('span','',`+${fmt(k,v)} ${L.statInfo[k].label}`));}
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
-      $('backpackCount').textContent=`SAMMLUNG ${all.length} · RUCKSACK ${p.bag.length} / 30`;
+      $('backpackCount').textContent=`SAMMLUNG: ${all.length} · RUCKSACK: ${p.bag.length} / 30`;
       for(const [winner,loser,label]of [['echo','ember','Nachhall hat Vorrang vor Abendrot.'],['ash','oath','Aschenläufer hat Vorrang vor Steinwacht.'],['bell','lantern','Letzte Glocke hat Vorrang vor Erinnerungslicht.']])if(stats.powers[winner]&&stats.powers[loser])summary.append(el('span','loot-note',label));
       const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
-      bulkBtn.textContent=`RECYCLING PRÜFEN · ${bulk.count} FUNDSTÜCKE · +${bulk.essence} ESSENZ`;
+      bulkBtn.textContent=`ZERLEGEN PRÜFEN · ${bulk.count} GEGENSTÄNDE · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
       const visible=all.filter(i=>(!query||[i.name,L.slots[i.slot],L.rarities[i.rarity].label].some(text=>text.toLocaleLowerCase('de-DE').includes(query)))&&(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot)))).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
       $('lootResultCount').textContent=`${visible.length} von ${all.length} Gegenständen`;
       for(const i of visible.slice(0,visibleLimit))grid.append(card(i));
       if(visible.length>visibleLimit)grid.append(button('WEITERE GEGENSTÄNDE',()=>{visibleLimit+=60;render();}));
       for(let n=visible.length;n<30;n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
-      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine Gegenstände für diesen Filter.':'Besiege Gegner für neue Ausrüstung. Bosse garantieren epische oder legendäre Beute.';
+      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine passenden Gegenstände gefunden.':'Besiege Gegner, um neue Ausrüstung zu finden. Bosse hinterlassen epische oder legendäre Beute.';
       const overflow=$('lootOverflow');overflow.replaceChildren();overflow.hidden=!p.overflow.length;
-      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GESICHERT`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));overflow.append(el('p','','Alle Überlauffunde sind oben enthalten und können gefiltert werden.'));}
+      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GEGENSTÄNDE`),el('p','','Deine Funde bleiben erhalten. Freie Rucksackplätze werden automatisch aufgefüllt.'));overflow.append(el('p','','Auch Gegenstände im Überlauf erscheinen in der Liste und können gefiltert werden.'));}
 
       const detail=$('lootDetail');detail.replaceChildren();
       if(item)renderDetail(detail,item,p);else detail.append(el('p','eyebrow','GEGENSTANDSDETAILS'),el('div','loot-detail-empty','◈'),el('h3','','Wähle einen Fund'),el('p','','Vergleiche seine Werte mit deiner Ausrüstung. Neue Beute wirkt erst, wenn du sie im Hauptmenü anlegst.'));
