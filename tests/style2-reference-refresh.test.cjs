@@ -33,7 +33,7 @@ const refreshed=init('?td2UserTowers=1&td2ProjectileRefresh=1');
 const c={rotations:[],saves:0,restores:0,save(){this.saves++},restore(){this.restores++},translate(){},rotate(n){this.rotations.push(n)},drawImage(){}};
 assert.equal(refreshed.api.drawProjectile(c,projectile),false,'cold refreshed sprite must fall back');
 assert(refreshed.seen[0].includes('style2-reference-projectiles-v1'),'opt-in uses new artwork');
-refreshed.ready.set(refreshed.seen[0],{naturalWidth:256});
+refreshed.ready.set(refreshed.seen[0],{naturalWidth:256,naturalHeight:256});
 assert.equal(refreshed.api.drawProjectile(c,projectile),true);
 assert.equal(c.saves,c.restores);
 assert(Math.abs(c.rotations[0])<1,'source arrow is roughly horizontal, not 30° down');

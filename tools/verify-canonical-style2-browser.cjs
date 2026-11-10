@@ -6,6 +6,7 @@ const path=require('node:path');
 const http=require('node:http');
 const {chromium}=require('playwright');
 const root=path.join(__dirname,'../dist');
+const screenshots=process.env.TD2_CANONICAL_ART_OUT||'/tmp/td2-canonical-art-pilot';
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json'};
 const server=http.createServer((req,res)=>{
   const file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -13,6 +14,7 @@ const server=http.createServer((req,res)=>{
   fs.readFile(file,(error,data)=>{res.writeHead(error?404:200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});res.end(error?'not found':data);});
 });
 (async()=>{
+  fs.mkdirSync(screenshots,{recursive:true});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
   const results=[];
@@ -25,6 +27,12 @@ const server=http.createServer((req,res)=>{
       page.on('request',request=>requests.push(request.url()));
       await page.goto(`http://127.0.0.1:${server.address().port}/index.html`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
+      const device=mobile?'mobile-touch':'desktop';
+      await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),fullPage:true});
+      await page.locator('#chooseKim').click();
+      await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
+      await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),fullPage:true});
+      await page.locator('#chooseMarcel').click();
       const output=await page.evaluate(async()=>{
         const kinds=['bow','cannon','mage','rift','boomerang'],urls=[];
         for(const kind of kinds)for(let tier=1;tier<=3;tier++){
@@ -74,6 +82,7 @@ const server=http.createServer((req,res)=>{
       assert.equal(output.projectiles,15);
       assert.equal(output.impacts,15);
       assert.equal(output.level,1);
+      await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:true});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
       assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
       assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/towers\//.test(url)).length,15,'all fifteen V4 tower tiers fetched');

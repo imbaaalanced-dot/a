@@ -122,14 +122,21 @@
     if(enabled&&kinds.has(kind)&&!prewarmedProjectiles.has(warmKey(kind,tier))){
       get(kind,tier,'projectile');
     }
-    if(!img){if(debug)diagnostics.towerFallbacks++;return false;}
+    // A decoded but wrong-size image is never allowed to stretch over the
+    // battlefield. Leave the previous procedural fallback visible instead.
+    if(!img||img.naturalWidth!==512||img.naturalHeight!==512){
+      if(debug)diagnostics.towerFallbacks++;return false;
+    }
     const size=112,pivotY=488/512;
     ctx.save();try{ctx.drawImage(img,x-size/2,y+13-size*pivotY,size,size);}catch{if(debug)diagnostics.drawErrors++;return false;}finally{ctx.restore();}
     return true;
   }
   function drawProjectile(ctx,b,now=0){
     if(!b)return false;
-    const img=get(b.kind,b.level,'projectile');if(!img){if(debug)diagnostics.projectileFallbacks++;return false;}
+    const img=get(b.kind,b.level,'projectile');
+    if(!img||img.naturalWidth!==256||img.naturalHeight!==256){
+      if(debug)diagnostics.projectileFallbacks++;return false;
+    }
     const tier=level(b.level),refreshed=projectileRefresh&&refreshProjectiles.has(`projectile_${b.kind}_lv${tier}`);
     const size=[52,60,68][tier-1]*(refreshed?0.82:1);
     // Match each elongated source sprite's axis before applying velocity.

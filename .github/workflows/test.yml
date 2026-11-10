@@ -81,6 +81,8 @@ jobs:
           node tests/style2-church-sprite.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
         run: |
+          node tests/canonical-hero-art-v5.test.cjs
+          node tests/pixel-marcel-atlas.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
           node tests/hero-sprites-v5b.test.cjs
@@ -142,6 +144,7 @@ jobs:
           python tests/style2-reference-assets.test.py
           python tests/enemy-animation-assets.test.py
           python tests/barracks-assets.test.py
+          python tests/style2-active-atlas-pilot-v5.test.py
 
       - name: V4.1 directional actions, maps and balance
         run: |
