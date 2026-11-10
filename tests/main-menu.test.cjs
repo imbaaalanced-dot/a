@@ -44,6 +44,7 @@ assert.match(game, /endless4Btn[^\n]*startGame\(4,'endless'\)/);
 assert.match(game, /level4Btn[^\n]*startGame\(4\)/);
 assert.doesNotMatch(endless, /Wellenrekord wird gespeichert/, 'do not promise records until persistence exists');
 assert.match(html, /id="speedBtn"[^>]*>TEMPO: 1×<\/button>/);
+assert.match(html, /window\.dispatchEvent\(new CustomEvent\('td2:developer-mode',\{detail:\{enabled:window\.TD2DeveloperMode\}\}\)\)/, 'restored developer preference must reach the game runtime');
 assert.match(game, /function simulationStepsPerFrame\(\)/);
 assert.match(game, /game\.level>=2\|\|game\.mode==='endless'/);
 assert.match(html, /id="channelLink"[^>]*youtube\.com\/@denk-malnach/);
