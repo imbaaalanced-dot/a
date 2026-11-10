@@ -57,7 +57,25 @@ function texture(kind){
       q.fillStyle='#6c7c4666';q.fillRect(x+r()*50,y,10+r()*14,2);
     }
     litter(q,r,size,35);
-  }else litter(q,r,size,kind==='ground'?1700:105);
+    // A few embedded moss seams and chipped stone faces are baked into the
+    // 256px paving material, not painted separately in the gameplay loop.
+    for(let i=0;i<60;i++){
+      const x=r()*size,y=r()*size;
+      q.fillStyle=['#354b3c70','#71805955','#c4bc9c34'][i%3];
+      q.fillRect(x,y,2+r()*9,1+r()*2.5);
+    }
+  }else{
+    litter(q,r,size,kind==='ground'?1700:105);
+    if(kind==='earth'){
+      // Sparse worn pebbles and soft moss flecks tie the dirt route into the
+      // woodland floor without changing its centreline or draw-call budget.
+      for(let i=0;i<135;i++){
+        const x=r()*size,y=r()*size,w=1.5+r()*6;
+        q.fillStyle=['#334c3466','#66804a55','#9b927348','#3d443a5c'][i%4];
+        q.beginPath();q.ellipse(x,y,w,.7+r()*2,r()*.6-.3,0,Math.PI*2);q.fill();
+      }
+    }
+  }
   textures.set(kind,c);return c;
 }
 function pattern(ctx,kind){
