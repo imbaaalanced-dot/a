@@ -33,3 +33,14 @@ unit.hitTime=.1;assert.equal(b.animation(unit),'hit');unit.hitTime=0;unit.hp=0;a
 draws=0;b.drawTower(ctx,{kind:'barracks',level:3,x:0,y:0});assert.equal(draws,1);
 s.DenkmalAssets.ready=()=>null;draws=0;b.drawUnit(ctx,unit);assert.equal(draws,0,'no placeholder or duplicate art when atlas is loading');
 console.log('Barracks atlas rendering and state priority passed');
+// Squared-distance hot path must preserve the original nearest-target ordering.
+let seed=1701;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+for(let scenario=0;scenario<500;scenario++){
+ const allies=Array.from({length:10},(_,i)=>({x:random()*400,y:random()*400,hp:i%4===0?0:100}));
+ const e={x:random()*400,y:random()*400};let expected=null,best=90;
+ for(const u of allies){if(u.hp<=0)continue;const d=Math.hypot(e.x-u.x,e.y-u.y);if(d<best){best=d;expected=u;}}
+ assert.equal(b.aggroTarget({militia:allies},e),expected);
+}
+const edge={x:0,y:0,hp:1};assert.equal(b.aggroTarget({militia:[edge]},{x:90,y:0}),null);
+assert.equal(b.aggroTarget({militia:[edge]},{x:89.999,y:0}),edge);
+console.log('Barracks: 500 seeded nearest-target cases and range boundaries passed');

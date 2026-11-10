@@ -12,6 +12,7 @@
   // The existing image registry owns one decoded atlas across all towers/units.
   function atlas(){return globalThis.DenkmalAssets?.ready(ATLAS)||null;}
   function preload(){return globalThis.DenkmalAssets?.retain('barracks',[ATLAS,STATES]);}
+  const distanceSq=(a,b)=>(a.x-b.x)**2+(a.y-b.y)**2;
   const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   function nearestLanePoint(tower,paths=[]){
     let best={x:tower.x,y:tower.y},bestD=Infinity;
@@ -50,10 +51,10 @@
       const spec=LEVELS[u.level];if(u.hp<=0)continue;u.aliveTime+=dt;u.hitTime=Math.max(0,u.hitTime-dt);if(u.aliveTime<.4){u.mode='recruit';continue;}u.attackCd=Math.max(0,u.attackCd-dt);u.attackAnim=Math.max(0,u.attackAnim-dt);
       let target=null,nearest=Infinity;
       for(const e of game.enemies){
-        if(e.dead||e.flying||distance(e,u.rally)>ALERT)continue;
-        const d=distance(e,u);if(d<nearest){nearest=d;target=e;}
+        if(e.dead||e.flying||distanceSq(e,u.rally)>ALERT*ALERT)continue;
+        const d=distanceSq(e,u);if(d<nearest){nearest=d;target=e;}
       }
-      const desired=target&&distance(target,u.rally)<=LEASH?target:u.rally,d=distance(desired,u);
+      const desired=target&&distanceSq(target,u.rally)<=LEASH*LEASH?target:u.rally,d=distance(desired,u);
       if(Math.abs(desired.x-u.x)>1)u.face=desired.x<u.x?-1:1;
       if(target&&desired===target&&d<=spec.reach+(target.r||10)){
         u.mode='attack';if(u.attackCd<=0){u.attackCd=spec.cooldown;u.attackAnim=.52;opts.hurtEnemy?.(target,spec.damage,u);}
@@ -64,8 +65,8 @@
   }
   function aggroTarget(game,enemy){
     if(!game||!game.militia||enemy.flying||enemy.focusMonument||enemy.type==='uprooted'||enemy.type==='sapper')return null;
-    let best=null,bd=90;
-    for(const ally of game.militia){if(ally.hp<=0)continue;const d=distance(enemy,ally);if(d<bd){bd=d;best=ally;}}
+    let best=null,bd=90*90;
+    for(const ally of game.militia){if(ally.hp<=0)continue;const d=distanceSq(enemy,ally);if(d<bd){bd=d;best=ally;}}
     return best;
   }
   function damageAlly(ally,amount){if(ally&&ally.hp>0&&Number.isFinite(amount)){ally.hp=Math.max(0,ally.hp-Math.max(0,amount));if(amount>0)ally.hitTime=.18;return ally.hp<=0;}return false;}
