@@ -90,7 +90,7 @@ const server=http.createServer((req,res)=>{
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
       assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
       assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/towers\//.test(url)).length,15,'all fifteen V4 tower tiers fetched');
-      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/projectiles\//.test(url))).size,15,'all fifteen distinct V4 projectile tiers fetched');
+      // Cache eviction may re-request a URL; verify all distinct variants.\n      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/projectiles\//.test(url))).size,15,'all fifteen distinct V4 projectile tiers fetched');
       assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/impact_/.test(url)).length,5,'one V4 impact atlas per family fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(missing,[],'no HTTP errors');
