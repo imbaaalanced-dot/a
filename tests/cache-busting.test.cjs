@@ -7,7 +7,8 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.1.0-alpha.1"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v5-alpha"'), 'V5 version remains available as metadata');
+assert.match(html, /id="td2-version-label"/, 'menu version labels use the canonical metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html

@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta name="application-version" content="v4.1.0-alpha.1" />
-  <meta name="application-build" content="v410a1-directions-bosses-maps-balance" />
+  <meta name="application-version" content="v5-alpha" />
+  <meta name="application-build" content="v5-alpha" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#080b0c" />
@@ -210,7 +210,7 @@
             <p>Beute bleibt nach Niederlagen erhalten. Ausrüstung wechselst du nur hier im Hauptmenü. Sichere deine Sammlung über Export in der Rüstkammer; beim Löschen der Browserdaten geht der lokale Spielstand verloren.</p>
           </div></details>
         </div>
-        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · ALPHA · 2026-11-09</span></footer>
+        <footer class="menu-footer"><span id="menuHeroName">MARCEL · DER BESCHÜTZER</span><span>BAUE. VERTEIDIGE. BEWAHRE.</span><span id="menuVersion" class="menu-version">V5 · ALPHA</span></footer>
       </div>
     </section>
 
@@ -330,6 +330,17 @@
   <script src="game.js?v=v5-low60-fullscreen1"></script>
   <script src="portrait-avatars-v5.js?v=duo-v5a2"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
+<script id="td2-version-label">
+(function(){
+  const version=document.querySelector('meta[name="application-version"]')?.content;
+  if(!version)return;
+  const label=version.replace(/-/g,' · ').toUpperCase();
+  for(const id of ['menuVersionTop','menuVersion']){
+    const element=document.getElementById(id);
+    if(element){element.textContent=label;element.setAttribute('aria-label','Spielversion '+label);}
+  }
+})();
+</script>
 <script id="td2-android-developer-toggle">
 (function(){
   'use strict';
