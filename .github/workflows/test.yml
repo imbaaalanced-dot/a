@@ -108,7 +108,9 @@ jobs:
           node tests/simulation-equivalence.test.cjs
           node tests/ansturm-source-parity.test.cjs
       - name: Gameplay regression suite
-        run: node tests/game.test.cjs
+        run: |
+          node tests/game.test.cjs
+          node tests/barracks.test.cjs
       - name: Mobile gameplay regression suite
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
