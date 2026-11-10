@@ -50,7 +50,7 @@ jobs:
           print(f'PAGES_BYTES={size}')
           assert size < 900_000_000, f'Over safety limit: {size}'
           PY
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: /tmp/td2-live-site
       - name: Deploy compact site
