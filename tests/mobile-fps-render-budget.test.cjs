@@ -14,9 +14,9 @@ function takeLine(name){
 const limitContext={mobileRender:true,graphicsMode:'auto'};
 vm.createContext(limitContext);
 vm.runInContext(takeLine('targetRenderInterval'),limitContext);
-assert.equal(limitContext.targetRenderInterval(),0,'mobile AUTO must not be hard-capped at 30 FPS');
+assert.equal(limitContext.targetRenderInterval(),1000/60,'mobile AUTO targets 60 FPS');
 limitContext.graphicsMode='high';
-assert.equal(limitContext.targetRenderInterval(),0,'explicit HIGH must not be capped');
+assert.equal(limitContext.targetRenderInterval(),0,'explicit HIGH allows display refresh');
 limitContext.graphicsMode='low';
 assert.equal(limitContext.targetRenderInterval(),1000/30,'manual LOW retains battery/thermal 30 FPS fallback');
 limitContext.mobileRender=false;
