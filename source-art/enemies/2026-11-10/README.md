@@ -12,15 +12,16 @@ vollständige künstlerische Identitätsabnahme steht **noch aus**.
 | Datei | Zweck | Größe | Transparenz / QA |
 |---|---|---|---|
 | `boss-shieldwarden-v2-master-review.webp` | Hochauflösendes, optimiertes Referenzbild | 1008×1561 | WebP RGBA, mindestens 73 px sichtbarer Rand |
+| `boss-shieldwarden-v2-lossless-master.webp` | Verlustfrei gespeicherte RGBA-Masterfassung für spätere Nachbearbeitung | 1008×1561 | Lossless WebP RGBA, mindestens 73 px sichtbarer Rand |
 | `boss-shieldwarden-v2-174x280-review.webp` | Vorschau im bestehenden Ansturm-Rendermaß | 174×280 | WebP RGBA, mindestens 12 px sichtbarer Rand |
 
 Die ursprüngliche generierte RGBA-PNG-Quelle (1008×1561; SHA-256
 `d23582cc1914fc201390c84b821b7b093609efba7a503cf6764c615fa95fe827`)
 liegt bislang **nur im lokalen Arbeitsverzeichnis** als
-`boss-shieldwarden-v2-source.png`. Sie wird in diesem Review-PR noch nicht
-hochgeladen. Die beiden WebP-Varianten sind technische Exporte und keine
-neuen Animationsframes. Für eine spätere Freigabe ist die verlustfreie Quelle
-separat zu sichern.
+`boss-shieldwarden-v2-source.png`. Die große verlustfreie WebP-Masterfassung
+ist dagegen Bestandteil dieses PRs. Die WebP-Varianten sind technische
+Exporte und keine neuen Animationsframes. Das ursprüngliche PNG muss für die
+eigentliche Laufzeitintegration nicht verwendet werden.
 
 **Noch prüfen:** Ist der zusätzliche Turmaufsatz am Helm mit dem alten Boss
 identisch genug? Bleiben Helm, linke Armrüstung, Schild und Morgenstern bei
