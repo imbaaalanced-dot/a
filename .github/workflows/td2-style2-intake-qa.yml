@@ -1,0 +1,48 @@
+name: TD2 V5 Style-2 intake and browser smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/td2-style2-intake-qa.yml'
+      - 'tools/audit-style2-intake.py'
+      - 'tools/preview-style2-intake.cjs'
+      - 'tests/style2-intake-gate.test.py'
+      - 'docs/style2/2026-11-10-v5-candidate-intake.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow
+      - run: python tests/style2-intake-gate.test.py
+      - run: python tests/hero-sprites-v5b.test.py
+
+  chromium-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Existing renderer and cache contract
+        run: |
+          node tests/asset-manager.test.cjs
+          node tests/canonical-style2-runtime.test.cjs
+          node tests/hero-sprites-v5b.test.cjs
+      - name: Install Chromium test runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Actual Chromium desktop and mobile-touch emulation
+        run: node tools/verify-canonical-style2-browser.cjs
