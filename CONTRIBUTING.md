@@ -1,38 +1,33 @@
-# Zu Denkmal TD2 beitragen
+# Feedback und Fehlermeldungen zu Denkmal TD2
 
-Danke, dass du Denkmal TD2 verbessern möchtest! 🎉 Das Spiel läuft im Browser; Android-Geräte mit etwa 4 GB RAM sind eine wichtige Testplattform.
+**Denkmal TD2 ist ein allein von [imbaaalanced-dot](https://github.com/imbaaalanced-dot) entwickeltes Projekt.** Der Quellcode ist öffentlich einsehbar und steht unter der im Repository angegebenen MIT-Lizenz. **Externe Pull Requests, Codebeiträge und Grafik-Assets werden derzeit nicht zur Übernahme angenommen.** Bitte eröffne deshalb keine PRs mit neuen Funktionen oder Änderungen.
 
-## Bugs melden
+Fehlerberichte, nachvollziehbare Testergebnisse, sachliches Feedback und Ideen sind weiterhin willkommen. Ob und wann etwas umgesetzt wird, entscheidet der Projektinhaber.
 
-Öffne ein [Bug-Report-Issue](https://github.com/imbaaalanced-dot/a/issues/new/choose). Bitte beschreibe:
+## Fehler melden
+
+Öffne ein [Bug-Report-Issue](https://github.com/imbaaalanced-dot/a/issues/new/choose). Bitte nenne möglichst:
 
 - Tatsächliches und erwartetes Verhalten
-- Schritte zur Reproduktion sowie Level, Welle und Spielmodus
-- Gerät, Betriebssystem und Browser/WebView
-- Messwerte oder Screenshots, falls vorhanden (keine FPS/RAM-Werte schätzen)
+- Reproduzierbare Schritte, Spielversion, Level, Welle und Spielmodus
+- Gerät, Betriebssystem und Browser beziehungsweise WebView
+- Screenshots oder gemessene FPS-/RAM-Werte, sofern vorhanden (keine Werte schätzen)
 
-## Ideen einreichen
+## Ideen und Fragen
 
-Nutze das **Feature-Request-Formular**. Beschreibe zuerst das Problem und den Nutzen. Fragen und Diskussionen gehören in [Discussions](https://github.com/imbaaalanced-dot/a/discussions), sobald diese Funktion aktiviert ist.
+Nutze das [Feature-Request-Formular](https://github.com/imbaaalanced-dot/a/issues/new/choose) für Vorschläge oder [GitHub Discussions](https://github.com/imbaaalanced-dot/a/discussions) für offene Fragen. Das ist eine Feedback-Möglichkeit und keine Einladung zur Mitentwicklung.
 
-## Pull Requests
+## Spiel lokal prüfen (optional)
 
-1. Forke das Repository und erstelle einen Branch wie `feat/mein-feature` oder `fix/mein-bug`.
-2. Halte PRs klein und auf ein Thema fokussiert.
-3. Beschreibe Änderung, Motivation, betroffene Levels und mögliche Auswirkungen auf gespeicherte Spielstände.
-4. Ergänze Tests oder nachvollziehbare Reproduktionsschritte.
-5. Prüfe die relevanten Tests, Build-Ausgabe und gegebenenfalls die mobile Touch-Steuerung.
-6. Fülle das [PR-Template](.github/pull_request_template.md) aus.
-
-## Lokales Testen
-
-Am Repository-Root gibt es derzeit **kein** `npm run dev`. Starte das statische Spiel mit Python 3:
+Das statische Spiel lässt sich mit Python 3 starten:
 
 ```bash
+git clone https://github.com/imbaaalanced-dot/a.git
+cd a
 python3 -m http.server 8777 --directory dist
 ```
 
-Öffne dann `http://localhost:8777/`. Für automatisierte Checks werden Node.js 22 und Python 3 verwendet:
+Danach `http://localhost:8777/` aufrufen. Für nachvollziehbare technische Meldungen existieren folgende Tests (Node.js 22 und Python 3):
 
 ```bash
 node tests/game.test.cjs
@@ -41,16 +36,12 @@ npm test --prefix ansturm-alpha1-5
 python3 tests/assets.test.py
 ```
 
-Weitere Prüfungen stehen unter `.github/workflows/test.yml` und `.github/workflows/pages.yml`. Falls bestehende Tests auf `main` fehlschlagen, trenne diese Ausgangslage klar von neuen Fehlern.
+Ein bestandener lokaler oder CI-Test ist **keine** bestätigte Android-Abnahme auf einem realen Gerät.
 
-## Grafik, Stil und Sicherheit
+## Sicherheit, Rechte und Umgang
 
-- Bestehenden JavaScript-/CSS-Stil und die [Style-2-Art-Direction](ART-DIRECTION.md) beibehalten.
-- Keine Geheimnisse, Zugangsdaten, persönlichen Daten oder urheberrechtlich unklaren Fremdassets committen.
-- Referenzfotos, Lizenzen und Asset-Herkunft kenntlich machen.
-- Änderungen an Save-Keys, Level-Freischaltungen und Touch-Steuerung besonders sorgfältig testen.
-- Lokale Tests, CI-Ergebnisse und echte Android-Tests getrennt dokumentieren.
-
-## Miteinander
-
-Sei respektvoll und lies den [Verhaltenskodex](CODE_OF_CONDUCT.md). Gute Einstiege sind Issues mit `good first issue` oder `help wanted`.
+- Keine Zugangsdaten, privaten Informationen oder personenbezogenen Dateien in Issues und Discussions veröffentlichen.
+- Sicherheitslücken **nicht öffentlich** melden; dafür die [Security Policy](SECURITY.md) nutzen.
+- Referenzfotos, fremde Grafiken und Assets nur unter Beachtung ihrer jeweiligen Rechte verwenden.
+- Die [MIT-Lizenz](LICENSE) erlaubt die dort beschriebenen Nutzungen und Forks des Projektcodes; sie begründet **keinen Anspruch auf Übernahme externer Änderungen**.
+- Für den Austausch gilt der [Verhaltenskodex](CODE_OF_CONDUCT.md).

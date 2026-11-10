@@ -2,7 +2,6 @@
 
 [![Tests](https://github.com/imbaaalanced-dot/a/actions/workflows/test.yml/badge.svg)](https://github.com/imbaaalanced-dot/a/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Good First Issues](https://img.shields.io/github/issues/imbaaalanced-dot/a/good%20first%20issue)](https://github.com/imbaaalanced-dot/a/labels/good%20first%20issue)
 
 **Denkmal TD2** ist ein Open-Source-Tower-Defense-Spiel im historischen Denkmal-Setting – kostenlos im Browser spielbar, mit Fokus auf mobile Hochformat-Displays und Style-2-Grafik.
 
@@ -10,7 +9,7 @@
 
 ![Titelgrafik von Denkmal TD2 mit Kim und Marcel](dist/assets/loading/kim-marcel-loading-v5.webp)
 
-> Das Bild zeigt die Titelgrafik. Ein echter Gameplay-Screenshot unter `docs/screenshot.png` ist als Community-Aufgabe vorgesehen.
+> Das Bild zeigt die Titelgrafik. Ein echter Gameplay-Screenshot unter `docs/screenshot.png` steht noch aus.
 
 ## Features
 
@@ -43,13 +42,13 @@ python3 tests/assets.test.py
 
 Die CI-Konfiguration steht in [test.yml](.github/workflows/test.yml). Der reguläre Browser-Build wird aus `dist/` veröffentlicht.
 
-## Mitmachen
+## Entwicklung und Feedback
 
-Beiträge, Ideen und Fehlermeldungen sind willkommen:
+**Denkmal TD2 wird von imbaaalanced-dot allein entwickelt.** Externe Pull Requests, Code- oder Grafikbeiträge werden derzeit nicht angenommen. Der Quellcode ist öffentlich zugänglich; Fehlermeldungen, sachliches Feedback und Ideen bleiben willkommen.
 
-- [Beitragsleitfaden](CONTRIBUTING.md)
-- [Issues – gute erste Aufgaben](https://github.com/imbaaalanced-dot/a/labels/good%20first%20issue)
-- [Fragen und Diskussionen](https://github.com/imbaaalanced-dot/a/discussions) (nach Aktivierung)
+- [Fehler melden oder eine Idee vorschlagen](https://github.com/imbaaalanced-dot/a/issues/new/choose)
+- [Fragen und Diskussionen](https://github.com/imbaaalanced-dot/a/discussions)
+- [Hinweise für gute Fehlermeldungen](CONTRIBUTING.md)
 - [Roadmap](ROADMAP.md)
 - [Verhaltenskodex](CODE_OF_CONDUCT.md) und [Sicherheitsmeldungen](SECURITY.md)
 
