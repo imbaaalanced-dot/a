@@ -29,13 +29,12 @@ const server=http.createServer((req,res)=>{
       await page.goto(`http://127.0.0.1:${server.address().port}/v4-style2/index.html`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
       const state=await page.evaluate(async()=>{
+        const loaded=await KirchendeArt.load(true);
+        const groundReady=await DenkmalTerrain.load();
+        if(!KirchendeArt.ready('environment')||!KirchendeArt.ready('monument'))
+          throw Error(`Kirchende art load failed: ${JSON.stringify({loaded,groundReady,environment:KirchendeArt.ready('environment'),monument:KirchendeArt.ready('monument')})}`);
+        if(!groundReady)throw Error('Kirchende Style-2 ground texture did not load');
         DenkmalTestHooks.startGame(3);
-        const started=performance.now();
-        while(!KirchendeArt.ready('environment')||!KirchendeArt.ready('monument')){
-          if(performance.now()-started>20000)throw Error('Kirchende environment or historic monument did not load');
-          await new Promise(resolve=>setTimeout(resolve,40));
-        }
-        await DenkmalTerrain.load();
         DenkmalTestHooks.launchWave();
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
         const game=DenkmalTestHooks.getGame(),canvas=document.querySelector('#game');
