@@ -11,10 +11,12 @@ Die Werte sind ein erster Balance-Vorschlag, keine nachgewiesene Spielbalance. D
 
 Rekrutierungsabstand L1/L2/L3: 13/12/14 s. Globaler Cap: 10 Milizsoldaten. Sie ziehen zur nächsten Lane, halten sich im lokalen Kampfbereich, kämpfen gegen Bodengegner und erleiden Rückschläge. Fluggegner, Sappeure und der Entwurzelte können sie umgehen. Keine persistenten Milizdaten, keine Save-Migration.
 
-## Grafiken
-Die drei genehmigten Gebäudebilder sowie 44 transparenten Lauf-/Angriffsframes existieren im lokal erzeugten Milizpaket. Dieses PR enthält **vorübergehend einfache Canvas-Grafiken** als technische Fallback-Darstellung, weil die binären Originalbilder noch nicht in das GitHub-Repository übertragen wurden. Die Fallbacks sind *nicht* der final freigegebene Style-2-Look.
+## Grafiken · aktualisiert 10.11.2026
+Die drei Gebäude und alle 44 Lauf-/Angriffsframes werden aus dem unveränderten 768×768-Atlas des beigefügten Pakets geladen. Zusatzatlas: 24 generierte Posen, 8 Spalten × 3 Stufen, für Stand/Treffer/Tod/Rekrutierung. Registrierung, Timing, Herkunft und Prüfsummen: `dist/assets/barracks/integration-v2.json`.
 
-Vor Freigabe echte WebP-Sprites für alle Stufen integrieren. Es darf pro Einheit nur ein aktiver Renderpfad existieren; keine Überlagerung durch Standgrafik. Zusätzliche Stand-, Treffer-, Sterbe- und Spawn-Frames sind noch zu erzeugen.
+Pro Figur genau ein Sprite-Blit. Die alten Canvas-Figuren/Gebäude sind entfernt. Zwei gemeinsam gehaltene Texturen, zusammen 3.75 MiB RGBA, keine Einzeltexturen je Figur. Bei noch fehlendem Zusatzatlas werden Übergänge mit dem Basisatlas gezeichnet; bei fehlendem Basisatlas keine überlagerten Ersatzfiguren. Visuelle Ingame-Abnahme weiterhin offen.
+
+Upgrade erhält Figurenidentität und relativen LP-Stand. Rekrutierungstimer wird nicht mehr zurückgesetzt. Tote Einheiten bleiben 0.65 Sekunden als nicht angreifbare Animation, Verkauf entfernt alle zugehörigen Einheiten im nächsten Simulationsschritt. Tastaturauswahl 6 korrigiert.
 
 ## QA-Gates
 - [ ] CI-Job `test` vollständig grün, Barracks-Regression inklusive

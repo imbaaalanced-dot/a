@@ -7,7 +7,8 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v4.1.0-alpha.1"'), 'version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v5-alpha"'), 'V5 version remains available as metadata');
+assert.match(html, /id="td2-version-label"/, 'menu version labels use the canonical metadata');
 
 // Asset versions are intentionally per-file, not one global version.
 // A changed JS/CSS file must have its own cache key bumped in index.html
@@ -53,7 +54,8 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js', 'v5-style2a1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js', 'v5-style2a1'],
-  ['game.js', 'v5-tower-canonical1'],
+  ['game.js', 'v5-low60-fullscreen1-barracks2'],
+  ['barracks.js','td2-barracks3'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
@@ -98,7 +100,7 @@ for (const file of expectedVersions.keys()) {
 const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
 assert.match(heroSagaSource,/walk\.naturalWidth%3===0/,'Hero action uses only valid 3-column walk sheets');
 const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
-assert.match(gameSource,/mobileRender\?\(graphicsMode==='low'\?1000\/30:graphicsMode==='auto'\?1000\/60:0\):0/,'mobile AUTO targets 60 FPS with manual LOW 30 FPS fallback');
+assert.match(gameSource,/mobileRender&&graphicsMode!=='high'\?1000\/60:0/,'mobile LOW and AUTO both target 60 FPS, HIGH remains uncapped');
 assert.match(gameSource,/qualityTier==='medium'\?\(mobileRender\?\.85:1\.25\):mobileRender\?\.70:\.85/,'mobile renderer uses conservative DPR caps');
 assert.match(gameSource,/qualityTier==='high'\?1400000:qualityTier==='medium'\?650000:320000/,'mobile low tier stays within a 320k pixel budget');
 assert.match(gameSource,/for\(let s=0;s<steps;s\+\+\)update\(FIXED_STEP\)/,'simulation stays on the fixed 60 Hz path');
