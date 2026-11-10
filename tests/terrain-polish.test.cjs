@@ -3,8 +3,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 let canvases=0,patterns=0;
 function context(){
- const calls={fills:0,strokes:0,images:0,dashes:[]};
- const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;},drawImage(){calls.images++;},
+ const calls={fills:0,strokes:0,images:0,dashes:[],strokeColors:[]};
+ const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;calls.strokeColors.push(this.strokeStyle);},drawImage(){calls.images++;},
  setLineDash(value){calls.dashes.push(value);},
  createPattern(){patterns++;return {pattern:true};},
  createRadialGradient(){return {addColorStop(){}}},createLinearGradient(){return {addColorStop(){}}}};
@@ -26,9 +26,14 @@ const firstPattern=patterns;g.drawGround(ctx,12,14,200,200);
 assert.equal(patterns,firstPattern,'ground does not recreate its pattern every frame');
 const road=[{x:0,y:0},{x:60,y:45},{x:150,y:45}];
 const beforeStrokes=ctx.calls.strokes;g.drawRoad(ctx,road);
-assert.ok(ctx.calls.strokes-beforeStrokes>=6,'footpaths include soft shoulders and a textured surface');
+assert.equal(ctx.calls.strokes-beforeStrokes,9,'earth road stays at the existing nine cached strokes');
+const earthShoulders=ctx.calls.strokeColors.slice(-9,-1);
+assert.equal(earthShoulders.length,8,'earth shoulders use eight progressively narrow material bands');
 assert.ok(ctx.calls.dashes.every(dash=>dash.length===0),'photo-based footpaths have no traffic-style dashed centerline');
-g.drawRoad(ctx,road,{surface:'slabs'});
+const slabBefore=ctx.calls.strokes;g.drawRoad(ctx,road,{surface:'slabs'});
+assert.equal(ctx.calls.strokes-slabBefore,9,'stone road does not increase per-frame stroke count');
+const stoneShoulders=ctx.calls.strokeColors.slice(-9,-1);
+assert.notDeepEqual(stoneShoulders,earthShoulders,'stone and earth use different Style-2 shoulder colors');
 const warmRoadPatterns=patterns;
 g.drawRoad(ctx,road,{surface:'slabs'});
 assert.equal(patterns,warmRoadPatterns,'the paved approach reuses its texture');
