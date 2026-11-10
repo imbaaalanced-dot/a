@@ -1,7 +1,7 @@
 'use strict';
 // Exercise the production loop with controlled browser callback timestamps.
 // Resetting the render clock to each callback loses fractional intervals and
-// turns a 30 fps cap into roughly 20 fps on a slightly jittery 60 Hz display.
+// can halve a 60 FPS target on a jittery 60 Hz display.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(require('node:path').join(__dirname,'../dist/game.js'),'utf8');
 const loopSource=source.slice(source.indexOf('  function loop(now){'),source.indexOf('  function tone('));
@@ -23,17 +23,17 @@ for(const hz of [60,90,120]){
  const intervals=Array.from({length:hz*10},(_,i)=>1000/hz+(i%2?.2:-.2));
  const result=run(intervals);
  console.log(`${hz} Hz callbacks: ${result.draws} draws / 10 seconds`);
- assert.ok(result.draws>=299&&result.draws<=301,'30 fps cap must retain fractional time instead of dropping scheduled frames');
+ assert.ok(result.draws>=598&&result.draws<=601,'SPARMODUS must target 60 FPS without dropping scheduled frames');
  const uncapped=run(intervals,{mobile:false});
  assert.equal(uncapped.draws,intervals.length,'desktop draws every callback');
- assert.equal(result.updates,uncapped.updates,'render cap must not alter simulation');
+ assert.equal(result.updates,uncapped.updates,'60 FPS low rendering must not alter simulation');
  const auto=run(intervals,{mode:'auto'});
  assert.ok(auto.draws>=598&&auto.draws<=601,'AUTO must target 60 FPS even on 90/120 Hz displays');
  assert.equal(auto.updates,uncapped.updates,'60 FPS render cap must not alter simulation');
  assert.equal(run(intervals,{mode:'high'}).draws,intervals.length,'HIGH draws at display refresh');
 }
 const jittered=Array.from({length:600},(_,i)=>1000/60+(i%2?.8:-.8));
-assert.ok(run(jittered,{mode:'auto'}).draws>=598,'60 Hz callback jitter must not halve 60 FPS rendering');
+for(const mode of ['low','auto'])assert.ok(run(jittered,{mode}).draws>=598,mode+' must not halve 60 FPS on jitter');
 const slow=run(Array(100).fill(100));
 assert.equal(slow.draws,100,'slow callbacks draw once, without catch-up bursts');
 const hidden=run([]);hidden.box.document.hidden=true;hidden.tick(1000);
