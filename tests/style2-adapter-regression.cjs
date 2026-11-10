@@ -7,10 +7,10 @@ const source=fs.readFileSync('dist/style2-user-towers.js','utf8');
 function boot(search){
   const pending=[];
   class FakeImage {
-    constructor(){this.naturalWidth=0;pending.push(this);}
+    constructor(){this.naturalWidth=0;this.naturalHeight=0;pending.push(this);}
     set src(v){this.url=v;}
     decode(){return Promise.resolve();}
-    succeed(){this.naturalWidth=256;this.onload?.();}
+    succeed(){const size=this.url.includes('/projectiles/')?256:512;this.naturalWidth=size;this.naturalHeight=size;this.onload?.();}
     fail(){this.onerror?.();}
   }
   const sandbox={URLSearchParams,Image:FakeImage,Date,location:{search},globalThis:null};
