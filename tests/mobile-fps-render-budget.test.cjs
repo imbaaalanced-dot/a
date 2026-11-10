@@ -18,7 +18,7 @@ assert.equal(limitContext.targetRenderInterval(),1000/60,'mobile AUTO targets 60
 limitContext.graphicsMode='high';
 assert.equal(limitContext.targetRenderInterval(),0,'explicit HIGH allows display refresh');
 limitContext.graphicsMode='low';
-assert.equal(limitContext.targetRenderInterval(),1000/30,'manual LOW retains battery/thermal 30 FPS fallback');
+assert.equal(limitContext.targetRenderInterval(),1000/60,'manual LOW targets 60 FPS and saves work via graphics budget');
 limitContext.mobileRender=false;
 assert.equal(limitContext.targetRenderInterval(),0,'desktop remains uncapped');
 
