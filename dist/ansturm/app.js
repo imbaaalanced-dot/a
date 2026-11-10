@@ -2,6 +2,38 @@ import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=menu
 import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=v5-style2a1';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v5-style2a1';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=document.hidden,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return null}})();
 let savedRun=readRun(storage), pendingStart=false, lastSaveTime=0;
+function updateFullscreenControls(){
+  const active=!!document.fullscreenElement;
+  for(const id of ['fullscreen','introFullscreen']){
+    const button=el(id);
+    button.textContent=active?'VOLLBILD: AN':'VOLLBILD: AUS';
+    button.setAttribute('aria-pressed',String(active));
+    button.setAttribute('aria-label',active?'Vollbild beenden':'Vollbild aktivieren');
+  }
+}
+async function toggleFullscreen(){
+  try{
+    if(document.fullscreenElement){
+      if(!document.exitFullscreen)throw new Error('Fullscreen exit unavailable');
+      await document.exitFullscreen();
+    }else{
+      if(!document.documentElement.requestFullscreen)throw new Error('Fullscreen unavailable');
+      await document.documentElement.requestFullscreen();
+    }
+    el('gameMenu').open=false;
+  }catch{
+    notice('Vollbild nicht verfügbar · Browser-Menü: Zum Startbildschirm hinzufügen');
+  }
+  updateFullscreenControls();
+}
+el('fullscreen').onclick=toggleFullscreen;
+el('introFullscreen').onclick=toggleFullscreen;
+document.addEventListener('fullscreenchange',()=>{
+  updateFullscreenControls();
+  // Keep arena canvas dimensions synchronized with the new viewport.
+  resize();
+});
+updateFullscreenControls();
 const storageWarning='Fortsetzen kann auf diesem Gerät gerade nicht gespeichert werden.';
 function notice(message=''){el('saveNotice').textContent=message;el('saveNotice').hidden=!message;}
 function resumeOffer(){
