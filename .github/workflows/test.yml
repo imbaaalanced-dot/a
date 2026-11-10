@@ -143,6 +143,7 @@ jobs:
           python tests/style2-cleanup-pass3.test.py
           python tests/style2-reference-assets.test.py
           python tests/enemy-animation-assets.test.py
+          python tests/style2-enemy-boss-audit.test.py
           python tests/barracks-assets.test.py
           python tests/style2-active-atlas-pilot-v5.test.py
 
