@@ -1157,14 +1157,16 @@
     const renderStart=profile?performance.now():0;
     const renderInterval=targetRenderInterval();
     // Keep the fractional render interval; resetting to now drifts below 30 fps.
-    // The tiny tolerance only absorbs timestamp floating-point rounding.
+    // 60 Hz mobile rAF timestamps jitter around 16.67 ms: a 1 ms scheduling
+    // tolerance prevents one early callback from halving the visible frame rate.
+    const renderTolerance=renderInterval&&renderInterval<=1000/60?1:.01;
     const renderElapsed=now-lastGameplayDraw;
-    const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+.01>=renderInterval;
+    const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+renderTolerance>=renderInterval;
     const shouldDraw=!document.hidden&&(state==='playing'?gameplayDrawDue:now-lastIdleDraw>=100);
     if(shouldDraw){
       draw();lastIdleDraw=now;
       if(state==='playing')lastGameplayDraw=renderInterval
-        ?lastGameplayDraw+Math.floor((renderElapsed+.01)/renderInterval)*renderInterval
+        ?lastGameplayDraw+Math.floor((renderElapsed+renderTolerance)/renderInterval)*renderInterval
         :now;
     }
     if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
