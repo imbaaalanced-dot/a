@@ -43,10 +43,19 @@ function create(index){
 // Broad, glossy evergreen leaves distinguish the approach shrubs from tall trees.
 function createShrub(index){
  const c=document.createElement('canvas');c.width=c.height=192;const q=c.getContext('2d'),r=rnd(9341+index*83);
- circle(q,96,100,80,'#233d2d99');
- for(let i=0;i<350;i++){
-   const a=r()*Math.PI*2,d=Math.sqrt(r())*75,x=96+Math.cos(a)*d,y=96+Math.sin(a)*d*.88;
-   q.fillStyle=['#304b3b','#405d45','#506d4c','#627b55','#7b8a61'][i%5];q.beginPath();q.ellipse(x,y,2+r()*7,1.4+r()*3,a+.6,0,Math.PI*2);q.fill();
+ // Three low-profile silhouettes share the old 192px cache budget:
+ // compact evergreen, wide hedgerow and sparse fern-like undergrowth.
+ const profiles=[
+  {rx:.88,ry:.86,leaves:350,base:'#233d2d99',palette:['#304b3b','#405d45','#506d4c','#627b55','#7b8a61']},
+  {rx:1.12,ry:.70,leaves:360,base:'#283a2899',palette:['#334b35','#45593a','#576848','#6c7850','#889063']},
+  {rx:.77,ry:1.00,leaves:260,base:'#203a3299',palette:['#27483c','#37604b','#4d7456','#648364','#789477']}
+ ];
+ const p=profiles[index%profiles.length];
+ q.fillStyle=p.base;q.beginPath();q.ellipse(96,100,80*p.rx,80*p.ry,0,0,Math.PI*2);q.fill();
+ for(let i=0;i<p.leaves;i++){
+   const a=r()*Math.PI*2,d=Math.sqrt(r())*75,x=96+Math.cos(a)*d*p.rx,y=96+Math.sin(a)*d*.88*p.ry;
+   q.fillStyle=p.palette[i%p.palette.length];q.beginPath();
+   q.ellipse(x,y,2+r()*7,1.4+r()*3,a+.6,0,Math.PI*2);q.fill();
  }
  return c;
 }
