@@ -27,7 +27,10 @@ for(const hz of [60,90,120]){
  const uncapped=run(intervals,{mobile:false});
  assert.equal(uncapped.draws,intervals.length,'desktop draws every callback');
  assert.equal(result.updates,uncapped.updates,'render cap must not alter simulation');
- for(const mode of ['auto','high'])assert.equal(run(intervals,{mode}).draws,intervals.length,mode+' mode must draw at display refresh');
+ const auto=run(intervals,{mode:'auto'});
+ assert.ok(auto.draws>=598&&auto.draws<=601,'AUTO must target 60 FPS even on 90/120 Hz displays');
+ assert.equal(auto.updates,uncapped.updates,'60 FPS render cap must not alter simulation');
+ assert.equal(run(intervals,{mode:'high'}).draws,intervals.length,'HIGH draws at display refresh');
 }
 const slow=run(Array(100).fill(100));
 assert.equal(slow.draws,100,'slow callbacks draw once, without catch-up bursts');
