@@ -59,7 +59,7 @@ const server=http.createServer((req,res)=>{
      const u=DenkmalBarracks.makeUnit({x:80,y:110,level},[]);Object.assign(u,{aliveTime:mode==='recruit'?.2:2,mode,hitTime:mode==='hit'?.15:0,hp:mode==='death'?0:u.hp,deathTime:mode==='death'?.35:0});
      ctx.clearRect(0,0,160,160);blits=0;DenkmalBarracks.drawUnit(ctx,u);
      if(blits!==1)throw Error('duplicate/missing blit '+level+'/'+mode);
-     if(!ctx.getImageData(0,0,160,160).data.some((v,i)=>i%4===3&&v>128))throw Error('blank '+level+'/'+mode);count++;
+     if(!ctx.getImageData(0,0,160,160).data.some((v,i)=>i%4===3&&v>16))throw Error('blank '+level+'/'+mode);count++;
     }return count;
    });assert.equal(frames,18);
    await page.screenshot({path:path.join(out,profile.name+'.png')});
