@@ -75,7 +75,7 @@ jobs:
           --prompt "Premium dark fantasy isometric 2.5D game asset: historically inspired German stone war memorial, moss-covered weathered masonry, antique gold trim, warm amber lantern glow, deep blue forest shadows, cinematic realistic material textures, isolated centered monument, no text, no UI, no people, high detail"
       - name: Upload generated image for review
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fal-style2-review
           path: generated/fal-review/
