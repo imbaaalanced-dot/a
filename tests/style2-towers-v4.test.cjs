@@ -52,6 +52,8 @@ const vm=require('node:vm');
 {
  const requests=[],ready=new Map();
  const box={URLSearchParams,location:{search:''},Date,DenkmalAssets:{retain(group,urls){requests.push({group,urls});return Promise.resolve([])},ready:url=>ready.get(url)||null}};box.globalThis=box;
+ let legacyImpactCalls=0;
+ box.V2Expansion={impact(){legacyImpactCalls++;return true;}};
  vm.runInNewContext(impactSource,box);
  const image={naturalWidth:768,naturalHeight:384};
  for(const [row,family] of ['bow','cannon','mage','rift','boomerang'].entries()){
@@ -68,5 +70,6 @@ const vm=require('node:vm');
   }
  }
  assert.equal(requests.length,5,'one retained V4 hit atlas per family');
+ assert.equal(legacyImpactCalls,0,'legacy expansion must not intercept V4 hit atlases');
 }
 console.log('Style-2 tower V4 manifest, 35 WebP assets, atlas rows, miniature sheets, and runtime ordering passed');
