@@ -2,7 +2,8 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.join(__dirname,'../dist');
-let allocated=0,draws=0,patterns=0,radials=0,shapes=0;
+let allocated=0,draws=0,patterns=0,radials=0,shapes=0,treeCalls=0;
+const crowns=[];
 const ctx=new Proxy({
   globalAlpha:1,
   drawImage(){draws++;},
@@ -14,7 +15,8 @@ const ctx=new Proxy({
 },{get(o,k){return k in o?o[k]:()=>{};},set(o,k,v){o[k]=v;return true;}});
 const sandbox={
   Math,document:{createElement(type){assert.equal(type,'canvas');allocated++;return{width:0,height:0,getContext(){return ctx;}};}},
-  localStorage:{getItem(){return null;},setItem(){}}
+  localStorage:{getItem(){return null;},setItem(){}},
+  DenkmalForest:{drawCrown(_ctx,x,y,r){treeCalls++;crowns.push({x,y,r});return true;}}
 };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);
@@ -30,11 +32,15 @@ assert.equal(maps.stats().canvas.width,1536,'half resolution static terrain boun
 assert.equal(maps.stats().canvas.height,1536);
 assert.ok(radials>5,'map includes several baked static lights');
 assert.ok(patterns>=1,'terrain tiles reused in the scene');
+assert.ok(treeCalls>=8,'style 2 maps use cached forest crowns instead of scattered autumn dots');
+assert.ok(crowns.every(tree=>levels.levels[1].paths.every(path=>levels.pathDistance(tree,path)>=tree.r+116)),
+  'forest crowns stay clear of every authored lane');
 assert.ok(shapes>200,'draws physical road pavers and details');
-const warmAllocations=allocated,built=maps.stats().builds;
+const warmAllocations=allocated,built=maps.stats().builds,warmTrees=treeCalls;
 for(let i=0;i<15;i++)maps.draw(ctx,1,{x:900+i,y:970},1200,900,layoutLevel(1));
 assert.equal(allocated,warmAllocations,'same map only draws an already painted bitmap');
 assert.equal(maps.stats().builds,built);
+assert.equal(treeCalls,warmTrees,'forest crowns are baked once into the cached map');
 assert.equal(JSON.stringify([levels.levels[1],levels.levels[2]]),original,'gameplay geometry must never mutate');
 assert.equal(maps.draw(ctx,2,{x:900,y:900},1800,1550,layoutLevel(2)),true);
 assert.equal(maps.stats().builds,built+1,'one lazy scene build on changing level');
@@ -48,10 +54,11 @@ assert.equal(maps.draw(ctx,1,{x:900,y:900},1100,1100,layoutLevel(1)),true);
 assert.equal(maps.stats().builds,built+2,'switching back recreates one scene, not a second retained large atlas');
 assert.ok(draws>=28,'cached scenes are drawn as single source rectangles');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert.match(html,/style2-maps\.js\?v=v400a6markers1/);
+assert.match(html,/style2-maps\.js\?v=v400a7environment1/);
 assert.ok(html.indexOf('style2-maps.js')<html.indexOf('game.js?v='),'map renderer loads before game');
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameplay,/Style2Maps\?\.draw/);
 assert.match(gameplay,/Style2Maps\)continue/,'painted streets replace generic path strokes');
 assert.match(gameplay,/v4-style2-maps\//,'new tester unlocks only the dedicated preview');
-console.log('Style 2 maps: cached 1536px stone plaza and hedge maze, static lights, intact layout and render integration passed.');
+console.log('Style 2 maps: cached slate ground, forest edge, hedge maze, static lights, intact layout and render integration passed.');
+
