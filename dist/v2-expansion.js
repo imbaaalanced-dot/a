@@ -77,6 +77,8 @@ function placements(level,layout){
 }
 let environmentLevel=0;
 function environment(ctx,level,layout,low=false){
+ // Westhofen (level 7) has its own renderer and no V2 environment atlas.
+ if(!Number.isInteger(level)||level<1||level>6)return false;
  globalThis.TD2DirectionalActions?.setLevel(level);
  if(environmentLevel&&environmentLevel!==level){const name='environment-'+environmentLevel+'.webp';globalThis.DenkmalAssets?.release('expansion-v2:'+name);pending.delete(url(name));}environmentLevel=level;
  const art=image('environment-'+level+'.webp');if(!art)return false;
