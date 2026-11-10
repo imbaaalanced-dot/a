@@ -38,4 +38,9 @@ box.document.hidden=false;box.record(2,3,true);box.update(5800);
 box.record(4,5,true);box.update(6400);
 assert.match(overlay.textContent,/SIM 3\.0ms/,'background resets averages');
 assert.match(overlay.textContent,/DRAW 4\.0ms/);
+// A 60 Hz rAF callback stream that paints only every other callback is 30 *drawn* FPS.
+assert.match(src,/updateTelemetry\(now,shouldDraw\)/,'game loop must pass draw decision');
+box.reset();
+for(let i=0;i<120;i++)box.update(7000+i*1000/60,i%2===0);
+assert.match(overlay.textContent,/FPS (29|30|31|32) · P95 33\.3ms/,'HUD must report real 30 FPS, not 60 rAF callbacks');
 console.log('CPU timing telemetry: averaging, drawn-only samples, gated profiling and resets passed.');
