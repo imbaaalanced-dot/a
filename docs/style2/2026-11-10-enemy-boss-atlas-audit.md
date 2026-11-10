@@ -71,6 +71,8 @@ Ein Randwert von **0 px** bedeutet sichtbare Alpha-Pixel direkt am Dateirand. Da
 
 **Gezielter Produktionsprompt für den ersten Hold (`boss_shieldwarden`)**: *Use the existing `boss_shieldwarden.webp` as the strict visual identity reference. Reconstruct exactly this full-body dark-fantasy medieval shield warden in the established Denkmal TD2 hand-painted 2.5D gameplay camera: battered blackened armor, antique bronze trim, large weathered stone-and-metal shield with restrained blue rune, mace, aged red cloth. Show the complete shield, mace, cloak and both feet with a shared bottom-center ground contact. One isolated figure only, genuine transparent RGBA PNG master, generous transparent safety inset on all four sides, stable silhouette readable at 64/128 px. Preserve lighting from the upper left and the current relative body proportions. No second actor, no background or stone floor, no opaque glow rectangle, no text, no cropped weapon, no camera rotation, no new heraldry or silhouette redesign. Produce a source master for QA only; do not replace the 174×280 runtime image before pivot, frame-size, miniature and browser checks.*
 
+**Pilotkandidat erzeugt (weiterhin Hold):** `source-art/enemies/2026-11-10/` enthält eine WebP-Quellansicht (1008×1561, 73 px sichtbarer Rand) und eine 174×280-Reviewvorschau (12 px Rand). Beide bestehen den Pixelcheck, sind aber **nicht** freigegeben: Die neu ausgearbeitete Helm-/Turmsilhouette und der Fußpunkt müssen gegen die ursprüngliche Identität bei 64/128 px geprüft werden. Die verlustfreie PNG-Quelle liegt vorerst nur lokal, nicht im GitHub-PR. Der bestehende Runtime-Pfad bleibt absichtlich unverändert.
+
 ## Reproduzierbare Prüfungen und Grenzen
 
 ```bash
