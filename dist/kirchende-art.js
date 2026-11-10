@@ -1,7 +1,7 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-photo-v2.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
+  const assets={monument:'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
   const images={};let loading=null;
   function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
   function load(enabled=true){
@@ -16,7 +16,7 @@
         img.src='assets/kirchende/'+file+'?v='+(key==='monument'?'v400a5photo2':'v400a1');
         if(img.complete&&img.naturalWidth)finish(true);
       });
-    })).then(results=>{if(results.some(ok=>!ok))loading=null;return results;});
+    })).then(async results=>{if(results.some(ok=>!ok))loading=null;await globalThis.DenkmalTerrain?.load?.();return results;});
     return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
@@ -32,6 +32,25 @@
   const trees=[[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
   const shrubs=[[-90,195,45],[-95,260,45],[-95,325,45],[95,195,32],[95,255,32],[95,315,32],[-555,-310,65],[-360,-505,72],[360,-200,60],[520,-385,80],[-580,75,75],[535,90,75]];
   let site;
+  function drawAtlas(ctx,index,x,y,size){
+    const img=images.environment;if(!img?.complete||!img.naturalWidth)return false;
+    const sw=img.naturalWidth/3,sh=img.naturalHeight/2,sx=(index%3)*sw,sy=Math.floor(index/3)*sh;
+    ctx.drawImage(img,sx,sy,sw,sh,x-size/2,y-size,size,size);return true;
+  }
+  const props=[
+    {kind:4,x:-665,y:-540,size:150},{kind:4,x:660,y:-570,size:142},
+    {kind:3,x:-660,y:170,size:178},{kind:3,x:650,y:190,size:172},
+    {kind:5,x:-430,y:-635,size:112},{kind:5,x:515,y:-500,size:105}
+  ];
+  function propIsClear(prop,center){
+    const p={x:center.x+prop.x,y:center.y+prop.y};
+    const layout=globalThis.DenkmalLevels?.levels?.[3];
+    if(!layout)return true;
+    if(layout.paths?.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<150))return false;
+    if(layout.slots?.some(slot=>Math.hypot(p.x-slot.x,p.y-slot.y)<140))return false;
+    const objective=globalThis.DenkmalLevels?.center||center;
+    return Math.hypot(p.x-objective.x,p.y-objective.y)>275;
+  }
   function createSite(){
     const c=document.createElement('canvas');c.width=c.height=384;const q=c.getContext('2d');q.translate(192,144);
     q.fillStyle='#252d2440';q.fillRect(-145,-94,290,235);
@@ -210,9 +229,11 @@
         ctx.strokeStyle='#4d5547';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x,y-18);ctx.lineTo(x+20,y-58);ctx.stroke();
         ctx.strokeStyle='#68694d';ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(x,y+9);ctx.lineTo(x-18+i*18,y+24+Math.abs(i-1)*5);ctx.stroke();}
       }
+      // Low decorative ruins, stones and lanterns stay outside authored paths/pads.
+      for(const prop of props)if(propIsClear(prop,center))drawAtlas(ctx,prop.kind,prop.x,prop.y,prop.size);
     }else{
-      shrubs.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);globalThis.DenkmalForest?.drawShrub(ctx,x,y,r,i);});
-      trees.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){ctx.fillStyle='#506241';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();}});
+      shrubs.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);if(!drawAtlas(ctx,2,x,y,r*2.12))globalThis.DenkmalForest?.drawShrub(ctx,x,y,r,i);});
+      trees.forEach(([x,y,r],i)=>{const world={x:x+center.x,y:y+center.y,r};ctx.globalAlpha=crownOpacity(world,actors,shielded);if(!drawAtlas(ctx,i%3===0?0:1,x,y-35,r*2.16)){if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){ctx.fillStyle='#506241';ctx.beginPath();ctx.arc(x,y-35,r,0,7);ctx.fill();}}});
     }
     ctx.restore();
   }

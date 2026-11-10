@@ -2,21 +2,21 @@
  * Textures are seeded and cached; no route coordinates or combat state change. */
 (() => {
 'use strict';
-const textures=new Map();let patterns=new WeakMap(),groundPhoto=null;
-let groundLoading=null;
+const textures=new Map();let patterns=new WeakMap();
+let groundLoading=null,style2Ground=null;
 function load(){
-  if(groundPhoto)return Promise.resolve(true);
+  if(style2Ground)return Promise.resolve(true);
   if(typeof Image==='undefined')return Promise.resolve(false);
   if(groundLoading)return groundLoading;
   groundLoading=new Promise(resolve=>{
     const image=new Image();image.decoding='async';
-    image.onload=()=>{groundPhoto=image;textures.delete('ground');patterns=new WeakMap();resolve(true);};
+    image.onload=()=>{style2Ground=image;illustratedGround=null;resolve(true);};
     image.onerror=()=>{groundLoading=null;resolve(false);};
-    image.src='assets/kirchende/ground-photo-v2.webp?v=v400a5photo2';
+    image.src='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
   });
   return groundLoading;
 }
-// The optional photo loader stays available for older callers; illustration needs no download.
+// Ground and path materials stay cached; map rendering never fetches a photograph.
 function rng(seed){return ()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);}
 function leaf(ctx,x,y,r,color,angle){
   ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.fillStyle=color;
@@ -29,9 +29,8 @@ function litter(ctx,random,size,count){
 }
 function texture(kind){
   if(textures.has(kind))return textures.get(kind);
-  const size=kind==='ground'?(groundPhoto?512:1024):256,c=document.createElement('canvas');c.width=c.height=size;
+  const size=kind==='ground'?1024:256,c=document.createElement('canvas');c.width=c.height=size;
   const q=c.getContext('2d'),r=rng(kind==='ground'?164701:kind==='slabs'?9821:3749);
-  if(kind==='ground'&&groundPhoto){q.drawImage(groundPhoto,0,0,512,512);textures.set(kind,c);return c;}
   q.fillStyle=kind==='ground'?'#767952':kind==='slabs'?'#8b8772':'#81745e';q.fillRect(0,0,size,size);
   if(kind==='ground'){
     // Broad, uneven moss patches over exposed compacted earth, as in the photos.
@@ -71,7 +70,12 @@ function groundPainting(){
   if(illustratedGround)return illustratedGround;
   const c=document.createElement('canvas');c.width=c.height=1536;
   const q=c.getContext('2d'),r=rng(671629);
-  q.fillStyle='#364335';q.fillRect(0,0,1536,1536);
+  if(style2Ground){
+    const pattern=q.createPattern(style2Ground,'repeat');
+    if(pattern){q.fillStyle=pattern;q.fillRect(0,0,1536,1536);}
+    else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
+    q.fillStyle='#17231c22';q.fillRect(0,0,1536,1536);
+  }else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
   // Large softly blended moss/earth masses, painted once across the whole world.
   // No tiled photograph and no repeated leaf/stone landmarks.
   for(let i=0;i<210;i++){
