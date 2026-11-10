@@ -1,0 +1,64 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TD2: Spielvorschau starten",
+      "type": "shell",
+      "command": "python3 -m http.server 8777 --directory dist",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "TD2: JavaScript Schnelltest",
+      "type": "shell",
+      "command": "node tests/game.test.cjs",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Mobile Logiktest",
+      "type": "shell",
+      "command": "TEST_MOBILE=1 node tests/game.test.cjs",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Ansturm Tests",
+      "type": "shell",
+      "command": "npm test --prefix ansturm-alpha1-5",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Alle JavaScript Tests",
+      "type": "shell",
+      "command": "for test_file in tests/*.test.cjs; do node \"$test_file\" || exit 1; done",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Deployment-Dateien prüfen",
+      "type": "shell",
+      "command": "node --check dist/game.js && node tests/ansturm-source-parity.test.cjs",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Python QA vorbereiten",
+      "type": "shell",
+      "command": "python3 -m pip install --user Pillow numpy scipy",
+      "problemMatcher": []
+    },
+    {
+      "label": "TD2: Python Asset-Test",
+      "type": "shell",
+      "command": "python3 tests/assets.test.py",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
