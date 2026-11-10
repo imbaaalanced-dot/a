@@ -70,10 +70,10 @@ const expectedVersions = new Map([
   ['style2-ui-polish.css', 'ui-gold2'],
   ['style2-phase6.js', 'alpha9a5'],
   ['kirchende-combat.js', 'v400a5combined1'],
-  ['kirchende-art.js', 'kirchende-style2-pilot2'],
+  ['kirchende-art.js', 'style2-forestfloor1'],
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js', 'style2-road-detail2'],
-  ['forest-crowns.js', 'v400a6s2foliage4'],
+  ['forest-crowns.js', 'style2-forest5a'],
   ['church-art.js', 'v5-style2a1'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
