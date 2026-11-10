@@ -10,8 +10,14 @@ on:
       - 'dist/game.js'
       - 'dist/combat-fx.js'
       - 'dist/index.html'
+      - 'dist/terrain-polish.js'
+      - 'dist/kirchende-art.js'
+      - 'dist/assets/kirchende/ground-style2-v1.webp'
+      - 'dist/assets/kirchende/environment-atlas-style2-v1.webp'
       - 'tests/canonical-style2-runtime.test.cjs'
+      - 'tests/environment-style2-pilot.test.cjs'
       - 'tools/verify-canonical-style2-browser.cjs'
+      - 'tools/verify-style2-environment-pilot.cjs'
   workflow_dispatch:
 
 permissions:
@@ -37,3 +43,12 @@ jobs:
           npm install --no-save --package-lock=false playwright@1.62.1
           npx playwright install chromium
           node tools/verify-canonical-style2-browser.cjs
+      - name: Kirchende environment pilot gameplay preview
+        run: node tools/verify-style2-environment-pilot.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: kirchende-style2-environment-pilot-preview
+          path: /tmp/td2-environment-pilot/
+          if-no-files-found: warn
+          retention-days: 7
