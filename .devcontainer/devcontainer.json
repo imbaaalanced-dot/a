@@ -1,0 +1,35 @@
+{
+  "name": "Denkmal TD2 V5 - Codespaces",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "esbenp.prettier-vscode",
+        "usernamehw.errorlens",
+        "ms-python.python"
+      ],
+      "settings": {
+        "editor.formatOnSave": false,
+        "files.autoSave": "off"
+      }
+    }
+  },
+  "forwardPorts": [
+    8777
+  ],
+  "portsAttributes": {
+    "8777": {
+      "label": "Denkmal TD2 - Spielvorschau",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "node"
+}
