@@ -30,8 +30,8 @@ el('fullscreen').onclick=toggleFullscreen;
 el('introFullscreen').onclick=toggleFullscreen;
 document.addEventListener('fullscreenchange',()=>{
   updateFullscreenControls();
-  // Keep arena canvas dimensions synchronized with the new viewport.
-  resize();
+  // The arena renderer reads its bounding box on every frame; no fixed-size canvas rebuild is needed.
+  prev=0;
 });
 updateFullscreenControls();
 const storageWarning='Fortsetzen kann auf diesem Gerät gerade nicht gespeichert werden.';
