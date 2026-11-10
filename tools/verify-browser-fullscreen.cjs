@@ -34,7 +34,7 @@ const waitOn=async(page,enabled)=>page.waitForFunction(expected=>Boolean(documen
           if(mode==='campaign'){
             await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
             selector='#menuFullscreenBtn';
-            const options=mobile?'.td2-dock-button[data-td2-target="options"]':'#menuOptionsBtn';
+            const options='#menuOptionsBtn'; // Current V5 does not load the older portrait dock.
             await page.locator(options).click();
             await page.locator(selector).waitFor({state:'visible'});
           }else selector='#introFullscreen';
