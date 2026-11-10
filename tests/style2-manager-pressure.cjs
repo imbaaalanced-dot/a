@@ -12,7 +12,11 @@ const assets={
     assert.ok(group.startsWith('td2-user-tower:'));
     const url=urls[0];allUrls.add(url);groups.set(group,url);
     return new Promise(resolve=>{
-      pending.set(url,()=>{images.set(url,{naturalWidth:512});pending.delete(url);resolve([images.get(url)]);});
+      pending.set(url,()=>{
+        const size=url.includes('/projectiles/')?256:512;
+        images.set(url,{naturalWidth:size,naturalHeight:size});
+        pending.delete(url);resolve([images.get(url)]);
+      });
       peak=Math.max(peak,pending.size);
     });
   },

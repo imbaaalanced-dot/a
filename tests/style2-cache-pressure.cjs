@@ -6,14 +6,14 @@ const source = fs.readFileSync('dist/style2-user-towers.js', 'utf8');
 const images = [];
 let active = 0, peak = 0;
 class Image {
-  constructor() { this.naturalWidth = 0; images.push(this); }
+  constructor() { this.naturalWidth = 0; this.naturalHeight = 0; images.push(this); }
   set src(url) { this.url = url; this.loading = true; peak = Math.max(peak, ++active); }
   decode() { return Promise.resolve(); }
   finish(fail = false) {
     assert.ok(this.loading);
     this.loading = false; active--;
     if (fail) this.onerror();
-    else { this.naturalWidth = 512; this.onload(); }
+    else { const size = this.url.includes('/projectiles/') ? 256 : 512; this.naturalWidth = size; this.naturalHeight = size; this.onload(); }
   }
 }
 const sandbox = { URLSearchParams, Image, Date, location: { search: '?td2UserTowers=1&td2Style2Debug=1' } };

@@ -35,6 +35,7 @@ jobs:
       - name: Canonical hero and tower tests
         run: |
           node tests/canonical-style2-runtime.test.cjs
+          node tests/canonical-hero-art-v5.test.cjs
           node tests/hero-style2-v5.test.cjs
           node tests/hero-sprites-v5b.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
@@ -48,7 +49,9 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: kirchende-style2-environment-pilot-preview
-          path: /tmp/td2-environment-pilot/
+          name: v5-style2-canonical-art-and-environment-previews
+          path: |
+            /tmp/td2-canonical-art-pilot/
+            /tmp/td2-environment-pilot/
           if-no-files-found: warn
           retention-days: 7
