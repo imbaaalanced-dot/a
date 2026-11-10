@@ -46,6 +46,8 @@ const expectedVersions = new Map([
   ['combat-fx.js', 'v5-projectile-canonical1'],
   ['style2-user-towers.js', 'v5-style2a1'],
   ['style2-impact-atlas.js', 'reference-refresh-1'],
+  ['style2-impact-atlas-v4.js', 'style2-v4a1'],
+  ['style2-user-towers-v4.js', 'style2-v4a1'],
   ['enemy-animations.js', 'v410a1'],
   ['style2-markers.js', 'markers2'],
   ['style2-maps.js', 'v400a7environment1'],
