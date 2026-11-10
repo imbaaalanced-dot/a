@@ -104,14 +104,26 @@ function drawGround(ctx,x,y,w,h){
   const right=Math.min(3072,x+w),bottom=Math.min(3072,y+h);
   if(right>left&&bottom>top)ctx.drawImage(painting,left*.5,top*.5,(right-left)*.5,(bottom-top)*.5,left,top,right-left,bottom-top);
 }
+// Fixed road-material bands: distinct forest earth and weathered stone, using
+// exactly the same path centreline, number of strokes and texture cache.
+// These arrays are shared across frames; no new geometry or assets are loaded.
+const ROAD_SHOULDERS={
+  earth:[[148,'#20362612'],[138,'#29443020'],[126,'#3d523130'],[114,'#56674440'],
+    [104,'#645f444f'],[94,'#5b543e80'],[86,'#85765a'],[80,'#77674b']],
+  slabs:[[148,'#192b2812'],[138,'#33403720'],[126,'#424c4236'],[114,'#535b5055'],
+    [104,'#65696075'],[94,'#787e7199'],[86,'#86877c'],[80,'#77796f']]
+};
 function drawRoad(ctx,path,{surface='earth'}={}){
   if(!path||path.length<2)return;
-  const slabs=surface==='slabs';ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
+  const material=surface==='slabs'?'slabs':'earth';
+  ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
   ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
-  // Soft soil shoulders rather than kerbs or traffic markings. Same route centreline.
-  for(const [width,color] of [[148,'#8a805006'],[138,'#84764709'],[126,'#a08e5a0d'],[114,'#aa986017'],[104,'#75694c24'],[94,'#5e594044'],[86,'#9c8c6655'],[80,'#8b7d60'],[72,pattern(ctx,slabs?'slabs':'earth')||'#81745e']]){
+  // Soft mossy earth shoulders versus cooler stone margins. No traffic markings.
+  for(const [width,color] of ROAD_SHOULDERS[material]){
     ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
+  ctx.strokeStyle=pattern(ctx,material)||(material==='slabs'?'#77796f':'#77674b');
+  ctx.lineWidth=72;ctx.stroke();
   ctx.restore();
 }
 function drawStars(ctx,x,y,level,low=false){const n=Math.max(1,Math.min(3,Math.floor(level||1)));ctx.save();ctx.lineJoin='round';ctx.lineWidth=1.6;
