@@ -461,6 +461,15 @@
       ],
       "bytes": 74314,
       "sha256": "fe589e67d993256a3b92269d3462b7b3c9e4b12b3f1445f2d05b5ec8052d64f4"
+    },
+    {
+      "file": "environment-7.webp",
+      "size": [
+        512,
+        256
+      ],
+      "bytes": 77910,
+      "sha256": "995099064607615edf2cff07f7baa4ce7a786f517e4e3b0e785d5a1533d5802e"
     }
   ],
   "version": "expansion2"

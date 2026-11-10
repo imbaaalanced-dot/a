@@ -16,11 +16,11 @@ let standaloneImage=null;
 function refreshEnvironment(){
  if(typeof Image!=='function')return;
  let image;
- if(globalThis.DenkmalAssets)image=globalThis.DenkmalAssets.ready('assets/scenery-alpha8.webp?v=alpha8a2');
+ if(globalThis.DenkmalAssets)image=globalThis.DenkmalAssets.ready('assets/scenery-style2.webp?v=style2a1');
  else{
   if(!standaloneImage){
    standaloneImage=new Image();standaloneImage.decoding='async';
-   standaloneImage.src='assets/scenery-alpha8.webp?v=alpha8a2';
+   standaloneImage.src='assets/scenery-style2.webp?v=style2a1';
   }
   image=standaloneImage;
  }

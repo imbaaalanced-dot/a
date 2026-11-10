@@ -28,7 +28,7 @@ test('cold hero walk renders no competing legacy identity or expansion sprite',(
   box.HeroSaga.draw(canvas(),hero);
   assert.equal(expansionCalls,0);
   assert.equal(loaded.length,1,'only the chosen V5b walk image may load');
-  assert.match(loaded[0],/marcel-walk-v5b\.webp/);
+  assert.match(loaded[0],/marcel-walk-style2\.webp/);
 });
 
 test('unpainted combat facing must keep the V5b walk identity without fetching old action atlases',()=>{

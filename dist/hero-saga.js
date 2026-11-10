@@ -35,11 +35,11 @@
   // A single on-demand movement atlas. The V5b 768x1024 sheets need only
   // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
   const walkPaths={
-    marcel:globalThis.TD2CanonicalHeroArt?.marcel?.walk||'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
-    kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
+    marcel:globalThis.TD2CanonicalHeroArt?.marcel?.walk||'assets/hero/marcel-walk-style2.webpassets/v=style2a1',
+    kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-style2.webpassets/v=style2a1'
   };
   const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
-    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
+    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-style2.webpassets/v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webpassets/v=style2a1');
   let activeWalkActor=null,activeWalkImage=null;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;

@@ -12,14 +12,14 @@ vm.runInNewContext(source('canonical-hero-art-v5.js'), sandbox);
 const art = sandbox.TD2CanonicalHeroArt;
 assert.ok(Object.isFrozen(art));
 for (const [actor, expected] of Object.entries({
-  marcel: 'marcel-guardian-v6.webp',
-  kim: 'kim-marksman-v6.webp'
+  marcel: 'marcel-guardian-style2.webp',
+  kim: 'kim-marksman-style2.webp'
 })) {
   const entry = art[actor];
   assert.ok(Object.isFrozen(entry), `${actor} art map must not be mutable`);
-  assert.match(entry.walk, new RegExp(`${actor}-walk-v5b\\.webp`));
-  assert.match(entry.actions, new RegExp(`${actor}-side-actions-v5b\\.webp`));
-  assert.ok(entry.portrait.endsWith(expected));
+  assert.match(entry.walk, new RegExp(`${actor}-walk-style2\\.webp`));
+  assert.match(entry.actions, new RegExp(`${actor}-side-actions-style2\\.webp`));
+  assert.ok(entry.portrait.split('?')[0].endsWith(expected));
   assert.equal(entry.walkCell, 256);
   assert.equal(entry.actionCell, 128);
   assert.deepEqual(Array.from(entry.walkGrid), [3, 4]);
