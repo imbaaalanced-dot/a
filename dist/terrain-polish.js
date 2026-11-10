@@ -119,5 +119,5 @@ for(let i=0;i<n;i++){const sx=x+(i-(n-1)/2)*29,sy=y+47;ctx.beginPath();
 for(let j=0;j<10;j++){let a=j*Math.PI/5-Math.PI/2,d=j%2?5.5:12.4,px=sx+Math.cos(a)*d,py=sy+Math.sin(a)*d;if(j)ctx.lineTo(px,py);else ctx.moveTo(px,py);}
 ctx.closePath();ctx.shadowBlur=low?0:7;ctx.shadowColor='#f1ae42';ctx.fillStyle='#ffcf51';ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#543c21';ctx.stroke();}
 ctx.restore();}
-globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,load};
+globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,get groundImage(){return style2Ground;},load};
 })();

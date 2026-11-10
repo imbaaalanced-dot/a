@@ -57,14 +57,28 @@ vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/persisted-state.
 assert.equal(blocked.DenkmalLevels.completeLevel5(),false);
 assert.equal(blocked.DenkmalLevels.level5Completed,true,'blocked storage keeps session progress');
 // Renderer: test both cache reuse and objective anchoring, without a DOM or WebGL.
-let creations=0,images=0;const drawArgs=[];
-const paint=new Proxy({drawImage(...args){images++;drawArgs.push(args);},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
+let creations=0,images=0,patterns=0,environmentLoads=0;const drawArgs=[];
+const paint=new Proxy({drawImage(...args){images++;drawArgs.push(args);},createLinearGradient(){return {addColorStop(){}};},
+ createRadialGradient(){return {addColorStop(){}};},createPattern(){patterns++;return {}; }},{get:(o,k)=>k in o?o[k]:()=>{}});
 box.document={createElement(tag){assert.equal(tag,'canvas');creations++;return {width:0,height:0,getContext:()=>paint};}};
+const environmentSprite={complete:true,naturalWidth:1536,naturalHeight:1024};
+box.KirchendeArt={loadEnvironment(){environmentLoads++;return Promise.resolve(true);},image(){return environmentSprite;}};
+box.DenkmalTerrain={groundImage:{complete:true,naturalWidth:1254,naturalHeight:1254}};
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
 const art=box.DenkmalHohensyburgArt;
+const lamps=art.environmentLamps(level);
+assert.equal(lamps.length,3,'three fixed lantern accents fit the safe outer forest pockets');
+for(const lamp of lamps){
+ assert.ok(level.paths.every(route=>lib.pathDistance(lamp,route)>=155),'lanterns do not touch enemy lanes');
+ assert.ok(level.slots.every(slot=>Math.hypot(slot.x-lamp.x,slot.y-lamp.y)>=155),'lanterns stay clear of tower pads');
+}
 art.drawGround(paint,level);art.drawMonument(paint,{...center,hp:500,maxHp:500});art.drawAirLane(paint,level,true);
 const n=creations;art.drawGround(paint,level);art.drawMonument(paint,center);
 assert.equal(creations,n,'draw calls reuse their pre-rendered caches');assert.equal(n,2);
+assert.equal(environmentLoads,1,'Level 5 requests only the shared environment loader');
+assert.ok(patterns>0,'shared moss-and-earth tile is patterned into the woodland ground cache');
+assert.ok(drawArgs.some(args=>args[0]===environmentSprite&&args.length===9&&args[1]===1024&&args[2]===512),
+ 'warm forest lanterns use the existing transparent atlas cell');
 assert.ok(images>=4,'painted terrain and upright memorial are rendered');
 const spritePath='dist/assets/hohensyburg/kaiser-wilhelm-v1.webp';
 const asset=fs.readFileSync(spritePath);
@@ -89,7 +103,7 @@ const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
-assert.ok(html.includes('hohensyburg-art.js?v=v5-style2a1'));
+assert.ok(html.includes('hohensyburg-art.js?v=hohensyburg-env-style2a1'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));

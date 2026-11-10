@@ -28,11 +28,11 @@ const server=http.createServer((req,res)=>{
       await page.goto(`http://127.0.0.1:${server.address().port}/index.html`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
       const device=mobile?'mobile-touch':'desktop';
-      await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),fullPage:true,animations:'disabled'});
+      await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),animations:'disabled'});
       await page.locator('#menuCharacterBtn').click();
       await page.locator('#chooseKim').click();
       await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
-      await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),fullPage:true,animations:'disabled'});
+      await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),animations:'disabled'});
       await page.locator('#chooseMarcel').click();
       await page.locator('#menuBackBtn').click();
       const output=await page.evaluate(async()=>{
@@ -63,7 +63,7 @@ const server=http.createServer((req,res)=>{
       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       assert.equal(output.rendered,15);
       assert.equal(output.level,1);
-      await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:true,animations:'disabled'});
+      await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),animations:'disabled'});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
       assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
