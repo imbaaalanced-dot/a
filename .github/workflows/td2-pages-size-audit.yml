@@ -1,0 +1,46 @@
+name: TD2 Pages payload audit (read-only)
+on:
+  push:
+    branches: [perf/td2-pages-size-audit-20261110]
+    paths:
+      - '.github/workflows/td2-pages-size-audit.yml'
+      - 'tools/audit-pages-payload.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate audit tool
+        run: node --check tools/audit-pages-payload.cjs
+      - name: Audit production dist directory
+        run: |
+          set -euo pipefail
+          node tools/audit-pages-payload.cjs dist /tmp/td2-dist-audit.md > /tmp/td2-dist-audit.log
+          cat /tmp/td2-dist-audit.md >> "${GITHUB_STEP_SUMMARY}"
+          sed -n '1,70p' /tmp/td2-dist-audit.md
+      - name: Audit current gh-pages (no changes)
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-pages-size-readonly origin/gh-pages
+          node tools/audit-pages-payload.cjs /tmp/td2-pages-size-readonly /tmp/td2-gh-pages-audit.md > /tmp/td2-gh-pages-audit.log
+          cat /tmp/td2-gh-pages-audit.md >> "${GITHUB_STEP_SUMMARY}"
+          sed -n '1,80p' /tmp/td2-gh-pages-audit.md
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: td2-pages-size-audit
+          path: |
+            /tmp/td2-dist-audit.md
+            /tmp/td2-gh-pages-audit.md
+          retention-days: 14
