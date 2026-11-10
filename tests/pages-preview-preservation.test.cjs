@@ -6,8 +6,9 @@ const cleanup=mainStep.split('\n').find(line=>line.trim().startsWith('find /tmp/
 assert.ok(cleanup,'main publisher has a bounded cleanup command');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'td2-pages-'));
 try{
- const previews=['td2-combined','td2-ansturm-tutorial','td2-unified-ui','td2-level5-balance','td2-all-patches','loot-v2','td2-consolidation','v4-alpha9'];
+ const previews=['td2-combined','td2-ansturm-tutorial','td2-unified-ui','td2-level5-balance','td2-all-patches','loot-v2','td2-consolidation','v4-alpha9','v5-mobile-fps-preview','future-preview-not-in-whitelist'];
  for(const name of ['.git',...previews]){fs.mkdirSync(path.join(root,name));fs.writeFileSync(path.join(root,name,'keep.txt'),'retained');}
+ for(const name of ['assets','ansturm']){fs.mkdirSync(path.join(root,name));fs.writeFileSync(path.join(root,name,'old-runtime.txt'),'obsolete');}
  fs.mkdirSync(path.join(root,'td2-all-patches/v4.1.0'));
  fs.writeFileSync(path.join(root,'td2-all-patches/v4.1.0/index.html'),'v4.1 preview');
  fs.writeFileSync(path.join(root,'old-root.js'),'stale');
@@ -18,5 +19,6 @@ try{
  assert.match(preview,/cp -R dist\/\. \/tmp\/td2-v410-pages\/td2-all-patches\/v4\.1\.0\//);
  assert.ok(fs.existsSync(path.join(root,'.git/keep.txt')));
  assert.ok(!fs.existsSync(path.join(root,'old-root.js')),'stale root assets are removed');
+ for(const name of ['assets','ansturm'])assert.ok(!fs.existsSync(path.join(root,name)),'main runtime directory '+name+' must be replaced, not merged with stale assets');
  console.log('Main publication preserves current and historical tester paths');
 }finally{fs.rmSync(root,{recursive:true,force:true});}
