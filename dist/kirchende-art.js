@@ -2,21 +2,36 @@
 (() => {
   'use strict';
   const assets={monument:'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
-  const images={};let loading=null;
+  const images={},pending={};let loading=null,environmentLoading=null;
   function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
+  function loadOne(key){
+    if(!assets[key])return Promise.resolve(false);
+    if(ready(key))return Promise.resolve(true);
+    if(pending[key])return pending[key];
+    pending[key]=new Promise(resolve=>{
+      const img=new Image();images[key]=img;let settled=false;
+      const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);if(!ok)delete pending[key];resolve(ok);};
+      const timer=setTimeout(()=>finish(false),8000);
+      img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
+      const version=key==='monument'?'v400a5photo2':key==='environment'?'kirchende-pilot2':'v400a1';
+      img.src='assets/kirchende/'+assets[key]+'?v='+version;
+      if(img.complete&&img.naturalWidth)finish(true);
+    });
+    return pending[key];
+  }
+  function loadEnvironment(){
+    if(ready('environment'))return Promise.resolve(true);
+    if(environmentLoading)return environmentLoading;
+    environmentLoading=loadOne('environment').then(async ok=>{
+      if(ok)await globalThis.DenkmalTerrain?.load?.();
+      else environmentLoading=null;
+      return ok;
+    });
+    return environmentLoading;
+  }
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
-    loading=Promise.all(Object.entries(assets).map(([key,file])=>{
-      if(ready(key))return Promise.resolve(true);
-      return new Promise(resolve=>{
-        const img=new Image();images[key]=img;let settled=false;
-        const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);resolve(ok);};
-        const timer=setTimeout(()=>finish(false),8000);
-        img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
-        img.src='assets/kirchende/'+file+'?v='+(key==='monument'?'v400a5photo2':'v400a1');
-        if(img.complete&&img.naturalWidth)finish(true);
-      });
-    })).then(async results=>{if(results.some(ok=>!ok))loading=null;await globalThis.DenkmalTerrain?.load?.();return results;});
+    loading=Promise.all(Object.keys(assets).map(loadOne)).then(async results=>{if(results.some(ok=>!ok))loading=null;await globalThis.DenkmalTerrain?.load?.();return results;});
     return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
@@ -238,5 +253,5 @@
     ctx.restore();
   }
   function drawCracks(ctx,m){if(m.hp/m.maxHp>.66)return;ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle=m.hp/m.maxHp<=.33?'#db8b5555':'#34261b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-12,-130);ctx.lineTo(8,-105);ctx.lineTo(-3,-82);ctx.lineTo(16,-55);if(m.hp/m.maxHp<=.33){ctx.moveTo(28,-110);ctx.lineTo(10,-75);ctx.lineTo(22,-40);}ctx.stroke();ctx.restore();}
-  globalThis.KirchendeArt={load,ready,draw,drawScenery,drawSite,drawCracks,crownOpacity};
+  globalThis.KirchendeArt={load,loadEnvironment,ready,image(key){return ready(key)?images[key]:null;},draw,drawScenery,drawSite,drawCracks,crownOpacity};
 })();

@@ -5,13 +5,15 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('dist/style2-level4-reference.js','utf8');
 const html=fs.readFileSync('dist/index.html','utf8');
-assert.ok(html.includes('style2-level4-reference.js?v=ref4a1'));
+assert.ok(html.includes('style2-level4-reference.js?v=ref4a2'));
 assert.ok(html.indexOf('church-art.js')<html.indexOf('style2-level4-reference.js'));
 assert.ok(html.indexOf('style2-level4-reference.js')<html.indexOf('game.js?v='));
-let made=0,painted=0,oldGround=0,oldSite=0,saves=0;
+let made=0,painted=0,oldGround=0,oldSite=0,saves=0,groundLoads=0,environmentLoads=0,environmentReady=false;
+const atlas={naturalWidth:1536,naturalHeight:1024};
+const drawCalls=[];
 const gradient=()=>({addColorStop(){}});
 const ctx=new Proxy({createLinearGradient:gradient,createRadialGradient:gradient,
-  save(){saves++;},restore(){saves--;},drawImage(){painted++;}},
+  save(){saves++;},restore(){saves--;},drawImage(...args){painted++;drawCalls.push(args);}},
   {get:(o,k)=>k in o?o[k]:()=>{},set:(o,k,v)=>(o[k]=v,true)});
 const center={x:1536,y:1536};
 const pathDistance=(p,path)=>{
@@ -37,6 +39,8 @@ const layout={
 const snapshot=JSON.stringify(layout);
 const church={drawGround(){oldGround++;},drawSite(){oldSite++;}};
 const sandbox={Math,DenkmalChurch:church,DenkmalLevels:{levels:{4:layout},center,pathDistance},
+  DenkmalTerrain:{load(){groundLoads++;return Promise.resolve(true);}},
+  KirchendeArt:{loadEnvironment(){environmentLoads++;environmentReady=true;return Promise.resolve(true);},image(){return environmentReady?atlas:null;}},
   document:{createElement(tag){assert.equal(tag,'canvas');made++;return {width:0,height:0,getContext:()=>ctx};}},
   Style2Phase6:{upright(context,anchor,paint){return paint();}}};
 vm.createContext(sandbox);vm.runInContext(source,sandbox,{filename:'style2-level4-reference.js'});
@@ -48,6 +52,10 @@ assert.ok(api.lamps.every(p=>api.clear(p.x,p.y,73,75)));
 const camera={x:700,y:700};
 church.drawGround(ctx,camera,850,850);church.drawSite(ctx,center);
 assert.equal(made,2,'one small terrain atlas and one reusable lantern atlas');
+assert.equal(groundLoads,1,'the shared moss and earth texture is requested only once on Level 4');
+assert.equal(environmentLoads,1,'the shared transparent environment atlas is requested only once');
+assert.ok(drawCalls.some(args=>args[0]===atlas&&args.length===9&&args[1]===1024&&args[2]===512),
+  'the garden lantern is cut from the existing transparent 3×2 atlas');
 assert.equal(api.builds,2);
 const cached=made;
 for(let i=0;i<100;i++){church.drawGround(ctx,camera,850,850);church.drawSite(ctx,center);}
@@ -59,4 +67,4 @@ assert.equal(JSON.stringify(layout),snapshot,'no route or tower site mutations')
 assert.equal(api.clear(center.x,center.y),false,'monument stays unobstructed');
 assert.equal(api.clear(center.x,center.y-475),false,'church footprint stays unobstructed');
 assert.ok(!source.includes('Math.random'),'decoration is deterministic');
-console.log('Style 2 reference level 4: cached garden, lamps, path clearance and untouched game data passed.');
+console.log('Style 2 reference level 4: shared ground and lantern assets, cached garden, clearance and untouched game data passed.');
