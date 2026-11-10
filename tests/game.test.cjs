@@ -15,6 +15,7 @@ const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'barracks.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
@@ -113,7 +114,7 @@ check('Mobile canvas tap selects a pad, then builds only after tower choice',()=
   function tap(world){const e={pointerType:'touch',clientX:(world.x-origin.x)/stepX,clientY:(world.y-origin.y)/stepY};canvas.pointerdown(e);canvas.pointerup(e);}
   tap(slot);
   assert.equal(t.game.towers.length,0,'the first tap never spends essence');
-  assert.equal(choices.children.length,4,'four production towers can be chosen');
+  assert.equal(choices.children.length,5,'five tower choices include the experimental barracks');
   const bow=choices.children.find(b=>b.dataset.tower==='bow');
   assert.ok(bow,'bow option appears at the touched slot');bow.onclick();
   assert.equal(t.game.towers.length,1,'choosing a tower builds exactly once');
@@ -561,3 +562,11 @@ check('Painted animation renderer handles ground, flying and boss enemies withou
   }
 });
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
+
+check('Barracks keyboard, recruitment, upgrade health and sell integration',()=>{
+ const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.game.essence=500;
+ listeners.keydown({code:'Digit6'});assert.equal(t.game.selectedTower,'barracks');t.buildTower();
+ t.update(.05);assert.equal(t.game.militia.length,1);const u=t.game.militia[0];u.hp=32.5;
+ t.upgradeTower();t.update(.05);assert.equal(u.level,2);assert.equal(u.hp,52.5);
+ t.sellTower();t.update(.05);assert.equal(t.game.militia.length,0);
+});
