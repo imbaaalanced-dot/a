@@ -1068,7 +1068,7 @@
     sorted.sort();
     return {p95:sorted[Math.ceil(frameCount*.95)-1],stutters,frameCount};
   }
-  function updateTelemetry(now){
+  function updateTelemetry(now,didDraw=true){
     const overlay=$('fpsOverlay');
     if(!telemetryOn||document.hidden||state!=='playing'){
       if(!telemetryOn)overlay.classList.add('hidden');
@@ -1076,8 +1076,8 @@
       return;
     }
     overlay.classList.remove('hidden');
-    // Use rAF callback timestamps: frame intervals, not CPU render duration.
-    if(framePrevious){
+    // Count completed canvas draws, not rAF callbacks: the 30 FPS fallback must not report fake 60 FPS.
+    if(didDraw&&framePrevious){
       const delta=now-framePrevious;
       if(delta>0&&delta<=1000){
         frameSamples[frameCursor]=delta;
@@ -1085,9 +1085,9 @@
         frameCount=Math.min(frameCount+1,frameSamples.length);
       }
     }
-    framePrevious=now;
+    if(didDraw)framePrevious=now;
     if(!telemetryLast)telemetryLast=now;
-    telemetryFrames++;
+    if(didDraw)telemetryFrames++;
     const span=now-telemetryLast;
     if(span>=500){
       telemetryFps=Math.round(telemetryFrames*1000/span);
@@ -1170,7 +1170,7 @@
     if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
     if(state==='playing')advanceQualityMonitor(rawFrameSeconds);
     updateAdaptiveResolution(now);
-    updateTelemetry(now);
+    updateTelemetry(now,shouldDraw);
     requestAnimationFrame(loop);
   }
   function tone(freq,dur=.05,vol=.035){if(!audioOn)return;try{const ac=tone.ac||(tone.ac=new (AudioContext||webkitAudioContext)());if(ac.state==='suspended')void ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch{}}
