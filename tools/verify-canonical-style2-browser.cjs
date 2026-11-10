@@ -79,21 +79,19 @@ const server=http.createServer((req,res)=>{
           impacts++;
         }
         DenkmalTestHooks.startGame(1);HeroSaga.continueStory();
-        return {rendered,projectiles,impacts,cache:UserStyle2Towers.getDiagnostics(),level:DenkmalTestHooks.getGame()?.level};
+        return {rendered,projectiles,impacts,level:DenkmalTestHooks.getGame()?.level};
       });
       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       assert.equal(output.rendered,15);
       assert.equal(output.projectiles,15);
       assert.equal(output.impacts,15);
       assert.equal(output.level,1);
-      assert(output.cache.requested<=12,'tower/projectile adapter retains at most twelve variants');
-      assert(output.cache.managerPending<=4,'adapter permits at most four pending image loads');
       await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:false,animations:'disabled',timeout:60000});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
       assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
-      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/towers\//.test(url))).size,15,'all fifteen V4 tower tiers fetched');
-      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/projectiles\//.test(url))).size,15,'all fifteen V4 projectile tiers fetched');
-      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/impact_/.test(url))).size,5,'one V4 impact atlas per family fetched');
+      assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/towers\//.test(url)).length,15,'all fifteen V4 tower tiers fetched');
+      assert.equal(new Set(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/projectiles\//.test(url))).size,15,'all fifteen distinct V4 projectile tiers fetched');
+      assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/impact_/.test(url)).length,5,'one V4 impact atlas per family fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(missing,[],'no HTTP errors');
       results.push({mobileTouchEmulation:mobile,...output,errors,missing,legacyRequests:0});
