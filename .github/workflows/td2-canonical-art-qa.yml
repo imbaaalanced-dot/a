@@ -13,16 +13,19 @@ on:
       - 'dist/terrain-polish.js'
       - 'dist/kirchende-art.js'
       - 'dist/style2-level4-reference.js'
+      - 'dist/hohensyburg-art.js'
       - 'dist/assets/kirchende/ground-style2-v1.webp'
       - 'dist/assets/kirchende/environment-atlas-style2-v1.webp'
       - 'tests/kirchende-loading.test.cjs'
       - 'tests/style2-level4-reference.test.cjs'
       - 'tests/level4.test.cjs'
+      - 'tests/level5.test.cjs'
       - 'tests/canonical-style2-runtime.test.cjs'
       - 'tests/environment-style2-pilot.test.cjs'
       - 'tools/verify-canonical-style2-browser.cjs'
       - 'tools/verify-style2-environment-pilot.cjs'
       - 'tools/verify-level4-style2-environment.cjs'
+      - 'tools/verify-level5-style2-environment.cjs'
   workflow_dispatch:
 
 permissions:
@@ -57,6 +60,10 @@ jobs:
           node tests/style2-level4-reference.test.cjs
           node tests/level4.test.cjs
           node tools/verify-level4-style2-environment.cjs
+      - name: Hohensyburg shared Style-2 environment preview
+        run: |
+          node tests/level5.test.cjs
+          node tools/verify-level5-style2-environment.cjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -71,5 +78,12 @@ jobs:
         with:
           name: level4-ender-dorfkirche-style2-environment-preview
           path: /tmp/td2-level4-environment/
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: level5-hohensyburg-style2-environment-preview
+          path: /tmp/td2-level5-environment/
           if-no-files-found: warn
           retention-days: 7
