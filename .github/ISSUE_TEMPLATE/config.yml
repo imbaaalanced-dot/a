@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Frage / Diskussion
+    url: https://github.com/imbaaalanced-dot/a/discussions
+    about: Bitte stelle Fragen in Discussions (nach dessen Aktivierung).
+  - name: Sicherheitslücke privat melden
+    url: https://github.com/imbaaalanced-dot/a/security/advisories/new
+    about: Sicherheitslücken gehören nicht in öffentliche Issues.
