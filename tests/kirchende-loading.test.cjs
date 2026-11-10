@@ -13,6 +13,10 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
  vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist/kirchende-art.js'),'utf8'),sandbox);
  const art=sandbox.KirchendeArt;
  await art.load(false);assert.equal(images.length,0,'other levels do not trigger Kirchende downloads');
+ const environmentPending=art.loadEnvironment();assert.equal(images.length,1,'Level 4 can request only the shared environment atlas');
+ assert.ok(images[0].src.includes('environment-atlas-style2-v1.webp'));
+ images[0].decodeOK();assert.equal(await environmentPending,true);
+ assert.equal(art.image('environment'),images[0],'decoded shared atlas is reusable by later levels');
  const pending=art.load();const failed=images.find(i=>i.src.includes('monument'));
  assert.ok(failed.src.includes('monument-photo-v2.webp'),'mobile loads the optimized photographic sprite');
  assert.equal(art.ready('monument'),false);
@@ -28,5 +32,5 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
  const groundRetry=sandbox.DenkmalTerrain.load();
  assert.equal(images.length,groundImages+1,'a failed ground texture can retry without reloading the page');
  images.at(-1).decodeOK();assert.equal(await groundRetry,true);
- console.log('Kirchende art loader: optimized sprite, retry and decoded drawing passed.');
+ console.log('Kirchende art loader: selective shared environment, retry and decoded drawing passed.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

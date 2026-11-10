@@ -1,6 +1,6 @@
 # Denkmal TD2 V5 — kanonische Helden und Atlas-Pilot (10.11.2026)
 
-**Basis:** `main` bei `0cdf0970920f940ca4eb6d0cba57407a429ede9b`
+**Ausgangspunkt:** `main` bei `0cdf0970920f940ca4eb6d0cba57407a429ede9b`; vor der PR-CI mit `main` bei `4b1be3bb5bb86800980117297540c40c6f656b55` zusammengeführt.
 
 **Entwicklung:** `feature/v5-style2-canonical-art-pilot-20261110`
 
