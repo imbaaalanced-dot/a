@@ -1,0 +1,37 @@
+name: TD2 V5 canonical graphics Android preview artifact
+on:
+  push:
+    branches: [feature/td2-canonical-hero-towers-20261110]
+    paths:
+      - '.github/workflows/td2-v5-canonical-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify canonical graphics and mobile gameplay logic
+        run: |
+          set -euo pipefail
+          node tests/canonical-style2-runtime.test.cjs
+          node tests/hero-style2-v5.test.cjs
+          node tests/hero-sprites-v5b.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Package isolated Android Chrome browser preview
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          mkdir -p preview
+          cp -R dist/. preview/
+          printf '%s\n' "Commit: ${GITHUB_SHA}" "Preview only. Not production. Physical Android 4 GB test pending." > preview/TESTBUILD.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: td2-v5-canonical-graphics-android-preview
+          path: preview/
+          retention-days: 14
+          if-no-files-found: error
