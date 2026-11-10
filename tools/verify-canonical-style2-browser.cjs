@@ -29,10 +29,14 @@ const server=http.createServer((req,res)=>{
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
       const device=mobile?'mobile-touch':'desktop';
       await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),fullPage:true});
+      await page.locator('#menuCharacterBtn').click();
+      await page.locator('#heroMenu').waitFor({state:'visible'});
       await page.locator('#chooseKim').click();
       await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
       await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),fullPage:true});
       await page.locator('#chooseMarcel').click();
+      await page.locator('#menuBackBtn').click();
+      await page.locator('#menuHomeActions').waitFor({state:'visible'});
       const output=await page.evaluate(async()=>{
         const kinds=['bow','cannon','mage','rift','boomerang'],urls=[];
         for(const kind of kinds)for(let tier=1;tier<=3;tier++){
