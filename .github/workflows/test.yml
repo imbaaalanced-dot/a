@@ -112,6 +112,7 @@ jobs:
           node tests/game.test.cjs
           node tests/barracks.test.cjs
           node tests/barracks-matchups.test.cjs
+          node tests/barracks-campaign-runs.test.cjs
       - name: Mobile gameplay regression suite
         run: TEST_MOBILE=1 node tests/game.test.cjs
       - name: Combat FX regression suite
