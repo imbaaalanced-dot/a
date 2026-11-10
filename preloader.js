@@ -15,7 +15,8 @@
   const essential = [
     mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
     'assets/menu/crest-v3.webp',
-    'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
+    globalThis.TD2CanonicalHeroArt?.[character]?.portrait ||
+      'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;

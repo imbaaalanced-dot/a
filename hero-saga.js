@@ -35,9 +35,11 @@
   // A single on-demand movement atlas. The V5b 768x1024 sheets need only
   // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
   const walkPaths={
-    marcel:'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
-    kim:'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
+    marcel:globalThis.TD2CanonicalHeroArt?.marcel?.walk||'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
+    kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
   };
+  const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
+    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
   let activeWalkActor=null,activeWalkImage=null;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;
@@ -96,7 +98,7 @@
     if(!entry||storySeen.has(entry.id))return false;
     const kim=(api.getCharacter?.()||api.getGame?.()?.hero?.character)==='kim';
     const portrait=$('storyPortrait');
-    if(portrait){portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';}
+    if(portrait){portrait.src=portraitFor(kim?'kim':'marcel');portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';}
     stopVoice();storySeen.add(entry.id);currentStory=entry;
     api.setState('story');api.clearInput();
     $('storyKicker').textContent=entry.kicker;$('storyTitle').textContent=entry.title;
@@ -116,7 +118,7 @@
     const kim=(api.getCharacter?.()||h.character)==='kim';
     $('characterTitle').textContent=kim?'KIM':'MARCEL';
     const portrait=$('characterPortrait');
-    portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
+    portrait.src=portraitFor(kim?'kim':'marcel');
     portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
     $('characterStats').textContent=`${Math.round(s.damage)} Schaden · ${(1/s.rate).toFixed(1)} Angriffe/s · ${Math.round(s.speed)} Tempo`;
     $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?(kim?'HÜTERIN DER ERINNERUNG':'HÜTER DER ERINNERUNG'):(kim?'DIE BEWAHRERIN':'DER BESCHÜTZER')}`;

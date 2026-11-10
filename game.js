@@ -1336,13 +1336,14 @@
     const kim=selectedCharacter==='kim';
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
-    const portraitUrl=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
+    const portraitUrl=globalThis.TD2CanonicalHeroArt?.[selectedCharacter]?.portrait||
+      (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
     globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     const banner=$('menuHeroBanner');
-    const bannerUrl=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
+    const bannerUrl=portraitUrl;
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
       if(!img||selectedCharacter!==(kim?'kim':'marcel'))return;
       try{await img.decode?.();}catch{return;}
