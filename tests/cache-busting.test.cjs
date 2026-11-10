@@ -48,7 +48,7 @@ const expectedVersions = new Map([
   ['style2-impact-atlas.js', 'reference-refresh-1'],
   ['enemy-animations.js', 'v410a1'],
   ['style2-markers.js', 'markers2'],
-  ['style2-maps.js', 'v400a6markers1'],
+  ['style2-maps.js', 'v400a7environment1'],
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js', 'v5-style2a1'],
