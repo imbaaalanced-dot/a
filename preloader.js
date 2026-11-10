@@ -33,7 +33,7 @@
     const pct=Math.round(100*finished/unique.length);
     bar.style.width=pct+'%';
     label.textContent=pct+'%';
-    status.textContent=failed ? 'Grafiken laden · Ersatzdarstellung für '+failed+' Bilder' : pending?'Bilder laden weiter …':'Grafiken werden vorbereitet …';
+    status.textContent=failed ? 'Grafiken werden geladen · '+failed+' Ersatzdarstellungen nötig' : pending?'Weitere Bilder werden geladen …':'Spielgrafiken werden vorbereitet …';
   }
   function load(src){
     if(globalThis.DenkmalAssets){
@@ -73,7 +73,7 @@
       }
     }
     await new Promise(resolve=>setTimeout(resolve,180));
-    status.textContent=failed?'Startbereit · Ersatzgrafiken aktiv':pending?'Startbereit · weitere Bilder laden im Hintergrund':'Alle Startgrafiken bereit';
+    status.textContent=failed?'Spielbereit · Ersatzgrafiken aktiv':pending?'Spielbereit · weitere Bilder laden im Hintergrund':'Alle Startgrafiken geladen';
     screen.classList.add('td2-loaded');
     start?.removeAttribute('inert');
     setTimeout(()=>{screen.remove();},reduced?0:330);
