@@ -34,35 +34,49 @@ function tile(){
   }
   baseTile=c;return c;
 }
-function worldGround(g,level){
+function worldGround(g,level,layout){
   g.fillStyle='#26362c';g.fillRect(0,0,WORLD,WORLD);
   if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(g,0,0,WORLD,WORLD);
   else{const pattern=g.createPattern(tile(),'repeat');if(pattern){g.fillStyle=pattern;g.fillRect(0,0,WORLD,WORLD);}}
+  // Cool slate wash brings the tutorial maps into the same dark stone palette
+  // as the historical sites without changing any gameplay geometry.
+  g.fillStyle='#101b22';g.globalAlpha=.19;g.fillRect(0,0,WORLD,WORLD);g.globalAlpha=1;
+  const stone=rng(level===1?11643:28570);
+  for(let i=0;i<520;i++){
+    const x=stone()*WORLD,y=stone()*WORLD,w=18+stone()*42,h=12+stone()*27;
+    g.save();g.translate(x,y);g.rotate((stone()-.5)*.28);
+    g.fillStyle=['#36404434','#58605b2b','#202b2d45','#756e5d21'][i%4];
+    g.beginPath();g.moveTo(-w*.54,-h*.28);g.lineTo(-w*.22,-h*.55);g.lineTo(w*.45,-h*.42);
+    g.lineTo(w*.56,h*.08);g.lineTo(w*.18,h*.48);g.lineTo(-w*.42,h*.42);g.closePath();g.fill();
+    g.strokeStyle='#b0a58a18';g.lineWidth=1.5;g.beginPath();g.moveTo(-w*.22,-h*.48);g.lineTo(w*.36,-h*.36);g.stroke();g.restore();
+  }
   const halo=g.createRadialGradient(1536,1510,130,1536,1510,1500);
   halo.addColorStop(0,level===1?'#b0a06a14':'#7e895e14');
   halo.addColorStop(.55,'#1d2d2600');halo.addColorStop(1,'#060c12a0');
   g.fillStyle=halo;g.fillRect(0,0,WORLD,WORLD);
-  // Autumn forest vegetation stays around the playable clearing, not on lanes.
-  const rand=rng(level===1?11643:28570);
-  const center={x:1536,y:1536};
-  for(let i=0;i<520;i++){
-    const x=rand()*WORLD,y=rand()*WORLD;
-    const d=Math.hypot(x-center.x,y-center.y);
-    if(d<440||d<860&&rand()<.74)continue;
-    const r=5+rand()*20;
-    g.fillStyle=['#283e2ee0','#556443c0','#70462ed0','#8e5d33b5','#2f4943b0'][i%5];
-    circle(g,x,y,r,g.fillStyle);
-    circle(g,x-r*.29,y-r*.33,r*.45,'#c8a26922');
+  // A restrained forest edge replaces the old scattered autumn dots. Crowns
+  // are cached sprites and are rejected near every authored lane and build pad.
+  const rand=rng(level===1?42791:53807),center=layout.center,paths=layout.paths,slots=layout.slots,gates=layout.gates;
+  let crowns=0;
+  for(let i=0;i<280&&crowns<38;i++){
+    const x=180+rand()*(WORLD-360),y=180+rand()*(WORLD-360),r=44+rand()*48,p={x,y};
+    if(Math.hypot(x-center.x,y-center.y)<660)continue;
+    if(paths.some(path=>distToPath(p,path)<r+116))continue;
+    if(slots.some(slot=>Math.hypot(slot.x-x,slot.y-y)<r+90))continue;
+    if(gates.some(gate=>Math.hypot(gate.x-x,gate.y-y)<r+145))continue;
+    if(globalThis.DenkmalForest?.drawCrown)globalThis.DenkmalForest.drawCrown(g,x,y,r,crowns+level*17);
+    else shrubs(g,x,y,r*.55,crowns);
+    crowns++;
   }
 }
 function road(g,path,level){
   if(!path||path.length<2)return;
-  // Broad worn soil shoulder, cobblestone body and subtle lit edge.
-  line(g,path,126,'#101917bb');
-  line(g,path,114,'#665a477c');
-  line(g,path,98,'#9c8870');
-  line(g,path,90,'#b3a080');
-  line(g,path,82,'#827361');
+  // Muted old-stone lane: clear from the ground, without the bright beige band.
+  line(g,path,126,'#101719d9');
+  line(g,path,112,'#434943');
+  line(g,path,98,'#66685f');
+  line(g,path,88,'#777669');
+  line(g,path,78,'#62645c');
   // Small tessellated paving blocks follow the same path centreline.
   const rand=rng(1976+path[0].x*3+path[0].y);
   for(let j=1;j<path.length;j++){
@@ -70,14 +84,14 @@ function road(g,path,level){
     const nx=-dy/len,ny=dx/len,tx=dx/len,ty=dy/len;
     for(let along=12;along<len-8;along+=23)for(const across of [-31,-11,10,30]){
       const x=a.x+tx*along+nx*across,y=a.y+ty*along+ny*across;
-      const shade=['#e3d0a44b','#524b443e','#c8b28b65','#46463b25'][Math.floor(rand()*4)];
+      const shade=['#d2c7a529','#44494442','#a9a18b3d','#3a424023'][Math.floor(rand()*4)];
       g.strokeStyle=shade;g.lineWidth=2;
       g.beginPath();g.moveTo(x-ty*8-nx*7,y+tx*8-ny*7);
       g.lineTo(x+ty*8+nx*7,y-tx*8+ny*7);g.stroke();
     }
   }
   // Route readability takes precedence over light decoration.
-  line(g,path,2,level===1?'#f7dfaa50':'#ebd2a33d');
+  line(g,path,2,level===1?'#dfd1ae3b':'#d5c5a72b');
 }
 function segmentDistance(p,a,b){
   const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1)));
@@ -158,18 +172,18 @@ function decorate(g,level,layout){
     }
   }
   // Sparse flowerbeds beside roads, never on active lanes or build pads.
-  for(let i=0;i<200;i++){
+  for(let i=0;i<84;i++){
     const x=570+rand()*1940,y=560+rand()*1940,p={x,y};
     if(paths.some(path=>distToPath(p,path)<110)||!padClear(p,slots,72)||Math.hypot(x-center.x,y-center.y)<215)continue;
-    const size=2+rand()*5;
-    circle(g,x,y,size,['#c28e5c98','#985d6790','#ada36398','#62764b99'][i%4]);
+    const size=2+rand()*3;
+    circle(g,x,y,size,['#71805b70','#8d80624d','#9a956248','#4d69515e'][i%4]);
   }
 }
 function make(level,layout){
   if(level!==1&&level!==2)return null;
   const c=document.createElement('canvas');c.width=c.height=WORLD*SCALE;
   const g=c.getContext('2d');g.scale(SCALE,SCALE);
-  worldGround(g,level);
+  worldGround(g,level,layout);
   for(const path of layout.paths)road(g,path,level);
   hedges(g,level,layout.paths,layout.slots,layout.gates);
   decorate(g,level,layout);
