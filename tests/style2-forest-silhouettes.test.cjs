@@ -32,6 +32,12 @@ const silhouettes=shapes.map(v=>v[0]?.map(n=>Number(n.toFixed(2))).join(':'));
 assert.equal(new Set(silhouettes).size,5,'five silhouettes have distinct broad/tall/sparse proportions');
 for(let i=0;i<50;i++)forest.drawCrown(draw,150,180,72,i);
 assert.equal(allocations,5,'every repeat reuses one of five cached crown variants');
+for(let i=0;i<3;i++)forest.drawShrub(draw,150,180,42,i);
+assert.equal(allocations,8,'three shrubs add exactly three lazily cached 192px textures');
+const shrubSilhouettes=shapes.slice(5).map(v=>v[0]?.map(n=>Number(n.toFixed(2))).join(':'));
+assert.equal(new Set(shrubSilhouettes).size,3,'three shrubs have distinct width and height');
+for(let i=0;i<30;i++)forest.drawShrub(draw,150,180,42,i);
+assert.equal(allocations,8,'repeated shrub drawing creates no new canvases');
 assert.ok(!/Math\.random|requestAnimationFrame|setInterval/.test(fs.readFileSync(filename,'utf8')),
  'no unseeded per-frame decoration or animation');
 console.log('Style 2 forest silhouettes: five distinct cached crown profiles passed');
