@@ -11,7 +11,7 @@ function context(id){
   beginPath(){},arc(){},fill(){},fillRect(){},drawImage(){},
   createRadialGradient(){return {addColorStop(){}};},
   createLinearGradient(){return {addColorStop(){}};},
-  ellipse(x,y,rx,ry){if(x===128&&y===130&&rx>50&&ry>50)shapes[id].push([rx,ry]);}
+  ellipse(x,y,rx,ry){if(((x===128&&y===130)||(x===96&&y===100))&&rx>50&&ry>50)shapes[id].push([rx,ry]);}
  };
  return c;
 }
