@@ -40,8 +40,11 @@ jobs:
           node tests/preloader.test.cjs
           node tests/asset-manager.test.cjs
           node tests/menu-v3b-preload.test.cjs
-      - name: Mobile render cadence regression
-        run: node tests/mobile-frame-pacing.test.cjs
+      - name: Mobile render cadence and real FPS telemetry
+        run: |
+          node tests/mobile-frame-pacing.test.cjs
+          node tests/mobile-fps-render-budget.test.cjs
+          node tests/cpu-render-profiling.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
       - name: Kirchende terrain and renderer caching
