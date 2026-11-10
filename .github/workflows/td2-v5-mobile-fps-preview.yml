@@ -1,0 +1,56 @@
+name: TD2 V5 mobile 60 FPS Android preview
+on:
+  push:
+    branches: [perf/td2-v5-mobile-fps-20261110]
+    paths:
+      - .github/workflows/td2-v5-mobile-fps-preview.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v5-mobile-fps-preview-publish
+  cancel-in-progress: false
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify mobile FPS, fixed simulation and render telemetry
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check dist/game.js
+          node tests/mobile-frame-pacing.test.cjs
+          node tests/mobile-fps-render-budget.test.cjs
+          node tests/cpu-render-profiling.test.cjs
+          node tests/cache-busting.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+          test -f dist/index.html
+      - name: Publish isolated Android FPS test build
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-mobile-fps-pages origin/gh-pages
+          mkdir -p /tmp/td2-mobile-fps-pages/v5-mobile-fps-preview
+          cp -R dist/. /tmp/td2-mobile-fps-pages/v5-mobile-fps-preview/
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/td2-mobile-fps-pages/v5-mobile-fps-preview/build-commit.txt
+          touch /tmp/td2-mobile-fps-pages/.nojekyll
+          cd /tmp/td2-mobile-fps-pages
+          git add v5-mobile-fps-preview .nojekyll
+          if git diff --cached --quiet; then
+            echo 'Already published'; exit 0
+          fi
+          git commit -m "Publish isolated TD2 V5 mobile FPS preview ${GITHUB_SHA}"
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages

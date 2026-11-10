@@ -887,7 +887,7 @@
   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
   let groundCache=null,groundLoaded=false;
   function drawGround(){
-    if((game.level===1||game.level===2)&&globalThis.Style2Maps?.draw?.(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),{...campaign.levels[game.level],center:campaign.center}))return;
+    if((game.level===1||game.level===2)&&globalThis.Style2Maps?.draw?.(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),polishedLayoutFor(game.level)))return;
     if(game.level===5){globalThis.DenkmalHohensyburgArt?.drawGround(ctx,campaign.levels[5]);return;}
     if(game.level===6){globalThis.DenkmalGoetheArt?.drawGround(ctx,campaign.levels[6]);return;}
     if(game.level===7){globalThis.DenkmalWesthofenArt?.drawGround(ctx,campaign.levels[7]);return;}
@@ -933,7 +933,7 @@
     level.gates.forEach((p,i)=>{if(!visible(p))return;const gates=campaign.getWaveGates(game.level,game.wave,game.mode),active=game.intermission<=0&&game.waveSpawned<game.waveTotal&&i===gates[game.waveSpawned%gates.length]&&!(level.airGate&&enemySpecs[enemyTypeForSpawn(game.wave,game.waveSpawned)]?.flying);if(game.level===3||game.level===4||game.level===5||game.level===6||game.level===7){ctx.fillStyle=active?'#efce8a':'#bfb897';ctx.font='700 15px sans-serif';ctx.textAlign='center';ctx.fillText((level.gateLabels?level.gateLabels:['FUSSWEG','DORFWEG LINKS','DORFWEG RECHTS','KIRCHWEG'])[i],p.x,p.y-30);if(!globalThis.Style2Markers?.drawGate(ctx,p,level.paths[i]?.[1]||campaign.center,active)){ctx.strokeStyle=active?'#efce8a':'#bfb89755';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,35,0,7);ctx.stroke();}return;}ctx.strokeStyle=active?'#f0b873cc':'#bda66c55';ctx.lineWidth=active?4:2;ctx.beginPath();ctx.arc(p.x,p.y,54+(active?Math.sin(time*4)*5:0),0,Math.PI*2);ctx.stroke();ctx.fillStyle=active?'#f0c982':'#b9aa7a';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(game.level===1?`TOR ${i+1}`:'EINGANG',p.x,p.y+72);if(active){ctx.strokeStyle='#d6886388';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,48+Math.sin(time*4)*4,0,Math.PI*2);ctx.stroke();}if(globalThis.DenkmalArt?.draw(ctx,'gate',p.x,p.y,116)){ctx.fillStyle='#d7c8a1';ctx.textAlign='center';ctx.font='600 16px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-115);return;}ctx.fillStyle='#171719';ctx.strokeStyle='#cf8d52';ctx.lineWidth=5;ctx.fillRect(p.x-38,p.y-38,76,76);ctx.strokeRect(p.x-38,p.y-38,76,76);ctx.fillStyle='#a64b2b';ctx.fillRect(p.x-23,p.y-29,46,58);ctx.fillStyle='#ffe0a1';ctx.textAlign='center';ctx.font='bold 15px sans-serif';ctx.fillText(game.level===1?['NORDTOR','OSTTOR','SÜDTOR','WESTTOR'][i]:'MAZE-EINGANG',p.x,p.y-52);});
     ctx.restore();
   }
-  function shadow(x,y,r){ctx.save();ctx.fillStyle='#101b1c24';ctx.beginPath();ctx.ellipse(x+3,y+5,r*1.4,r*.45,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0a151b44';ctx.beginPath();ctx.ellipse(x,y+3,r,r*.27,0,0,Math.PI*2);ctx.fill();ctx.restore()}
+  function shadow(x,y,r){ctx.save();ctx.fillStyle='#101b1c24';ctx.beginPath();ctx.ellipse(x+3,y+5,r*1.4,r*.45,0,0,Math.PI*2);ctx.fill();if(!lowFX()){ctx.fillStyle='#0a151b44';ctx.beginPath();ctx.ellipse(x,y+3,r,r*.27,0,0,Math.PI*2);ctx.fill();}ctx.restore()}
   const gateSurges=[];let lastGateSurge=-9;
   const runeAnchorCache={};
   function runeAnchor(x,y,r,seed=0){if(lowFX())return;const p=.75+.25*Math.sin(time*3.4+seed);ctx.save();let g=runeAnchorCache[r];if(!g){g=runeAnchorCache[r]=ctx.createRadialGradient(0,0,2,0,0,r);g.addColorStop(0,'rgba(63,143,140,1)');g.addColorStop(.65,'rgba(63,143,140,.43)');g.addColorStop(1,'rgba(63,143,140,0)');}ctx.translate(x,y);ctx.globalAlpha=.42*p;ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,r,r*.45,0,0,Math.PI*2);ctx.fill();if(!medFX()){ctx.strokeStyle=`rgba(142,202,196,${.28*p})`;ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,r*.82,r*.37,0,0,Math.PI*2);ctx.stroke();}ctx.restore()}
@@ -1041,7 +1041,8 @@
   function draw(){if(!game)return;ctx.save();if(shake>0&&!reducedMotion){ctx.translate(rand(-shake,shake),rand(-shake,shake));shake*=.82;if(shake<.3)shake=0}ctx.scale(zoom,zoom*viewDepth);ctx.translate(-camera.x,-camera.y);drawGround();const polishedLayout=polishedLayoutFor(game.level);const polishedGround=globalThis.DenkmalMapPolish?.drawGround(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});if(!polishedGround)globalThis.Style2Phase6?.draw(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth));drawLevel();if(polishedGround)globalThis.DenkmalMapPolish.drawDetails(ctx,game.level,polishedLayout,camera,W/zoom,H/(zoom*viewDepth),{low:lowFX(),reduced:reducedMotion});globalThis.V2Expansion?.environment(ctx,game.level,polishedLayout,lowFX());drawPortal();globalThis.Style2Ambience?.drawGround(ctx,game.level,polishedLayout,time,{low:lowFX()});drawGateSurges();wrapUsed=0;drawObjs.length=0;selectedTowerFrame=typeof nearbyTower==='function'?nearbyTower():null;if(visible(game.monument,180))drawObjs.push(wrapObj(game.monument,'m'));for(const o of game.towers)if(visible(o,o.range))drawObjs.push(wrapObj(o,'t'));for(const o of game.enemies)if(visible(o,180))drawObjs.push(wrapObj(o,'e'));for(const o of game.deathFx)if(visible(o,180))drawObjs.push(wrapObj(o,'d'));if(visible(game.hero,180))drawObjs.push(wrapObj(game.hero,'h'));drawObjs.sort((a,b)=>a.o.y-b.o.y);for(let ai=0;ai<drawObjs.length;ai++){const a=drawObjs[ai];if(globalThis.Style2Phase6){uprightCurrent=a;globalThis.Style2Phase6.upright(ctx,a.o,uprightPaint);}else paintObj(a);}if(game.level===3)globalThis.KirchendeArt?.drawScenery(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],{crowns:true,low:lowFX(),shielded:[game.monument,...game.towers]});if(game.level===4)globalThis.DenkmalChurch?.drawCanopies(ctx,campaign.center,[game.hero,game.monument,...game.towers,...game.enemies],[game.monument,...game.towers]);globalThis.Style2Ambience?.drawAir(ctx,game.level,camera,W/zoom,H/(zoom*viewDepth),time,{low:lowFX()});for(const l of game.loot){if(!visible(l,35))continue;if(globalThis.Style2Ambience?.drawLoot(ctx,l,time,lowFX()))continue;ctx.save();const item=l.kind==='item';ctx.shadowBlur=blurFor(item?20:13);ctx.shadowColor=item?'#efb85b':'#69d4c5';diamond(l.x,l.y,item?7:5,item?10:8,item?'#f0bd62':'#79d1c5');if(item){ctx.strokeStyle='#fff0b0';ctx.beginPath();ctx.arc(l.x,l.y,12+Math.sin(time*5)*2,0,7);ctx.stroke()}ctx.restore()}for(const b of game.bullets)if(visible(b,50)){if(globalThis.UserStyle2Towers?.drawProjectile?.(ctx,b,time))continue;if(b.boomerang)drawBoomerangProjectile(b);else fx.draw(ctx,b,lowFX());}for(const p of game.particles){if(!visible(p,30))continue;if(fx.drawParticle?.(ctx,p))continue;ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;if(p.smoke){ctx.globalAlpha*=.35;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(2-p.life/p.max),0,7);ctx.fill()}else ctx.fillRect(p.x,p.y,p.r,p.r)}fx.drawDamage?.(ctx,game);ctx.globalAlpha=1;
     drawPlacementPreview(placementPreview());ctx.restore();drawVignette();drawThreatIndicators()}
   let lastIdleDraw=0,lastGameplayDraw=0;
-  function targetRenderInterval(){return mobileRender&&lowFX()?1000/30:0;}
+  // Mobile AUTO targets 60 fps, not 90/120 Hz overdraw; manual SPARMODUS keeps a 30 fps fallback.
+  function targetRenderInterval(){return mobileRender?(graphicsMode==='low'?1000/30:graphicsMode==='auto'?1000/60:0):0;}
   // Fixer Timestep: Logik läuft immer in 1/60-s-Ticks; 2x-Tempo verdoppelt die Ticks.
   const FIXED_STEP=1/60,MAX_FRAME_SECONDS=.25;let loopAccumulator=0;
   function resetFrameTelemetry(){
@@ -1067,7 +1068,7 @@
     sorted.sort();
     return {p95:sorted[Math.ceil(frameCount*.95)-1],stutters,frameCount};
   }
-  function updateTelemetry(now){
+  function updateTelemetry(now,didDraw=true){
     const overlay=$('fpsOverlay');
     if(!telemetryOn||document.hidden||state!=='playing'){
       if(!telemetryOn)overlay.classList.add('hidden');
@@ -1075,8 +1076,8 @@
       return;
     }
     overlay.classList.remove('hidden');
-    // Use rAF callback timestamps: frame intervals, not CPU render duration.
-    if(framePrevious){
+    // Count completed canvas draws, not rAF callbacks: the 30 FPS fallback must not report fake 60 FPS.
+    if(didDraw&&framePrevious){
       const delta=now-framePrevious;
       if(delta>0&&delta<=1000){
         frameSamples[frameCursor]=delta;
@@ -1084,9 +1085,9 @@
         frameCount=Math.min(frameCount+1,frameSamples.length);
       }
     }
-    framePrevious=now;
+    if(didDraw)framePrevious=now;
     if(!telemetryLast)telemetryLast=now;
-    telemetryFrames++;
+    if(didDraw)telemetryFrames++;
     const span=now-telemetryLast;
     if(span>=500){
       telemetryFps=Math.round(telemetryFrames*1000/span);
@@ -1156,20 +1157,22 @@
     const renderStart=profile?performance.now():0;
     const renderInterval=targetRenderInterval();
     // Keep the fractional render interval; resetting to now drifts below 30 fps.
-    // The tiny tolerance only absorbs timestamp floating-point rounding.
+    // 60 Hz mobile rAF timestamps jitter around 16.67 ms: a 1 ms scheduling
+    // tolerance prevents one early callback from halving the visible frame rate.
+    const renderTolerance=renderInterval&&renderInterval<=1000/60?1:.01;
     const renderElapsed=now-lastGameplayDraw;
-    const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+.01>=renderInterval;
+    const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+renderTolerance>=renderInterval;
     const shouldDraw=!document.hidden&&(state==='playing'?gameplayDrawDue:now-lastIdleDraw>=100);
     if(shouldDraw){
       draw();lastIdleDraw=now;
       if(state==='playing')lastGameplayDraw=renderInterval
-        ?lastGameplayDraw+Math.floor((renderElapsed+.01)/renderInterval)*renderInterval
+        ?lastGameplayDraw+Math.floor((renderElapsed+renderTolerance)/renderInterval)*renderInterval
         :now;
     }
     if(profile)recordCpuFrame(renderStart-simulationStart,shouldDraw?performance.now()-renderStart:0,shouldDraw);
     if(state==='playing')advanceQualityMonitor(rawFrameSeconds);
     updateAdaptiveResolution(now);
-    updateTelemetry(now);
+    updateTelemetry(now,shouldDraw);
     requestAnimationFrame(loop);
   }
   function tone(freq,dur=.05,vol=.035){if(!audioOn)return;try{const ac=tone.ac||(tone.ac=new (AudioContext||webkitAudioContext)());if(ac.state==='suspended')void ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch{}}
