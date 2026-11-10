@@ -17,7 +17,7 @@ assert.doesNotMatch(home, /id="menu(?:Play|Arcade)Btn"/);
 assert.doesNotMatch(home, /<img\b/i, 'top-level commands use crisp HTML labels');
 assert.doesNotMatch(html, /id="playMenu"/, 'redundant play gateway is removed');
 
-assert.match(html, /id="menuArcadeBtn"[^>]*>[^<]*Endlos verteidigen/i);
+assert.match(html, /id="menuArcadeBtn"[^>]*>[^<]*Freigeschaltete Karten endlos spielen/i);
 assert.match(html, /id="portalNewBtn"[^>]*hidden/);
 assert.match(html, /id="portalResumeBtn"[^>]*hidden/);
 assert.match(game, /campaign:'menuCampaignBtn'/);

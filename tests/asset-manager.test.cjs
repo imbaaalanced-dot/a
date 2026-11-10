@@ -36,9 +36,9 @@ async function run(){
   await assets.level(3);const count=created.length;
   await assets.level(3);assert.equal(created.length,count,'reentering level reuses its images');
   await assets.next(3);assets.release('level:3');
-  assert.equal(assets.status('assets/scenery-alpha8.webp?v=alpha8a2'),'ready','shared scene is pinned for level 4');
+  assert.equal(assets.status('assets/scenery-style2.webp?v=style2a1'),'ready','shared scene is pinned for level 4');
   assert.equal(assets.status('assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'),'unrequested','previous level art is released');
-  assert.equal(assets.status('assets/lion-ende-alpha8.webp?v=alpha8a2'),'ready');
+  assert.equal(assets.status('assets/lion-ende-style2.webp?v=style2a1'),'ready');
   assert.equal(assets.status('assets/hero/example.webp'),'ready','level release must not evict unowned menu images');
   console.log('Asset manager: coalescing, fallback status, next-level preload and release passed');
 }

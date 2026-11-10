@@ -13,8 +13,8 @@
     else if (localStorage.getItem('denkmal-character') === 'kim') character = 'kim';
   }catch{}
   const essential = [
-    mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
-    'assets/menu/crest-v3.webp',
+    mobile ? 'assets/menu/memorial-yard-mobile-style2.webp' : 'assets/menu/memorial-yard-style2.webp',
+    'assets/menu/crest-style2.webp',
     globalThis.TD2CanonicalHeroArt?.[character]?.portrait ||
       'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
   ];
@@ -33,7 +33,7 @@
     const pct=Math.round(100*finished/unique.length);
     bar.style.width=pct+'%';
     label.textContent=pct+'%';
-    status.textContent=failed ? 'Grafiken laden · Ersatzdarstellung für '+failed+' Bilder' : pending?'Bilder laden weiter …':'Grafiken werden vorbereitet …';
+    status.textContent=failed ? 'Grafiken werden geladen · '+failed+' Ersatzdarstellungen nötig' : pending?'Weitere Bilder werden geladen …':'Spielgrafiken werden vorbereitet …';
   }
   function load(src){
     if(globalThis.DenkmalAssets){
@@ -73,7 +73,7 @@
       }
     }
     await new Promise(resolve=>setTimeout(resolve,180));
-    status.textContent=failed?'Startbereit · Ersatzgrafiken aktiv':pending?'Startbereit · weitere Bilder laden im Hintergrund':'Alle Startgrafiken bereit';
+    status.textContent=failed?'Spielbereit · Ersatzgrafiken aktiv':pending?'Spielbereit · weitere Bilder laden im Hintergrund':'Alle Startgrafiken geladen';
     screen.classList.add('td2-loaded');
     start?.removeAttribute('inert');
     setTimeout(()=>{screen.remove();},reduced?0:330);

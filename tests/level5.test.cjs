@@ -80,7 +80,7 @@ assert.ok(patterns>0,'shared moss-and-earth tile is patterned into the woodland 
 assert.ok(drawArgs.some(args=>args[0]===environmentSprite&&args.length===9&&args[1]===1024&&args[2]===512),
  'warm forest lanterns use the existing transparent atlas cell');
 assert.ok(images>=4,'painted terrain and upright memorial are rendered');
-const spritePath='dist/assets/hohensyburg/kaiser-wilhelm-v1.webp';
+const spritePath='dist/assets/hohensyburg/kaiser-wilhelm-style2.webp';
 const asset=fs.readFileSync(spritePath);
 assert.ok(asset.length>10000&&asset.length<120000,'transparent game WebP is lightweight');
 assert.equal(asset.toString('ascii',0,4),'RIFF');
@@ -96,7 +96,7 @@ const beforeSprite=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
 assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
 const drawnSprite=drawArgs.at(-1);
-assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-v1\.webp\?v=syburg3/);
+assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2\.webp\?v=style2a1/);
 assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
 assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');

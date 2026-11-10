@@ -28,6 +28,9 @@ async function drain(){for(let i=0;i<20;i++){while(waiting.length)waiting.shift(
   const layout={...box.DenkmalLevels.levels[level],center:box.DenkmalLevels.center};const props=api.placements(level,layout);assert(props.length>0);
   for(const p of props){assert(layout.paths.every(path=>box.DenkmalLevels.pathDistance(p,path)>=140));assert(layout.slots.every(s=>Math.hypot(p.x-s.x,p.y-s.y)>=125));}
  }
+ const requestsBeforeWesthofen=requests.length;
+ assert.equal(api.environment(ctx(),7,{}),false,'Westhofen uses its own environment renderer');
+ assert.equal(requests.length,requestsBeforeWesthofen,'no missing environment-7.webp should be requested');
  api.impact(ctx(),{kind:'cannon',level:1,x:0,y:0,life:1,max:1});await drain();
  for(const [row,[kind,level]]of [['cannon',1],['cannon',2],['boomerang',1],['boomerang',2]].entries()){
   const c=ctx();assert(api.impact(c,{kind,level,x:0,y:0,life:.6,max:1}));assert.deepEqual(c.draws[0].slice(1,5),[256,row*128,128,128]);assert.equal(c.depth,0);
