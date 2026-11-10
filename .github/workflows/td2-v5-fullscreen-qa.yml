@@ -1,0 +1,37 @@
+name: TD2 V5 low 60 FPS and browser fullscreen QA
+on:
+  push:
+    branches: [feature/td2-v5-low60-browser-fullscreen-20261110]
+    paths:
+      - '.github/workflows/td2-v5-fullscreen-qa.yml'
+      - 'tools/verify-browser-fullscreen.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify fullscreen controls and fixed-step FPS rendering
+        run: |
+          set -euo pipefail
+          node --check dist/game.js
+          node --check dist/ansturm/app.js
+          node tests/browser-fullscreen.test.cjs
+          node tests/mobile-frame-pacing.test.cjs
+          node tests/mobile-fps-render-budget.test.cjs
+          node tests/ansturm-source-parity.test.cjs
+          node tests/cache-busting.test.cjs
+      - name: Chromium desktop and mobile touch Fullscreen API
+        run: |
+          set -euo pipefail
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+          node tools/verify-browser-fullscreen.cjs
