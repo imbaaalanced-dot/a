@@ -140,6 +140,27 @@
     shadow.addColorStop(0,'#15201971');shadow.addColorStop(.6,'#2631242f');
     shadow.addColorStop(1,'#26312400');
     g.fillStyle=shadow;g.fillRect(0,0,192,112);
+    // Quiet branching roots tie each canopy into the mossy earth. The decal is
+    // baked once per existing variant; no extra draw calls or gameplay geometry.
+    for(let root=0;root<3;root++){
+      const x=92+(root-1)*19+r()*11,tipX=x+(root-1)*32+(r()-.5)*31;
+      g.strokeStyle=root===1?'#3440349c':'#403c2f89';
+      g.lineWidth=3.5+root*.7;g.lineCap='round';
+      g.beginPath();g.moveTo(x,45+r()*9);
+      g.bezierCurveTo(x+(root-1)*8,63,tipX*.8+x*.2,70,tipX,82+r()*13);
+      g.stroke();
+      g.strokeStyle='#8990753f';g.lineWidth=1.2;
+      g.beginPath();g.moveTo(x,48);g.quadraticCurveTo(tipX,68,tipX,80);g.stroke();
+    }
+    // Dark fern clusters around the root contact patch, away from the lane.
+    for(let tuft=0;tuft<9;tuft++){
+      const x=22+r()*148,y=48+r()*45;
+      g.strokeStyle=['#3e604477','#61734b77','#78805266'][tuft%3];
+      g.lineWidth=1.5;g.beginPath();g.moveTo(x,y+5);
+      g.quadraticCurveTo(x-6-r()*5,y-5,x-8-r()*7,y-8-r()*6);g.stroke();
+      g.beginPath();g.moveTo(x,y+5);
+      g.quadraticCurveTo(x+4+r()*7,y-4,x+7+r()*9,y-8-r()*7);g.stroke();
+    }
     for(let i=0;i<75;i++){
       const x=18+r()*158,y=22+r()*70;
       // A few low-contrast leaves and moss clumps at the tree foot.
