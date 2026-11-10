@@ -1,0 +1,231 @@
+{
+  "version": "4.0.0",
+  "status": "runtime-integrated-candidate",
+  "source_package": "Denkmal-TD2-Style2-Turmfamilien-V4-Kandidat.zip",
+  "source_package_library_id": "libfile_9fed5c6eb9bc8191ba226145f06eeaea",
+  "families": [
+    "bow",
+    "cannon",
+    "mage",
+    "rift",
+    "boomerang"
+  ],
+  "tower_master_px": [
+    512,
+    512
+  ],
+  "projectile_master_px": [
+    256,
+    256
+  ],
+  "tower_pivot": [
+    256,
+    488
+  ],
+  "impact_atlas": {
+    "columns": 6,
+    "rows": "levels 1-3",
+    "frames_per_level": 6,
+    "chronology": [
+      "contact",
+      "flash",
+      "expansion",
+      "peak",
+      "fade",
+      "clear"
+    ],
+    "cell_px": [
+      128,
+      128
+    ]
+  },
+  "runtime_assets": [
+    {
+      "path": "runtime-webp/impact_boomerang_6x3.webp",
+      "bytes": 321328,
+      "sha256": "71e48713d483ece22dd84950b798ff13eef8018e3fb996afcb68179f193ee25b"
+    },
+    {
+      "path": "runtime-webp/impact_bow_6x3.webp",
+      "bytes": 344264,
+      "sha256": "ad212db745e1e7ead46cf0e54b96bdefeaf68adb63e9d1fc1c7f33f876722ff0"
+    },
+    {
+      "path": "runtime-webp/impact_cannon_6x3.webp",
+      "bytes": 318150,
+      "sha256": "818b207300ab401ceb29e258d06c1dde8c1c7fa2eb6832ae8c0bac077f9cd6a7"
+    },
+    {
+      "path": "runtime-webp/impact_mage_6x3.webp",
+      "bytes": 309584,
+      "sha256": "dbd3078870dac67745047e3a29c40004ab129474e55dcd45a38b16f3ea0e60d0"
+    },
+    {
+      "path": "runtime-webp/impact_rift_6x3.webp",
+      "bytes": 179430,
+      "sha256": "c888013ad96b6d1e5cfd038335be6f2f81cef66a3e071cc42e6eee1552e7bbcd"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_boomerang_lv1.webp",
+      "bytes": 35864,
+      "sha256": "8503a068df8118be46e0ee87e49400eecd7b30ae0a5a47593588fb92f00330ca"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_boomerang_lv2.webp",
+      "bytes": 40058,
+      "sha256": "d3b28da4e5fdff5aa35255f51d53ca8cd2072c94b1c9b4800f803869d9400a9d"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_boomerang_lv3.webp",
+      "bytes": 45566,
+      "sha256": "3d46b44267ee2f40a87884c71669e401a8f3f38158f8ad992ba2cc2495bdb45c"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_bow_lv1.webp",
+      "bytes": 10032,
+      "sha256": "e7ffa1d6b41706826c0ee38d7075af027c95c3baf2937ae27a953ff6ff6636be"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_bow_lv2.webp",
+      "bytes": 11430,
+      "sha256": "f83d362f5891e39eac395c9ad334758326d074a1cdbc2b9f0609b99c6b7bd782"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_bow_lv3.webp",
+      "bytes": 15250,
+      "sha256": "2c6804b6bf5912b443016ae3f004f2eee81b1871ee298bfaf0324a6a64c6cc28"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_cannon_lv1.webp",
+      "bytes": 62388,
+      "sha256": "c149fbdcaaf3a150bcd008b032ddbc128f71690aaa177fe4a9a234161c2ca9f3"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_cannon_lv2.webp",
+      "bytes": 56940,
+      "sha256": "7446891aa313a2215af8203c975dc01c7eb38b55cec7e2a1184393d640332fbe"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_cannon_lv3.webp",
+      "bytes": 49230,
+      "sha256": "df2d799943cde76424d7f86b0c320d9480e8108d98b6e5271ae79e37a7b00580"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_mage_lv1.webp",
+      "bytes": 20148,
+      "sha256": "4bd1d104a5b391c318a0899488802859b20f24ad9493624832c592ef8c9c623b"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_mage_lv2.webp",
+      "bytes": 36626,
+      "sha256": "3995eb177b8296113882070a80dbf1e48399339734fbfb6bf943e6151cc11566"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_mage_lv3.webp",
+      "bytes": 41052,
+      "sha256": "eb019c737b26fdf811dc25343634f1670ad5cdb40eadf9bd548e153aebb14e28"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_rift_lv1.webp",
+      "bytes": 23816,
+      "sha256": "95ead487b71d79c79bcff87bf79fe3b47dd25d60628f0a2df33abf3bb55f1a5a"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_rift_lv2.webp",
+      "bytes": 26820,
+      "sha256": "9658b25807204215227680f5f21c40382bbe911c4d1f00f0ba266757cbb59d64"
+    },
+    {
+      "path": "runtime-webp/projectiles/projectile_rift_lv3.webp",
+      "bytes": 20356,
+      "sha256": "21a61783cbe7439c8c25bfa4980e35ea6bf93e605a244f7d8ac3bf8f50d64b31"
+    },
+    {
+      "path": "runtime-webp/towers/tower_boomerang_lv1.webp",
+      "bytes": 164832,
+      "sha256": "dc583ab2c62479f0e65d2ef90ab76da0fe9a66e45b11721c82dacf9c22a8be07"
+    },
+    {
+      "path": "runtime-webp/towers/tower_boomerang_lv2.webp",
+      "bytes": 191214,
+      "sha256": "0a9688a2783fd06db18a4c570a837c080416ec52ccdb314af41f872129c2b5a1"
+    },
+    {
+      "path": "runtime-webp/towers/tower_boomerang_lv3.webp",
+      "bytes": 209326,
+      "sha256": "e60377dde5973fdf5834a8ba0c709ddb024d51215a893a3ee70200dcff9803c5"
+    },
+    {
+      "path": "runtime-webp/towers/tower_bow_lv1.webp",
+      "bytes": 214658,
+      "sha256": "0300a0f73065657ed8a085b89384724b318ebf951a32e36b4b144262e7fe0588"
+    },
+    {
+      "path": "runtime-webp/towers/tower_bow_lv2.webp",
+      "bytes": 255322,
+      "sha256": "0f05500ffe18d46285f5cca54f41b35a876dba6f4c88e5d54433269e4a576f41"
+    },
+    {
+      "path": "runtime-webp/towers/tower_bow_lv3.webp",
+      "bytes": 251962,
+      "sha256": "f9371f4b65c98961700d0cffb406e96b5d399b466d34818073d7b7641964c816"
+    },
+    {
+      "path": "runtime-webp/towers/tower_cannon_lv1.webp",
+      "bytes": 201858,
+      "sha256": "b6cbee4f8038bdcf8dba66a687c593ad5174a69001c584636707e52d70e9bf49"
+    },
+    {
+      "path": "runtime-webp/towers/tower_cannon_lv2.webp",
+      "bytes": 226812,
+      "sha256": "b700102529343cfa2bb08c27ac14f7d555b9da33724643c91356172fce7d1d4d"
+    },
+    {
+      "path": "runtime-webp/towers/tower_cannon_lv3.webp",
+      "bytes": 247428,
+      "sha256": "10bb6d54990e3fb9be8731adf3fce9fc8427cd4fd6a3e37a5b5920f58372fb66"
+    },
+    {
+      "path": "runtime-webp/towers/tower_mage_lv1.webp",
+      "bytes": 156708,
+      "sha256": "a9fbadf441baa4e4c24ff09e339d959658925353b3216b06331165425cabe8d9"
+    },
+    {
+      "path": "runtime-webp/towers/tower_mage_lv2.webp",
+      "bytes": 189310,
+      "sha256": "dc6e5bcf0b9b55a96ef4e36a16177bd9cbc2387458489ebda0e181a703b5dbed"
+    },
+    {
+      "path": "runtime-webp/towers/tower_mage_lv3.webp",
+      "bytes": 205632,
+      "sha256": "091e9ba5903a512eafa05e0e455d7ad196828936b95772c6fbfefb42ed593022"
+    },
+    {
+      "path": "runtime-webp/towers/tower_rift_lv1.webp",
+      "bytes": 129538,
+      "sha256": "ff204329116cb31f5428e3ae88efd03deb84a50635fe58904e11b656c2071863"
+    },
+    {
+      "path": "runtime-webp/towers/tower_rift_lv2.webp",
+      "bytes": 184068,
+      "sha256": "621d85558f6314a50218e118513c33985418be74e7fc5ed107c76a82127647c3"
+    },
+    {
+      "path": "runtime-webp/towers/tower_rift_lv3.webp",
+      "bytes": 220784,
+      "sha256": "6cf050250e0bcb27cbe17b25e6917607416835221404103a3369bb0a87105678"
+    }
+  ],
+  "gameplay_unchanged": {
+    "range": true,
+    "damage": true,
+    "balance": true,
+    "saves": true
+  },
+  "cannon_progression": [
+    "wood",
+    "iron",
+    "explosive"
+  ],
+  "barracks_assets_replaced": false
+}

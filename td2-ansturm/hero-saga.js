@@ -27,18 +27,20 @@
     ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'MARCEL · DER DENKMALSCHÜTZER',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen neben den Wegen. Der Stab zielt automatisch. Nutze die Baupause vor jeder Welle.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy: Joystick zum Laufen und die Aktionsknöpfe zum Bauen.',reward:'Beute bleibt dauerhaft · Ausrüstung nur im Hauptmenü · Inventar mit I / H'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Ausrüstung für deinen nächsten Durchgang. Bogen trifft schnell und weit. Die Kanone trifft Gegnergruppen. Werte deine Türme auf, bevor der Belagerer kommt.',objective:'Bereite deine Verteidigung auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN LAUF'},
-    {wave:8,id:'chapter3',kicker:'WELLE 8 · DAS LABYRINTH',title:'Haltet den Weg.',text:'Im Labyrinth bleiben Gegner auf ihrem Weg. Türme konzentrieren sich auf den Gegner, der dem Denkmal am nächsten kommt.',objective:'Nutze die markierten Bauplätze und verbinde Bogen mit Kanone.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN LAUF'},
-    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Das Kapitel entscheidet sich.',text:'Der Kapitelboss führt den letzten Angriff. Halte Türme, Hüter und Denkmal bis zum Ende dieser Welle stand.',objective:'Besiege den Kapitelboss und schließe alle 20 Wellen ab.',reward:'DIE NAMEN SIND FREI'}
+    {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Beschütze das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift automatisch an. Nutze die Baupause, um dich auf den nächsten Angriff vorzubereiten.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Beute für deinen nächsten Durchlauf. Bogentürme treffen einzelne Gegner präzise, Kanonen treffen ganze Gruppen. Verstärke deine Türme, bevor der Belagerer erscheint.',objective:'Bereite dich auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:8,id:'chapter3',kicker:'WELLE 8 · DER WEG ZUM LABYRINTH',title:'Halte die Stellung.',text:'Die Gegner folgen festen Wegen zum Denkmal. Deine Türme greifen bevorzugt Gegner an, die dem Denkmal bereits nahe sind.',objective:'Nutze die markierten Bauplätze und kombiniere Bogentürme mit Kanonen.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Jetzt entscheidet sich alles.',text:'Der Kapitelboss führt den letzten Angriff an. Schütze deinen Helden und das Denkmal mit allen verfügbaren Türmen.',objective:'Besiege den Kapitelboss und überstehe die 20. Welle.',reward:'DIE NAMEN SIND FREI'}
   ];
   // A single on-demand movement atlas. The V5b 768x1024 sheets need only
   // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
   const walkPaths={
-    marcel:'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
-    kim:'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
+    marcel:globalThis.TD2CanonicalHeroArt?.marcel?.walk||'assets/hero/marcel-walk-v5b.webp?v=v5-heroes-b1',
+    kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-v5b.webp?v=v5-heroes-b1'
   };
-  let activeWalkActor=null,activeWalkImage=null,heroAtlas=null;
+  const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
+    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
+  let activeWalkActor=null,activeWalkImage=null;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;
     if(activeWalkActor!==actor){
@@ -49,17 +51,7 @@
     }
     return activeWalkImage;
   }
-  function legacyAtlas(){
-    if(!heroAtlas){heroAtlas=new Image();heroAtlas.src='assets/hero/marcel-lantern-sprite-v1.webp';}
-    return heroAtlas;
-  }
   const walkRows={down:0,up:1,left:2,right:3};
-  const heroCells = {
-    up:[0,0],
-    down:[128,0],
-    left:[0,128],
-    right:[128,128]
-  };
   let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing';
   let selectedTab='equipment', lowHpSpoken=false, storySeen=new Set(), animationTime=0;
   let pulse=null, echoes=[], trail=[], attackTime=0, walkTime=0;
@@ -106,7 +98,7 @@
     if(!entry||storySeen.has(entry.id))return false;
     const kim=(api.getCharacter?.()||api.getGame?.()?.hero?.character)==='kim';
     const portrait=$('storyPortrait');
-    if(portrait){portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';}
+    if(portrait){portrait.src=portraitFor(kim?'kim':'marcel');portrait.alt=kim?'Kim die Treffsichere':'Marcel der Beschützer';}
     stopVoice();storySeen.add(entry.id);currentStory=entry;
     api.setState('story');api.clearInput();
     $('storyKicker').textContent=entry.kicker;$('storyTitle').textContent=entry.title;
@@ -126,7 +118,7 @@
     const kim=(api.getCharacter?.()||h.character)==='kim';
     $('characterTitle').textContent=kim?'KIM':'MARCEL';
     const portrait=$('characterPortrait');
-    portrait.src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
+    portrait.src=portraitFor(kim?'kim':'marcel');
     portrait.alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
     $('characterStats').textContent=`${Math.round(s.damage)} Schaden · ${(1/s.rate).toFixed(1)} Angriffe/s · ${Math.round(s.speed)} Tempo`;
     $('characterLevel').textContent=`WELLE ${g.wave} · ${storySeen.has('ending')?(kim?'HÜTERIN DER ERINNERUNG':'HÜTER DER ERINNERUNG'):(kim?'DIE BEWAHRERIN':'DER BESCHÜTZER')}`;
@@ -210,15 +202,9 @@
       ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
       ctx.restore();return true;
     }
-    // Legacy lantern art is Marcel-only; never render a male sprite for Kim.
-    if(actor==='marcel'&&ready(legacyAtlas())){
-      const [sx,sy]=heroCells[direction]||heroCells.down;
-      ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
-      ctx.drawImage(heroAtlas,sx,sy,128,128,-size/2,12-size,size,size);
-      ctx.restore();return true;
-    }
-    const fallbackFace=direction==='left'?-1:1;
-    return !!globalThis.DenkmalArt?.draw(ctx,'hero',x,y,size,fallbackFace,opacity);
+    // Keep the actor visually stable while the canonical walk sheet decodes.
+    // The caller paints a neutral loading marker; no other hero art is loaded.
+    return false;
   }
   function draw(ctx,h) {
     const moving=h.moving&&!reduced,direction=h.direction||'down';
@@ -233,7 +219,10 @@
     ctx.shadowColor=relicColor;ctx.shadowBlur=globalThis.DenkmalMobileRender?0:(h.dodge>0?20:6);
     if(h.hitFlash>0)ctx.filter='brightness(1.8)';
     const action=(h.hp<=0||h.hitFlash>0||attackTime>0)&&globalThis.TD2DirectionalActions?.hero(ctx,h,attackTime,reduced,animationTime);
-    if(!action&&!drawSprite(ctx,0,0,direction,1,90,h.character)&&!globalThis.V2Expansion?.hero(ctx,h,attackTime,reduced,animationTime)){ctx.fillStyle='#e9dcc2';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();}
+    if(!action&&!drawSprite(ctx,0,0,direction,1,90,h.character)){
+      ctx.save();ctx.globalAlpha=.65;ctx.fillStyle=h.character==='kim'?'#91c4d5':'#d5b881';
+      ctx.beginPath();ctx.ellipse(0,-29,9,17,0,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
     ctx.filter='none';ctx.shadowBlur=0;
     if(attackTime>0){
       const fx=h.faceX||0,fy=h.faceY||0,ax=fx*30,ay=-24+fy*18;

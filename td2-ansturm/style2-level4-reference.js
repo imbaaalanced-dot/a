@@ -7,7 +7,7 @@
   const layout=levels?.levels?.[4],center=levels?.center;
   if(!church||!layout||!center)return;
   const REGION=2048,RESOLUTION=1024,origin={x:center.x-REGION/2,y:center.y-REGION/2};
-  let ground=null,lantern=null,builds=0;
+  let ground=null,lantern=null,builds=0,groundRequested=false,environmentRequested=false;
   function rnd(seed){return ()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
   const random=rnd(18791879);
   function clear(x,y,road=112,pad=91){
@@ -87,6 +87,12 @@
   function buildLantern(){
     lantern=document.createElement('canvas');lantern.width=70;lantern.height=155;builds++;
     const c=lantern.getContext('2d');
+    const atlas=globalThis.KirchendeArt?.image?.('environment');
+    if(atlas?.naturalWidth){
+      const frameWidth=atlas.naturalWidth/3,frameHeight=atlas.naturalHeight/2;
+      c.drawImage(atlas,frameWidth*2,frameHeight,frameWidth,frameHeight,0,0,lantern.width,lantern.height);
+      return;
+    }
     c.fillStyle='#101c1b55';c.beginPath();c.ellipse(34,149,30,5,0,0,Math.PI*2);c.fill();
     c.fillStyle='#42433c';c.fillRect(29,48,10,101);
     c.fillStyle='#b8a880';c.fillRect(28,48,3,98);
@@ -103,6 +109,10 @@
   }
   const oldGround=church.drawGround,oldSite=church.drawSite;
   church.drawGround=function(ctx,camera,width,height){
+    if(!groundRequested){
+      groundRequested=true;
+      Promise.resolve(globalThis.DenkmalTerrain?.load?.()).then(ok=>{if(!ok)groundRequested=false;}).catch(()=>{groundRequested=false;});
+    }
     const value=oldGround.apply(this,arguments);
     if(!ground)buildGround();
     const x=Math.max(origin.x,camera.x),y=Math.max(origin.y,camera.y);
@@ -115,6 +125,10 @@
   };
   church.drawSite=function(ctx,location){
     const result=oldSite.apply(this,arguments);
+    if(!environmentRequested){
+      environmentRequested=true;
+      Promise.resolve(globalThis.KirchendeArt?.loadEnvironment?.()).then(ok=>{if(ok)lantern=null;}).catch(()=>{});
+    }
     if(!lantern)buildLantern();
     for(const p of lamps){
       const paint=()=>ctx.drawImage(lantern,p.x-35,p.y-152,70,155);

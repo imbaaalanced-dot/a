@@ -15,8 +15,8 @@
     n.style.backgroundRepeat='no-repeat';n.setAttribute('aria-hidden','true');return n;
   }
   const fmt=(key,value)=>L.statInfo[key].percent?`${Math.round(value*1000)/10} %`:`${Math.round(value*10)/10}`;
-  function create(model,{editable,onClose,onImport,getHero=()=>'marcel'}){
-    let selected=null,filter='all',sort='rarity',slotFilter='all',pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
+  function create(model,{editable,onClose,onImport,getHero=()=>'marcel',onSelectHero}){
+    let selected=null,filter='all',sort='rarity',slotFilter='all',query='',searchTimer=null,pending=null,notice='',generation=0,ringTarget='ring1',activeTab='bag',lastHero=null,visibleLimit=60;
     const $=id=>document.getElementById(id),root=$('inventoryScreen');
     const can=()=>editable()&&!model.readOnly;
     function button(text,fn,disabled=false,cls='loot-action'){const b=el('button',cls,text);b.type='button';b.disabled=disabled;b.onclick=fn;return b;}
@@ -26,26 +26,48 @@
     function syncPanels(){
       const mobile=isMobile(),detailOpen=!!selected;
       root.dataset.tab=activeTab;root.dataset.detailOpen=String(detailOpen);
+      $('lootDetail').setAttribute('role',mobile&&detailOpen?'dialog':'region');
+      $('lootDetail').setAttribute('aria-modal',String(mobile&&detailOpen));
       $('lootEquipmentPanel').hidden=mobile&&activeTab!=='equipment';
-      $('lootBagPanel').hidden=mobile&&activeTab!=='bag';
-      $('lootEquipmentTab').setAttribute('aria-selected',String(activeTab==='equipment'));
-      $('lootBagTab').setAttribute('aria-selected',String(activeTab==='bag'));
-      $('lootEquipmentTab').tabIndex=activeTab==='equipment'?0:-1;
-      $('lootBagTab').tabIndex=activeTab==='bag'?0:-1;
+      $('lootBagPanel').hidden=activeTab==='forge'||(mobile&&activeTab!=='bag');
+      $('lootForgePanel').hidden=activeTab!=='forge';
+      for(const tab of ['equipment','bag','forge']){
+        const id=tab==='equipment'?'lootEquipmentTab':tab==='bag'?'lootBagTab':'lootForgeTab';
+        $(id).setAttribute('aria-selected',String(activeTab===tab));
+        $(id).tabIndex=activeTab===tab?0:-1;
+      }
       $('lootDetailBackdrop').hidden=!mobile||!detailOpen;
-      for(const id of ['lootEquipmentPanel','lootBagPanel','lootEquipmentTab','lootBagTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
+      for(const id of ['lootEquipmentPanel','lootBagPanel','lootForgePanel','lootEquipmentTab','lootBagTab','lootForgeTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
     }
     function closeDetail(){
       if(!selected)return false;
       const previous=selected;selected=null;pending=null;render();
       const card=[...root.querySelectorAll('button')].find(n=>n.dataset.itemId===previous&&n.getClientRects().length);
-      (card||$(activeTab==='equipment'?'lootEquipmentTab':'lootBagTab')).focus({preventScroll:true});
+      (card||$(activeTab==='equipment'?'lootEquipmentTab':activeTab==='forge'?'lootForgeTab':'lootBagTab')).focus({preventScroll:true});
       return true;
     }
     function showTab(tab){activeTab=tab;closeDetail();syncPanels();}
-    $('lootEquipmentTab').onclick=()=>showTab('equipment');$('lootBagTab').onclick=()=>showTab('bag');
-    for(const id of ['lootEquipmentTab','lootBagTab'])$(id).onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const tab=e.key==='Home'?'equipment':e.key==='End'?'bag':activeTab==='bag'?'equipment':'bag';showTab(tab);$(tab==='bag'?'lootBagTab':'lootEquipmentTab').focus();}};
+    const tabs=['equipment','bag','forge'],tabIds={equipment:'lootEquipmentTab',bag:'lootBagTab',forge:'lootForgeTab'};
+    for(const tab of tabs)$(tabIds[tab]).onclick=()=>showTab(tab);
+    for(const tab of tabs)$(tabIds[tab]).onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const index=tabs.indexOf(activeTab),next=e.key==='Home'?tabs[0]:e.key==='End'?tabs[tabs.length-1]:tabs[(index+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];showTab(next);$(tabIds[next]).focus();}};
+    for(const hero of ['marcel','kim'])$('lootSelect'+(hero==='kim'?'Kim':'Marcel')).onclick=()=>{
+      if(!can()||typeof onSelectHero!=='function')return;
+      pending=null;selected=null;onSelectHero(hero);render();
+    };
     $('lootDetailBackdrop').onclick=closeDetail;
+    $('lootDetail').onkeydown=e=>{
+      if(!selected||!isMobile())return;
+      if(e.key==='Escape'){
+        e.preventDefault();e.stopPropagation?.();closeDetail();return;
+      }
+      if(e.key==='Tab'){
+        const focusable=[...$('lootDetail').querySelectorAll('button,summary,[tabindex]')].filter(n=>!n.disabled&&n.getClientRects().length);
+        if(!focusable.length)return;
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(e.shiftKey&&(document.activeElement===first||!focusable.includes(document.activeElement))){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&(document.activeElement===last||!focusable.includes(document.activeElement))){e.preventDefault();first.focus();}
+      }
+    };
     globalThis.addEventListener?.('resize',syncPanels);
     function activePowers(items){
       const powers={...L.totals(items).powers};
@@ -84,33 +106,41 @@
       if(pending&&pending.revision&&pending.revision!==model.exportJSON())pending=null;
       const kim=getHero()==='kim';
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
-      $('lootHeroRole').textContent=kim?'DIE BEWAHRERIN':'DER BESCHÜTZER';
-      $('lootHeroPortrait').src=kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp';
-      $('lootHeroPortrait').alt=kim?'Kim die Bewahrerin':'Marcel der Beschützer';
+      $('lootHeroRole').textContent=kim?'DIE TREFFSICHERE':'DER BESCHÜTZER';
+      $('lootHeroPortrait').src=globalThis.TD2CanonicalHeroArt?.[getHero()]?.portrait||
+        (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
+      $('lootHeroPortrait').alt=kim?'Kim die Treffsichere':'Marcel der Beschützer';
+      for(const hero of ['marcel','kim']){
+        const picker=$('lootSelect'+(hero==='kim'?'Kim':'Marcel'));
+        picker.setAttribute('aria-pressed',String(getHero()===hero));
+        picker.disabled=!can()||typeof onSelectHero!=='function';
+      }
       const p={...model.profile,...model.view(getHero())},all=p.all,item=all.find(i=>i.id===selected);
       if(selected&&!item)selected=null;
-      $('inventoryMode').textContent=editable()?'RÜSTKAMMER · BEREIT FÜR DIE NÄCHSTE WACHT':'BEUTE GESICHERT · AUSRÜSTUNG IM HAUPTMENÜ WECHSELN';
+      $('inventoryMode').textContent=editable()?'RÜSTKAMMER · BEREITE DEINE NÄCHSTE WACHT VOR':'BEUTE ANSEHEN · AUSRÜSTUNG IM HAUPTMENÜ WECHSELN';
       $('inventoryClose').textContent=editable()?'ZURÜCK':'ZUR WACHT';
-      $('lootSaveState').textContent=model.status||'Automatisch gespeichert · auf diesem Gerät';$('lootSaveState').classList.toggle('warning',!!model.status);
+      $('lootSaveState').textContent=model.status||'Automatisch auf diesem Gerät gespeichert';$('lootSaveState').classList.toggle('warning',!!model.status);
       $('lootNotice').textContent=notice;$('forgeEssence').textContent=`${p.essence} SCHMIEDESSENZ`;
+      $('lootForgeBalance').textContent=`${p.essence} · VERFÜGBARE SCHMIEDESSENZ`;
       const equipment=$('loadoutSlots');equipment.replaceChildren();
       for(const slot of Object.keys(L.slots)){const i=p.items.find(i=>i.id===p.equipped[slot]);if(i)equipment.append(card(i,true,slot));else{const empty=el('div','loot-empty-slot');empty.append(icon(slot),el('span','',L.slots[slot]));equipment.append(empty);}}
       const stats=L.totals(p.items),summary=$('loadoutStats');summary.replaceChildren();
       for(const [k,v] of Object.entries(stats)){if(k==='powers'||!v)continue;summary.append(el('span','',`+${fmt(k,v)} ${L.statInfo[k].label}`));}
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
-      $('backpackCount').textContent=`SAMMLUNG ${all.length} · RUCKSACK ${p.bag.length} / 30`;
+      $('backpackCount').textContent=`SAMMLUNG: ${all.length} · RUCKSACK: ${p.bag.length} / 30`;
       for(const [winner,loser,label]of [['echo','ember','Nachhall hat Vorrang vor Abendrot.'],['ash','oath','Aschenläufer hat Vorrang vor Steinwacht.'],['bell','lantern','Letzte Glocke hat Vorrang vor Erinnerungslicht.']])if(stats.powers[winner]&&stats.powers[loser])summary.append(el('span','loot-note',label));
       const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
-      bulkBtn.textContent=`ALLES RECYCELN · ${bulk.count} · +${bulk.essence} ESSENZ`;
+      bulkBtn.textContent=`ZERLEGEN PRÜFEN · ${bulk.count} GEGENSTÄNDE · +${bulk.essence} ESSENZ`;
       const grid=$('inventoryGrid');grid.replaceChildren();
-      const visible=all.filter(i=>(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot)))).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      const visible=all.filter(i=>(!query||[i.name,L.slots[i.slot],L.rarities[i.rarity].label].some(text=>text.toLocaleLowerCase('de-DE').includes(query)))&&(slotFilter==='all'||slotFilter==='rings'&&i.slot.startsWith('ring')||i.slot===slotFilter)&&(filter==='all'||i.rarity===filter||filter==='favorites'&&i.favorite||filter==='upgrades'&&(i.slot.startsWith('ring')?['ring1','ring2'].some(slot=>isStrictUpgrade(i,slot)):isStrictUpgrade(i,i.slot)))).sort((a,b)=>sort==='level'?b.level-a.level:sort==='type'?a.slot.localeCompare(b.slot):L.rarities[b.rarity].rank-L.rarities[a.rarity].rank||b.level-a.level);
+      $('lootResultCount').textContent=`${visible.length} von ${all.length} Gegenständen`;
       for(const i of visible.slice(0,visibleLimit))grid.append(card(i));
       if(visible.length>visibleLimit)grid.append(button('WEITERE GEGENSTÄNDE',()=>{visibleLimit+=60;render();}));
       for(let n=visible.length;n<30;n++){const cell=el('div','loot-cell-empty');cell.setAttribute('aria-hidden','true');grid.append(cell);}
-      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine Gegenstände für diesen Filter.':'Besiege Gegner für neue Ausrüstung. Bosse garantieren epische oder legendäre Beute.';
+      $('lootEmptyHint').textContent=visible.length?'':all.length?'Keine passenden Gegenstände gefunden.':'Besiege Gegner, um neue Ausrüstung zu finden. Bosse hinterlassen epische oder legendäre Beute.';
       const overflow=$('lootOverflow');overflow.replaceChildren();overflow.hidden=!p.overflow.length;
-      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GESICHERT`),el('p','','Kein Fund geht verloren. Freie Rucksackplätze werden automatisch aufgefüllt.'));overflow.append(el('p','','Alle Überlauffunde sind oben enthalten und können gefiltert werden.'));}
+      if(p.overflow.length){overflow.append(el('h3','',`ÜBERLAUF · ${p.overflow.length} GEGENSTÄNDE`),el('p','','Deine Funde bleiben erhalten. Freie Rucksackplätze werden automatisch aufgefüllt.'));overflow.append(el('p','','Auch Gegenstände im Überlauf erscheinen in der Liste und können gefiltert werden.'));}
 
       const detail=$('lootDetail');detail.replaceChildren();
       if(item)renderDetail(detail,item,p);else detail.append(el('p','eyebrow','GEGENSTANDSDETAILS'),el('div','loot-detail-empty','◈'),el('h3','','Wähle einen Fund'),el('p','','Vergleiche seine Werte mit deiner Ausrüstung. Neue Beute wirkt erst, wenn du sie im Hauptmenü anlegst.'));
@@ -123,6 +153,8 @@
         const next=controls.find(n=>focusId&&n.id===focusId)||controls.find(n=>focusItem&&n.dataset.itemId===focusItem)||controls.find(n=>focusLabel&&n.textContent===focusLabel)||controls.find(n=>n.dataset.itemId===selected)||$('inventoryClose');
         next.focus({preventScroll:true});
       }
+      // Destructive confirmations start on the safe action, not on "Bestätigen".
+      if(pending&&confirmation.children[2]&&!confirmation.contains(document.activeElement))confirmation.children[2].focus({preventScroll:true});
     }
     function renderDetail(detail,i,p){
       const worn=Object.values(p.equipped).includes(i.id),slot=worn?Object.keys(p.equipped).find(k=>p.equipped[k]===i.id):i.slot.startsWith('ring')?ringTarget:i.slot;
@@ -169,13 +201,39 @@
       forge.append(improve);detail.append(forge,el('p','loot-note',!editable()?'Während der Wacht bleibt deine Ausrüstung fest. Wechsle im Hauptmenü.':usedBy.length?'Zum Verbessern oder Recyceln bei beiden Helden ablegen.':i.favorite?'Favoriten sind vor Recycling und Verbessern geschützt.':'Schmiedessenz bleibt dauerhaft und ist getrennt von der Kampfessenz.'));
     }
     function download(text,name){if(!text)return;const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a','');if(blob.size>15000000){notice='Export überschreitet die Importgrenze von 15 MB. Vor erneutem Import Sammlung verkleinern.';render();}a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-    $('lootSlotFilter').onchange=e=>{slotFilter=e.target.value;visibleLimit=60;render();};
-    $('lootFilter').onchange=e=>{filter=e.target.value;visibleLimit=60;render();};$('lootSort').onchange=e=>{sort=e.target.value;render();};
+    function filterChanged(){selected=null;pending=null;visibleLimit=60;render();}
+    $('lootSlotFilter').onchange=e=>{slotFilter=e.target.value;filterChanged();};
+    $('lootFilter').onchange=e=>{filter=e.target.value;filterChanged();};
+    $('lootSort').onchange=e=>{sort=e.target.value;filterChanged();};
+    $('lootSearch').oninput=e=>{
+      const next=String(e.target.value||'').trim().toLocaleLowerCase('de-DE');
+      if(searchTimer!==null)globalThis.clearTimeout?.(searchTimer);
+      searchTimer=setTimeout(()=>{searchTimer=null;query=next;filterChanged();},150);
+    };
+    $('lootClearFilters').onclick=()=>{
+      if(searchTimer!==null){globalThis.clearTimeout?.(searchTimer);searchTimer=null;}
+      query='';filter='all';slotFilter='all';sort='rarity';
+      $('lootSearch').value='';$('lootFilter').value='all';$('lootSlotFilter').value='all';$('lootSort').value='rarity';
+      filterChanged();
+    };
     $('lootSalvageAllBtn').onclick=()=>{
       if(!can())return;
       const preview=model.salvagePreview();if(!preview.count)return;
       pending={message:`${preview.count} nicht favorisierte Gegenstände aus Rucksack und Überlauf unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
       render();$('lootConfirm').scrollIntoView({block:'nearest'});
+    };
+    $('lootConfirm').onkeydown=e=>{
+      if(!pending)return;
+      if(e.key==='Escape'){
+        e.preventDefault();e.stopPropagation?.();pending=null;notice='Änderung abgebrochen.';render();return;
+      }
+      if(e.key==='Tab'){
+        const actions=$('lootConfirm').children.filter?$('lootConfirm').children.filter(n=>n.tagName==='button'):[...$('lootConfirm').querySelectorAll('button')];
+        const first=actions[0],last=actions[actions.length-1];
+        if(!first)return;
+        if(e.shiftKey&&(document.activeElement===first||!actions.includes(document.activeElement))){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&(document.activeElement===last||!actions.includes(document.activeElement))){e.preventDefault();first.focus();}
+      }
     };
     $('lootExportBtn').onclick=()=>download(model.exportJSON(),'Denkmal-TD-Spielstand.json');
     $('lootPreMigrationBtn').onclick=()=>download(model.exportPreMigration(),'Denkmal-TD-vor-Ausrustungswechsel.json');

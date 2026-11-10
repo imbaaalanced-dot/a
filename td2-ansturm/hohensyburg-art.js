@@ -1,11 +1,34 @@
 /* Present-day Kaiser-Wilhelm-Denkmal, Hohensyburg: historical silhouette in a cached, illustrative Style 2 landscape. */
 (()=>{'use strict';
   const C={x:1536,y:1536},SIZE=3072;
-  let ground=null,memorial=null,allocations=0;
+  let ground=null,memorial=null,allocations=0,environmentRequested=false;
+  const lampOffsets=[[-900,-260],[900,-310],[-890,550]];
+  function environmentLamps(level){
+    const terrace=level.syburgTerrace;
+    return lampOffsets.map(([x,y])=>({x:C.x+x,y:C.y+y})).filter(p=>{
+      if(Math.hypot(p.x-C.x,p.y-C.y)<320)return false;
+      if(level.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<155))return false;
+      if(level.slots.some(slot=>Math.hypot(slot.x-p.x,slot.y-p.y)<155))return false;
+      const x=p.x-C.x,y=p.y-C.y,r=terrace.raised,f=terrace.forecourt;
+      if(x>r.left-95&&x<r.right+95&&y>r.top-95&&y<r.bottom+95)return false;
+      if(terrace.stairs.some(s=>Math.abs(x-s.x)<s.width/2+105&&y>s.top-105&&y<s.bottom+105))return false;
+      if(x>f.left-65&&x<f.right+65&&y>f.top-65&&y<f.bottom+65)return false;
+      return true;
+    });
+  }
+  function requestSharedEnvironment(){
+    if(environmentRequested)return;
+    const load=globalThis.KirchendeArt?.loadEnvironment;
+    if(typeof load!=='function')return;
+    environmentRequested=true;
+    Promise.resolve(load.call(globalThis.KirchendeArt)).then(ok=>{
+      if(ok)ground=null;else environmentRequested=false;
+    }).catch(()=>{environmentRequested=false;});
+  }
   // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
   let standaloneSprite=null;
   const monumentImage=()=>{
-    const url='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
+    const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
     if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
     if(typeof Image!=='function')return null;
     if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
@@ -24,6 +47,11 @@
     const c=C,r=t.raised,f=t.forecourt;
     // Woodland surrounds the north-facing Y junction. South is the wooded drop.
     q.fillStyle=globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);
+    const texture=globalThis.DenkmalTerrain?.groundImage;
+    if(texture?.complete&&texture.naturalWidth){
+      const pattern=q.createPattern(texture,'repeat');
+      if(pattern){q.save();q.globalAlpha=.2;q.fillStyle=pattern;q.fillRect(0,0,SIZE,SIZE);q.restore();}
+    }
     for(let i=0;i<1600;i++){
       const x=rand()*SIZE,y=rand()*SIZE,rx=15+rand()*92;
       q.fillStyle=['#74826417','#354f3b30','#a5a1810f','#172a233a'][i%4];
@@ -139,9 +167,19 @@
     }
     // Keep the memorial anchor and visual contact on the upper deck.
     q.fillStyle='#2c332e99';q.beginPath();q.ellipse(c.x,c.y+38,208,79,0,0,Math.PI*2);q.fill();
+    const atlas=globalThis.KirchendeArt?.image?.('environment');
+    if(atlas?.naturalWidth){
+      const sw=atlas.naturalWidth/3,sh=atlas.naturalHeight/2;
+      for(const p of environmentLamps(level)){
+        const glow=q.createRadialGradient(p.x,p.y-47,3,p.x,p.y-47,168);
+        glow.addColorStop(0,'#efbd7050');glow.addColorStop(.44,'#c18c4a22');glow.addColorStop(1,'#70591a00');
+        q.fillStyle=glow;q.fillRect(p.x-168,p.y-215,336,336);
+        q.drawImage(atlas,sw*2,sh,sw,sh,p.x-55,p.y-112,110,110);
+      }
+    }
     return canvas;
   }
-  function drawGround(ctx,level){if(!ground)ground=createGround(level);ctx.drawImage(ground,0,0,SIZE,SIZE);}
+  function drawGround(ctx,level){requestSharedEnvironment();if(!ground)ground=createGround(level);ctx.drawImage(ground,0,0,SIZE,SIZE);}
   function createMemorial(){
     const canvas=document.createElement('canvas');canvas.width=480;canvas.height=540;allocations++;
     const q=canvas.getContext('2d');q.translate(240,500);q.lineJoin='round';
@@ -240,5 +278,6 @@
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
     release(){ground=null;memorial=null;standaloneSprite=null;},
+    environmentLamps,
     get allocations(){return allocations;}};
 })();

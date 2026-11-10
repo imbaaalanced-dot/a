@@ -2,21 +2,21 @@
  * Textures are seeded and cached; no route coordinates or combat state change. */
 (() => {
 'use strict';
-const textures=new Map();let patterns=new WeakMap(),groundPhoto=null;
-let groundLoading=null;
+const textures=new Map();let patterns=new WeakMap();
+let groundLoading=null,style2Ground=null;
 function load(){
-  if(groundPhoto)return Promise.resolve(true);
+  if(style2Ground)return Promise.resolve(true);
   if(typeof Image==='undefined')return Promise.resolve(false);
   if(groundLoading)return groundLoading;
   groundLoading=new Promise(resolve=>{
     const image=new Image();image.decoding='async';
-    image.onload=()=>{groundPhoto=image;textures.delete('ground');patterns=new WeakMap();resolve(true);};
+    image.onload=()=>{style2Ground=image;illustratedGround=null;resolve(true);};
     image.onerror=()=>{groundLoading=null;resolve(false);};
-    image.src='assets/kirchende/ground-photo-v2.webp?v=v400a5photo2';
+    image.src='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
   });
   return groundLoading;
 }
-// The optional photo loader stays available for older callers; illustration needs no download.
+// Ground and path materials stay cached; map rendering never fetches a photograph.
 function rng(seed){return ()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);}
 function leaf(ctx,x,y,r,color,angle){
   ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.fillStyle=color;
@@ -29,9 +29,8 @@ function litter(ctx,random,size,count){
 }
 function texture(kind){
   if(textures.has(kind))return textures.get(kind);
-  const size=kind==='ground'?(groundPhoto?512:1024):256,c=document.createElement('canvas');c.width=c.height=size;
+  const size=kind==='ground'?1024:256,c=document.createElement('canvas');c.width=c.height=size;
   const q=c.getContext('2d'),r=rng(kind==='ground'?164701:kind==='slabs'?9821:3749);
-  if(kind==='ground'&&groundPhoto){q.drawImage(groundPhoto,0,0,512,512);textures.set(kind,c);return c;}
   q.fillStyle=kind==='ground'?'#767952':kind==='slabs'?'#8b8772':'#81745e';q.fillRect(0,0,size,size);
   if(kind==='ground'){
     // Broad, uneven moss patches over exposed compacted earth, as in the photos.
@@ -58,7 +57,25 @@ function texture(kind){
       q.fillStyle='#6c7c4666';q.fillRect(x+r()*50,y,10+r()*14,2);
     }
     litter(q,r,size,35);
-  }else litter(q,r,size,kind==='ground'?1700:105);
+    // A few embedded moss seams and chipped stone faces are baked into the
+    // 256px paving material, not painted separately in the gameplay loop.
+    for(let i=0;i<60;i++){
+      const x=r()*size,y=r()*size;
+      q.fillStyle=['#354b3c70','#71805955','#c4bc9c34'][i%3];
+      q.fillRect(x,y,2+r()*9,1+r()*2.5);
+    }
+  }else{
+    litter(q,r,size,kind==='ground'?1700:105);
+    if(kind==='earth'){
+      // Sparse worn pebbles and soft moss flecks tie the dirt route into the
+      // woodland floor without changing its centreline or draw-call budget.
+      for(let i=0;i<135;i++){
+        const x=r()*size,y=r()*size,w=1.5+r()*6;
+        q.fillStyle=['#334c3466','#66804a55','#9b927348','#3d443a5c'][i%4];
+        q.beginPath();q.ellipse(x,y,w,.7+r()*2,r()*.6-.3,0,Math.PI*2);q.fill();
+      }
+    }
+  }
   textures.set(kind,c);return c;
 }
 function pattern(ctx,kind){
@@ -71,7 +88,12 @@ function groundPainting(){
   if(illustratedGround)return illustratedGround;
   const c=document.createElement('canvas');c.width=c.height=1536;
   const q=c.getContext('2d'),r=rng(671629);
-  q.fillStyle='#364335';q.fillRect(0,0,1536,1536);
+  if(style2Ground){
+    const pattern=q.createPattern(style2Ground,'repeat');
+    if(pattern){q.fillStyle=pattern;q.fillRect(0,0,1536,1536);}
+    else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
+    q.fillStyle='#17231c22';q.fillRect(0,0,1536,1536);
+  }else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
   // Large softly blended moss/earth masses, painted once across the whole world.
   // No tiled photograph and no repeated leaf/stone landmarks.
   for(let i=0;i<210;i++){
@@ -100,14 +122,26 @@ function drawGround(ctx,x,y,w,h){
   const right=Math.min(3072,x+w),bottom=Math.min(3072,y+h);
   if(right>left&&bottom>top)ctx.drawImage(painting,left*.5,top*.5,(right-left)*.5,(bottom-top)*.5,left,top,right-left,bottom-top);
 }
+// Fixed road-material bands: distinct forest earth and weathered stone, using
+// exactly the same path centreline, number of strokes and texture cache.
+// These arrays are shared across frames; no new geometry or assets are loaded.
+const ROAD_SHOULDERS={
+  earth:[[148,'#20362612'],[138,'#29443020'],[126,'#3d523130'],[114,'#56674440'],
+    [104,'#645f444f'],[94,'#5b543e80'],[86,'#85765a'],[80,'#77674b']],
+  slabs:[[148,'#192b2812'],[138,'#33403720'],[126,'#424c4236'],[114,'#535b5055'],
+    [104,'#65696075'],[94,'#787e7199'],[86,'#86877c'],[80,'#77796f']]
+};
 function drawRoad(ctx,path,{surface='earth'}={}){
   if(!path||path.length<2)return;
-  const slabs=surface==='slabs';ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
+  const material=surface==='slabs'?'slabs':'earth';
+  ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
   ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
-  // Soft soil shoulders rather than kerbs or traffic markings. Same route centreline.
-  for(const [width,color] of [[148,'#8a805006'],[138,'#84764709'],[126,'#a08e5a0d'],[114,'#aa986017'],[104,'#75694c24'],[94,'#5e594044'],[86,'#9c8c6655'],[80,'#8b7d60'],[72,pattern(ctx,slabs?'slabs':'earth')||'#81745e']]){
+  // Soft mossy earth shoulders versus cooler stone margins. No traffic markings.
+  for(const [width,color] of ROAD_SHOULDERS[material]){
     ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
+  ctx.strokeStyle=pattern(ctx,material)||(material==='slabs'?'#77796f':'#77674b');
+  ctx.lineWidth=72;ctx.stroke();
   ctx.restore();
 }
 function drawStars(ctx,x,y,level,low=false){const n=Math.max(1,Math.min(3,Math.floor(level||1)));ctx.save();ctx.lineJoin='round';ctx.lineWidth=1.6;
@@ -115,5 +149,5 @@ for(let i=0;i<n;i++){const sx=x+(i-(n-1)/2)*29,sy=y+47;ctx.beginPath();
 for(let j=0;j<10;j++){let a=j*Math.PI/5-Math.PI/2,d=j%2?5.5:12.4,px=sx+Math.cos(a)*d,py=sy+Math.sin(a)*d;if(j)ctx.lineTo(px,py);else ctx.moveTo(px,py);}
 ctx.closePath();ctx.shadowBlur=low?0:7;ctx.shadowColor='#f1ae42';ctx.fillStyle='#ffcf51';ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#543c21';ctx.stroke();}
 ctx.restore();}
-globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,load};
+globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,get groundImage(){return style2Ground;},load};
 })();

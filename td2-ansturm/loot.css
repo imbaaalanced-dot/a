@@ -166,3 +166,60 @@
 #inventoryScreen .loot-item{box-shadow:inset 0 1px #ffffff08,0 0 10px -4px var(--rarity)}
 #inventoryScreen .loot-item[data-rarity="epic"]{box-shadow:inset 0 1px #ffffff0e,0 0 13px -3px var(--rarity)}
 #inventoryScreen .loot-item[data-rarity="legendary"]{box-shadow:inset 0 1px #ffffff10,0 0 16px -2px var(--rarity),0 0 2px 1px var(--rarity)}
+
+/* V5 RPG armory: shared three-tab hierarchy on all viewports. */
+#inventoryScreen .loot-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 16px}
+#inventoryScreen .loot-tabs button{min-height:48px;padding:10px 12px;background:#16232b;border:1px solid #686f6c;border-radius:7px;color:#cad0c8;font:650 clamp(11px,1.3vw,14px)/1.4 Inter,system-ui;cursor:pointer;touch-action:manipulation}
+#inventoryScreen .loot-tabs button[aria-selected="true"]{border-color:#d7b471;background:linear-gradient(155deg,#473c27,#252c2b);color:#ffebbe;box-shadow:inset 0 -3px #c29d60,0 4px 18px #0005}
+#inventoryScreen .loot-tabs button:focus-visible,#inventoryScreen .loot-hero-switch button:focus-visible{outline:3px solid #9ae4ee;outline-offset:2px}
+#inventoryScreen .loot-hero-switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0 0 12px}
+#inventoryScreen .loot-hero-switch button{min-width:0;min-height:48px;padding:8px 6px;border:1px solid #536968;border-radius:6px;background:#111c22;color:#b9cbcb;cursor:pointer;font:650 12px/1.3 Inter,system-ui}
+#inventoryScreen .loot-hero-switch button[aria-pressed="true"]{border-color:#ddbc7b;background:#342b1d;color:#f5dea5}
+#inventoryScreen .loot-hero-switch button:disabled{opacity:.55;cursor:not-allowed}
+#inventoryScreen .loot-forge-panel{background:linear-gradient(140deg,#211f1b,#141b1e);border-color:#c2a16480}
+#inventoryScreen .loot-forge-panel h3{font:700 20px/1.3 Georgia,serif;color:#edd29b}
+#inventoryScreen .loot-forge-panel h4{font:700 16px/1.35 Georgia,serif;color:#e1c587;margin:0 0 8px}
+#inventoryScreen .loot-forge-panel p{font-size:13px;color:#bdc6bd;line-height:1.65}
+#inventoryScreen .loot-forge-essence{padding:14px 12px;margin:16px 0;color:#f4ddaa;font:700 14px/1.4 Inter,system-ui;letter-spacing:.05em;background:#513b1d55;border:1px solid #cfb36f66;border-radius:8px}
+#inventoryScreen .loot-forge-tools{padding:16px;border:1px solid #b9975c55;background:#0e151bb8;border-radius:8px}
+#inventoryScreen .loot-forge-tools .loot-action{min-height:50px;width:100%;margin-top:10px}
+#inventoryScreen .loot-equipment h3{line-height:1.4}
+#inventoryScreen .loot-searchbar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;margin:0 0 10px}
+#inventoryScreen .loot-searchbar input{min-width:0;min-height:50px;width:100%;padding:12px 14px 12px 38px;border:1px solid #7d826c;border-radius:7px;background:#0b131a;color:#f1e8d5;font:500 13px/1.4 Inter,system-ui;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23c2ae85' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m16.5 16.5 4.5 4.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:11px center}
+#inventoryScreen .loot-searchbar input:focus-visible{border-color:#eac88c;outline:2px solid #91dfe9;outline-offset:2px}
+#inventoryScreen .loot-searchbar input::placeholder{color:#a0adaa}
+#inventoryScreen .loot-searchbar button{min-height:50px;font-size:10px;white-space:nowrap}
+#inventoryScreen .loot-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}
+#inventoryScreen .loot-toolbar select{font-size:11px;padding-right:24px;background-position:right 8px center}
+#inventoryScreen .loot-scroll-hint #lootResultCount{color:#f0d69d;font-weight:650}
+#inventoryScreen .loot-comparison-table td.positive{color:#a2f1c5;background:#14352666;font-weight:700}
+#inventoryScreen .loot-comparison-table td.negative{color:#ffb1a9;background:#451e2366;font-weight:700}
+#inventoryScreen .loot-comparison-table td.neutral{color:#b8c8c4}
+#inventoryScreen .loot-ring-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+#inventoryScreen .loot-ring-choice button{min-height:48px}
+#inventoryScreen .loot-forge summary:focus-visible,#inventoryScreen .loot-detail-close:focus-visible{outline:3px solid #9ae4ee;outline-offset:3px}
+#inventoryScreen .loot-confirm:not([hidden]){border:2px solid #f2bb75;background:linear-gradient(145deg,#342b20,#201b1a);box-shadow:0 18px 55px #0009}
+#inventoryScreen .loot-confirm button{min-height:48px}
+#inventoryScreen .loot-confirm button:last-child{border-color:#c7b68b;color:#f4dbb0}
+#inventoryScreen .loot-detail-actions .loot-action{transition:border-color .13s ease,filter .13s ease}
+#inventoryScreen .loot-detail-actions .loot-action:not(:disabled):active{filter:brightness(.88)}
+@media(max-width:760px){
+  #inventoryScreen .loot-tabs{position:sticky;top:59px;z-index:3;gap:6px;margin:8px 0 12px;background:#10191ff5;padding:5px 0}
+  #inventoryScreen .loot-tabs button{min-height:50px;padding:8px 3px;font-size:clamp(11px,3.3vw,13px)}
+  #inventoryScreen .loot-hero-switch{grid-column:1/-1;order:0;margin:0}
+  #inventoryScreen .loot-equipment h3{order:-1}
+  #inventoryScreen .loot-portrait{min-height:285px;max-height:400px}
+  #inventoryScreen .loot-forge-panel{min-height:340px}
+}
+@media(max-width:420px){
+  #inventoryScreen .loot-equipment{grid-template-columns:minmax(90px,.75fr) minmax(0,1.25fr)}
+  #inventoryScreen .loot-portrait{min-height:300px}
+  #inventoryScreen .loot-hero-switch button{font-size:11px}
+  #inventoryScreen .loot-searchbar{grid-template-columns:1fr 90px;gap:6px}
+  #inventoryScreen .loot-searchbar button{font-size:9px;padding-inline:5px}
+  #inventoryScreen .loot-toolbar{grid-template-columns:1fr 1fr}
+  #inventoryScreen .loot-toolbar #lootSort{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){
+  #inventoryScreen .loot-detail-actions .loot-action{transition:none}
+}

@@ -1,13 +1,45 @@
-import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=menu4';
-import {TECH,UPGRADES} from './config.js';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=v5-style2a1';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v5-style2a1';
+import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=copy-20261110a';
+import {TECH,UPGRADES} from './config.js?v=copy-20261110a';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=v5-style2a1';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v5-style2a1';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=document.hidden,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return null}})();
 let savedRun=readRun(storage), pendingStart=false, lastSaveTime=0;
+function updateFullscreenControls(){
+  const active=!!document.fullscreenElement;
+  for(const id of ['fullscreen','introFullscreen']){
+    const button=el(id);
+    button.textContent=active?'VOLLBILD: AN':'VOLLBILD: AUS';
+    button.setAttribute('aria-pressed',String(active));
+    button.setAttribute('aria-label',active?'Vollbild beenden':'Vollbild aktivieren');
+  }
+}
+async function toggleFullscreen(){
+  try{
+    if(document.fullscreenElement){
+      if(!document.exitFullscreen)throw new Error('Fullscreen exit unavailable');
+      await document.exitFullscreen();
+    }else{
+      if(!document.documentElement.requestFullscreen)throw new Error('Fullscreen unavailable');
+      await document.documentElement.requestFullscreen();
+    }
+    el('gameMenu').open=false;
+  }catch{
+    notice('Vollbild nicht verfügbar · Browser-Menü: Zum Startbildschirm hinzufügen');
+  }
+  updateFullscreenControls();
+}
+el('fullscreen').onclick=toggleFullscreen;
+el('introFullscreen').onclick=toggleFullscreen;
+document.addEventListener('fullscreenchange',()=>{
+  updateFullscreenControls();
+  // The arena renderer reads its bounding box on every frame; no fixed-size canvas rebuild is needed.
+  prev=0;
+});
+updateFullscreenControls();
 const storageWarning='Fortsetzen kann auf diesem Gerät gerade nicht gespeichert werden.';
 function notice(message=''){el('saveNotice').textContent=message;el('saveNotice').hidden=!message;}
 function resumeOffer(){
   el('resume').hidden=!savedRun.ok;
   el('resume').textContent=savedRun.ok?`Welle ${savedRun.state.wave} fortsetzen`: 'Fortsetzen';
-  el('start').textContent=savedRun.reason==='missing'?'⚔ VERTEIDIGUNG STARTEN':'Neuer Durchlauf';
+  el('start').textContent=savedRun.reason==='missing'?'⚔ VERTEIDIGUNG STARTEN':'NEUEN DURCHLAUF STARTEN';
   if(savedRun.reason==='storage')notice(storageWarning);
   else if(!savedRun.ok&&savedRun.reason!=='missing')notice('Der gespeicherte Durchlauf kann nicht geladen werden. Du kannst einen neuen starten.');
 }
@@ -37,12 +69,27 @@ function buttons(){
   for(const [id,{level,b}] of cardRefs){
     const icon=b.parentElement.querySelector('.shop-icon'),ictx=icon.getContext('2d');ictx.clearRect(0,0,64,64);sprite(ictx,`icon_${id}`,32,61,44,54);
     const q=quotePurchase(s,id),lv=tab==='tech'?s.tech[id]:s.upgrades[id];
-    level.textContent=`Stufe ${lv}${tab==='upgrades'?'/3':''}`;
-    b.textContent=q.reason==='Maximum'?'MAX':`🪙 ${q.price}`;
+    level.textContent=`Stufe ${lv}${tab==='upgrades'?' / 3':''}`;
+    b.textContent=q.reason==='Maximum'?'MAXIMALE STUFE':`🪙 ${q.price}`;
     b.disabled=!q.available;
   }
 }
-function update(){el('gold').textContent=Math.floor(s.gold);el('wave').textContent=s.wave;el('best').textContent=readRecord(storage);el('introBest').textContent=readRecord(storage);const st=getStats(s);el('hptext').textContent=`${Math.ceil(s.hp)} / ${st.maxHp} HP`;const hpRatio=Math.max(0,s.hp/st.maxHp);el('hpbar').style.width=hpRatio*100+'%';el('hpbar').classList.toggle('critical',hpRatio<.25);el('hpbar').classList.toggle('low',hpRatio>=.25&&hpRatio<.5);el('shieldtext').textContent=`🛡 ${Math.ceil(s.shield)}`;el('state').classList.toggle('urgent',s.status==='intermission'&&s.intermission<=5);el('state').textContent=s.status==='ready'?'Bereit':s.status==='lost'?'Denkmal gefallen':(manualPause||hiddenPause)?'Pausiert':s.status==='intermission'&&s.wave>=1000?'Wellenlimit 1000 erreicht':s.status==='intermission'?`Baupause · ${Math.ceil(s.intermission)}s`:`Welle ${s.wave} · ${s.enemies.length} Gegner`;el('speed').textContent=`${speed}× Tempo`;el('speed').setAttribute('aria-pressed',String(speed>1));el('sound').textContent=soundOn?'🔊 Ton':'🔇 Ton';el('sound').setAttribute('aria-pressed',String(soundOn));el('pause').disabled=s.status==='ready'||s.status==='lost';el('pause').textContent=manualPause?'▶ Fortsetzen':'⏸ Pause';el('next').hidden=s.status!=='intermission'||s.wave>=1000;el('summary').textContent=tab==='tech'?`Schaden ${st.damage} · Tempo ${st.attacksPerSecond.toFixed(2)}/s · Gold ×${st.goldMultiplier.toFixed(1)}`:'Waffen wirken automatisch und bleiben nur bis zur Niederlage.';const boss=s.enemies.find(e=>e.alive&&e.type==='boss');if(boss&&s.status==='running')el('state').textContent+=' · '+bossCue(boss);buttons();}
+function update(){
+  el('gold').textContent=Math.floor(s.gold);
+  el('wave').textContent=s.wave;el('best').textContent=readRecord(storage);el('introBest').textContent=readRecord(storage);
+  const st=getStats(s),hpRatio=Math.max(0,s.hp/st.maxHp);
+  el('hptext').textContent=`${Math.ceil(s.hp)} / ${st.maxHp} LP`;
+  el('hpbar').style.width=hpRatio*100+'%';el('hpbar').classList.toggle('critical',hpRatio<.25);el('hpbar').classList.toggle('low',hpRatio>=.25&&hpRatio<.5);
+  el('shieldtext').textContent=`🛡 ${Math.ceil(s.shield)}`;
+  el('state').classList.toggle('urgent',s.status==='intermission'&&s.intermission<=5);
+  el('state').textContent=s.status==='ready'?'Bereit zur Verteidigung':s.status==='lost'?'Denkmal gefallen':(manualPause||hiddenPause)?'Pausiert':s.status==='intermission'&&s.wave>=1000?'Wellenlimit von 1000 erreicht':s.status==='intermission'?`Baupause · ${Math.ceil(s.intermission)} s`:`Welle ${s.wave} · ${s.enemies.length} Gegner`;
+  el('speed').textContent=`Tempo: ${speed}×`;el('speed').setAttribute('aria-pressed',String(speed>1));
+  el('sound').textContent=soundOn?'🔊 Ton: An':'🔇 Ton: Aus';el('sound').setAttribute('aria-pressed',String(soundOn));
+  el('pause').disabled=s.status==='ready'||s.status==='lost';el('pause').textContent=manualPause?'▶ Fortsetzen':'⏸ Pause';el('next').hidden=s.status!=='intermission'||s.wave>=1000;
+  el('summary').textContent=tab==='tech'?`Schaden ${st.damage} · Angriffe ${st.attacksPerSecond.toFixed(2)}/s · Goldbonus ×${st.goldMultiplier.toFixed(1)}`:'Waffen wirken automatisch. Ihre Ausbauten gelten für den aktuellen Durchlauf.';
+  const boss=s.enemies.find(e=>e.alive&&e.type==='boss');if(boss&&s.status==='running')el('state').textContent+=' · '+bossCue(boss);
+  buttons();
+}
 function tone(frequency=440){if(!soundOn)return;try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!audioCtx)audioCtx=new Audio();if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});const o=audioCtx.createOscillator(),g=audioCtx.createGain(),now=audioCtx.currentTime;o.type='sine';o.frequency.value=frequency;g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.001,now+.09);o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+.1);}catch{soundOn=false;}}
 function restart(){discardRun();if(s.wave>0)saveRecord(storage,s.wave);s=createGame();manualPause=false;hiddenPause=document.hidden;shownDefeat=false;lastKills=0;acc=0;prev=0;renderedTab=null;el('defeat').close();el('intro').hidden=false;resumeOffer();update();}
 const portraitShop=window.matchMedia('(max-width:650px) and (orientation:portrait)');let shopOpen=false;

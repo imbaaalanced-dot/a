@@ -18,12 +18,12 @@
  };
  const section=document.createElement('div');
  section.className='td2-portrait-home';
- section.innerHTML='<div class="td2-portrait-logo" aria-hidden="true"><img src="assets/menu/crest-v3.webp" width="96" height="96" alt=""><strong>DENKMAL TD2</strong><small>DIE ERINNERUNG BRAUCHT EINEN HÜTER</small></div>'+
+ section.innerHTML='<div class="td2-portrait-logo" aria-hidden="true"><img src="assets/menu/crest-style2.webp" width="96" height="96" alt=""><strong>DENKMAL TD2</strong><small>DIE ERINNERUNG BRAUCHT EINEN HÜTER</small></div>'+
  '<div class="td2-mode-stack">'+
- '<button class="td2-mode-button td2-mode-primary" data-td2-target="campaign" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.campaign+'</span><span class="td2-mode-copy"><strong>Kampagne</strong><small>Sieben Schauplätze · Fortschritt und Geschichte</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
- '<button class="td2-mode-button td2-mode-assault" data-td2-target="rush" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.rush+'</span><span class="td2-mode-copy"><strong>Denkmal-Ansturm</strong><small>Direkter Kampf · Überlebe den Angriff</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
- '<button class="td2-mode-button" data-td2-target="endless" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.endless+'</span><span class="td2-mode-copy"><strong>Endlosmodus</strong><small>Unbegrenzte Wellen · Steigende Herausforderung</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
- '<button class="td2-mode-button" data-td2-target="equipment" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.equipment+'</span><span class="td2-mode-copy"><strong>Ausrüstung</strong><small>Wächter wählen und Rucksack verwalten</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
+ '<button class="td2-mode-button td2-mode-primary" data-td2-target="campaign" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.campaign+'</span><span class="td2-mode-copy"><strong>Kampagne</strong><small>Sieben Schauplätze · 20 Wellen je Kapitel</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
+ '<button class="td2-mode-button td2-mode-assault" data-td2-target="rush" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.rush+'</span><span class="td2-mode-copy"><strong>Denkmal-Ansturm</strong><small>Endloser Überlebenskampf ohne Helden</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
+ '<button class="td2-mode-button" data-td2-target="endless" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.endless+'</span><span class="td2-mode-copy"><strong>Endlosmodus</strong><small>Freigeschaltete Karten · Steigende Herausforderung</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
+ '<button class="td2-mode-button" data-td2-target="equipment" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.equipment+'</span><span class="td2-mode-copy"><strong>Ausrüstung</strong><small>Marcel oder Kim wählen und Beute verwalten</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
  '</div><div class="td2-portrait-dock">'+
  '<button class="td2-dock-button" data-td2-target="inventory" type="button"><b aria-hidden="true">'+svg.inventory+'</b>Inventar</button>'+
  '<button class="td2-dock-button" data-td2-target="heroes" type="button"><b aria-hidden="true">'+svg.heroes+'</b>Helden</button>'+
@@ -35,7 +35,7 @@
  section.addEventListener('click',event=>{
    const button=event.target.closest('[data-td2-target]');if(!button||button.disabled)return;
    switch(button.dataset.td2Target){
-    case 'campaign':click('menuPlayBtn');click('menuCampaignBtn');break;
+    case 'campaign':click('menuCampaignBtn');break;
     case 'rush':{const a=document.getElementById('menuAnsturmBtn');if(a)a.click();break;}
     case 'endless':click('menuArcadeBtn');break;
     case 'equipment':click('menuCharacterBtn');break;
