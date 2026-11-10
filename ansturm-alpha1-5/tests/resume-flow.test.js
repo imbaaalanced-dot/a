@@ -44,7 +44,7 @@ test('tutorial dismissal preserves a manually paused resumed run',()=>{
 test('speed cycles 1x, 2x, 3x and back to 1x',()=>{
  const h=harness();
  for(const expected of [1,2,3,1]){
-  assert.equal(h.el('speed').textContent,`${expected}× Tempo`);
+  assert.equal(h.el('speed').textContent,`Tempo: ${expected}×`);
   h.el('speed').onclick();
  }
 });
