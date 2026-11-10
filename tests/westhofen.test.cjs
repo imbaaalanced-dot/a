@@ -48,11 +48,20 @@ vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),legacyBox);vm.
 assert.equal(legacyBox.DenkmalLevels.level6Completed,true,'legacy envelope without level7 stays readable');
 assert.equal(legacyBox.DenkmalLevels.level7Completed,false,'missing level7 defaults to locked');
 // Renderer: cached ground, procedural memorial, air lane — no DOM or assets required.
-let canvases=0,draws=0;const ctx=new Proxy({drawImage(){draws++;},createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
+let canvases=0,draws=0,patterns=0,environmentLoads=0;const drawArgs=[];
+const atlas={naturalWidth:1536,naturalHeight:1024,complete:true};
+const ctx=new Proxy({drawImage(...args){draws++;drawArgs.push(args);},createPattern(){patterns++;return {};},createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
 box.document={createElement(){canvases++;return{width:0,height:0,getContext:()=>ctx};}};
+box.KirchendeArt={loadEnvironment(){environmentLoads++;return Promise.resolve(true);},image(){return atlas;}};
+box.DenkmalTerrain={groundImage:{complete:true,naturalWidth:768,naturalHeight:768}};
 vm.runInContext(fs.readFileSync('dist/westhofen-art.js','utf8'),box);const art=box.DenkmalWesthofenArt;
+const lamps=art.environmentLamps(l);assert.equal(lamps.length,3,'three lanterns fit the outer green pockets');
+for(const lamp of lamps){assert.ok(l.paths.every(route=>c.pathDistance(lamp,route)>=155),'lanterns stay clear of enemy lanes');assert.ok(l.slots.every(slot=>Math.hypot(slot.x-lamp.x,slot.y-lamp.y)>=155),'lanterns stay clear of build pads');assert.ok(Math.hypot(lamp.x-c.center.x,lamp.y-c.center.y)>=320,'memorial forecourt stays open');assert.ok(lamp.y<c.center.y+520,'street, sidewalk and bus stop remain clear');}
 art.drawGround(ctx,l);const warm=canvases;art.drawGround(ctx,l);assert.equal(canvases,warm,'warm scenery must reuse its cached canvas');
 art.drawMonument(ctx,{...c,hp:500,maxHp:500});art.drawAirLane(ctx,l,true);assert.ok(draws>=2);
+assert.equal(environmentLoads,1,'Westhofen requests the shared environment loader once');
+assert.ok(patterns>0,'shared forest-earth texture is baked into the cached ground canvas');
+assert.equal(drawArgs.filter(args=>args[0]===atlas&&args.length===9&&args[1]===1024&&args[2]===512).length,3,'three lanterns use the existing transparent Style-2 atlas');
 assert.equal(typeof art.release,'function');
 // Blocked storage keeps the session unlock; a reload restores the flag.
 const blocked={Math,localStorage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}}};vm.createContext(blocked);
@@ -65,7 +74,7 @@ assert.equal(reloaded.DenkmalLevels.level7Completed,true,'completion survives a 
 // Wiring: scripts, cache keys, menu cards and game hooks must reference Westhofen.
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 assert.ok(html.includes('westhofen.js?v=westhofen2'));
-assert.ok(html.includes('westhofen-art.js?v=v5-style2a1'));
+assert.ok(html.includes('westhofen-art.js?v=westhofen-env-style2b1'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
 for(const id of ['level7Btn','endless7Btn'])assert.ok(html.includes('id="'+id+'"'),id+' exists in the menu');

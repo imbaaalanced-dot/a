@@ -15,7 +15,7 @@ Das vorhandene transparente Foto des Kirchender Kriegerdenkmals bleibt das zentr
 | 4 Ender Dorfkirche | `church-art.js`, `style2-level4-reference.js`; Kirchengebäude und Löwenobjekt; eigener Style‑2-Kirchen-Sprite | Abgleichpass ergänzt: Level 4 nutzt jetzt denselben gekachelten Wald-/Moosboden und Laternenatlas. Bestehende Kirche, Löwe, Friedhofsdetails und Layout bleiben erhalten. |
 | 5 Hohensyburg | `hohensyburg-art.js`; transparentes Kaiser-Wilhelm-Denkmal, Waldterrasse | Abgleichpass ergänzt: derselbe gekachelte Wald-/Moosboden und drei warme Lanternenpunkte in freien äußeren Waldtaschen; Denkmal, Treppen, Vorplatz und Wege bleiben erhalten. |
 | 6 Goethestraße | `goethestrasse-art.js`; eigenes Ehrenmal, Straßenkante und Parkboden | Abgleichpass ergänzt die gemeinsame Wald-/Moostextur mit geringer Deckkraft sowie drei Laternen in freien äußeren Parktaschen; Denkmal, Rosenbeete, Wege, Bauplätze und Straßenverlauf bleiben erhalten. |
-| 7 Westhofen | `westhofen-art.js`; transparentes Ehrenmal, Bushaltestelle und Straßenfront | Konkrete Ortsdetails sind eingebunden; anschließend Beleuchtungs- und Baumfamilie angleichen. |
+| 7 Westhofen | `westhofen-art.js`; transparentes Ehrenmal, Bushaltestelle und Straßenfront | Abgleichpass ergänzt die gemeinsame Wald-/Moostextur und drei Laternen in freien Randtaschen. Denkmal, Bushaltestelle, Straßenfront, Wege, Bauplätze und Grünzug bleiben erhalten. |
 
 ## Referenzabgleich
 
@@ -28,10 +28,10 @@ Das vorhandene transparente Foto des Kirchender Kriegerdenkmals bleibt das zentr
 
 - Die vorhandene Canvas-Projektion und Tiefe bleiben unverändert.
 - Bodentextur und Kronen werden in bestehenden, gecachten Umgebungs-Canvas-Pässen gezeichnet.
-- Der Boden und transparente Umgebungsatlas werden nur bei Eintritt in Level 3 bis 6 angefordert und über dieselben Loader wiederverwendet; einzelne Bilder pro Objekt oder pro Frame werden nicht erzeugt.
+- Der Boden und transparente Umgebungsatlas werden nur bei Eintritt in Level 3 bis 7 angefordert und über dieselben Loader wiederverwendet; einzelne Bilder pro Objekt oder pro Frame werden nicht erzeugt.
 - Wenn Bilddateien nicht laden, bleiben prozedurale Boden- und Kronen-Fallbacks erhalten.
 - Dekoration ist rein visuell und wird anhand der echten Pfade, Bauplätze und Objektflächen des jeweiligen Levels gefiltert.
 
 ## Abnahme und nächste Schritte
 
-Goethestraße nutzt jetzt die gemeinsame Textur- und Lichtfamilie. Westhofen ist der nächste Kandidat; dort Straßenfront, Haltestelle und offene Zuläufe gegen dieselbe Vegetations- und Lichtfamilie abgleichen. Echte Android-Abnahme bleibt separat offen.
+Die Level 3 bis 7 nutzen jetzt dieselbe Terrain- und Lichtfamilie. Die historischen Objekte bleiben aus ihren vorhandenen Referenzmotiven abgeleitet; Westhofens Ehrenmal zeigt den dokumentierten heutigen Zustand mit leerer zentraler Tafel und fehlenden Feuerschalen nach dem Diebstahl 2026. Die Laufwege und Bauplätze wurden für den Umgebungsabgleich nicht geändert. Echte Android-Abnahme bleibt separat offen.
