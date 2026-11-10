@@ -9,11 +9,20 @@ vm.runInContext(fs.readFileSync('dist/goethestrasse.js','utf8'),box);const g=box
 for(let wave=21;wave<=24;wave++){const types=Array.from({length:48},(_,i)=>g.enemyType(wave,i));assert.ok(types.includes('shadowwing'));assert.ok(types.includes('wraith'));assert.match(g.warning(wave),/LUFTANGRIFF/);assert.ok(g.waveName(wave));}
 assert.ok(Array.from({length:48},(_,i)=>g.enemyType(23,i)).includes('gargoyle'));assert.ok(Array.from({length:48},(_,i)=>g.enemyType(23,i)).includes('stormwing'));assert.equal(g.enemyType(24,0),'boss');
 console.log('Goethestraße geometry, slots, mixed waves and completion passed');
-let canvases=0,draws=0;const ctx=new Proxy({drawImage(){draws++;},createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
+let canvases=0,draws=0,patterns=0,environmentLoads=0;const drawArgs=[];
+const atlas={naturalWidth:1536,naturalHeight:1024,complete:true};
+const ctx=new Proxy({drawImage(...args){draws++;drawArgs.push(args);},createPattern(){patterns++;return {};},createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
 box.document={createElement(){canvases++;return{width:0,height:0,getContext:()=>ctx};}};
+box.KirchendeArt={loadEnvironment(){environmentLoads++;return Promise.resolve(true);},image(){return atlas;}};
+box.DenkmalTerrain={groundImage:{complete:true,naturalWidth:768,naturalHeight:768}};
 vm.runInContext(fs.readFileSync('dist/goethestrasse-art.js','utf8'),box);const art=box.DenkmalGoetheArt;
+const lamps=art.environmentLamps(l);assert.equal(lamps.length,3,'three lanterns fit the outer park pockets');
+for(const lamp of lamps){assert.ok(l.paths.every(route=>c.pathDistance(lamp,route)>=155),'lanterns stay clear of enemy lanes');assert.ok(l.slots.every(slot=>Math.hypot(slot.x-lamp.x,slot.y-lamp.y)>=155),'lanterns stay clear of build pads');}
 art.drawGround(ctx,l);const warm=canvases;art.drawGround(ctx,l);assert.equal(canvases,warm,'warm scenery must reuse cached canvas');
 art.drawMonument(ctx,{...c,hp:500,maxHp:500});art.drawAirLane(ctx,l,true);assert.ok(draws>=2);
+assert.equal(environmentLoads,1,'Level 6 requests the shared environment loader once');
+assert.ok(patterns>0,'shared forest-earth texture is baked into the cached ground canvas');
+assert.ok(drawArgs.some(args=>args[0]===atlas&&args.length===9&&args[1]===1024&&args[2]===512),'lanterns use the existing transparent Style-2 atlas');
 console.log('Goethestraße renderer and warm cache passed');
 const blocked={Math,localStorage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}}};vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/persisted-state.js','utf8'),blocked);vm.runInContext(fs.readFileSync('dist/levels.js','utf8'),blocked);
 assert.equal(blocked.DenkmalLevels.completeLevel6(),false);assert.equal(blocked.DenkmalLevels.level6Completed,true,'blocked storage retains session unlock');

@@ -28,12 +28,10 @@ const server=http.createServer((req,res)=>{
       await page.goto(`http://127.0.0.1:${server.address().port}/index.html`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
       const device=mobile?'mobile-touch':'desktop';
-      await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),fullPage:false,animations:'disabled',timeout:60000});
       await page.locator('#menuCharacterBtn').click();
       await page.locator('#heroMenu').waitFor({state:'visible'});
       await page.locator('#chooseKim').click();
       await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
-      await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),fullPage:false,animations:'disabled',timeout:60000});
       await page.locator('#chooseMarcel').click();
       await page.locator('#menuBackBtn').click();
       await page.locator('#menuHomeActions').waitFor({state:'visible'});

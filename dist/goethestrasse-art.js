@@ -1,11 +1,32 @@
 /* Reference-derived park composition. Cached ground, independent upright memorial. */
 (()=>{'use strict';
-let ground=null,memorial=null;
+let ground=null,memorial=null,environmentRequested=false;
 const C={x:1536,y:1536};
+const lampOffsets=[[-1050,-760],[1030,-740],[1040,300]];
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
+function environmentLamps(layout){
+ return lampOffsets.map(([x,y])=>({x:C.x+x,y:C.y+y})).filter(p=>{
+  if(Math.hypot(p.x-C.x,p.y-C.y)<320)return false;
+  if(layout.paths.some(route=>globalThis.DenkmalLevels.pathDistance(p,route)<155))return false;
+  if(layout.slots.some(slot=>Math.hypot(slot.x-p.x,slot.y-p.y)<155))return false;
+  // The stone apron and its rose beds are authored scenery; keep them readable.
+  if(Math.abs(p.x-C.x)<320&&Math.abs(p.y-C.y)<250)return false;
+  for(const side of [-1,1])if(Math.hypot(p.x-(C.x+side*340),p.y-(C.y-145))<210)return false;
+  return true;
+ });
+}
+function requestSharedEnvironment(){
+ if(environmentRequested)return;
+ const load=globalThis.KirchendeArt?.loadEnvironment;
+ if(typeof load!=='function')return;
+ environmentRequested=true;
+ Promise.resolve(load.call(globalThis.KirchendeArt)).then(ok=>{if(ok)ground=null;else environmentRequested=false;}).catch(()=>{environmentRequested=false;});
+}
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
  q.fillStyle=globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);
+ const tile=globalThis.DenkmalTerrain?.groundImage;
+ if(tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
  let seed=18631;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<2300;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#69795424','#b09b6330','#1c322b32'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Street along the park's east and front edges. Flight does not receive a ground road.
@@ -23,9 +44,19 @@ function createGround(layout){
  // Rear woodland anchors the memorial; edge trees stay clear of authored lanes and pads.
  for(let i=0;i<28;i++){const x=C.x-1000+rnd()*2000,y=C.y-400-rnd()*650,r=70+rnd()*85;const p={x,y};if(layout.paths.some(l=>globalThis.DenkmalLevels.pathDistance(p,l)<r+75)||layout.slots.some(s=>Math.hypot(x-s.x,y-s.y)<r+60))continue;
  q.fillStyle='#12231c55';q.beginPath();q.ellipse(x+25,y+55,r,r*.5,0,0,7);q.fill();globalThis.DenkmalForest?.drawCrown(q,x,y,r,i);}
+ const atlas=globalThis.KirchendeArt?.image?.('environment');
+ if(atlas?.naturalWidth){
+  const sw=atlas.naturalWidth/3,sh=atlas.naturalHeight/2;
+  for(const p of environmentLamps(layout)){
+   const x=p.x,y=p.y,glow=q.createRadialGradient(x,y-52,3,x,y-52,190);
+   glow.addColorStop(0,'#efbd7050');glow.addColorStop(.44,'#c18c4a20');glow.addColorStop(1,'#70591a00');
+   q.fillStyle=glow;q.fillRect(x-190,y-242,380,380);
+   q.drawImage(atlas,sw*2,sh,sw,sh,x-64,y-132,128,128);
+  }
+ }
  return canvas;
 }
-function drawGround(ctx,layout){if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
+function drawGround(ctx,layout){requestSharedEnvironment();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
 function image(){if(typeof Image==='undefined')return null;if(!memorial){memorial=new Image();memorial.decoding='async';memorial.src='assets/elemental/goethestrasse-memorial-v1.webp?v=goethe1';}return memorial.complete&&memorial.naturalWidth>0?memorial:null;}
 function drawMonument(ctx,m){
  const img=image();ctx.save();try{ctx.fillStyle='#0b211e55';ctx.beginPath();ctx.ellipse(m.x+12,m.y+26,160,30,0,0,7);ctx.fill();
@@ -36,4 +67,4 @@ function drawMonument(ctx,m){
  }finally{ctx.restore();}
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane,release(){ground=null;memorial=null;}};})();
+globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;memorial=null;environmentRequested=false;}};})();
