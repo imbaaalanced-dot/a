@@ -43,7 +43,7 @@ jobs:
           assert total < 1_000_000_000, 'Pages bundle exceeds 1 GB'
           PY
       - name: Archive compact preview for review (not live)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: compact-pages-candidate
           path: /tmp/td2-pages/site

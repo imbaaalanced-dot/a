@@ -36,7 +36,7 @@ jobs:
           npx playwright install chromium
           TD2_QA_OUT=/tmp/td2-combined-qa timeout 180s node tools/verify-equipment-browser.cjs
           TD2_QA_OUT=/tmp/td2-combined-qa timeout 180s node tools/verify-combined-browser.cjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: combined-browser-qa

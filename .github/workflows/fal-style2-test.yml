@@ -42,7 +42,7 @@ jobs:
             --prompt "Premium dark fantasy tower defense game asset, isometric 2.5D illustration of a historically inspired German stone war memorial, weathered dark stone, antique gold ornaments, moss-covered masonry, warm amber lantern lighting, deep blue atmospheric shadows, subtle turquoise magical accents, cinematic semi-realistic detailed textures, centered full object, no text, no interface, no watermark, clean neutral background"
       - name: Upload review asset and request metadata
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fal-style2-review
           path: generated/fal-review/

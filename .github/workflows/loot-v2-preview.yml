@@ -30,7 +30,7 @@ jobs:
           npm install --no-save --package-lock=false playwright@1.62.1
           npx playwright install chromium
           TD2_QA_OUT=/tmp/td2-loot-v2-qa timeout 180s node tools/verify-equipment-browser.cjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: loot-v2-browser-qa
