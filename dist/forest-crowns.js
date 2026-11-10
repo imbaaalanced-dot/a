@@ -6,15 +6,32 @@ function circle(c,x,y,r,color){c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fillStyl
 function create(index){
  const c=document.createElement('canvas');c.width=c.height=256;
  const q=c.getContext('2d'),r=rnd(7823+index*491);
+ // Five distinct baked silhouettes, not five recolors of one round crown.
+ // Broad oak, tall beech, broken old tree, dark conifer and sparse woodland.
+ const profiles=[
+  {rx:1,ry:.85,clusters:115,leaves:720,edge:99,dark:false},
+  {rx:.75,ry:1.03,clusters:118,leaves:740,edge:96,dark:false},
+  {rx:1.02,ry:.73,clusters:88,leaves:465,edge:96,dark:false},
+  {rx:.69,ry:1.12,clusters:105,leaves:550,edge:95,dark:true},
+  {rx:.90,ry:.79,clusters:76,leaves:390,edge:94,dark:false}
+ ];
+ const profile=profiles[index%profiles.length];
  const shade=q.createRadialGradient(128,130,18,128,130,117);
- shade.addColorStop(0,'#13251b');shade.addColorStop(.65,'#1d3926');shade.addColorStop(1,'#10291b00');
- circle(q,128,130,116,shade);
- const mass=['#435a40','#53674a','#60734e','#6d7c53','#354e3c'];
- for(let i=0;i<115;i++){const a=r()*Math.PI*2,d=Math.sqrt(r())*87;circle(q,128+Math.cos(a)*d,128+Math.sin(a)*d*.85,10+r()*17,mass[Math.floor(r()*mass.length)]);}
- const leaf=['#657b50','#7b8b5c','#8d9868','#496644','#a5a16d','#526e49'];
- for(let i=0;i<720;i++){const a=r()*Math.PI*2,d=Math.sqrt(r())*94,x=128+Math.cos(a)*d,y=128+Math.sin(a)*d*.83;
-  if((x-128)**2+((y-128)*1.2)**2>99**2)continue;
-  q.fillStyle=leaf[Math.floor(r()*leaf.length)];q.beginPath();q.ellipse(x,y,1.2+r()*3.6,1+r()*2.4,r()*3,0,Math.PI*2);q.fill();
+ shade.addColorStop(0,profile.dark?'#101f1d':'#13251b');
+ shade.addColorStop(.65,profile.dark?'#223e33':'#1d3926');
+ shade.addColorStop(1,'#10291b00');
+ q.fillStyle=shade;q.beginPath();q.ellipse(128,130,110*profile.rx,110*profile.ry,0,0,Math.PI*2);q.fill();
+ const mass=profile.dark?['#263e34','#345344','#3f5c48','#45644b','#20382f']:['#435a40','#53674a','#60734e','#6d7c53','#354e3c'];
+ for(let i=0;i<profile.clusters;i++){
+  const a=r()*Math.PI*2,d=Math.sqrt(r())*87,x=128+Math.cos(a)*d*profile.rx,y=128+Math.sin(a)*d*profile.ry;
+  circle(q,x,y,profile.dark?8+r()*12:10+r()*17,mass[Math.floor(r()*mass.length)]);
+ }
+ const leaf=profile.dark?['#3f654e','#52765b','#66836a','#284c40','#789078']:['#657b50','#7b8b5c','#8d9868','#496644','#a5a16d','#526e49'];
+ for(let i=0;i<profile.leaves;i++){
+  const a=r()*Math.PI*2,d=Math.sqrt(r())*94,x=128+Math.cos(a)*d*profile.rx,y=128+Math.sin(a)*d*profile.ry;
+  if(((x-128)/profile.rx)**2+((y-128)/profile.ry)**2>profile.edge**2)continue;
+  q.fillStyle=leaf[Math.floor(r()*leaf.length)];q.beginPath();
+  q.ellipse(x,y,profile.dark?1+r()*2.3:1.2+r()*3.6,profile.dark?2+r()*4:1+r()*2.4,r()*3,0,Math.PI*2);q.fill();
  }
  // One consistent light direction, baked into the sprite rather than filtered each frame.
  q.globalCompositeOperation='source-atop';
