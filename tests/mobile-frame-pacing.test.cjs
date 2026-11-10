@@ -5,15 +5,17 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(require('node:path').join(__dirname,'../dist/game.js'),'utf8');
 const loopSource=source.slice(source.indexOf('  function loop(now){'),source.indexOf('  function tone('));
-function run(intervals,{mobile=true,low=true}={}){
+const renderSource=source.match(/^  function targetRenderInterval\(\)\{.*\}$/m)?.[0];
+assert.ok(renderSource,'production frame limiter must be available');
+function run(intervals,{mobile=true,mode='low'}={}){
  let draws=0,updates=0;
  const box={last:0,MAX_FRAME_SECONDS:.25,FIXED_STEP:1/60,loopAccumulator:0,
  telemetryOn:false,state:'playing',document:{hidden:false},lastIdleDraw:0,lastGameplayDraw:0,
  performance:{now:()=>0},simulationStepsPerFrame:()=>1,
- targetRenderInterval:()=>mobile&&low?1000/30:0,
+ mobileRender:mobile,graphicsMode:mode,
  update(){updates++;},draw(){draws++;},recordCpuFrame(){},advanceQualityMonitor(){},
  updateAdaptiveResolution(){},updateTelemetry(){},requestAnimationFrame(){}};
- vm.createContext(box);vm.runInContext(loopSource,box);
+ vm.createContext(box);vm.runInContext(renderSource+'\n'+loopSource,box);
  let now=0;for(const interval of intervals){now+=interval;box.loop(now);}
  return {draws,updates,box,tick:dt=>box.loop(now+=dt)};
 }
@@ -25,7 +27,7 @@ for(const hz of [60,90,120]){
  const uncapped=run(intervals,{mobile:false});
  assert.equal(uncapped.draws,intervals.length,'desktop draws every callback');
  assert.equal(result.updates,uncapped.updates,'render cap must not alter simulation');
- assert.equal(run(intervals,{low:false}).draws,intervals.length,'manual high draws every callback');
+ for(const mode of ['auto','high'])assert.equal(run(intervals,{mode}).draws,intervals.length,mode+' mode must draw at display refresh');
 }
 const slow=run(Array(100).fill(100));
 assert.equal(slow.draws,100,'slow callbacks draw once, without catch-up bursts');
