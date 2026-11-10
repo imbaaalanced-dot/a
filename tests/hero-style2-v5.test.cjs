@@ -25,14 +25,14 @@ for(const name of ['kim','marcel']){
    [pixels.readUIntLE(24,3)+1,pixels.readUIntLE(27,3)+1];
  assert.deepEqual(dims,[atlas.cell*6,atlas.cell*6],`${name} canonical side action atlas dimensions`);
 }
-assert.match(portraitSource,/marcel-guardian-v6\.webp/);
-assert.match(portraitSource,/kim-marksman-v6\.webp/);
+assert.match(portraitSource,/marcel-guardian-style2\.webp/);
+assert.match(portraitSource,/kim-marksman-style2\.webp/);
 assert.match(portraitSource,/DIE TREFFSICHERE/);
 
 const loaded=[];
 class FakeImage{
  constructor(){this.complete=true;this.naturalWidth=0;this.naturalHeight=0;}
- set src(v){this._src=v;loaded.push(v);if(v.includes('walk-v5b')){this.naturalWidth=768;this.naturalHeight=1024;}}
+ set src(v){this._src=v;loaded.push(v);if(v.includes('walk-style2')){this.naturalWidth=768;this.naturalHeight=1024;}}
  get src(){return this._src;}
 }
 const ctx={save(){},restore(){},translate(){},ellipse(){},arc(){},fill(){},stroke(){},beginPath(){},rotate(){},drawImage(...args){this.drawn.push(args);},drawn:[]};
@@ -51,8 +51,8 @@ for(const character of ['marcel','kim']){
  const crop=ctx.drawn[0].slice(1,5);
  assert.deepEqual(crop,[256,0,256,256],`${character} 3x4 walk atlas cell`);
 }
-assert.ok(loaded.some(s=>s.includes('marcel-walk-v5b.webp')));
-assert.ok(loaded.some(s=>s.includes('kim-walk-v5b.webp')));
+assert.ok(loaded.some(s=>s.includes('marcel-walk-style2.webp')));
+assert.ok(loaded.some(s=>s.includes('kim-walk-style2.webp')));
 assert.deepEqual(sidePreloads,['marcel','kim'],'active hero combat atlas prefetches once before first attack');
 assert.match(heroSource,/storyPortrait/, 'narrative portrait must follow current character');
 assert.match(fs.readFileSync(path.join(dist,'index.html'),'utf8'),/id="storyPortrait"/);

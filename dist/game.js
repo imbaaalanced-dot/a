@@ -16,7 +16,7 @@
   monumentImage.src = 'assets/monument-level1-style2.webp';
   const hellscape = new Image();
   const art = {};
-  atlas.src = 'assets/asset-atlas.webp';
+  atlas.src = 'assets/asset-atlas-style2.webpassets/v=style2a1';
   // All six maps render their own ground; do not decode the unused 1254px legacy terrain.
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
@@ -1283,7 +1283,7 @@
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
     const portraitUrl=globalThis.TD2CanonicalHeroArt?.[selectedCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp':'assets/menu/v5-avatars/marcel-guardian-v6.webp');
+      (kim?'assets/menu/v5-avatars/kim-marksman-style2.webpassets/v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webpassets/v=style2a1');
     globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
