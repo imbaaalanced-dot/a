@@ -1,7 +1,7 @@
 /* Painted enemy movement, cosmetic only. One shared, lazily loaded atlas.
  * Cold/failed art returns false so the previous renderer stays available. */
 (()=>{'use strict';
-const cell=160,rows=21,url='assets/enemies/walk-v1.webp?v=enemymove1';
+const cell=160,rows=21,url='assets/enemies/walk-style2.webp?v=style2a1';
 const variants={
  wraith:[12,15,3],runner:[0,13,11],brute:[1,7,9],archer:[2],guardian:[14,3],sapper:[5],
  rootrunner:[11,13],stoneguard:[7,14],mistcaller:[6,16,4],uprooted:[18],

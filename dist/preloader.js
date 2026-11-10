@@ -13,8 +13,8 @@
     else if (localStorage.getItem('denkmal-character') === 'kim') character = 'kim';
   }catch{}
   const essential = [
-    mobile ? 'assets/menu/memorial-yard-mobile-v3.webp' : 'assets/menu/memorial-yard-v3.webp',
-    'assets/menu/crest-v3.webp',
+    mobile ? 'assets/menu/memorial-yard-mobile-style2.webp' : 'assets/menu/memorial-yard-style2.webp',
+    'assets/menu/crest-style2.webp',
     globalThis.TD2CanonicalHeroArt?.[character]?.portrait ||
       'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
   ];

@@ -39,7 +39,7 @@ for(const [i,type] of ['wraith','runner','brute','archer','guardian','sapper','r
 }
 const runner={type:'runner',x:100,y:200};
 assert.equal(box.Style2Enemies.draw(ctx,runner,1,0),true,'cold animation falls back to the original enemy atlas');
-const animation=images.at(-1);assert.match(animation.src,/enemies-walk-alpha8\.webp/);
+const animation=images.at(-1);assert.match(animation.src,/enemies-walk-style2\.webp/);
 animation.complete=true;animation.naturalWidth=1448;animation.naturalHeight=1086;
 box.Style2Enemies.draw(ctx,runner,1,0);
 const first=draws.at(-1).slice(1,5);

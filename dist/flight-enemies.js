@@ -17,7 +17,7 @@ function sprite(type){
  if(!specs[type]||typeof Image==='undefined')return null;
  let entry=sprites.get(type);
  if(entry?.failed&&Date.now()>=entry.retryAt){sprites.delete(type);entry=null;}
- if(!entry){entry={img:new Image(),failed:false,retryAt:0};sprites.set(type,entry);entry.img.decoding='async';entry.img.onerror=()=>{entry.failed=true;entry.retryAt=Date.now()+5000;};entry.img.src='assets/elemental/'+type+'-v1.webp?v=flight2';}
+ if(!entry){entry={img:new Image(),failed:false,retryAt:0};sprites.set(type,entry);entry.img.decoding='async';entry.img.onerror=()=>{entry.failed=true;entry.retryAt=Date.now()+5000;};entry.img.src='assets/elemental/'+type+'-style2.webp?v=style2a1';}
  return !entry.failed&&entry.img.complete&&entry.img.naturalWidth>0?entry.img:null;
 }
 function draw(ctx,e,time=0,reduced=false){

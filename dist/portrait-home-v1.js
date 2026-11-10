@@ -18,7 +18,7 @@
  };
  const section=document.createElement('div');
  section.className='td2-portrait-home';
- section.innerHTML='<div class="td2-portrait-logo" aria-hidden="true"><img src="assets/menu/crest-v3.webp" width="96" height="96" alt=""><strong>DENKMAL TD2</strong><small>DIE ERINNERUNG BRAUCHT EINEN HÜTER</small></div>'+
+ section.innerHTML='<div class="td2-portrait-logo" aria-hidden="true"><img src="assets/menu/crest-style2.webp" width="96" height="96" alt=""><strong>DENKMAL TD2</strong><small>DIE ERINNERUNG BRAUCHT EINEN HÜTER</small></div>'+
  '<div class="td2-mode-stack">'+
  '<button class="td2-mode-button td2-mode-primary" data-td2-target="campaign" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.campaign+'</span><span class="td2-mode-copy"><strong>Kampagne</strong><small>Sieben Schauplätze · 20 Wellen je Kapitel</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+
  '<button class="td2-mode-button td2-mode-assault" data-td2-target="rush" type="button"><span class="td2-mode-icon" aria-hidden="true">'+svg.rush+'</span><span class="td2-mode-copy"><strong>Denkmal-Ansturm</strong><small>Endloser Überlebenskampf ohne Helden</small></span><span class="td2-mode-arrow" aria-hidden="true">›</span></button>'+

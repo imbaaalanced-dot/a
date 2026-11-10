@@ -28,7 +28,7 @@
   // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
   let standaloneSprite=null;
   const monumentImage=()=>{
-    const url='assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3';
+    const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
     if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
     if(typeof Image!=='function')return null;
     if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}

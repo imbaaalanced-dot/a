@@ -13,7 +13,7 @@
   globalThis.DenkmalMobileRender=mobileRender;
   const atlas = new Image();
   const monumentImage = new Image();
-  monumentImage.src = 'assets/monument-level1-v2.webp';
+  monumentImage.src = 'assets/monument-level1-style2.webp';
   const hellscape = new Image();
   const art = {};
   atlas.src = 'assets/asset-atlas.webp';
