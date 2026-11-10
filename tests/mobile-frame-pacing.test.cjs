@@ -32,6 +32,8 @@ for(const hz of [60,90,120]){
  assert.equal(auto.updates,uncapped.updates,'60 FPS render cap must not alter simulation');
  assert.equal(run(intervals,{mode:'high'}).draws,intervals.length,'HIGH draws at display refresh');
 }
+const jittered=Array.from({length:600},(_,i)=>1000/60+(i%2?.8:-.8));
+assert.ok(run(jittered,{mode:'auto'}).draws>=598,'60 Hz callback jitter must not halve 60 FPS rendering');
 const slow=run(Array(100).fill(100));
 assert.equal(slow.draws,100,'slow callbacks draw once, without catch-up bursts');
 const hidden=run([]);hidden.box.document.hidden=true;hidden.tick(1000);
