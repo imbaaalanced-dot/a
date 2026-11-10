@@ -12,7 +12,7 @@ element('heroVoice').play=function(){this.paused=false;return Promise.resolve();
 element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
-const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-v1.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
+const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-style2.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
 sandbox.window=sandbox;
 sandbox.TD2DeveloperMode=true;
 sandbox.localStorage.setItem('td2_developer_mode_enabled','true');
@@ -85,7 +85,7 @@ check('Kirchende waits for the monument image and ignores a cancelled level load
     t.mainMenu();loaded=false;t.startGame(3);resume();assert.equal(t.state,'start','failed image load keeps the menu usable');
   }finally{delete sandbox.KirchendeArt;}
 });
-check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-v2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
+check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-style2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
 check('Legacy developer preference cannot activate 3x speed or override level locks',()=>{
   const hooks=sandbox.DenkmalTestHooks;
@@ -571,7 +571,7 @@ check('Painted animation renderer handles ground, flying and boss enemies withou
     t.game.enemies=[];t.spawnEnemy(type);const e=t.game.enemies[0];
     assert.ok(Number.isInteger(e.visualVariant));e.x=t.game.hero.x+45;e.y=t.game.hero.y+20;e.velX=10;
     const before=JSON.stringify(e);draws.length=0;t.draw();
-    assert.ok(draws.some(d=>d[0].src?.includes('assets/enemies/walk-v1.webp')),type+' uses the integrated atlas');
+    assert.ok(draws.some(d=>d[0].src?.includes('assets/enemies/walk-style2.webp')),type+' uses the integrated atlas');
     assert.equal(JSON.stringify(e),before,'drawing preserves enemy hp, position and abilities');
   }
 });

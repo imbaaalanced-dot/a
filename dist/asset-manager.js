@@ -2,14 +2,14 @@
 (()=>{'use strict';
   const entries=new Map(), groups=new Map();
   const levelAssets={
-    1:['assets/monument-level1-v2.webp'],
+    1:['assets/monument-level1-style2.webp'],
     2:[],
     3:['assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'],
-    4:['assets/church-ende-alpha8.webp?v=alpha8a2','assets/lion-ende-alpha8.webp?v=alpha8a2'],
-    5:['assets/hohensyburg/kaiser-wilhelm-v1.webp?v=syburg3'],
-    6:['assets/elemental/goethestrasse-memorial-v1.webp?v=goethe1']
+    4:['assets/church-ende-style2.webp?v=style2a1','assets/lion-ende-style2.webp?v=style2a1'],
+    5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
+    6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1']
   };
-  const common=['assets/scenery-alpha8.webp?v=alpha8a2','assets/enemies/walk-v1.webp?v=enemymove1'];
+  const common=['assets/scenery-style2.webp?v=style2a1','assets/enemies/walk-style2.webp?v=style2a1'];
   function entry(url){
     const old=entries.get(url);
     if(old?.status==='failed'&&Date.now()-old.failedAt>5000)entries.delete(url);

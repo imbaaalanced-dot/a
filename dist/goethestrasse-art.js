@@ -57,7 +57,7 @@ function createGround(layout){
  return canvas;
 }
 function drawGround(ctx,layout){requestSharedEnvironment();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
-function image(){if(typeof Image==='undefined')return null;if(!memorial){memorial=new Image();memorial.decoding='async';memorial.src='assets/elemental/goethestrasse-memorial-v1.webp?v=goethe1';}return memorial.complete&&memorial.naturalWidth>0?memorial:null;}
+function image(){if(typeof Image==='undefined')return null;if(!memorial){memorial=new Image();memorial.decoding='async';memorial.src='assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1';}return memorial.complete&&memorial.naturalWidth>0?memorial:null;}
 function drawMonument(ctx,m){
  const img=image();ctx.save();try{ctx.fillStyle='#0b211e55';ctx.beginPath();ctx.ellipse(m.x+12,m.y+26,160,30,0,0,7);ctx.fill();
  if(img){ctx.drawImage(img,m.x-230,m.y-410,460,460);return;}

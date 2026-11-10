@@ -156,7 +156,7 @@ check('Persistence and collision guards survive the alpha.4 pass',()=>{
   const levels=fs.readFileSync(path.join(root,'levels.js'),'utf8');
   assert.ok(levels.includes('denkmal-level2-unlocked-v1'),'level 2 unlock persistence key kept');
   assert.ok(game.includes('td2-v4-intro-tutorial'),'intro tutorial persistence key kept');
-  assert.ok(game.includes("monumentImage.src = 'assets/monument-level1-v2.webp'"),'the alpha.3 monument hotfix is backported');
+  assert.ok(game.includes("monumentImage.src = 'assets/monument-level1-style2.webp'"),'the alpha.3 monument hotfix is backported');
   assert.equal(typeof sandbox.DenkmalLoot.create,'function','loot model factory intact');
   const e={x:10,y:10,r:5},b={prevX:0,prevY:0,x:20,y:0,r:4};
   assert.equal(t.segmentDistance(e,b),10);
