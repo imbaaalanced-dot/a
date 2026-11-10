@@ -4,7 +4,7 @@
   const levelAssets={
     1:['assets/monument-level1-style2.webp'],
     2:[],
-    3:['assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'],
+    3:['assets/kirchende/monument-photo-style2.webp?v=style2a1'],
     4:['assets/church-ende-style2.webp?v=style2a1','assets/lion-ende-style2.webp?v=style2a1'],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1']
