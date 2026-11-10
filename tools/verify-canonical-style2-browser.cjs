@@ -37,6 +37,13 @@ const server=http.createServer((req,res)=>{
       await page.locator('#chooseMarcel').click();
       await page.locator('#menuBackBtn').click();
       await page.locator('#menuHomeActions').waitFor({state:'visible'});
+      await page.screenshot({path:path.join(screenshots,`${device}-marcel-menu.png`),fullPage:true,animations:'disabled'});
+      await page.locator('#menuCharacterBtn').click();
+      await page.locator('#chooseKim').click();
+      await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
+      await page.screenshot({path:path.join(screenshots,`${device}-kim-menu.png`),fullPage:true,animations:'disabled'});
+      await page.locator('#chooseMarcel').click();
+      await page.locator('#menuBackBtn').click();
       const output=await page.evaluate(async()=>{
         const kinds=['bow','cannon','mage','rift','boomerang'],urls=[];
         for(const kind of kinds)for(let tier=1;tier<=3;tier++){
@@ -87,6 +94,7 @@ const server=http.createServer((req,res)=>{
       assert.equal(output.impacts,15);
       assert.equal(output.level,1);
       await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:false,animations:'disabled',timeout:60000});
+      await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:true,animations:'disabled'});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
       assert.deepEqual(requests.filter(url=>banned.test(url)),[],'no competing hero/tower art fetched');
       assert.equal(requests.filter(url=>/style2-user-towers-v4\/runtime-webp\/towers\//.test(url)).length,15,'all fifteen V4 tower tiers fetched');
