@@ -19,3 +19,12 @@ The cannon progression remains wood → iron → explosive. No range, damage, at
 - The five family impact sheets show all 18 chronological cells.
 
 Miniature checks are visual asset checks. This branch still needs its required CI and Chromium smoke checks before any merge or publication; a real Android 4 GB test remains separate.
+
+## PR #179 verification repairs · 2026-11-10
+
+- Open the hero submenu before selecting Kim or Marcel; return through the visible back button.
+- Capture the viewport once per state with CSS animations disabled; duplicated full-page captures were removed after reproducible screenshot timeouts.
+- V4 impact rendering no longer delegates to the legacy expansion atlas. The regression test supplies an already-ready legacy renderer: it fails before the fix and passes afterward.
+- Browser asset coverage counts distinct projectile URLs because the bounded image cache can reload evicted variants.
+- Local `node --test tests/*.test.cjs`: 113 passed, zero failures. `TEST_MOBILE=1 node tests/game.test.cjs`: 95 gameplay checks passed. These are not physical Android results.
+- Merge and publication still require successful CI and desktop/touch Chromium results for the final PR head.
