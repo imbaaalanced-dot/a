@@ -8,7 +8,7 @@
   });
   const MAX_ALLIES=10,LEASH=140,ALERT=165;
   const ATLAS='assets/barracks/kasernen-atlas-96px.webp?v=barracks2';
-  const STATES='assets/barracks/states-v1.webp?v=barracks1';
+  const STATES='assets/barracks/states-style2.webp?v=style2a1';
   // The existing image registry owns one decoded atlas across all towers/units.
   function atlas(){return globalThis.DenkmalAssets?.ready(ATLAS)||null;}
   function preload(){return globalThis.DenkmalAssets?.retain('barracks',[ATLAS,STATES]);}
