@@ -28,7 +28,6 @@
     return assets.ready(url)||null;
   }
   function draw(ctx,p){
-    if(globalThis.V2Expansion?.impact(ctx,p))return true;
     if(!p||p.reduced||!kinds.includes(p.kind)||![p.x,p.y,p.life,p.max].every(Number.isFinite)||p.life<=0||p.max<=0)return false;
     const image=warm(p.kind);
     if(!image?.naturalWidth)return false;
