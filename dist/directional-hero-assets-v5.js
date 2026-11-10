@@ -1,4 +1,4 @@
-/* Canonical V5b hero combat sheets. Enemy directional manifests stay untouched. */
+/* Canonical V5b hero combat sheets. Legacy 96px hero entries remain disabled. */
 (()=>{'use strict';
   const registry=globalThis.TD2DirectionalAssets;
   if(registry){delete registry.marcel;delete registry.kim;}

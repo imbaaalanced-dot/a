@@ -1,7 +1,7 @@
 # Denkmal TD – verbindliche Heldenreferenzen
 
 **Freigabe durch Malle:** 7. November 2026  
-**Status:** Original-Charakterreferenzen freigegeben; neue Gameplay-Sprites, Animationen und Integration noch nicht erfolgt.
+**Status (aktualisiert 10.11.2026):** Original-Charakterreferenzen freigegeben. Abgeleitete V5b-Bewegungs-/Aktionsatlanten und V6-Menüportraits sind im Runtimebestand und visuell gegen die Identitätsmerkmale geprüft. Das Original-PNG selbst bleibt Referenzquelle; Aktionsansichten sind noch nicht für alle Richtungen vollständig.
 
 Diese beiden Originalbilder sind ab jetzt die **maßgeblichen visuellen Vorlagen** für die Haupthelden im gesamten Denkmal-TD-Projekt: TD2, Menüs, Heldenauswahl, Portraits, künftige Level, Trailer und alle Modi, **soweit die Helden dort auftreten**. Vorhandene Spielmechanik, Spielstände und aktuelle Animationen bleiben durch diesen Referenz-Lock unverändert.
 
@@ -47,5 +47,13 @@ Beide Originale sind unverändert beigelegt. Der Alphakanal ist vorhanden; dies 
 ## Nächster Produktionsschritt (noch offen)
 
 1. In der aktiven TD2-Version bisherige Marcel-/Kim-Referenzen, Portraits, Animationen und Loader vergleichen.
-2. Zuerst Gameplay-Master mit gleichbleibenden Merkmalen freigeben; danach Bewegungs-/Angriffs-/Treffer-/Todesblätter nach tatsächlich verwendetem Raster produzieren.
+2. Abgeleitete Gameplay-Master anhand der festgelegten Merkmale prüfen; danach Bewegungs-/Angriffs-/Treffer-/Todesblätter nach dem tatsächlichen Raster und den unterstützten Blickrichtungen produzieren.
 3. Über einen separaten Branch integrieren und Vorschau, Regressionen und Android-Sichtprüfung absolvieren. Erst danach releasefähig nennen.
+
+
+## Runtime-Abgleich (10. November 2026)
+
+- **Kim:** `dist/assets/hero/kim-walk-v5b.webp` (768×1024, 3×4 Felder à 256 px); `kim-side-actions-v5b.webp` (768×768, 6×6 à 128 px; Aktion/Hit/Tod nach Manifest nur in Blickrichtung links); Menüportrait `dist/assets/menu/v5-avatars/kim-marksman-v6.webp`. Blondierter Pferdeschwanz, dunkle Brille, Bogen und dunkle Ausrüstung sind in den geprüften Varianten wiedererkennbar.
+- **Marcel:** `dist/assets/hero/marcel-walk-v5b.webp` (768×1024, 3×4 Felder à 256 px); `marcel-side-actions-v5b.webp` (768×768, 6×6 à 128 px; Aktion/Hit/Tod nur in Blickrichtung rechts); Menüportrait `dist/assets/menu/v5-avatars/marcel-guardian-v6.webp`. Schwarze Kappe, blau gestreifter Hoodie, Schwert und Löwenschild sind in den geprüften Varianten wiedererkennbar.
+- Manifest: `dist/directional-hero-assets-v5.js`. Die veralteten Kim-/Marcel-96×96-Einträge wurden aus `dist/directional-assets-v410.js` entfernt; ein expliziter Runtime-Guard hält alte Heldeneinträge auch bei künftigen Manifeständerungen deaktiviert. Unterstützte Action-Facings werden nicht gespiegelt. In den übrigen Blickrichtungen bleibt der Charakter sichtbar über das V5b-Walksheet; eine echte Kampfpose für diese Richtungen ist noch offen.
+- Das vollständige Pfad-, Raster- und Statusmapping ist in `hero-reference-manifest-20261107.json` dokumentiert.
