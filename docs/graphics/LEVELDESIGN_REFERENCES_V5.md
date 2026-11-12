@@ -26,7 +26,7 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 | **4 Dorfkirche / Löwe** | Kirche mit Bruchsteinturm/Schieferdach, Schlafender Löwe von 1879, Grabsteine | Kopfsteinpflaster, alte Steinplatten, Rasen/Moos; vier Dorf-/Kirchhofzugänge | Alte Eichen, Sträucher | Warme Streifsonne mit langen Mauerschatten | R/F, alte Kirchhofpläne O |
 | **5 Hohensyburg** | Heutiger Pylon und Reiterstandbild; Stein-/Treppenterrassen | Große Steinplatten, Stufen, Fels, Waldschotter; zwei Wald- und ein Terrassenzugang | Eichen/Buchen in den Waldtaschen | Kaltblauer Bergdunst, Goldlicht am Sockel | R/F; Vorkriegsbilder vorhanden, Abgleich O |
 | **6 Goethestraße** | Ehrenmal 1926, Mauer, Rosen-/Parkanlage | Getrennte Stadtstraße, Parkweg, Ziegel-/Plattenrand; drei asymmetrische Zugänge | Parklaub, Rosen, Hecken | Gefilterte späte Sonne | R/F, Einweihungs- und frühere Parkbilder O |
-| **7 Westhofen** | Geflügelter Helm, Schwert/Schild, Sockel, Steinrahmen, Straßenfront und Bushaltestelle | Steinplatten und Stufen am Denkmal, Kiesweg, Asphalt, Gehwegpflaster und Grünzug | Hohe Laubkronen, Efeu, Hecken, Grünstreifen | Kühles Abendblau mit Laternenakzenten (K) | R/F/U; undatierte fotografische Objekt- und Platzdetails vorhanden, historische Datierung O |
+| **7 Westhofen** | Geflügelter Helm, Schwert/Schild, Sockel samt seitlichem Relief, Steinrahmen, Straßenfront und Bushaltestelle | Steinplatten und Stufen am Denkmal, Kiesweg, Asphalt, Gehwegpflaster und Grünzug | Hohe Laubkronen, Efeu, Hecken, Grünstreifen | Kühles Abendblau mit Laternenakzenten (K) | R/F/U; sieben Fotos + neun 4K-Video-Frames geprüft; Kameradatum ungeklärt |
 
 ## Level 1: Einleitung
 
@@ -92,6 +92,16 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 **Zustand ungeklärt:** Die sichtbare **mittlere Tafel** und **mindestens eine Feuerschale** widersprechen dem für Ende 2026 in den Projektnotizen festgehaltenen Zustand nach dem Diebstahl am 20.07.2026. Es ist **nicht** bekannt, wann die Nutzerfotos aufgenommen wurden oder ob später etwas ersetzt wurde. Zwei gestalterische Zustandsreferenzen getrennt katalogisieren: `WFH-PHOTO-UNDATED-PRESENT` (fotografierte Tafel/Schale vorhanden) und `WFH-2026-DOCUMENTED-MISSING` (laut Projektchronik entfernte Tafel/Schalen). Für den laufenden Spielstand keine stillschweigende Änderung am bisherigen 2026-Asset vornehmen.
 
 **Recherchepriorität angepasst:** Für Level 7 sind Frontalmotiv, Helm, Pfeiler, Vorplatz, Treppen und Baumbestand nun mit undatierten Nutzerfotos gut abgedeckt. Fehlend bleiben *datiertes* historisches Fotomaterial, verifizierte Seiten-/Rückansichten, EXIF/Aufnahmezeit und eine sichere Aufnahme nach Juli 2026.
+
+## Videoabgleich 12.11.2026: Level 7 Westhofen (U)
+
+Das bisher ausstehende 81,4-s-4K-Video wurde mit neun zeitlich verteilten Standbildern und `ffprobe` ausgewertet. Siehe [Westhofen-Video-Protokoll mit Timecodes](westhofen-video-reference-pass-20261112.md) sowie [Fotoindex](westhofen-user-photo-references-20261112.md).
+
+**Neu belegbar:** eine offene Rasenfläche hinter/seitlich des Denkmals (0–10 s), der seitliche Sockel mit eigenem Relief (20–30 s), die Flügelhelm-/Schild-/Schwertzone (40 s), die Architektur samt zentraler Metalltafel (50 s), verwitterte Steinbalken mit Efeu und Fugen (60 s), Ornamentdetail auf der Rück-/Seitenzone des Helms (70 s), Nahansicht der Tafel (80 s). Form und genaue historische Symbolbedeutung der Reliefs sind noch offen.
+
+**Zeit:** Der MP4-Container enthält `creation_time=2025-05-01T14:49:00Z`, **nicht** als bewiesenes Fotodatum zu verwenden. Die sieben JPG-Kopien enthalten keine auslesbaren EXIF-Aufnahmezeitfelder. Die sichtbare Tafel/Schale dokumentiert einen fotografierten, zeitlich nicht unabhängig bestätigten Zustand **mit** Bronzeelementen. Das Produktdesign für November 2026 bleibt bis zur sicheren Nach-Diebstahl-Referenz getrennt. Weder originale Medien noch Videoframes wurden in GitHub hochgeladen.
+
+**Runtime-Ist:** `dist/westhofen-art.js` lädt bei Verfügbarkeit `assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1` und zeichnet sie an `m.x-225,m.y-265` auf 450×300; sonst dient der vorhandene Canvas-Pfad als Fallback. Die Referenzauswertung ändert keine Loader, Sprite-Assets, Gameplaywege oder Bauplätze.
 
 ## Gemeinsame Material- und Vegetations-Referenzen (Produktion, nicht Behauptung vorhandener Dateien)
 
