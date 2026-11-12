@@ -138,6 +138,7 @@ jobs:
           python tests/hero-sprites-v5b.test.py
           python tests/active-hero-atlas-alpha.test.py
           python tests/hero-direction-candidate-gate.test.py
+          python tests/hero-direction-packer.test.py
           python tests/assets.test.py
           python tests/style2-v2-assets.test.py
           python tests/v2-expansion-assets.test.py
