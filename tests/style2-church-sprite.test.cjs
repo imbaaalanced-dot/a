@@ -31,7 +31,7 @@ assert.ok(art.churchSpriteReady&&!art.churchSpriteFailed);
 assert.equal(loadUrls[0],'assets/church-ende-style2.webp?v=style2a1');
 assert.equal(loadUrls.length,1,'opaque lion placeholder is never requested');
 assert.equal(art.lionSpriteReady,false,'unapproved placeholder cannot become live art');
-assert.doesNotMatch(src,/sprite\\.src=['"]assets\\/lion-ende-style2\\.webp/,'no placeholder loader');
+assert.doesNotMatch(src,/sprite\.src\s*=\s*['"]assets\/lion-ende-style2\.webp/,'no placeholder loader');
 art.drawBackdrop(ctx,center);
 const first=draws.find(a=>a[0]===imageInstance);
 assert.ok(first,'the generated church WebP must be drawn, not only loaded');
