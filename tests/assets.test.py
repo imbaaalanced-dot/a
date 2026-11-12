@@ -98,3 +98,31 @@ with Image.open(pixel_atlas) as image:
             cell = image.getchannel('A').crop((col*128,row*128,(col+1)*128,(row+1)*128))
             assert cell.getbbox(), ('empty pixel Marcel frame', col, row)
 print('marcel-walk-reference-v1.webp: decoded 3x4 RGBA atlas, within mobile budget')
+
+
+# Westhofen's live memorial is one decoded RGBA WebP, not a flattened screenshot.
+# The original source photos document a different historical state; this test
+# validates the current 2026-game asset's delivery contract, not historical fidelity.
+westhofen = root.parent / 'westhofen' / 'westhofen-memorial-style2-v1.webp'
+with Image.open(westhofen) as image:
+    image.load()
+    assert image.format == 'WEBP', 'Westhofen memorial must decode as WebP'
+    assert image.mode == 'RGBA', 'Westhofen memorial must keep true transparency'
+    assert image.size == (768, 512), 'preserve the 3:2 source ratio expected by the 450x300 renderer'
+    alpha = image.getchannel('A')
+    bbox = alpha.getbbox()
+    assert bbox is not None, 'Westhofen memorial must contain visible pixels'
+    assert alpha.getextrema()[0] == 0, 'Westhofen sprite needs transparent negative space'
+    assert alpha.getextrema()[1] > 200, 'Westhofen sculpture and stonework need opaque detail'
+    # WebP's alpha plane can contain near-zero fringe pixels at the canvas edges.
+    # Keep the *raw* bounds in the report, and separately assert that meaningfully
+    # visible sculpture/stone pixels have a safe inset before integration.
+    visible_alpha = alpha.point(lambda value: 255 if value >= 32 else 0)
+    visible_bbox = visible_alpha.getbbox()
+    inset = 8
+    print(f'Westhofen raw alpha bbox={bbox}; alpha>=32 bbox={visible_bbox}')
+    assert visible_bbox is not None, 'Westhofen has no visible opaque silhouette'
+    assert visible_bbox[0] >= inset and visible_bbox[1] >= inset, ('clipped visible Westhofen top/left edge', bbox, visible_bbox)
+    assert visible_bbox[2] <= image.width - inset and visible_bbox[3] <= image.height - inset, ('clipped visible Westhofen bottom/right edge', bbox, visible_bbox)
+    assert westhofen.stat().st_size < 160000, 'Westhofen memorial WebP exceeds the current mobile download budget'
+    print(f'Westhofen memorial: {image.width}x{image.height} RGBA WebP, alpha bbox {bbox}, under 160 KB')
