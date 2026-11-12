@@ -16,7 +16,7 @@
   monumentImage.src = 'assets/monument-level1-style2.webp';
   const hellscape = new Image();
   const art = {};
-  atlas.src = 'assets/asset-atlas-style2.webpassets/v=style2a1';
+  atlas.src = 'assets/asset-atlas-style2.webp?v=style2a1';
   // All six maps render their own ground; do not decode the unused 1254px legacy terrain.
   const WORLD_W=3072,WORLD_H=3072;
   let zoom=.56,zoomMode='wide',graphicsMode='auto';
