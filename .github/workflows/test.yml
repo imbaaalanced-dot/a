@@ -87,6 +87,7 @@ jobs:
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
           node tests/hero-sprites-v5b.test.cjs
+          node tests/hero-action-pivot-contract.test.cjs
           node tests/canonical-style2-runtime.test.cjs
       - name: Portalreise and campaign pilot
         run: |
