@@ -21,3 +21,12 @@ Stand: 12. November 2026. Basis: ursprüngliche Grafikquellen + lokales QA-v2-Ar
 ## Freigabekriterium
 
 Für **jede** neue Richtungsdatei sind technische Gate-Prüfung, visuelle Identitäts- und Perspektivabnahme, Laufzeittest in Desktop-/Touch-Chromium und die getrennte Android-4-GB-Abnahme zu protokollieren. Ein erfolgreiches CI-Ergebnis des **QA-Codes** ist keine Freigabe der **Grafiken**. Verknüpft: Issue #205.
+
+
+## Visuelle Nachkontrolle: QA v4 als konservativer Nachfolger
+
+Die anschließend geprüfte QA-v3-Variante enthielt einige **nur gedrehte/skalierte** Ersatzposen, die gezeichnete Bogen- und Schwerthiebe verdeckten und bei Tod teilweise unnatürlich schwebten. Diese Ersetzungen sind **verworfen**.
+
+**QA v4** ist der konservative lokale Nachfolger: nur zehn Blickrichtungs-Korrekturen an verdrehten Attack-/Hit-/Death-Frames, 108 PNG-Frames und sechs WebP-Atlanten bleiben erhalten. Originale Schlag-, Bogen- und Todesposen sind ansonsten unverändert. Der Pixel-Gate-Test ist lokal bestanden, das visuelle Gate bleibt **HOLD**. V4-Archiv-SHA256: `0c0d3b9afb1a331431736af16a2d7abff016d29356606904590d0b7db72861db`.
+
+Art-Blocker bleiben: Marcel (fehlende Kapuze/blaue Laterne), perspektivische Angriffsaktionen, unzureichend gezeichnete Bewegungsübergänge. Weder QA v3 noch QA v4 wurde live eingebunden; beide bleiben nur lokal im Chat verfügbar.
