@@ -1,0 +1,121 @@
+name: TD2 Style-2 approved pilot asset materialization
+
+on:
+  push:
+    branches: ['assets/style2-pilot-runtime-candidate-20261112']
+    paths:
+      - '.github/workflows/td2-style2-pilot-materialize.yml'
+      - 'tools/style2-pilot-runtime-source.py.gz.b64'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-style2-pilot-materialize
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install version-pinned asset runtime
+        run: python -m pip install 'Pillow==12.3.0' 'numpy==2.3.5' 'scipy==1.17.0'
+      - name: Verify and expand approved generation source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib
+          source = Path('tools/style2-pilot-runtime-source.py.gz.b64')
+          data = gzip.decompress(base64.b64decode(source.read_text().strip()))
+          sha = hashlib.sha256(data).hexdigest()
+          assert sha == 'b8febc4fa315e80ef3ab0d098333a507690fa7417e2cd8d28bce6b7126588866', sha
+          destination = Path('/tmp/td2-style2-source/build_assets.py')
+          destination.parent.mkdir(parents=True, exist_ok=True)
+          destination.write_bytes(data)
+          print('Source verified:', len(data), 'bytes')
+          PY
+      - name: Generate original 67 candidate WebPs
+        run: python /tmp/td2-style2-source/build_assets.py
+      - name: Verify original approved pixels and select only 34 runtime candidates
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import hashlib, json, shutil
+          root = Path('/tmp/td2-style2-source')
+          out = Path('dist/assets/style2-pilot-v1')
+          grounds = ('earth_damp','gravel_path','cobble_moss','flagstone_ruins','forest_floor','leaf_litter')
+          edges = ('north','south','east','west','corner_nw','corner_ne','corner_sw','corner_se')
+          props = ('moss_boulder','fallen_log','root_cluster','grass_tuft','crumbling_wall')
+          fx = ('marcel_bolt','marcel_impact','kim_arrow','kim_impact','ambience')
+          ui = ('panel','button_normal','button_pressed','hud_bar','tower_card',
+                'icon_gold','icon_health','icon_wave','icon_ether','icon_build')
+          env = ([f'environment/ground/{n}.webp' for n in grounds] +
+                 [f'environment/edges/road_edge_{n}.webp' for n in edges] +
+                 [f'environment/props/{n}.webp' for n in props])
+          secondary = ([f'effects/{n}_atlas.webp' for n in fx] +
+                       [f'ui/{n}.webp' for n in ui])
+          selected = sorted(env + secondary)
+          assert len(selected) == len(set(selected)) == 34
+          digest = hashlib.sha256()
+          total_bytes = 0
+          for name in selected:
+              path = root / name
+              data = path.read_bytes()
+              total_bytes += len(data)
+              digest.update(name.encode('utf-8') + b'\0' + data)
+              with Image.open(path) as image:
+                  image.load()
+                  assert image.format == 'WEBP', name
+                  if name.startswith('environment/ground/'):
+                      assert image.mode in ('RGB','RGBA'), name
+                  else:
+                      assert image.mode == 'RGBA', name
+                  if name.startswith('environment/'):
+                      assert image.size == (256,256), name
+                  elif name.startswith('effects/'):
+                      assert image.size == (768,128), name
+              target = out / name
+              assert not target.exists(), 'Refuse to overwrite: ' + str(target)
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(path, target)
+          assert total_bytes == 379112, total_bytes
+          actual = digest.hexdigest()
+          assert actual == 'ab89966f3b972463d5df907bae8badc8026da78ba75de1fbc402a030cec5e077', actual
+          metadata = {
+              'phase_order':['environment','effects-ui'],
+              'status':'candidate-staged-owner-approved',
+              'runtime_active':False,
+              'android_4gb_qa':'not-tested',
+              'visual_canvas_qa':'not-tested',
+              'file_count':len(selected),
+              'compressed_bytes':total_bytes,
+              'aggregate_sha256':actual,
+              'files':selected,
+          }
+          (out / 'candidate-manifest.json').write_text(
+              json.dumps(metadata,indent=2,ensure_ascii=False) + '\n',encoding='utf-8')
+          print('Staged:',len(selected),'WebPs /',total_bytes,'bytes, SHA:',actual)
+          PY
+      - name: Check existing Style-2 packer regressions
+        run: python tests/style2-pilot-staging.test.py
+      - name: Commit only verified, non-active asset candidates to feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist/assets/style2-pilot-v1
+          if git diff --cached --quiet; then
+            echo 'Staged art unchanged.'
+            exit 0
+          fi
+          git commit -m 'assets(style2): stage 34 SHA-verified non-active WebPs for review'
+          git push origin HEAD:assets/style2-pilot-runtime-candidate-20261112

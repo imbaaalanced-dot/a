@@ -142,6 +142,7 @@ jobs:
           python tests/hero-direction-candidate-gate.test.py
           python tests/hero-direction-packer.test.py
           python tests/style2-pilot-staging.test.py
+          python tests/style2-pilot-runtime-assets.test.py
           python tests/assets.test.py
           python tests/kirchende-memorial-pilot.test.py
           python tests/style2-v2-assets.test.py
