@@ -104,6 +104,8 @@ assert.match(lionSource,/function requestPhotoLion\(\)/,'lazy loader exists');
 assert.match(lionSource,/lion-1879-style2-2x\.webp/,'only production photo lion requested on level 4');
 assert.match(lionSource,/drawImage\(lionSprite\|\|lionArt,m\.x-128,m\.y-293,256,304\)/,'lion collision anchor and size unchanged');
 assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
+assert.match(lionSource,/Alpha falloff removes the previous hard square\/oval boundary/,'softly blended cobble plaza');
+assert.doesNotMatch(lionSource,/strokeRect\(-164,-139,328,286\)/,'no hard square paving border');
 const n=canvases;
 art.drawBackdrop(ctx,c);art.drawSite(ctx,c);art.drawCanopies(ctx,c,[]);
 art.drawLion(ctx,{...c,hp:300,maxHp:500});
