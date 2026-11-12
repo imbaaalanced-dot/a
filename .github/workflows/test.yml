@@ -39,6 +39,7 @@ jobs:
         run: |
           node tests/preloader.test.cjs
           node tests/asset-manager.test.cjs
+          node tests/level67-single-image-owner.test.cjs
           node tests/menu-v3b-preload.test.cjs
       - name: Mobile render cadence and real FPS telemetry
         run: |
@@ -88,6 +89,8 @@ jobs:
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
           node tests/hero-sprites-v5b.test.cjs
+          node tests/hero-action-pivot-contract.test.cjs
+          node tests/hero-direction-ready.test.cjs
           node tests/canonical-style2-runtime.test.cjs
       - name: Portalreise and campaign pilot
         run: |
@@ -136,6 +139,8 @@ jobs:
           python -m pip install Pillow numpy scipy
           python tests/hero-sprites-v5b.test.py
           python tests/active-hero-atlas-alpha.test.py
+          python tests/hero-direction-candidate-gate.test.py
+          python tests/hero-direction-packer.test.py
           python tests/assets.test.py
           python tests/kirchende-memorial-pilot.test.py
           python tests/style2-v2-assets.test.py
