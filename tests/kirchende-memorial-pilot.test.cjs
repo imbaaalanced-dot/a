@@ -1,0 +1,43 @@
+/* Level 3 opt-in monument pilot: lazy files, separate plaque and legacy defaults. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+(async()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../dist/kirchende-art.js'),'utf8');
+ const loaded=[];
+ class FakeImage {
+  constructor(){this.complete=false;this.naturalWidth=0;this.naturalHeight=0;loaded.push(this);}
+  ok(){this.complete=true;this.naturalWidth=this.src.includes('opferplatte')?470:261;this.naturalHeight=this.src.includes('opferplatte')?248:425;this.onload();}
+  fail(){this.complete=true;this.onerror();}
+ }
+ const context={Image:FakeImage,location:{search:'?td2KirchendeMemorialPilot=1'},Math,
+   setTimeout(){return 1;},clearTimeout(){},
+   document:{createElement(tag){assert.equal(tag,'canvas');return {width:0,height:0,getContext(){
+     const gradient={addColorStop(){}};
+     return new Proxy({createRadialGradient(){return gradient;},createLinearGradient(){return gradient;}},{get(target,k){return k in target?target[k]:()=>{};}});
+   }};}}};
+ vm.createContext(context);vm.runInContext(source,context);
+ const art=context.KirchendeArt;
+ assert.equal(loaded.length,0,'pilot does not load before Level 3');
+ const loading=art.load();
+ const monument=loaded.find(i=>i.src?.includes('monument-style2-pilot.webp'));
+ const plaque=loaded.find(i=>i.src?.includes('opferplatte-style2-pilot.webp'));
+ assert.ok(monument&&plaque,'both independent pilot WebP assets requested');
+ assert.ok(!loaded.some(i=>i.src?.includes('monument-photo-v2.webp')),'no double preload of original monument');
+ loaded.forEach(i=>i.ok());await loading;
+ const draws=[],ctx={globalAlpha:1,drawImage(...args){draws.push(args);},save(){},restore(){},translate(){},scale(){}};
+ assert.equal(art.draw(ctx,'monument',100,200,235),true);
+ art.drawSite(ctx,{x:100,y:200});
+ assert.equal(draws.length,3,'pilot monument, cached site and separate plaque drawn');
+ assert.equal(draws[2][0],plaque,'plaque draws from independently decoded asset');
+ assert.equal(draws[2][3],82,'plaque retains approved on-screen footprint');
+ const count=loaded.length;await art.load();assert.equal(loaded.length,count,'loaded images reused');
+ const normalImages=[];
+ class NormalImage extends FakeImage{constructor(){super();normalImages.push(this);}}
+ const normal={Image:NormalImage,location:{search:''},Math,setTimeout(){return 1;},clearTimeout(){}};
+ vm.createContext(normal);vm.runInContext(source,normal);
+ const normalLoading=normal.KirchendeArt.load();
+ assert.ok(normalImages.some(i=>i.src?.includes('monument-photo-v2.webp')),'normal level keeps photographic monument');
+ assert.ok(!normalImages.some(i=>i.src?.includes('style2-pilot.webp')),'normal level never loads pilot files');
+ normalImages.forEach(i=>i.ok());await normalLoading;
+ console.log('Kirchende opt-in monument pilot loading, cached slab, and default fallback passed');
+})().catch(e=>{console.error(e);process.exitCode=1;});
