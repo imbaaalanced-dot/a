@@ -39,7 +39,7 @@ const expectedVersions = new Map([
   ['visuals.js', 'expansion2'],
   ['equipment-catalog.js', 'loot-v2-20261029'],
   ['loot.js', 'loot-v2-20261029'],
-  ['loot-ui.js', 'copy-20261110a'],
+  ['loot-ui.js', 'copy-20261112-urlfix'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'copy-20261110a'],
   ['hero-saga.js', 'copy-20261112-urlfix'],
@@ -104,8 +104,10 @@ const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
 assert.match(heroSagaSource,/walk\.naturalWidth%3===0/,'Hero action uses only valid 3-column walk sheets');
 const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
 assert.match(gameSource,/asset-atlas-style2\.webp\?v=style2a1/,'game must use a valid versioned Style-2 atlas');
-for(const path of ['game.js','hero-saga.js','portrait-avatars-v5.js','barracks.js']){
-  assert.doesNotMatch(fs.readFileSync(path.join(dist,path),'utf8'),/\.webpassets\/v=/,path+' contains invalid WebP version separator');
+for(const path of expectedVersions.keys()){
+  if(!path.endsWith('.js'))continue;
+  assert.doesNotMatch(fs.readFileSync(path.join(dist,path),'utf8'),/\.(?:webp|png|jpg|jpeg|svg)assets\/v=/,
+    path+' contains an invalid image asset version separator');
 }
 assert.match(gameSource,/mobileRender&&graphicsMode!=='high'\?1000\/60:0/,'mobile LOW and AUTO both target 60 FPS, HIGH remains uncapped');
 assert.match(gameSource,/qualityTier==='medium'\?\(mobileRender\?\.85:1\.25\):mobileRender\?\.70:\.85/,'mobile renderer uses conservative DPR caps');
