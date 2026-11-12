@@ -25,7 +25,7 @@ assert.match(css, /\.menu-command\s*\{/);
 assert.match(css, /min-height:\s*56px/);
 assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-primary-actions/);
 assert.match(css, /@media\s*\(max-height:\s*430px\)\s*and\s*\(orientation:\s*landscape\)/);
-assert.match(html, /menu\.css\?v=v5-command-hub1/);
+assert.match(html, /menu\.css\?v=developer3x1/);
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
 
 console.log('Four-destination menu hierarchy and responsive command styling passed');

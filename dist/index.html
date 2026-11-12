@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
   <link rel="stylesheet" href="loot.css?v=v5-armory-hub1" />
-  <link rel="stylesheet" href="menu.css?v=v5-command-hub1" />
+  <link rel="stylesheet" href="menu.css?v=developer3x1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
@@ -198,6 +198,9 @@
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
             <button id="menuFullscreenBtn" class="icon-btn" type="button" aria-label="Vollbild aktivieren" aria-pressed="false">VOLLBILD: AUS</button>
+            <button id="menuDeveloperBtn" class="icon-btn menu-developer-toggle" type="button" aria-pressed="false">DEVELOPER-MODUS: AUS</button>
+            <p id="menuDeveloperInfo" class="menu-developer-note">Aus · Normale Freischaltungen und Spielstände bleiben erhalten.</p>
+            <div id="menuDeveloperToast" class="menu-developer-toast" role="status" aria-live="polite" hidden><strong>AKTIVIERT</strong><span>3× TEMPO · ALLE LEVELS</span></div>
             <details class="menu-save-details"><summary>Spielstand &amp; Sicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Dein Fortschritt wird lokal auf diesem Gerät gespeichert. In der Rüstkammer kannst du deinen Spielstand exportieren oder importieren.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>
@@ -331,7 +334,7 @@
   <script src="map-polish-v410.js?v=v410a1"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
   <script src="barracks.js?v=td2-barracks5"></script>
-  <script src="game.js?v=copy-20261112-severefps"></script>
+  <script src="game.js?v=developer3x1"></script>
   <script src="portrait-avatars-v5.js?v=copy-20261112-urlfix"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-version-label">
