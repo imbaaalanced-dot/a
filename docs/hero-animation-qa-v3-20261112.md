@@ -8,7 +8,7 @@ Stand: 12. November 2026. Basis: ursprüngliche Grafikquellen + lokales QA-v2-Ar
 - 27 Frame-Ersetzungen aus bereits vorhandenen Posen: 15 Angriffsperspektiven/Skalen, vier Blickrichtungs-Übergänge in Treffer/Tod und acht gestufte Todesanimationen.
 - Alle 108 PNGs ohne leere Frames, unzulässige Zellränder oder versteckte RGB-Reste in vollständig transparenten Pixeln; sechs WebP-Atlanten dekodierbar.
 - Angriff/Treffer 0=5 sowie Tod 4=5 sind **bewusste Ruhe-/Endposen**, nicht fehlerhafte Duplikate. Identische **mittlere** Frames gelten dagegen als Fehler.
-- Ein zusätzlicher Motion-Gate-Test in `tools/pack-hero-action-directions.py` verhindert solche unerwarteten Wiederholungen und besonders abrupte Todes-Sprünge (mehr als 52 Pixel sichtbare Höhenänderung von einem Frame zum nächsten).
+- Ein zusätzlicher Motion-Gate-Test in `tools/pack-hero-action-directions.py` verhindert unerwartete Wiederholungen, rein umgefärbte Posen mit identischer Alpha-Silhouette (mindestens drei unterschiedliche Konturen pro Aktionssequenz) und besonders abrupte Todes-Sprünge (mehr als 52 Pixel sichtbare Höhenänderung von einem Frame zum nächsten). Die Silhouettenprüfung erkennt technische Scheinbewegung, nicht die Richtigkeit von Schwert-, Bogen- oder Körperhaltungen.
 
 ## Nicht behoben / Freigabe gesperrt
 
@@ -30,3 +30,7 @@ Die anschließend geprüfte QA-v3-Variante enthielt einige **nur gedrehte/skalie
 **QA v4** ist der konservative lokale Nachfolger: nur zehn Blickrichtungs-Korrekturen an verdrehten Attack-/Hit-/Death-Frames, 108 PNG-Frames und sechs WebP-Atlanten bleiben erhalten. Originale Schlag-, Bogen- und Todesposen sind ansonsten unverändert. Der Pixel-Gate-Test ist lokal bestanden, das visuelle Gate bleibt **HOLD**. V4-Archiv-SHA256: `0c0d3b9afb1a331431736af16a2d7abff016d29356606904590d0b7db72861db`.
 
 Art-Blocker bleiben: Marcel (fehlende Kapuze/blaue Laterne), perspektivische Angriffsaktionen, unzureichend gezeichnete Bewegungsübergänge. Weder QA v3 noch QA v4 wurde live eingebunden; beide bleiben nur lokal im Chat verfügbar.
+
+## QA-v4-Nachtrag: Konturenprüfung
+
+Auch wenn sechs Frames unterschiedliche RGB-Pixel enthalten, darf eine reine Umfärbung nicht als sechs echte Bewegungsposen durchgehen. Der Packer führt deshalb zusätzlich zu Pixelhashes pro `attack`/`hit`/`death` einen SHA-256-Vergleich der sichtbaren (Alpha ≥32) Zellkonturen durch. Weniger als drei unterschiedliche Konturen blockieren den Export. Ein dazu passender Regressionstest erstellt sechs verschieden gefärbte, aber formidentische Frames und erwartet eine Ablehnung. Dies ist **nur eine technische Mindestprüfung**; der Art-Blocker für Marcel und die abgeleiteten Kim-Posen bleibt bestehen. Keine neuen Richtungen freigegeben.
