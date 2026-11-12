@@ -31,7 +31,7 @@ const expectedVersions = new Map([
   ['level-gallery.js', 'v5-style2a1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
-  ['asset-manager.js', 'alpha9a4'],
+  ['asset-manager.js', 'alpha9a5'],
   ['preloader.js', 'copy-20261110a'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
