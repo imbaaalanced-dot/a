@@ -1072,7 +1072,11 @@
     const fps=adaptiveWindowFrames*1000/adaptiveWindowMs;
     const enoughCooldown=!adaptiveLastChange||now-adaptiveLastChange>=12000;
     if(fps<45&&enoughCooldown&&adaptiveScale>.7){
-      adaptiveScale=Math.max(.7,Math.round((adaptiveScale-.15)*100)/100);
+      // When the actual callback rate collapses below 28 FPS, drop directly
+      // to the mobile pixel floor instead of requiring two 12 s cooldowns.
+      // This only changes Canvas backing resolution, not simulation speed.
+      const reduction=fps<28?.30:.15;
+      adaptiveScale=Math.max(.7,Math.round((adaptiveScale-reduction)*100)/100);
       adaptiveLastChange=now;adaptiveFastWindows=0;resize(false);
     }else if(fps>=56&&adaptiveScale<1){
       adaptiveFastWindows++;
