@@ -31,7 +31,10 @@ const server=http.createServer((req,res)=>{
       await page.locator('#menuCharacterBtn').click();
       await page.locator('#heroMenu').waitFor({state:'visible'});
       await page.locator('#chooseKim').click();
-      await page.waitForFunction(()=>document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes('kim-marksman-v6.webp'));
+      await page.waitForFunction(()=>{
+        const portrait=globalThis.TD2CanonicalHeroArt?.kim?.portrait;
+        return !!portrait&&document.querySelector('#heroHudPortrait')?.style.backgroundImage.includes(portrait);
+      },null,{timeout:15000});
       await page.locator('#chooseMarcel').click();
       await page.locator('#menuBackBtn').click();
       await page.locator('#menuHomeActions').waitFor({state:'visible'});
