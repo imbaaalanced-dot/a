@@ -44,6 +44,7 @@ jobs:
         run: |
           node tests/mobile-frame-pacing.test.cjs
           node tests/mobile-fps-render-budget.test.cjs
+          node tests/adaptive-mobile-resolution.test.cjs
           node tests/cpu-render-profiling.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
