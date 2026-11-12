@@ -9,6 +9,9 @@ on:
       - 'tools/preview-style2-intake.cjs'
       - 'tests/style2-intake-gate.test.py'
       - 'docs/style2/2026-11-10-v5-candidate-intake.md'
+      - 'tools/stage-style2-pilot.py'
+      - 'tests/style2-pilot-staging.test.py'
+      - 'docs/style2-pilot-approval-staging-20261112.md'
   workflow_dispatch:
 
 permissions:
