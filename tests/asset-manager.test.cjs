@@ -17,6 +17,7 @@ async function run(){
   const box={Image:ImageMock,Promise,Map,Set,Date,globalThis:null};box.globalThis=box;
   vm.createContext(box);vm.runInContext(readFileSync('dist/asset-manager.js','utf8'),box);
   const assets=box.DenkmalAssets;
+  assert.deepEqual(Array.from(assets.levelAssets[3]),[],'KirchendeArt is the only owner of the Level 3 monument image');
   const [first,second]=await Promise.all([assets.load('assets/hero/example.webp'),assets.load('assets/hero/example.webp')]);
   assert.equal(first,second);assert.equal(created.length,1,'parallel consumers share one download and image');
   assert.equal(assets.status('assets/hero/example.webp'),'ready');

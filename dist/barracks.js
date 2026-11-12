@@ -7,7 +7,7 @@
     3:Object.freeze({name:'Elite-Hellebardier',hp:150,damage:21,cooldown:1.7,reach:65,speed:64,recruit:14,max:2,body:'#4d535c'})
   });
   const MAX_ALLIES=10,LEASH=140,ALERT=165;
-  const ATLAS='assets/barracks/kasernen-atlas-96px-style2.webpassets/v=style2a1';
+  const ATLAS='assets/barracks/kasernen-atlas-96px-style2.webp?v=style2a1';
   const STATES='assets/barracks/states-style2.webp?v=style2a1';
   // The existing image registry owns one decoded atlas across all towers/units.
   function atlas(){return globalThis.DenkmalAssets?.ready(ATLAS)||null;}

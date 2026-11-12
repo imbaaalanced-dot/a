@@ -2,6 +2,12 @@
 const {readFileSync}=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const s={};s.globalThis=s;vm.runInNewContext(readFileSync(require('node:path').join(__dirname,'../dist/barracks.js'),'utf8'),s);
 const b=s.DenkmalBarracks,paths=[[{x:0,y:0},{x:200,y:0}]];
+const fs=require('node:fs'),path=require('node:path');
+for(const [label,url] of [['atlas',b.ATLAS],['states',b.STATES]]){
+  assert.match(url,/^assets\/barracks\/[a-z0-9-]+\.webp\?v=[a-z0-9-]+$/i,label+' must be a valid versioned WebP URL');
+  assert.ok(fs.statSync(path.join(__dirname,'../dist',url.split('?')[0])).isFile(),label+' active runtime asset exists');
+}
+assert.notEqual(b.ATLAS,b.STATES,'barracks action and state sheets use distinct URLs');
 const tower={kind:'barracks',level:1,x:90,y:78},game={towers:[tower],enemies:[],militia:[]};
 assert.equal(b.nearestLanePoint(tower,paths).y,0);
 b.update(game,1/60,{paths});assert.equal(game.militia.length,1);
