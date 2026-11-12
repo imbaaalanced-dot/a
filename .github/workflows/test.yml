@@ -52,6 +52,7 @@ jobs:
         run: |
           node tests/terrain-polish.test.cjs
           node tests/kirchende-loading.test.cjs
+          node tests/kirchende-memorial-pilot.test.cjs
           node tests/style2-kirchende.test.cjs
           node tests/style2-cannon.test.cjs
           node tests/style2-towers.test.cjs
