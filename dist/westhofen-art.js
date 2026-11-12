@@ -8,12 +8,19 @@ let ground=null,environmentRequested=false;
 let memorialSprite=null,memorialRequested=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
+const memorialUrl='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
 function readyMemorial(){
+ // Level 7 preloads the same WebP through the shared asset manager.
+ // Keep the standalone fallback for previews without the manager.
+ if(globalThis.DenkmalAssets?.ready){
+  memorialSprite=globalThis.DenkmalAssets.ready(memorialUrl);
+  return !!(memorialSprite?.naturalWidth&&memorialSprite.naturalHeight);
+ }
  if(!memorialRequested){
   memorialRequested=true;
   if(typeof Image==='function'){
-   memorialSprite=new Image();
-   memorialSprite.src='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+   memorialSprite=new Image();memorialSprite.decoding='async';
+   memorialSprite.src=memorialUrl;
   }
  }
  return !!(memorialSprite?.complete&&memorialSprite.naturalWidth&&memorialSprite.naturalHeight);

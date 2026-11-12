@@ -39,6 +39,7 @@ jobs:
         run: |
           node tests/preloader.test.cjs
           node tests/asset-manager.test.cjs
+          node tests/level67-single-image-owner.test.cjs
           node tests/menu-v3b-preload.test.cjs
       - name: Mobile render cadence and real FPS telemetry
         run: |

@@ -41,6 +41,21 @@ async function run(){
   assert.equal(assets.status('assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'),'unrequested','previous level art is released');
   assert.deepEqual(Array.from(assets.levelAssets[4]),[],'Level 4 art owned by DenkmalChurch, not double-decoded by manager');
   assert.equal(assets.status('assets/lion-ende-style2.webp?v=style2a1'),'unrequested','opaque placeholder is never preloaded');
+  // The seventh chapter is real; preloading must not stop at chapter six.
+  await assets.level(6);
+  const beforeWesthofen=created.length;
+  await assets.next(6);
+  const westhofenUrl='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+  assert.equal(assets.status(westhofenUrl),'ready','chapter 6 preloads Westhofen memorial');
+  assert.equal(created.length,beforeWesthofen+1,'Westhofen has exactly one new decoder');
+  await assets.level(7);
+  assert.equal(created.length,beforeWesthofen+1,'entering level 7 reuses the prefetched WebP');
+  await assets.next(7);
+  assert.equal(assets.status('assets/nonexistent-level8.webp'),'unrequested','chapter 7 does not preload phantom chapter 8');
+  assets.release('level:6');
+  assert.equal(assets.status(westhofenUrl),'ready','Westhofen retains its own image after leaving chapter 6');
+  assets.release('level:7');
+  assert.equal(assets.status(westhofenUrl),'unrequested','leaving Westhofen releases its decoded bitmap');
   assert.equal(assets.status('assets/hero/example.webp'),'ready','level release must not evict unowned menu images');
   console.log('Asset manager: coalescing, fallback status, next-level preload and release passed');
 }
