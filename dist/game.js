@@ -1283,7 +1283,7 @@
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
     const portraitUrl=globalThis.TD2CanonicalHeroArt?.[selectedCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/kim-marksman-style2.webpassets/v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webpassets/v=style2a1');
+      (kim?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
     globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
