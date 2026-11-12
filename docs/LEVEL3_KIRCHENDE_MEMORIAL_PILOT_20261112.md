@@ -26,3 +26,17 @@ The generated sprite sheets with extra foliage, lanterns and architectural colla
 Dieser Patch ist eine gezielte **Code-Mitigation**, noch keine restauratorische Rekonstruktion. Die fotografisch nicht belegten Kerzen und doppelten Platten werden nicht mehr angezeigt. Position der handgemalten neutralen Steinplatte: **nahe der Denkmalachse** (relatives `x=-44 … +40`, `y=69 … 104`), innerhalb des vorhandenen einmalig gerenderten 384×384-Kirchhof-Canvas. Keine Pfad-/Save-/Gameplay-Änderung.
 
 Die rote/gelbliche Alpha-Kante des **alternativen Helmdenkmal-Pilot-WebP** muss weiterhin visuell überprüft und gegebenenfalls in einem separaten Bildpass bereinigt werden. Visuelle Abnahme bei 64/128px, Desktop-/Touch-Chromium und echtes Android-Gerät sind getrennte Freigabestufen. **Kein Android-Test durch diese Dokumentation bestätigt.**
+
+
+## Alpha-Kanten-Korrektur · 12.11.2026
+
+- `monument-style2-pilot.webp` wurde aus dem vorhandenen freigestellten Helmdenkmal erzeugt, **ohne Silhouette oder Alphakanal zu ändern**.
+- Ausgangsasset: Git-Blob `e831588e89af704558becdc8060c872bfcb3d25c`, 261 × 425 Pixel / 34.962 Bytes.
+- Ersetztes WebP: Git-Blob `0f6584872f97e859a05c4236e451fb32026cd622`, 261 × 425 Pixel / 38.434 Bytes, WebP Qualität 85.
+- Sichtbares RGB wurde nur geringfügig neu komprimiert; verborgene rote RGB-Werte bei Alpha 0 wurden durch benachbarte neutral-steinfarbene Werte ersetzt. Der 8-bit-Alphakanal ist über alle Pixel **identisch**.
+- Lokale Prüfung (Pillow) vor Upload: 636 auffällige rote RGB-Pixel bei `alpha=0` zuvor, danach 0; mittlerer RGB-Unterschied auf dunklem/hellem Komposit ca. 1,26 pro Kanal bei 8-bit Skala.
+- Pixelvergleich bei Ausgabegrößen 64/128/235 px angefertigt, nicht mit echtem Android-Hardwaretest gleichzusetzen.
+- Runtime-Version `kirchende-memorial-pilot2`, HTML-Scriptversion `kirchende-helm-alpha2` verhindern veraltete Browser-Caches.
+- Reproduzierbarer Test: `python tests/kirchende-memorial-pilot.test.py` prüft Bilddekodierung, Alpha, Transferbudget und unerwünschte rote RGB-Werte in vollständig transparenten Pixeln.
+
+**Nicht geändert:** historische Denkmalform, Gedenktafel und deren neutrale Canvas-Variante, Level-Geometrie, Wegführung, Trefferboxen, Spielstände, Veröffentlichungsschalter. Der neue Denkmal-Sprite bleibt weiterhin **opt-in**; reale Android-4-GB-Abnahme ist offen.
