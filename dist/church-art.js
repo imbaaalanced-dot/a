@@ -223,20 +223,34 @@
     return c;
   }
   function createSite(){
-    const c=document.createElement('canvas');c.width=c.height=400;const g=c.getContext('2d');
-    g.translate(200,190);
-    g.fillStyle='#29302766';g.fillRect(-169,-128,336,296);
-    g.fillStyle='#7d7f6f';g.fillRect(-163,-139,326,286);
+    // Reference-inspired uneven cobbles beside the lion, without a square tile stamp.
+    // Everything is prepainted once; no additional work is done each frame.
+    const c=document.createElement('canvas');c.width=c.height=400;
+    const g=c.getContext('2d');g.translate(200,190);
     const rnd=seeded(1879);
-    for(let row=0;row<8;row++)for(let col=0;col<9;col++){
-      const x=-158+col*36,y=-135+row*35;
-      g.fillStyle=['#a09d89','#7f8578','#b6ae93','#898d7b'][Math.floor(rnd()*4)];
-      g.fillRect(x+1,y+1,34,33);
-      g.strokeStyle='#4e554a50';g.strokeRect(x+1,y+1,34,33);
-      g.fillStyle='#74806155';g.fillRect(x+3,y+25,8+rnd()*14,4);
+    g.save();
+    g.beginPath();g.ellipse(0,0,180,149,0,0,Math.PI*2);g.clip();
+    const earth=g.createRadialGradient(0,0,32,0,0,185);
+    earth.addColorStop(0,'#5c69566b');
+    earth.addColorStop(.68,'#434f4070');
+    earth.addColorStop(1,'#28382800');
+    g.fillStyle=earth;g.fillRect(-190,-158,380,316);
+    const palette=['#a6a58d','#777d6c','#8a8d7e','#b1aa91','#707c70'];
+    for(let row=0;row<10;row++)for(let col=0;col<11;col++){
+      const x=-171+col*32+(row%2)*14+(rnd()-.5)*5;
+      const y=-147+row*30+(rnd()-.5)*5;
+      const d=Math.hypot((x+15)/171,(y+14)/141);
+      if(d>1.03)continue;
+      const w=23+rnd()*6,h=21+rnd()*6;
+      g.globalAlpha=Math.max(.27,.72-d*.17);
+      polygon(g,[[x+3,y+2],[x+w-3,y],[x+w,y+h-5],
+        [x+w-5,y+h],[x+4,y+h-1],[x,y+5]],palette[Math.floor(rnd()*palette.length)],'#46514348');
+      if(rnd()>.6){
+        g.fillStyle='#52674955';g.fillRect(x+5,y+h-5,7+rnd()*11,2);
+      }
     }
-    // STYLE 2: stone fractures, moss in joints and autumn debris near the edges.
-    // Preserve a clean reading area around the lion's collision point.
+    g.globalAlpha=1;
+    // Stone fractures, moss and autumn debris avoid the carved inscription.
     for(let i=0;i<175;i++){
       const x=-155+rnd()*311,y=-133+rnd()*272;
       if(Math.abs(x)<91&&Math.abs(y)<92)continue;
@@ -253,11 +267,18 @@
       g.fillStyle=i%3===0?'#5366478a':i%3===1?'#8b744cad':'#ab8b5d9c';
       g.beginPath();g.ellipse(x,y,w,1+rnd()*2,rnd()*Math.PI,0,Math.PI*2);g.fill();
     }
-    // Warm late-afternoon highlights are baked into the cached paving texture.
     const warm=g.createRadialGradient(-104,-89,5,-104,-89,113);
     warm.addColorStop(0,'#f6c77929');warm.addColorStop(1,'#f6c77900');
     g.fillStyle=warm;g.fillRect(-163,-139,210,215);
-    g.strokeStyle='#bbb89b';g.lineWidth=8;g.strokeRect(-164,-139,328,286);
+    g.restore();
+    // Alpha falloff removes the previous hard square/oval boundary.
+    g.save();g.scale(1,.85);
+    const fade=g.createRadialGradient(0,0,92,0,0,180);
+    fade.addColorStop(0,'#ffffffff');fade.addColorStop(.68,'#ffffffb3');
+    fade.addColorStop(1,'#ffffff00');
+    g.globalCompositeOperation='destination-in';
+    g.fillStyle=fade;g.fillRect(-190,-200,380,400);
+    g.restore();
     return c;
   }
   function drawGround(ctx,cam,width,height){
