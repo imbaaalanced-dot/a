@@ -31,7 +31,7 @@ const expectedVersions = new Map([
   ['level-gallery.js', 'v5-style2a1'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
-  ['asset-manager.js', 'alpha9a4'],
+  ['asset-manager.js', 'alpha9a5'],
   ['preloader.js', 'copy-20261110a'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
@@ -74,7 +74,7 @@ const expectedVersions = new Map([
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js', 'style2-road-detail2'],
   ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js', 'v5-style2a1'],
+  ['church-art.js', 'v5-style2a2-lion'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 

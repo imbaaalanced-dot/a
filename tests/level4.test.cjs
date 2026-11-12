@@ -81,6 +81,7 @@ assert.ok(churchDraw[2]+churchDraw[4]<-150,'church must leave a clear forecourt 
 const lionDraw=imageCalls.find(args=>args.length===5&&args[1]===c.x-128&&args[2]===c.y-293&&args[3]===256&&args[4]===304);
 assert.ok(lionDraw,'detailed memorial art must render at the exact combat objective');
 assert.ok(lionDate,'sleeping lion honors the 1879 memorial, not the 1927 memorial');
+assert.equal(art.lionSpriteReady,false,'opaque lion placeholder cannot be displayed');
 assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
 const n=canvases;
 art.drawBackdrop(ctx,c);art.drawSite(ctx,c);art.drawCanopies(ctx,c,[]);
@@ -91,7 +92,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 for(const id of ['level4Btn','endless4Btn'])
   assert.match(html,new RegExp('id="'+id+'"'),'new chapter navigation must be reachable');
-assert.ok(html.includes('church-art.js?v=v5-style2a1'));
+assert.ok(html.includes('church-art.js?v=v5-style2a2-lion'));
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintChurchFinish(g)'),'reference pass 2 bakes masonry into the church sprite');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintLionFinish(g)'),'the south-facing lion gets the same cached material pass');
 assert.ok(html.includes('kirchende-art.js?v=style2-forestfloor1'))
