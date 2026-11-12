@@ -95,4 +95,54 @@ with tempfile.TemporaryDirectory() as folder:
         pass
     else:
         raise AssertionError("missing frame accepted")
-print("Hero direction packer: valid atlas/pivots pass; opaque, cropped, missing and overwrite are blocked")
+# Loop/terminal holds are animation semantics, not a missing-frame bug.
+with tempfile.TemporaryDirectory() as folder:
+    source = Path(folder) / "frames"
+    output = Path(folder) / "out"
+    paint(source, "marcel", "down")
+    for action, final, first in (("attack", 5, 0),
+                                 ("hit", 5, 0),
+                                 ("death", 5, 4)):
+        folder_action = source / "marcel" / "down" / action
+        (folder_action / f"{final:02d}.png").write_bytes(
+            (folder_action / f"{first:02d}.png").read_bytes()
+        )
+    manifest, target = packer.pack("marcel", "down", source, output)
+    assert target.is_file()
+    for action in packer.ACTIONS:
+        assert manifest["motion_checks"][action]["unique_frames"] == 5
+        assert manifest["motion_checks"][action]["manual_identity_review"] == "required"
+
+with tempfile.TemporaryDirectory() as folder:
+    source = Path(folder) / "frames"
+    output = Path(folder) / "out"
+    paint(source, "kim", "right")
+    action_dir = source / "kim" / "right" / "attack"
+    (action_dir / "03.png").write_bytes((action_dir / "02.png").read_bytes())
+    try:
+        packer.pack("kim", "right", source, output)
+    except ValueError as error:
+        assert "unexpected repeats" in str(error)
+    else:
+        raise AssertionError("repeated middle action pose was accepted")
+    assert not list(output.glob("*.webp")) if output.exists() else True
+
+with tempfile.TemporaryDirectory() as folder:
+    source = Path(folder) / "frames"
+    output = Path(folder) / "out"
+    paint(source, "kim", "up")
+    # A still-standing death 01 to near-horizontal death 02 is a large skip
+    # even though both are individually valid, opaque-free 128px sprites.
+    row = source / "kim" / "up" / "death"
+    collapse = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    ImageDraw.Draw(collapse).rectangle((31, 94, 95, 116), fill=(110, 60, 45, 255))
+    collapse.save(row / "02.png")
+    try:
+        packer.pack("kim", "up", source, output)
+    except ValueError as error:
+        assert "abrupt collapse" in str(error)
+    else:
+        raise AssertionError("death pose height jump was accepted")
+    assert not list(output.glob("*.webp")) if output.exists() else True
+
+print("Hero direction packer: valid / intentional loop holds pass; bad alpha, crop, unexpected repeats and abrupt death jumps blocked")
