@@ -4,7 +4,10 @@
   // Opt-in artwork pilot: preserves the verified photographic sprite by default.
   const pilot=/(?:^|[?&])td2KirchendeMemorialPilot=1(?:&|$)/.test(globalThis.location?.search||'');
   const assets={monument:pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};
-  if(pilot)assets.plaque='opferplatte-style2-pilot.webp';for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
+  // The opt-in plaque WebP shows unverified candles and has fringe artifacts.
+  // Retain the file for later review but never request it in the game.
+  // The neutral, photo-positioned stone below is baked into the cached site.
+  for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
   const images={},pending={};let loading=null,environmentLoading=null;
   function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
   function loadOne(key){
@@ -16,7 +19,7 @@
       const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);if(!ok)delete pending[key];resolve(ok);};
       const timer=setTimeout(()=>finish(false),8000);
       img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
-      const version=key==='monument'?(assets.monument==='monument-photo-v2.webp'?'v400a5photo2':'kirchende-memorial-pilot1'):key==='plaque'?'kirchende-memorial-pilot1':key==='environment'?'kirchende-pilot2':'v400a1';
+      const version=key==='monument'?(assets.monument==='monument-photo-v2.webp'?'v400a5photo2':'kirchende-memorial-pilot1'):key==='environment'?'kirchende-pilot2':'v400a1';
       img.src='assets/kirchende/'+assets[key]+'?v='+version;
       if(img.complete&&img.naturalWidth)finish(true);
     });
@@ -97,9 +100,13 @@
       q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-44,134+i*11,128,8);
       q.fillStyle='#d1cbb044';q.fillRect(-44,134+i*11,128,1);
     }
-    // The separate, low memorial slab visible in the reference views.
-    q.fillStyle='#313c3355';q.fillRect(-111,75,77,43);q.fillStyle='#6d7967';q.fillRect(-115,67,77,43);
-    q.fillStyle='#a6ae94';q.fillRect(-115,64,77,38);q.strokeStyle='#ced1b24d';q.lineWidth=1;q.strokeRect(-113,66,73,34);
+    // Single low, unlettered memorial slab, centered in front of the helmet.
+    // Both pilot and default use this same once-cached stone. No fabricated
+    // inscriptions, candles, or duplicate overlay textures.
+    q.fillStyle='#313c3355';q.fillRect(-40,80,84,42);
+    q.fillStyle='#6d7967';q.fillRect(-44,72,84,41);
+    q.fillStyle='#a6ae94';q.fillRect(-44,69,84,35);
+    q.strokeStyle='#ced1b24d';q.lineWidth=1;q.strokeRect(-42,71,80,31);
     // Fixed-seed leaf litter gathers around edges, not in an animated noise pass.
     let seed=1967;const random=()=>((seed=(Math.imul(1664525,seed)+1013904223)>>>0)/4294967296);
     for(let i=0;i<230;i++){
@@ -142,12 +149,7 @@
   function drawSite(ctx,center){
     if(!site)site=createSite();
     ctx.drawImage(site,center.x-192,center.y-144);
-    // The pilot plaque replaces the small existing painted slab visually. If
-    // its download failed, the baked stone remains as a zero-cost fallback.
-    if(pilot&&ready('plaque')){
-      const img=images.plaque;
-      ctx.drawImage(img,center.x-116,center.y+64,82,43);
-    }
+    // The centered plaque is already baked into the site canvas. No second layer.
   }
   // Three small, deterministic root-and-leaf decals; each is cached once and reused.
   // Decoration is visual only: no changes to navigation, cover or enemy collisions.
