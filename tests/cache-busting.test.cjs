@@ -104,10 +104,10 @@ const heroSagaSource=fs.readFileSync(path.join(dist,'hero-saga.js'),'utf8');
 assert.match(heroSagaSource,/walk\.naturalWidth%3===0/,'Hero action uses only valid 3-column walk sheets');
 const gameSource=fs.readFileSync(path.join(dist,'game.js'),'utf8');
 assert.match(gameSource,/asset-atlas-style2\.webp\?v=style2a1/,'game must use a valid versioned Style-2 atlas');
-for(const path of expectedVersions.keys()){
-  if(!path.endsWith('.js'))continue;
-  assert.doesNotMatch(fs.readFileSync(path.join(dist,path),'utf8'),/\.(?:webp|png|jpg|jpeg|svg)assets\/v=/,
-    path+' contains an invalid image asset version separator');
+for(const filename of expectedVersions.keys()){
+  if(!filename.endsWith('.js'))continue;
+  assert.doesNotMatch(fs.readFileSync(path.join(dist,filename),'utf8'),/\.(?:webp|png|jpg|jpeg|svg)assets\/v=/,
+    filename+' contains an invalid image asset version separator');
 }
 assert.match(gameSource,/mobileRender&&graphicsMode!=='high'\?1000\/60:0/,'mobile LOW and AUTO both target 60 FPS, HIGH remains uncapped');
 assert.match(gameSource,/qualityTier==='medium'\?\(mobileRender\?\.85:1\.25\):mobileRender\?\.70:\.85/,'mobile renderer uses conservative DPR caps');
