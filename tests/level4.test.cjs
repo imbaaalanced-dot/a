@@ -118,7 +118,7 @@ for(const id of ['level4Btn','endless4Btn'])
 assert.ok(html.includes('church-art.js?v=v5-style2a3-lion1879'));
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintChurchFinish(g)'),'reference pass 2 bakes masonry into the church sprite');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintLionFinish(g)'),'the south-facing lion gets the same cached material pass');
-assert.ok(html.includes('kirchende-art.js?v=style2-forestfloor1'))
+assert.ok(html.includes('kirchende-art.js?v=kirchende-plaque-centered1'))
 assert.ok(game.includes('campaign.completeLevel4()'),'wave 16 persists completion');
 assert.ok(game.includes("game.level===4&&game.wave===16"),'wave 16 ends the campaign');
 assert.ok(game.includes('DenkmalChurch?.drawLion'),'lion is the combat objective');
