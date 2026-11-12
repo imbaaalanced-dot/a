@@ -37,10 +37,11 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
         "actor": actor, "facing": facing, "cell": CELL, "grid": [GRID, GRID],
         "frames": GRID, "anchor": [pivot_x, pivot_y], "actions": ACTIONS,
         "status": "candidate-unapproved", "manual_art_approval": False,
-        "source": {}, "frame_hashes": {},
+        "source": {}, "frame_hashes": {}, "motion_checks": {},
     }
     for action, row in ACTIONS.items():
         hashes = []
+        heights = []
         manifest["source"][action] = []
         for index in range(GRID):
             src = source_root / actor / facing / action / f"{index:02d}.png"
@@ -68,11 +69,35 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
                 raise ValueError(f"{src}: base shadow/ground anchor drift ({bounds[3]} vs {pivot_y})")
             pixels_hash = hashlib.sha256(frame.tobytes()).hexdigest()
             hashes.append(pixels_hash)
+            heights.append(bounds[3] - bounds[1])
             manifest["source"][action].append(str(src))
             atlas.paste(frame, (index * CELL, row * CELL))
-        if len(set(hashes)) < 2:
-            raise ValueError(f"{actor}/{facing}/{action}: animation is repeated static art")
+        # A matching first/last pose can close a recoverable animation loop;
+        # holding the final death pose is equally valid. Any *other* duplicate
+        # indicates a missing authored motion phase and must fail the intake.
+        allowed_hold = (0, 5) if action in ("attack", "hit") else (4, 5)
+        duplicated = [(i, j) for i in range(GRID) for j in range(i + 1, GRID)
+                      if hashes[i] == hashes[j]]
+        unexpected = [pair for pair in duplicated if pair != allowed_hold]
+        if len(set(hashes)) < 4 or unexpected:
+            raise ValueError(
+                f"{actor}/{facing}/{action}: missing distinct motion poses "
+                f"(unexpected repeats: {unexpected})")
+        # A full-height sprite must not turn into a horizontal corpse in one
+        # frame; this geometric gate does not assess anatomy or perspective.
+        drops = [heights[i - 1] - heights[i] for i in range(1, GRID)]
+        if action == "death" and any(delta > 52 for delta in drops):
+            raise ValueError(
+                f"{actor}/{facing}/death: abrupt collapse height change "
+                f"{drops}; add a transition frame")
         manifest["frame_hashes"][action] = hashes
+        manifest["motion_checks"][action] = {
+            "allowed_hold": list(allowed_hold) if allowed_hold in duplicated else None,
+            "unique_frames": len(set(hashes)),
+            "max_height_drop_px": max(drops),
+            "manual_perspective_review": "required",
+            "manual_identity_review": "required",
+        }
     output_root.mkdir(parents=True, exist_ok=True)
     # Encode before touching any target. A failed save must not leave a corrupt file.
     import tempfile
