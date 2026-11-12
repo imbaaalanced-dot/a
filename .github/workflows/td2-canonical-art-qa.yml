@@ -27,6 +27,8 @@ on:
       - 'tests/canonical-style2-runtime.test.cjs'
       - 'tests/environment-style2-pilot.test.cjs'
       - 'tools/verify-canonical-style2-browser.cjs'
+      - 'tools/pack-hero-action-directions.py'
+      - 'tests/hero-direction-packer.test.py'
       - 'tools/verify-style2-environment-pilot.cjs'
       - 'tools/verify-level4-style2-environment.cjs'
       - 'tools/verify-level5-style2-environment.cjs'
