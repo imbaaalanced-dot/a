@@ -11,7 +11,8 @@
     // artwork. Avoid duplicate decodes and never preload placeholder images.
     4:[],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
-    6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1']
+    6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
+    7:['assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1']
   };
   const common=['assets/scenery-style2.webp?v=style2a1','assets/enemies/walk-style2.webp?v=style2a1'];
   function entry(url){
@@ -62,7 +63,7 @@
     }
   }
   function level(n){return retain('level:'+n,[...common,...(levelAssets[n]||[])]);}
-  function next(n){return n<6?level(n+1):Promise.resolve([]);}
+  function next(n){return Number.isInteger(n)&&n>=1&&n<7?level(n+1):Promise.resolve([]);}
   function status(url){return entries.get(url)?.status||'unrequested';}
   globalThis.DenkmalAssets={get,ready,load,retain,release,level,next,status,levelAssets};
 })();
