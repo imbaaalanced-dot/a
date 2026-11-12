@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 (async()=>{
  const source=fs.readFileSync(path.join(__dirname,'../dist/kirchende-art.js'),'utf8');
- const loaded=[];
+ const loaded=[],siteRects=[];
  class FakeImage {
   constructor(){this.complete=false;this.naturalWidth=0;this.naturalHeight=0;loaded.push(this);}
   ok(){this.complete=true;this.naturalWidth=this.src.includes('opferplatte')?470:261;this.naturalHeight=this.src.includes('opferplatte')?248:425;this.onload();}
@@ -13,7 +13,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
    setTimeout(){return 1;},clearTimeout(){},
    document:{createElement(tag){assert.equal(tag,'canvas');return {width:0,height:0,getContext(){
      const gradient={addColorStop(){}};
-     return new Proxy({createRadialGradient(){return gradient;},createLinearGradient(){return gradient;}},{get(target,k){return k in target?target[k]:()=>{};}});
+     return new Proxy({createRadialGradient(){return gradient;},createLinearGradient(){return gradient;},fillRect(x,y,w,h){siteRects.push([x,y,w,h]);}},{get(target,k){return k in target?target[k]:()=>{};}});
    }};}}};
  vm.createContext(context);vm.runInContext(source,context);
  const art=context.KirchendeArt;
@@ -21,15 +21,19 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const loading=art.load();
  const monument=loaded.find(i=>i.src?.includes('monument-style2-pilot.webp'));
  const plaque=loaded.find(i=>i.src?.includes('opferplatte-style2-pilot.webp'));
- assert.ok(monument&&plaque,'both independent pilot WebP assets requested');
+ assert.ok(monument,'pilot monument WebP requested');
+ assert.equal(plaque,undefined,'unapproved candle-bearing plaque sprite must not be requested');
  assert.ok(!loaded.some(i=>i.src?.includes('monument-photo-v2.webp')),'no double preload of original monument');
  loaded.forEach(i=>i.ok());await loading;
  const draws=[],ctx={globalAlpha:1,drawImage(...args){draws.push(args);},save(){},restore(){},translate(){},scale(){}};
  assert.equal(art.draw(ctx,'monument',100,200,235),true);
  art.drawSite(ctx,{x:100,y:200});
- assert.equal(draws.length,3,'pilot monument, cached site and separate plaque drawn');
- assert.equal(draws[2][0],plaque,'plaque draws from independently decoded asset');
- assert.equal(draws[2][3],82,'plaque retains approved on-screen footprint');
+ assert.equal(draws.length,2,'monument and one cached plaza draw, no duplicate plaque image');
+ assert.ok(siteRects.some(([x,y,w,h])=>x===-44&&y===69&&w===84&&h===35),
+   'single slab must be centered in the baked site');
+ assert.ok(!siteRects.some(([x,y,w,h])=>x===-115&&y===64&&w===77&&h===38),
+   'original left-offset slab must not remain');
+ assert.equal(art.ready('plaque'),false,'no fictional plaque asset becomes active');
  const count=loaded.length;await art.load();assert.equal(loaded.length,count,'loaded images reused');
  const normalImages=[];
  class NormalImage extends FakeImage{constructor(){super();normalImages.push(this);}}
@@ -61,5 +65,5 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(fallbackCtx.KirchendeArt.ready('monument'),true,'original monument keeps Level 3 available');
  await fallbackCtx.KirchendeArt.load();
  assert.equal(failedImages.filter(i=>i.src?.includes('monument-photo-v2.webp')).length,1,'recovery does not re-download the original');
- console.log('Kirchende pilot loading, separated slab, normal default and missing-pilot fallback passed');
+ console.log('Kirchende pilot loading, centered unlettered slab, no candle sprite and missing-pilot fallback passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
