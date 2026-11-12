@@ -52,6 +52,8 @@ with tempfile.TemporaryDirectory() as folder:
         assert report["manual_art_approval"] is False
         assert report["anchor"] == list(packer.ACTORS[actor])
         assert report["bytes"] > 0 and path.is_file()
+        for motion in report["motion_checks"].values():
+            assert motion["unique_alpha_silhouettes"] >= 3
         assert path.with_suffix(".json").is_file()
         assert gate.inspect(path, actor, facing)["pixel_gate"] == "pass"
         with Image.open(path) as im:
@@ -145,4 +147,26 @@ with tempfile.TemporaryDirectory() as folder:
         raise AssertionError("death pose height jump was accepted")
     assert not list(output.glob("*.webp")) if output.exists() else True
 
-print("Hero direction packer: valid / intentional loop holds pass; bad alpha, crop, unexpected repeats and abrupt death jumps blocked")
+# A plausible-looking sequence with six distinct RGB colors but no limb /
+# silhouette movement must not be sold as six authored animation frames.
+with tempfile.TemporaryDirectory() as folder:
+    source = Path(folder) / "frames"
+    output = Path(folder) / "out"
+    paint(source, "kim", "down")
+    for action in packer.ACTIONS:
+        for frame in range(6):
+            src = source / "kim" / "down" / action / f"{frame:02d}.png"
+            img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+            ImageDraw.Draw(img).rectangle(
+                (38, 22, 77, packer.ACTORS["kim"][1] - 1),
+                fill=(60 + frame * 20, 85, 170, 255))
+            img.save(src)
+    try:
+        packer.pack("kim", "down", source, output)
+    except ValueError as error:
+        assert "alpha silhouettes" in str(error)
+    else:
+        raise AssertionError("recolored static poses passed as authored motion")
+    assert not list(output.glob("*.webp")) if output.exists() else True
+
+print("Hero direction packer: intentional holds pass; bad alpha, crop, duplicates, recolor-only loops and abrupt death jumps blocked")
