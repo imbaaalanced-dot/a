@@ -39,7 +39,7 @@ const server=http.createServer((req,res)=>{
      const art=globalThis.KirchendeArt;
      await art.load();
      if(!art.ready('monument'))throw Error('Kirchende monument sprite failed to decode');
-     if(pilot&&!art.ready('plaque'))throw Error('separate pilot plaque not decoded');
+     if(art.ready('plaque'))throw Error('uncleared candle plaque must not be loaded');
      const c=document.createElement('canvas');c.id='kirchendePilotQACanvas';c.width=512;c.height=512;
      const q=c.getContext('2d');q.fillStyle='#32352f';q.fillRect(0,0,c.width,c.height);
      const site={x:256,y:220};art.drawSite(q,site);
@@ -55,7 +55,7 @@ const server=http.createServer((req,res)=>{
    assert.equal(state.gameLevel,3,'actual Level 3 did not start: '+JSON.stringify(state));
    assert.ok(state.monumentUrl.includes(profile.pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp'));
    assert.equal(requests.filter(u=>u.includes('monument-style2-pilot.webp')).length,profile.pilot?1:0);
-   assert.equal(requests.filter(u=>u.includes('opferplatte-style2-pilot.webp')).length,profile.pilot?1:0);
+   assert.equal(requests.filter(u=>u.includes('opferplatte-style2-pilot.webp')).length,0,'unapproved candle plaque must never download');
    await page.locator('#kirchendePilotQACanvas').screenshot({path:path.join(output,profile.name+'-assets.png')});
    await page.locator('#kirchendePilotQACanvas').evaluate(el=>el.remove());
    await page.waitForTimeout(300);
