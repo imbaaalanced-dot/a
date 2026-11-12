@@ -7,7 +7,9 @@
     // KirchendeArt owns and caches this monument. Do not request a missing
     // legacy alias or decode the same photo twice under two loaders.
     3:[],
-    4:['assets/church-ende-style2.webp?v=style2a1','assets/lion-ende-style2.webp?v=style2a1'],
+    // DenkmalChurch owns the church WebP; the 1879 lion is cached Canvas
+    // artwork. Avoid duplicate decodes and never preload placeholder images.
+    4:[],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1']
   };
