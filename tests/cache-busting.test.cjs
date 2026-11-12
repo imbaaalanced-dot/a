@@ -58,7 +58,7 @@ const expectedVersions = new Map([
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js', 'westhofen-env-style2b1'],
   ['game.js', 'copy-20261110a'],
-  ['barracks.js','td2-barracks4'],
+  ['barracks.js','td2-barracks5'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
