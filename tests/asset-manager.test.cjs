@@ -39,7 +39,8 @@ async function run(){
   await assets.next(3);assets.release('level:3');
   assert.equal(assets.status('assets/scenery-style2.webp?v=style2a1'),'ready','shared scene is pinned for level 4');
   assert.equal(assets.status('assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'),'unrequested','previous level art is released');
-  assert.equal(assets.status('assets/lion-ende-style2.webp?v=style2a1'),'ready');
+  assert.deepEqual(Array.from(assets.levelAssets[4]),[],'Level 4 art owned by DenkmalChurch, not double-decoded by manager');
+  assert.equal(assets.status('assets/lion-ende-style2.webp?v=style2a1'),'unrequested','opaque placeholder is never preloaded');
   assert.equal(assets.status('assets/hero/example.webp'),'ready','level release must not evict unowned menu images');
   console.log('Asset manager: coalescing, fallback status, next-level preload and release passed');
 }
