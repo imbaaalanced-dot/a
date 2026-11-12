@@ -1,0 +1,23 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const path=require('node:path');
+const root=path.join(__dirname,'../dist');
+const sandbox={globalThis:null,Date,Map,WeakMap,Promise};
+sandbox.globalThis=sandbox;
+sandbox.DenkmalEnemyAnimations={select:()=>0};
+sandbox.TD2DirectionalAssets={'enemy-00':{file:'enemy-00.webp',cell:128,anchor:[66,72],height:53,frames:4,rows:{right:{attack:6,hit:7,death:8}}}};
+let draws=[];
+const ctx={save(){},restore(){},translate(){},drawImage(...args){draws.push(args)},globalAlpha:1};
+sandbox.DenkmalAssets={ready:()=>({naturalWidth:512,naturalHeight:1536}),retain:()=>Promise.resolve(),release(){}};
+vm.runInNewContext(fs.readFileSync(path.join(root,'directional-actions-v410.js'),'utf8'),sandbox);
+const e={type:'runner',x:100,y:200,velX:1,velY:0,attackAnim:.1,hit:0,visualVariant:0};
+assert.equal(sandbox.TD2DirectionalActions.enemy(ctx,e,{level:1,target:{x:200,y:200}}),false,'first load is asynchronous');
+setImmediate(()=>{
+ assert.equal(sandbox.TD2DirectionalActions.enemy(ctx,e,{level:1,target:{x:200,y:200}}),true);
+ assert.equal(draws.length,1);
+ const args=draws[0];
+ assert.equal(args[7],128*54/53,'enemy 00 action scale follows runner walk 54px height');
+ console.log('Enemy 00 runner action scale regression passed');
+});
