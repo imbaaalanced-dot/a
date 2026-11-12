@@ -38,16 +38,20 @@ const server=http.createServer((req,res)=>{
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
         const game=DenkmalTestHooks.getGame(),canvas=document.querySelector('#game');
         if(game?.level!==4)throw Error(`expected Ender Dorfkirche level 4, got ${game?.level}`);
-        if(DenkmalChurch.lionSpriteReady)throw Error('opaque lion placeholder must not be displayed');
+        // The approved replacement loads asynchronously; Canvas fallback is valid until ready.
+        if(DenkmalChurch.lionSpriteFailed)throw Error('approved lion sprite failed to load');
         const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
         let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)visible++;
         if(visible<canvas.width*canvas.height*.08)throw Error('Level 4 gameplay canvas appears empty');
         return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible,environmentReady,groundReady};
       });
+      await page.waitForFunction(()=>DenkmalChurch.lionSpriteReady,null,{timeout:15000});
+      await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-ender-dorfkirche-gameplay.png`),fullPage:true});
       assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
       assert(!requests.some(url=>url.includes('lion-ende-style2.webp')),'no placeholder lion request');
+      assert(requests.some(url=>url.includes('lion-1879-style2-2x.webp')),'approved photo lion requested');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(failed,[],'no failed asset or script requests');
       results.push({mobileTouchEmulation:mobile,...state,errors,failedRequests:failed});

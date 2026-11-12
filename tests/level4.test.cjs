@@ -93,7 +93,16 @@ for(const line of [
   '1879'
 ])assert.ok(inscriptionLines.includes(line),'photo-derived plaque text: '+line);
 assert.equal(inscriptionLines.filter(t=>t==='1879').length,1,'1879 appears only on memorial plaque');
-assert.equal(art.lionSpriteReady,false,'opaque lion placeholder cannot be displayed');
+assert.equal(art.lionSpriteReady,false,'fallback Canvas is used when Image API is unavailable in Node');
+const lionWebP=fs.readFileSync(path.join(root,'assets/level4/lion-1879-style2-2x.webp'));
+assert.equal(lionWebP.toString('ascii',0,4),'RIFF','production lion is RIFF');
+assert.equal(lionWebP.toString('ascii',8,12),'WEBP','production lion is WebP');
+assert.equal(lionWebP.toString('ascii',12,16),'VP8X','production lion uses extended WebP with alpha');
+assert.deepEqual([lionWebP.readUIntLE(24,3)+1,lionWebP.readUIntLE(27,3)+1],[512,608],'photo asset has 2x dimensions');
+const lionSource=fs.readFileSync(path.join(root,'church-art.js'),'utf8');
+assert.match(lionSource,/function requestPhotoLion\(\)/,'lazy loader exists');
+assert.match(lionSource,/lion-1879-style2-2x\.webp/,'only production photo lion requested on level 4');
+assert.match(lionSource,/drawImage\(lionSprite\|\|lionArt,m\.x-128,m\.y-293,256,304\)/,'lion collision anchor and size unchanged');
 assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
 const n=canvases;
 art.drawBackdrop(ctx,c);art.drawSite(ctx,c);art.drawCanopies(ctx,c,[]);
@@ -104,7 +113,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 for(const id of ['level4Btn','endless4Btn'])
   assert.match(html,new RegExp('id="'+id+'"'),'new chapter navigation must be reachable');
-assert.ok(html.includes('church-art.js?v=v5-style2a2-lion'));
+assert.ok(html.includes('church-art.js?v=v5-style2a3-lion1879'));
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintChurchFinish(g)'),'reference pass 2 bakes masonry into the church sprite');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintLionFinish(g)'),'the south-facing lion gets the same cached material pass');
 assert.ok(html.includes('kirchende-art.js?v=style2-forestfloor1'))
