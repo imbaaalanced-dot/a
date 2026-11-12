@@ -57,8 +57,12 @@ const server=http.createServer((req,res)=>{
    else{await page.keyboard.press('Digit6');await page.keyboard.press('KeyE');}
    await page.waitForFunction(()=>DenkmalTestHooks.getGame().towers[0]?.kind==='barracks'&&DenkmalTestHooks.getGame().militia.length===1);
    assert.equal(await page.evaluate(()=>DenkmalTestHooks.getGame().essence),445);
-   await page.evaluate(()=>DenkmalBarracks.preload());
-   await page.waitForFunction(()=>DenkmalAssets.status(DenkmalBarracks.ATLAS)==='ready'&&DenkmalAssets.status(DenkmalBarracks.STATES)==='ready');
+   const artStatus=await page.evaluate(async()=>{
+    // preload() settles after all image requests; inspect both outcomes directly.
+    await DenkmalBarracks.preload();
+    return {atlas:DenkmalAssets.status(DenkmalBarracks.ATLAS),states:DenkmalAssets.status(DenkmalBarracks.STATES)};
+   });
+   assert.deepEqual(artStatus,{atlas:'ready',states:'ready'},'barracks atlas/status load failed: '+JSON.stringify({profile:profile.name,artStatus,missing}));
    const combat=await page.evaluate(()=>{
     const g=DenkmalTestHooks.getGame(),u=g.militia[0];u.aliveTime=2;u.x=u.rally.x;u.y=u.rally.y;
     DenkmalTestHooks.spawnEnemy();const e=g.enemies[0];Object.assign(e,{x:u.x+20,y:u.y,r:12,hp:10000,maxHp:10000,damage:1,attackCd:0,attackCooldown:.2,speed:0,waypoint:0});
