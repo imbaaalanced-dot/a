@@ -373,12 +373,39 @@
       g.fillStyle='#bfb08c';g.beginPath();g.arc(x,y,3,0,7);g.fill();
       g.fillStyle='#484e45';g.fillRect(x-1,y-1,2,2);
     }
-    g.fillStyle='#c7ba96';g.textAlign='center';g.font='bold 12px Georgia,serif';
-    g.fillText('ZUM ANDENKEN',0,-138);
-    g.font='9px Georgia,serif';
-    g.fillText('DER GEFALLENEN KRIEGER',0,-123);
-    g.fillText('VON ENDE',0,-110);
-    g.fillText('1864 · 1866 · 1870/71',0,-92);
+    // Photo reference (12 November 2026): keep the 1879 inscription's wording
+    // and chronology. At combat zoom this is engraved texture, not UI text.
+    g.fillStyle='#c7ba96';g.textAlign='center';
+    const inscription=[
+      ['Zum Andenken',-151,10],
+      ['der gefallenen Krieger von Ende',-140,7],
+      ['in den Feldzügen 1864, 66, 70-71.',-130,6.6],
+      ['Sie ruhen sanft in fremdem',-120,7],
+      ['Lande!',-109,8],
+      ['Gewidmet von der dankbaren',-99,7],
+      ['Gemeinde im Jahre',-88,8],
+      ['1879',-75,12]
+    ];
+    for(const [line,y,size] of inscription){
+      g.font=`${size}px Georgia,serif`;
+      g.fillText(line,0,y,113);
+    }
+    // Pale carved eagles flank the inscription above the foliated pilasters.
+    function eagle(x,y){
+      g.save();g.translate(x,y);
+      g.fillStyle='#cdbd9d';g.beginPath();
+      g.moveTo(0,-4);g.quadraticCurveTo(-5,-9,-10,-6);
+      g.quadraticCurveTo(-17,-8,-21,-3);g.quadraticCurveTo(-12,3,-5,1);
+      g.lineTo(0,7);g.lineTo(5,1);
+      g.quadraticCurveTo(12,3,21,-3);g.quadraticCurveTo(17,-8,10,-6);
+      g.quadraticCurveTo(5,-9,0,-4);g.closePath();g.fill();
+      g.strokeStyle='#756f5d';g.lineWidth=1.2;
+      g.beginPath();g.moveTo(-19,-3);g.quadraticCurveTo(-10,0,-3,-1);
+      g.moveTo(19,-3);g.quadraticCurveTo(10,0,3,-1);
+      g.moveTo(0,0);g.lineTo(0,8);g.stroke();
+      g.restore();
+    }
+    eagle(-80,-180);eagle(80,-180);
     // Carved foliated rosettes bordering the front slab.
     function relief(x,sy){
       g.save();g.translate(x,sy);
@@ -395,7 +422,7 @@
     g.fillStyle='#9c997f';g.fillRect(-90,-49,178,18);
     g.fillStyle='#d9c9a3';g.fillRect(-95,-44,189,6);
     g.fillStyle='#696e5d';g.fillRect(-93,-31,187,5);
-    g.textAlign='center';g.font='bold 14px Georgia,serif';g.fillStyle='#e6d5ad';g.fillText('1879',0,-34);
+    // The date belongs on the inset plaque, not repeated on the stone molding.
     // Top cornice to separate sculpture from masonry.
     polygon(g,[[-110,-222],[-92,-237],[97,-237],[111,-223]],'#bfb094','#6e7466');
     g.fillStyle='#d4c8a7';g.fillRect(-113,-229,223,9);
