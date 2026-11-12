@@ -26,6 +26,7 @@ def paint(source, actor, facing, *, mode="valid", skip=None):
         folder.mkdir(parents=True, exist_ok=True)
         for frame in range(6):
             if (action, frame) == skip:
+                (folder / f"{frame:02d}.png").unlink(missing_ok=True)
                 continue
             img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
             draw = ImageDraw.Draw(img)
