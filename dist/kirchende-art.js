@@ -19,7 +19,7 @@
       const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);if(!ok)delete pending[key];resolve(ok);};
       const timer=setTimeout(()=>finish(false),8000);
       img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
-      const version=key==='monument'?(assets.monument==='monument-photo-v2.webp'?'v400a5photo2':'kirchende-memorial-pilot1'):key==='environment'?'kirchende-pilot2':'v400a1';
+      const version=key==='monument'?(assets.monument==='monument-photo-v2.webp'?'v400a5photo2':'kirchende-memorial-pilot2'):key==='environment'?'kirchende-pilot2':'v400a1';
       img.src='assets/kirchende/'+assets[key]+'?v='+version;
       if(img.complete&&img.naturalWidth)finish(true);
     });
