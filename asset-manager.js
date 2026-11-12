@@ -4,7 +4,9 @@
   const levelAssets={
     1:['assets/monument-level1-style2.webp'],
     2:[],
-    3:['assets/kirchende/monument-photo-style2.webp?v=style2a1'],
+    // KirchendeArt owns and caches this monument. Do not request a missing
+    // legacy alias or decode the same photo twice under two loaders.
+    3:[],
     4:['assets/church-ende-style2.webp?v=style2a1','assets/lion-ende-style2.webp?v=style2a1'],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1']
