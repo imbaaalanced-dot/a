@@ -23,11 +23,28 @@
     sprite.onerror=()=>{churchSpriteFailed=true;};
     sprite.src='assets/church-ende-style2.webp?v=style2a1';
   }
-  // The bundled lion WebP is an opaque brown "STYLE 2 PLACEHOLDER" card,
-  // not production art. Do not request or draw it in gameplay.
-  // Keep the original file intact for future review. The cached 1879
-  // painted lion canvas below is the approved live fallback.
-  let lionSprite=null;
+  // The original lion-ende-style2.webp is an opaque placeholder and remains unused.
+  // Level 4 lazily requests a separate transparent, photo-derived 1879 WebP.
+  // The cached Canvas lion remains the fallback during loading and after failures.
+  let lionSprite=null,lionSpriteRequested=false,lionSpriteFailed=false;
+  function requestPhotoLion(){
+    if(lionSpriteRequested||lionSpriteFailed||typeof Image!=='function')return;
+    lionSpriteRequested=true;
+    const candidate=new Image();
+    candidate.onload=()=>{
+      if(candidate.naturalWidth===512&&candidate.naturalHeight===608){
+        lionSprite=candidate;
+      }else{
+        lionSpriteFailed=true;
+      }
+    };
+    candidate.onerror=()=>{lionSpriteFailed=true;};
+    try{
+      candidate.src='assets/level4/lion-1879-style2-2x.webp?v=lion1879-photo1';
+    }catch(error){
+      lionSpriteFailed=true;
+    }
+  }
   function seeded(seed){return () => ((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
   function polygon(c,points,fill,stroke){
     c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));
@@ -469,6 +486,7 @@
     return canvas;
   }
   function drawLion(ctx,m){
+    requestPhotoLion();
     if(!lionSprite&&!lionArt)lionArt=createLionArt();
     // Contact shadow belongs to the collision point. Everything else is cached.
     ctx.save();ctx.fillStyle='#17251b66';ctx.beginPath();
@@ -482,5 +500,5 @@
     }
     ctx.restore();
   }
-  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get lionSpriteReady(){return !!lionSprite;},get churchSpriteFailed(){return churchSpriteFailed;}};
+  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get lionSpriteReady(){return !!lionSprite;},get lionSpriteFailed(){return lionSpriteFailed;},get churchSpriteFailed(){return churchSpriteFailed;}};
 })();
