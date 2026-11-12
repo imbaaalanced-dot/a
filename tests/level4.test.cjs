@@ -9,10 +9,11 @@ const localStorage={
   setItem(k,v){writes.push([k,v]);data.set(k,v);}
 };
 let canvases=0,drawn=0,lionDate=false,style2Radials=0;
+const inscriptionLines=[];
 const imageCalls=[];
 const ctx=new Proxy({
   drawImage(...args){drawn++;imageCalls.push(args);},
-  fillText(t){if(t==='1879')lionDate=true;},
+  fillText(t){if(t==='1879')lionDate=true;inscriptionLines.push(t);},
   createRadialGradient(){style2Radials++;return {addColorStop(){}};},
   createLinearGradient(){return {addColorStop(){}};}
 },{get:(obj,key)=>key in obj?obj[key]:()=>{}});
@@ -81,6 +82,17 @@ assert.ok(churchDraw[2]+churchDraw[4]<-150,'church must leave a clear forecourt 
 const lionDraw=imageCalls.find(args=>args.length===5&&args[1]===c.x-128&&args[2]===c.y-293&&args[3]===256&&args[4]===304);
 assert.ok(lionDraw,'detailed memorial art must render at the exact combat objective');
 assert.ok(lionDate,'sleeping lion honors the 1879 memorial, not the 1927 memorial');
+for(const line of [
+  'Zum Andenken',
+  'der gefallenen Krieger von Ende',
+  'in den Feldzügen 1864, 66, 70-71.',
+  'Sie ruhen sanft in fremdem',
+  'Lande!',
+  'Gewidmet von der dankbaren',
+  'Gemeinde im Jahre',
+  '1879'
+])assert.ok(inscriptionLines.includes(line),'photo-derived plaque text: '+line);
+assert.equal(inscriptionLines.filter(t=>t==='1879').length,1,'1879 appears only on memorial plaque');
 assert.equal(art.lionSpriteReady,false,'opaque lion placeholder cannot be displayed');
 assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
 const n=canvases;
