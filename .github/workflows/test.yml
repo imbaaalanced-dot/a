@@ -52,6 +52,7 @@ jobs:
         run: |
           node tests/terrain-polish.test.cjs
           node tests/kirchende-loading.test.cjs
+          node tests/kirchende-memorial-pilot.test.cjs
           node tests/style2-kirchende.test.cjs
           node tests/style2-cannon.test.cjs
           node tests/style2-towers.test.cjs
@@ -136,6 +137,7 @@ jobs:
           python tests/hero-sprites-v5b.test.py
           python tests/active-hero-atlas-alpha.test.py
           python tests/assets.test.py
+          python tests/kirchende-memorial-pilot.test.py
           python tests/style2-v2-assets.test.py
           python tests/v2-expansion-assets.test.py
           python tests/alpha8-assets.test.py
