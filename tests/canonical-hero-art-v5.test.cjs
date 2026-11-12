@@ -17,8 +17,8 @@ for (const [actor, expected] of Object.entries({
 })) {
   const entry = art[actor];
   assert.ok(Object.isFrozen(entry), `${actor} art map must not be mutable`);
-  assert.match(entry.walk, new RegExp(`${actor}-walk-style2\\.webp`));
-  assert.match(entry.actions, new RegExp(`${actor}-side-actions-style2\\.webp`));
+  assert.match(entry.walk, new RegExp(`${actor}-walk-v5b\\.webp`));
+  assert.match(entry.actions, new RegExp(`${actor}-side-actions-v5b\\.webp`));
   assert.ok(entry.portrait.split('?')[0].endsWith(expected));
   assert.equal(entry.walkCell, 256);
   assert.equal(entry.actionCell, 128);
