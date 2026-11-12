@@ -87,7 +87,10 @@ function enemy(ctx,e,options={}){
  else if(e.attackAnim>0){kind='attack';progress=1-e.attackAnim/.22;}
  else return false;
  const heights={runner:44,brute:66,guardian:68,boss:100,uprooted:116,gargoyle:82,shadowwing:72,stormwing:78};
- return draw(ctx,'enemy-'+String(skin).padStart(2,'0'),kind,enemyDirection(e,options.target,kind),progress,e.x,e.y+6-(e.flying?12+(e.r||13)*.35:0),heights[e.type]||54,options);
+ const actionHeight=skin===0&&e.type==='runner'?54:(heights[e.type]||54);
+ // Enemy 00 uses the runner's 54px walk reference, not the older 44px
+ // action scale. Keep its authored directional atlas and anchor unchanged.
+ return draw(ctx,'enemy-'+String(skin).padStart(2,'0'),kind,enemyDirection(e,options.target,kind),progress,e.x,e.y+6-(e.flying?12+(e.r||13)*.35:0),actionHeight,options);
 }
 function hero(ctx,h,attackTime,reduced=false,time=0){
  let kind,progress;
