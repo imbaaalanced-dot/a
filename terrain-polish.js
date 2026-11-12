@@ -4,15 +4,40 @@
 'use strict';
 const textures=new Map();let patterns=new WeakMap();
 let groundLoading=null,style2Ground=null;
+const pilot=/(?:^|[?&])td2Style2Pilot=1(?:&|$)/.test(globalThis.location?.search||'');
+const baseGroundUrl='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
+const pilotGroundUrl='assets/style2-pilot-v1/environment/ground/forest_floor.webp?v=pilot1';
+const pilotRoad={earth:null,slabs:null};
+async function loadPilotRoads(){
+  if(!pilot)return;
+  const requests=[
+    ['earth','assets/style2-pilot-v1/environment/ground/gravel_path.webp?v=pilot1'],
+    ['slabs','assets/style2-pilot-v1/environment/ground/cobble_moss.webp?v=pilot1']
+  ];
+  await Promise.all(requests.map(([key,url])=>new Promise(resolve=>{
+    const image=new Image();image.decoding='async';
+    image.onload=()=>{pilotRoad[key]=image;resolve(true);};
+    image.onerror=()=>resolve(false);
+    image.src=url;
+  })));
+}
 function load(){
   if(style2Ground)return Promise.resolve(true);
   if(typeof Image==='undefined')return Promise.resolve(false);
   if(groundLoading)return groundLoading;
   groundLoading=new Promise(resolve=>{
     const image=new Image();image.decoding='async';
-    image.onload=()=>{style2Ground=image;illustratedGround=null;resolve(true);};
-    image.onerror=()=>{groundLoading=null;resolve(false);};
-    image.src='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
+    let triedFallback=false;
+    image.onload=()=>{
+      style2Ground=image;illustratedGround=null;
+      // This opt-in preview never blocks gameplay when a pilot texture is missing.
+      Promise.resolve(loadPilotRoads()).then(()=>resolve(true),()=>resolve(true));
+    };
+    image.onerror=()=>{
+      if(pilot&&!triedFallback){triedFallback=true;image.src=baseGroundUrl;return;}
+      groundLoading=null;resolve(false);
+    };
+    image.src=pilot?pilotGroundUrl:baseGroundUrl;
   });
   return groundLoading;
 }
@@ -80,8 +105,12 @@ function texture(kind){
 }
 function pattern(ctx,kind){
   let cache=patterns.get(ctx);if(!cache){cache=new Map();patterns.set(ctx,cache);}
-  if(!cache.has(kind))cache.set(kind,ctx.createPattern(texture(kind),'repeat'));
-  return cache.get(kind);
+  const pilotImage=pilot&&pilotRoad[kind];
+  const cacheKey=pilotImage?'pilot-'+kind:kind;
+  if(!cache.has(cacheKey)){
+    cache.set(cacheKey,ctx.createPattern(pilotImage||texture(kind),'repeat'));
+  }
+  return cache.get(cacheKey);
 }
 let illustratedGround=null;
 function groundPainting(){
