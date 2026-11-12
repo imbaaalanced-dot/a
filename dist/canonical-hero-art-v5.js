@@ -4,14 +4,14 @@
 (()=>{'use strict';
   const art={
     marcel:{
-      walk:'assets/hero/marcel-walk-style2.webp?v=style2a1',
-      actions:'assets/hero/marcel-side-actions-style2.webp?v=style2a1',
+      walk:'assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112',
+      actions:'assets/hero/marcel-side-actions-v5b.webp?v=v5b-alpha-20261112',
       portrait:'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1',
       walkGrid:[3,4],actionGrid:[6,6],walkCell:256,actionCell:128
     },
     kim:{
-      walk:'assets/hero/kim-walk-style2.webp?v=style2a1',
-      actions:'assets/hero/kim-side-actions-style2.webp?v=style2a1',
+      walk:'assets/hero/kim-walk-v5b.webp?v=v5b-alpha-20261112',
+      actions:'assets/hero/kim-side-actions-v5b.webp?v=v5b-alpha-20261112',
       portrait:'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1',
       walkGrid:[3,4],actionGrid:[6,6],walkCell:256,actionCell:128
     }
