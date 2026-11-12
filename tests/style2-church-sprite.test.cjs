@@ -7,7 +7,7 @@ const html=fs.readFileSync('dist/index.html','utf8');
 const png=fs.readFileSync('dist/assets/church-ende-style2.webp');
 assert.equal(png.subarray(0,4).toString('ascii'),'RIFF');
 assert.equal(png.subarray(8,12).toString('ascii'),'WEBP');
-assert.match(html,/church-art\.js\?v=v5-style2a2-lion/);
+assert.match(html,/church-art\.js\?v=v5-style2a3-lion1879/);
 let canvases=0,draws=[],save=0,loadUrls=[];
 const grad=()=>({addColorStop(){}});
 const ctx=new Proxy({
