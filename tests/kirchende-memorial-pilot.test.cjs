@@ -39,5 +39,27 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.ok(normalImages.some(i=>i.src?.includes('monument-photo-v2.webp')),'normal level keeps photographic monument');
  assert.ok(!normalImages.some(i=>i.src?.includes('style2-pilot.webp')),'normal level never loads pilot files');
  normalImages.forEach(i=>i.ok());await normalLoading;
- console.log('Kirchende opt-in monument pilot loading, cached slab, and default fallback passed');
+ // Missing preview asset: return to the known photographic sprite without blocking the level.
+ const failedImages=[];
+ class FailureImage{
+   complete=false;naturalWidth=0;naturalHeight=0;
+   constructor(){failedImages.push(this);}
+   ok(){this.complete=true;this.naturalWidth=512;this.naturalHeight=768;this.onload();}
+   fail(){this.complete=true;this.onerror();}
+ }
+ const fallbackCtx={Image:FailureImage,location:{search:'?td2KirchendeMemorialPilot=1'},Math,setTimeout(){return 1;},clearTimeout(){}};
+ vm.createContext(fallbackCtx);vm.runInContext(source,fallbackCtx);
+ const recovering=fallbackCtx.KirchendeArt.load();
+ const broken=failedImages.find(i=>i.src?.includes('monument-style2-pilot.webp'));
+ assert.ok(broken,'fallback test requests pilot first');
+ failedImages.filter(i=>i!==broken).forEach(i=>i.ok());broken.fail();
+ await new Promise(resolve=>setImmediate(resolve));
+ const original=failedImages.find(i=>i.src?.includes('monument-photo-v2.webp?v=v400a5photo2'));
+ assert.ok(original,'failed pilot triggers a single original image request with the correct cache key');
+ original.ok();
+ await recovering;
+ assert.equal(fallbackCtx.KirchendeArt.ready('monument'),true,'original monument keeps Level 3 available');
+ await fallbackCtx.KirchendeArt.load();
+ assert.equal(failedImages.filter(i=>i.src?.includes('monument-photo-v2.webp')).length,1,'recovery does not re-download the original');
+ console.log('Kirchende pilot loading, separated slab, normal default and missing-pilot fallback passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,0 +1,43 @@
+name: TD2 Kirchende memorial pilot Chromium QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/kirchende-art.js'
+      - 'dist/assets/kirchende/*pilot.webp'
+      - 'tests/kirchende-memorial-pilot.test.cjs'
+      - 'tools/verify-kirchende-memorial-browser.cjs'
+      - '.github/workflows/td2-kirchende-memorial-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kirchende-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Level 3 pilot regression and loader fallback
+        run: |
+          node --check dist/kirchende-art.js
+          node --check tools/verify-kirchende-memorial-browser.cjs
+          node tests/kirchende-memorial-pilot.test.cjs
+          node tests/kirchende-loading.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Render Level 3 in desktop and emulated touch portrait
+        run: node tools/verify-kirchende-memorial-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: level3-kirchende-memorial-chromium
+          path: /tmp/td2-kirchende-pilot/
+          if-no-files-found: warn
+          retention-days: 7

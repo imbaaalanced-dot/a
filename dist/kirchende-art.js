@@ -16,7 +16,7 @@
       const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);if(!ok)delete pending[key];resolve(ok);};
       const timer=setTimeout(()=>finish(false),8000);
       img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
-      const version=key==='monument'?(pilot?'kirchende-memorial-pilot1':'v400a5photo2'):key==='plaque'?'kirchende-memorial-pilot1':key==='environment'?'kirchende-pilot2':'v400a1';
+      const version=key==='monument'?(assets.monument==='monument-photo-v2.webp'?'v400a5photo2':'kirchende-memorial-pilot1'):key==='plaque'?'kirchende-memorial-pilot1':key==='environment'?'kirchende-pilot2':'v400a1';
       img.src='assets/kirchende/'+assets[key]+'?v='+version;
       if(img.complete&&img.naturalWidth)finish(true);
     });
@@ -34,7 +34,17 @@
   }
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
-    loading=Promise.all(Object.keys(assets).map(loadOne)).then(async results=>{if(results.some(ok=>!ok))loading=null;await globalThis.DenkmalTerrain?.load?.();return results;});
+    loading=Promise.all(Object.keys(assets).map(loadOne)).then(async results=>{
+      // An optional preview must never block Level 3 if its art is missing.
+      // Fetch the original image only after a pilot failure: avoid double decode.
+      if(pilot&&!ready('monument')&&assets.monument!=='monument-photo-v2.webp'){
+        assets.monument='monument-photo-v2.webp';
+        results[0]=await loadOne('monument');
+      }
+      if(results.some(ok=>!ok))loading=null;
+      await globalThis.DenkmalTerrain?.load?.();
+      return results;
+    });
     return loading;
   }
   function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
