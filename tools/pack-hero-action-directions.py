@@ -42,6 +42,7 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
     for action, row in ACTIONS.items():
         hashes = []
         heights = []
+        silhouette_hashes = []
         manifest["source"][action] = []
         for index in range(GRID):
             src = source_root / actor / facing / action / f"{index:02d}.png"
@@ -69,6 +70,11 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
                 raise ValueError(f"{src}: base shadow/ground anchor drift ({bounds[3]} vs {pivot_y})")
             pixels_hash = hashlib.sha256(frame.tobytes()).hexdigest()
             hashes.append(pixels_hash)
+            # Reject color-only edits masquerading as independently authored
+            # motion. This checks visible alpha shapes and does not prove
+            # anatomical accuracy; visual approval remains mandatory.
+            visible_shape = alpha.point(lambda value: 255 if value >= 32 else 0)
+            silhouette_hashes.append(hashlib.sha256(visible_shape.tobytes()).hexdigest())
             heights.append(bounds[3] - bounds[1])
             manifest["source"][action].append(str(src))
             atlas.paste(frame, (index * CELL, row * CELL))
@@ -83,6 +89,10 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
             raise ValueError(
                 f"{actor}/{facing}/{action}: missing distinct motion poses "
                 f"(unexpected repeats: {unexpected})")
+        if len(set(silhouette_hashes)) < 3:
+            raise ValueError(
+                f"{actor}/{facing}/{action}: fewer than three visible "
+                "alpha silhouettes; recoloring does not count as animation")
         # A full-height sprite must not turn into a horizontal corpse in one
         # frame; this geometric gate does not assess anatomy or perspective.
         drops = [heights[i - 1] - heights[i] for i in range(1, GRID)]
@@ -94,6 +104,7 @@ def pack(actor, facing, source_root, output_root, *, replace=False):
         manifest["motion_checks"][action] = {
             "allowed_hold": list(allowed_hold) if allowed_hold in duplicated else None,
             "unique_frames": len(set(hashes)),
+            "unique_alpha_silhouettes": len(set(silhouette_hashes)),
             "max_height_drop_px": max(drops),
             "manual_perspective_review": "required",
             "manual_identity_review": "required",
