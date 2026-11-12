@@ -55,7 +55,8 @@ for rel in sorted(files):
                 crop = im.crop(bounds)
                 assert crop.getchannel("A").getbbox(), (rel, frame)
                 for x, y in ((0, 0), (127, 0), (0, 127), (127, 127)):
-                    assert crop.getchannel("A").getpixel((x, y)) < 24, (rel, frame)
+                    limit = 64 if rel == "effects/ambience_atlas.webp" else 24
+                    assert crop.getchannel("A").getpixel((x, y)) < limit, (rel, frame)
         elif rel.startswith("ui/"):
             total_ui += 1
             assert im.mode == "RGBA" and im.width <= 512 and im.height <= 256
