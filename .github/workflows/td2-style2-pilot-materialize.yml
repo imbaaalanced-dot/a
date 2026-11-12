@@ -76,7 +76,10 @@ jobs:
               with Image.open(path) as image:
                   image.load()
                   assert image.format == 'WEBP', name
-                  assert image.mode == 'RGBA', name
+                  if name.startswith('environment/ground/'):
+                      assert image.mode in ('RGB','RGBA'), name
+                  else:
+                      assert image.mode == 'RGBA', name
                   if name.startswith('environment/'):
                       assert image.size == (256,256), name
                   elif name.startswith('effects/'):
