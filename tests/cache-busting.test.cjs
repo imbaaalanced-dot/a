@@ -74,7 +74,7 @@ const expectedVersions = new Map([
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js', 'style2-road-detail2'],
   ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js', 'v5-style2a1'],
+  ['church-art.js', 'v5-style2a2-lion'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 
