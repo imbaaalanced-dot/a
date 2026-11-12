@@ -1,7 +1,10 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  const assets={monument:'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
+  // Opt-in artwork pilot: preserves the verified photographic sprite by default.
+  const pilot=/(?:^|[?&])td2KirchendeMemorialPilot=1(?:&|$)/.test(globalThis.location?.search||'');
+  const assets={monument:pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};
+  if(pilot)assets.plaque='opferplatte-style2-pilot.webp';for(const key of ['rootrunner','stoneguard','mistcaller','uprooted'])assets[key]=key+'.webp';
   const images={},pending={};let loading=null,environmentLoading=null;
   function ready(key){return !!(images[key]?.complete&&images[key].naturalWidth);}
   function loadOne(key){
@@ -13,7 +16,7 @@
       const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);if(!ok)delete pending[key];resolve(ok);};
       const timer=setTimeout(()=>finish(false),8000);
       img.onload=()=>finish(true);img.onerror=()=>finish(false);img.decoding='async';
-      const version=key==='monument'?'v400a5photo2':key==='environment'?'kirchende-pilot2':'v400a1';
+      const version=key==='monument'?(pilot?'kirchende-memorial-pilot1':'v400a5photo2'):key==='plaque'?'kirchende-memorial-pilot1':key==='environment'?'kirchende-pilot2':'v400a1';
       img.src='assets/kirchende/'+assets[key]+'?v='+version;
       if(img.complete&&img.naturalWidth)finish(true);
     });
@@ -126,7 +129,16 @@
     q.restore();
     return c;
   }
-  function drawSite(ctx,center){if(!site)site=createSite();ctx.drawImage(site,center.x-192,center.y-144);}
+  function drawSite(ctx,center){
+    if(!site)site=createSite();
+    ctx.drawImage(site,center.x-192,center.y-144);
+    // The pilot plaque replaces the small existing painted slab visually. If
+    // its download failed, the baked stone remains as a zero-cost fallback.
+    if(pilot&&ready('plaque')){
+      const img=images.plaque;
+      ctx.drawImage(img,center.x-116,center.y+64,82,43);
+    }
+  }
   // Three small, deterministic root-and-leaf decals; each is cached once and reused.
   // Decoration is visual only: no changes to navigation, cover or enemy collisions.
   const rootPatches=[];
