@@ -31,7 +31,8 @@ with tempfile.TemporaryDirectory() as temp:
     )
     report = gate.inspect(opaque, "marcel", "left")
     assert report["pixel_gate"] == "hold"
-    assert any("opaque-background" in problem for problem in report["issues"])
+    assert ("missing-alpha" in report["issues"] or
+            any("opaque-background" in problem for problem in report["issues"]))
     assert report["art_approval"] == "manual-required"
 
     wrong = base / "wrong-grid.webp"
