@@ -59,8 +59,14 @@ function draw(ctx,actor,kind,facing,progress,x,y,height,options={}){
  }catch{return false;}finally{ctx.restore();}
 }
 function drawHeroSide(ctx,actor,kind,facing,progress,x,y,height,options={}){
- const spec=globalThis.TD2HeroSideAssets?.[actor];
- if(!spec||spec.facing!==facing||!actions.includes(kind)||!Number.isFinite(progress)||
+ const base=globalThis.TD2HeroSideAssets?.[actor];
+ // Each newly painted view uses its own atlas path but inherits the canonical
+ // cell grid, row contract and ground pivot. No mirrored or reused side art.
+ const alternate=base?.sheets?.[facing];
+ const spec=base?.facing===facing?base:
+   typeof alternate==='string'&&alternate&&alternate!==base?.file?
+     {...base,file:alternate,facing}:null;
+ if(!spec||!directions.includes(facing)||!actions.includes(kind)||!Number.isFinite(progress)||
     spec.frames!==6||spec.cell!==128||!Number.isInteger(spec.rows?.[kind])||
     !Array.isArray(spec.anchor)||!spec.anchor.every(Number.isFinite)||!(spec.height>0))return false;
  const art=image(spec,actor),cell=spec.cell;
