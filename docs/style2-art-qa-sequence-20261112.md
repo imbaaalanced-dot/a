@@ -26,3 +26,13 @@ Reihenfolge: (a) Boden und Wegmaterial; (b) Wegränder, Bäume, Mauern, Landmark
 ## Merge- und Release-Sperre
 
 Neue Assets nur auf Entwicklungsbranch. Merge nach `main` erst nach verpflichtender CI, Desktop- und Touch-Chromium-Smoke, visueller Abnahme und Einhaltung des Schutzregelwerks. Realer Android-4-GB-Test separat; Chromium ist **kein** Android-Gerätetest. Ein erfolgreicher Merge ist **kein** bestätigtes Pages-Deployment.
+
+
+### Fortsetzung: technische Vorbereitung pro Blickrichtung
+
+- `dist/directional-actions-v410.js` kann künftig `sheets:{down:'...',left:'...',right:'...',up:'...'}` pro Held verwenden. Nicht vorhandene Richtungen werden **nicht** vorgetäuscht und bleiben Fallback auf den bestehenden V5b-Laufatlas.
+- Jede zusätzlich registrierte Atlasdatei erbt Framegröße `128`, sechs Frames, die Zeilen `attack:2, hit:4, death:5` und den bisherigen festen Bodenanker. Eine Aliasdatei auf das bestehende Seitenbild wird nicht als neue Richtung akzeptiert.
+- `tools/verify-hero-direction-candidate.py` prüft vor der Registrierung jedes vorgeschlagene WebP auf 768 × 768, RGBA, 18 aktiv adressierte Frames, transparente Flächen, freie Zellecken, Zellränder und Dekodierung. `pixel_gate=pass` bedeutet **nicht** künstlerisch abgenommen.
+- Der neu erzeugte Konzeptbogen für beide Helden vom 12.11.2026 besitzt keinen echten transparenten Hintergrund (Alpha-Werte 214 bis 251, keine vollständig transparenten Pixel). **Eingangsprüfung abgelehnt; nicht eingebaut.**
+- Status zum Zeitpunkt dieser Dokumentation: neue Richtungsdateien **fehlen** weiterhin. Aktive V5b-WebPs und deren Runtime-Verweise wurden nicht ersetzt.
+
