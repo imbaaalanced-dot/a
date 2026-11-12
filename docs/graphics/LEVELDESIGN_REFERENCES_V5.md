@@ -8,6 +8,7 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 - **R**: aus Hauptbranch-Dateien und vorhandener Projektdokumentation abgeleitet, kein neuer Screenshot-Nachweis.
 - **F**: externe Bild-/Archivquelle gefunden und als Referenz verlinkt, nicht in den Runtime-Build kopiert.
 - **K**: bewusste künstlerische Vorgabe, keine historische Behauptung.
+- **U**: nutzerseitig eingereichte Foto-Referenz, sichtbares Motiv geprüft; Aufnahmedatum, Rechte und historischer Zustand können weiterhin offen sein.
 - **O**: noch zu recherchieren, zu lizenzieren oder zu testen.
 - **Historisches Bild** heißt datierte ältere Ansicht. Ein heutiges Foto eines alten Bauwerks ist nicht selbst eine historische Fotografie.
 - Style 2: Graphic Dark Fantasy Illustration, bestehende 2.5D-Canvas-Projektion, dunkler verwitterter Stein, feuchte Erde, Moos, Schiefer, Alt-Holz, Bronze, Eisen, kontrolliertes warmes Seitenlicht von links oben. Türkise Runen nur sparsam; feindliche Tore rot (ART-DIRECTION.md).
@@ -25,7 +26,7 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 | **4 Dorfkirche / Löwe** | Kirche mit Bruchsteinturm/Schieferdach, Schlafender Löwe von 1879, Grabsteine | Kopfsteinpflaster, alte Steinplatten, Rasen/Moos; vier Dorf-/Kirchhofzugänge | Alte Eichen, Sträucher | Warme Streifsonne mit langen Mauerschatten | R/F, alte Kirchhofpläne O |
 | **5 Hohensyburg** | Heutiger Pylon und Reiterstandbild; Stein-/Treppenterrassen | Große Steinplatten, Stufen, Fels, Waldschotter; zwei Wald- und ein Terrassenzugang | Eichen/Buchen in den Waldtaschen | Kaltblauer Bergdunst, Goldlicht am Sockel | R/F; Vorkriegsbilder vorhanden, Abgleich O |
 | **6 Goethestraße** | Ehrenmal 1926, Mauer, Rosen-/Parkanlage | Getrennte Stadtstraße, Parkweg, Ziegel-/Plattenrand; drei asymmetrische Zugänge | Parklaub, Rosen, Hecken | Gefilterte späte Sonne | R/F, Einweihungs- und frühere Parkbilder O |
-| **7 Westhofen** | Geflügelter Helm, Schwert/Schild, Sockel, Straßenfront und Bushaltestelle | Asphalt, Gehwegpflaster, Kies und Grünzug; zwei Straßenäste münden vor dem Ehrenmal | Straßenbäume, Hecken, Grünstreifen | Kühles Abendblau mit Laternenakzenten | R/F Umfeld, exakte historische Detailfotos O |
+| **7 Westhofen** | Geflügelter Helm, Schwert/Schild, Sockel, Steinrahmen, Straßenfront und Bushaltestelle | Steinplatten und Stufen am Denkmal, Kiesweg, Asphalt, Gehwegpflaster und Grünzug | Hohe Laubkronen, Efeu, Hecken, Grünstreifen | Kühles Abendblau mit Laternenakzenten (K) | R/F/U; undatierte fotografische Objekt- und Platzdetails vorhanden, historische Datierung O |
 
 ## Level 1: Einleitung
 
@@ -82,6 +83,16 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 **O P0:** datierte Frontansicht aus ca. 1928; Seiten- und Rückansichten; Stufen/Steinbalken/Pergola; Schwert/Schild/Helm/Tafeln; Foto vor und nach Juli 2026; alte Straßen- und Wegeansichten. Quelle und Nutzungsrecht je Bild prüfen.
 **Assetgrenze:** Die früher erwähnten sieben generierten Westhofen-Bildgruppen sind ohne sichtbare Quelldateien nicht freigegeben. Alpha-Freistellung, Einzelsprites und Animationssätze sind weiterhin offene Prüfungen.
 
+## Ergänzung 12.11.2026: neue Westhofen-Fotoreferenzen aus dem Chat
+
+**Nutzerquelle U (7 JPG und 1 MP4):** [Bildindex und detaillierte Motivprüfung](westhofen-user-photo-references-20261112.md). Die Bilder wurden visuell geprüft, die Videoinhalte und EXIF-Metadaten hingegen in diesem Durchgang **nicht** technisch verifiziert. Die Originalmedien liegen nur in der Nutzerkonversation, **nicht im öffentlichen GitHub-Repository**. Urheberschaft, Bilddatum und Wiederverwendungsrechte sind offen.
+
+**Neu durch Nutzerfotos direkt belegte Objektformen:** geflügelter Metallhelm mit dunkler Patina; querliegendes Schwert und großer Schild; separater Mittelsteinsockel; grobe gemauerte Pfeiler mit horizontalem Steinbalken und kräftigem Efeubewuchs; hochrechteckige Seitentafeln; mehrfach gestufte Treppen; unregelmäßige Steinplatten, niedrige Mauern, Bänke und dichter Parkbewuchs. Die freie Weitwinkelansicht `..._10813.jpg` ist besonders hilfreich für die Vorderplatz-Komposition; `..._471.jpg` für den Helm und `..._10845.jpg` für Sockel/Tafel. Personen und Fahrräder nicht in historischen Assets übernehmen.
+
+**Zustand ungeklärt:** Die sichtbare **mittlere Tafel** und **mindestens eine Feuerschale** widersprechen dem für Ende 2026 in den Projektnotizen festgehaltenen Zustand nach dem Diebstahl am 20.07.2026. Es ist **nicht** bekannt, wann die Nutzerfotos aufgenommen wurden oder ob später etwas ersetzt wurde. Zwei gestalterische Zustandsreferenzen getrennt katalogisieren: `WFH-PHOTO-UNDATED-PRESENT` (fotografierte Tafel/Schale vorhanden) und `WFH-2026-DOCUMENTED-MISSING` (laut Projektchronik entfernte Tafel/Schalen). Für den laufenden Spielstand keine stillschweigende Änderung am bisherigen 2026-Asset vornehmen.
+
+**Recherchepriorität angepasst:** Für Level 7 sind Frontalmotiv, Helm, Pfeiler, Vorplatz, Treppen und Baumbestand nun mit undatierten Nutzerfotos gut abgedeckt. Fehlend bleiben *datiertes* historisches Fotomaterial, verifizierte Seiten-/Rückansichten, EXIF/Aufnahmezeit und eine sichere Aufnahme nach Juli 2026.
+
 ## Gemeinsame Material- und Vegetations-Referenzen (Produktion, nicht Behauptung vorhandener Dateien)
 
 | Kennung | Material/Objekt | Einsatz | Regel |
@@ -98,7 +109,7 @@ Die ausführliche lokale Ausarbeitung führt zusätzlich die Material-IDs, das Q
 
 | Priorität | Level | Fehlender Beleg | Recherche |
 | --- | --- | --- | --- |
-| P0 | 7 | Westhofen 1928, vier Blickrichtungen, vor/nach Juli 2026 | Stadtarchiv Schwerte, Heimatverein, Presse/Originalfoto-Inhaber |
+| P0 | 7 | Westhofen: datierte 1928er Aufnahmen, Seiten-/Rückansichten, bestätigtes Foto nach Juli 2026, Datum der neuen Nutzerbilder (Front und Platz bereits undatiert belegt) | Stadtarchiv Schwerte, Heimatverein, Presse/Originalfoto-Inhaber; Nutzer-Originaldaten |
 | P0 | 5 | 1902/1935/1936 aus gleicher Blickrichtung und Terrassengrundriss | Commons, LWL, Dortmund |
 | P1 | 3 | Kirchender Denkmal um 1927, Wege/Ortssituation | Archiv Herdecke, Kirchengemeinde |
 | P1 | 4 | frühes Dorfkirchenfoto, Kirchhofplan, Löwe von mehreren Seiten | Archiv, Gemeinde, Commons |
