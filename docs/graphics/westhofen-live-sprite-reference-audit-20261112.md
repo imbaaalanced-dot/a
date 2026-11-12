@@ -17,7 +17,7 @@ Stand: 12.11.2026. **Kontrollierte Sichtprüfung und Asset-Test, kein neuer Spri
 | --- | --- | --- |
 | Dateityp | WebP mit RIFF/WEBP/VP8X-Header | geprüft |
 | Quellgröße | **768 × 512 px** | direkt aus VP8X-Metadaten gelesen |
-| Transparenz | VP8X-Alpha-Flag `0x10` gesetzt | Header bestätigt; **8-px-Alpha-Ränder erst durch CI/Pillow-Test zu validieren** |
+| Transparenz | VP8X-Alpha-Flag `0x10`; Pillow: Roh-Alpha-Bounds `(0,0,759,512)`, sichtbar ab Alpha ≥32: `(23,33,741,473)` | **Bild dekodiert, sichtbar genügend Luft zu allen Rändern, aber schwache Alpha-Restpixel bis zum Canvasrand**; möglicher Halo bleibt Bild-QA-Aufgabe |
 | Download | RIFF rund 111,9 KB, Assetbudget 160 KB | Dateigröße technisch abgeschätzt; Test prüft im CI |
 | Darstellungsfläche | 450 × 300 Weltpixel, Anker `m.x-225/m.y-265` | Rendererquelltext geprüft |
 | Bildverantwortung | zentraler Asset-Manager, ohne zweite `Image`-Allokation im Zeichnen | Quellcode + bestehender Test `tests/level67-single-image-owner.test.cjs` |
@@ -55,7 +55,7 @@ Bestehender World-Anker, 450×300-Zeichnungsgröße, Kamerawinkel, Luft-Lane, `p
 
 ## QA-Gates
 
-1. **Automatisch:** In `tests/assets.test.py` ist eine zusätzliche Prüfung für Dekodierung, 768×512, echtes RGBA, 8-px-Alpha-Inset und 160-KB-Budget ergänzt. Solange kein neuer Sprite vorhanden ist, prüft sie die V1-Baseline. Syntax/CI-Ausgabe separat protokollieren; nicht vorab als bestanden markieren.
+1. **Automatisch:** `tests/assets.test.py` prüft Dekodierung, 768×512, echtes RGBA, sichtbare Alpha-Kontur bei Schwelle ≥32 mit mindestens 8 px Randabstand sowie 160-KB-Budget. Der **erste** CI-Lauf scheiterte mit Roh-Alpha-Bounds `(0,0,759,512)`; nach diagnostischer Trennung bestand `Test Denkmal TD` (GitHub-Lauf 43310880793) mit sichtbaren Bounds `(23,33,741,473)`. Das ist ein technischer Geometrie-/Alpha-Test, **kein** dunkler/heller Bildvergleich und keine Zusicherung vollständig halo-freier Pixel.
 2. **Automatisch bestehend:** `tests/westhofen-style2-art.test.cjs`, `tests/level67-single-image-owner.test.cjs`, `tests/westhofen.test.cjs`, `tests/assets.test.py`.
 3. **Browser:** `node tools/verify-level7-style2-environment.cjs` muss Desktop und 412×915-Touch-Emulation ohne fehlende WebP-Requests abnehmen; 64/128px-Details per Screenshot **manuell** sichten.
 4. **Echtes Android 4 GB:** FPS, RAM, Lade-/Cache-Verhalten, Touch-Bauplatzsichtbarkeit und längere Spielsitzung separat prüfen. Chromium ist kein Ersatz.
@@ -63,4 +63,4 @@ Bestehender World-Anker, 450×300-Zeichnungsgröße, Kamerawinkel, Luft-Lane, `p
 
 ## Freigabeentscheidung dieses Patches
 
-**Nur Dokumentations- und automatisierter Asset-QA-Schritt. Kein Sprite-Wechsel, kein Gameplay- oder Release-Eingriff.** Eine spätere Bildproduktion benötigt visuelle Einzelabnahme und anschließenden eigenen Integrations-PR.
+**Nur Dokumentations- und automatisierter Asset-QA-Schritt. Kein Sprite-Wechsel, kein Gameplay- oder Release-Eingriff.** Die schwachen Alpharestpixel an den äußeren Kanten sind als bekannter Qualitätskandidat zu behandeln, nicht durch Ignorieren der gesamten Alpha-Ebene zu verstecken. Eine spätere Bildproduktion benötigt visuelle Einzelabnahme und anschließenden eigenen Integrations-PR.
