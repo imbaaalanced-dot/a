@@ -29,7 +29,28 @@ const server=http.createServer((req,res)=>{
     g.essence=500;g.intermission=99999;g.hero.x=slot.x;g.hero.y=slot.y+58;g.hero.fireCd=99999;
     DenkmalTestHooks.update(.01);
    });
-   await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing');
+   // Story and pause overlays can outlive the initial startGame hook.
+   // Resume only through the existing UI; report the actual state on failure.
+   for(let attempt=0;attempt<3;attempt++){
+    const state=await page.evaluate(()=>DenkmalTestHooks.getState());
+    if(state==='playing')break;
+    if(state==='story')await page.evaluate(()=>HeroSaga.continueStory());
+    else if(state==='paused')await page.locator('#resumeBtn').click();
+    else break;
+    await page.waitForTimeout(100);
+   }
+   try{
+    await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing',null,{timeout:10000});
+   }catch(error){
+    const diagnostic=await page.evaluate(()=>({
+     state:globalThis.DenkmalTestHooks?.getState?.(),
+     level:globalThis.DenkmalTestHooks?.getGame?.()?.level,
+     storyVisible:!document.getElementById('storyScreen')?.classList.contains('hidden'),
+     pauseVisible:!document.getElementById('pauseScreen')?.classList.contains('hidden'),
+     loadingVisible:!!document.getElementById('td2Loading')
+    }));
+    throw new Error('Barracks Chromium startup did not reach playing: '+JSON.stringify({profile:profile.name,diagnostic,errors,missing})+'; '+error.message);
+   }
    await page.waitForTimeout(350);
    async function tapTower(){const p=await page.evaluate(()=>BarracksQA.project(DenkmalTestHooks.getGame().towers[0]||DenkmalLevels.levels[1].slots[0]));await page.touchscreen.tap(p.x,p.y);}
    if(profile.touch){await tapTower();await page.locator('#touchContext [data-tower="barracks"]').tap();}
