@@ -25,7 +25,10 @@
       if(ok)ground=null;else environmentRequested=false;
     }).catch(()=>{environmentRequested=false;});
   }
-  // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
+  // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
+  // reconstruction while its image-embedded STYLE 2 text remains under art QA.
+  // This changes the monument's visuals only; no level geometry or saves.
+  const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
   let standaloneSprite=null;
   const monumentImage=()=>{
     const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
@@ -257,7 +260,9 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    const monumentSprite=monumentImage();
+    // The cached text-free reconstruction is an optional QA comparison only.
+    // Avoid requesting the branded image in this draw path when preview is on.
+    const monumentSprite=textFreePreview?null:monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
       // Canvas already applies the oblique camera's upright-sprite correction.
@@ -277,6 +282,7 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
+    textFreePreview,
     release(){ground=null;memorial=null;standaloneSprite=null;},
     environmentLamps,
     get allocations(){return allocations;}};
