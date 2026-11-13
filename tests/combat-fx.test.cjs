@@ -18,14 +18,14 @@ assert.equal(g.particles.length,240,'bounded particles under sustained fire');
 const low={particles:[]},normal={particles:[]};fx.burst(low,b,true,false,true);fx.burst(normal,b,true,false,false);assert.ok(low.particles.length<normal.particles.length);
 assert.ok(g.particles.every(p=>p.life>0&&p.life===p.max));
 // Verify the compact V2 art is a real 6x3 paletted PNG, not a source preview.
-const png=fs.readFileSync(require('path').join(__dirname,'../dist/assets/hero/marcel-staff-fx-v2-32.png'));
+const png=fs.readFileSync(require('path').join(__dirname,'../dist/assets/hero/marcel-staff-fx-v2-40.png'));
 assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
-assert.equal(png.readUInt32BE(16),192);assert.equal(png.readUInt32BE(20),96);
+assert.equal(png.readUInt32BE(16),240);assert.equal(png.readUInt32BE(20),120);
 assert.ok(png.length<12000,'mobile FX atlas stays small');
 
 const requests=[],draws=[];
 class HeroImage {
-  naturalWidth=192;naturalHeight=96;
+  naturalWidth=240;naturalHeight=120;
   set src(src){requests.push(src);this.onload?.();}
 }
 const spriteCtx={Image:HeroImage,Math};
@@ -48,9 +48,9 @@ spriteFx.burst(impacts,wand,true,false,false);
 const hit=impacts.particles.find(p=>p.ring);
 assert.ok(hit,'Marcel hit has a visual-only V2 impact marker');
 spriteFx.drawParticle(context,hit);
-assert.equal(draws.at(-1)[2],64,'V2 impact uses atlas row two');
+assert.equal(draws.at(-1)[2],80,'V2 impact uses atlas row two');
 assert.equal(spriteFx.drawStaffFrame(context,0,0,1,.4,0,40),true,'Seelenruf row one is available for targeted cast');
-assert.equal(draws.at(-1)[2],32,'Seelenruf projectile uses row one');
+assert.equal(draws.at(-1)[2],40,'Seelenruf projectile uses row one');
 
 // Missing Image or failed decode must preserve the old procedural draw path.
 const fallbackCtx={Math};vm.createContext(fallbackCtx);
