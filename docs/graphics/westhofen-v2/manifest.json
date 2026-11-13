@@ -1,0 +1,27 @@
+{
+  "asset_family": "westhofen-monument",
+  "version": "v2-concept-source-2026-11-13",
+  "platform": "Denkmal TD2 V5 Canvas 2D, Android 4 GB / mobile web",
+  "source_resolution": [768, 512],
+  "projection": "fixed oblique 2.5D source concept, calibrated world draw 450x300",
+  "status": "source_only_unreviewed",
+  "current_live_asset_unchanged": "dist/assets/westhofen/westhofen-memorial-style2-v1.webp",
+  "files": [
+    {"path": "westhofen-frame-v2.svg", "layer_id": "stone-frame-v2", "draw_order": 1},
+    {"path": "westhofen-altar-steps-v2.svg", "layer_id": "altar-steps-v2", "draw_order": 2},
+    {"path": "westhofen-emblem-v2.svg", "layer_id": "bronze-emblem-v2", "draw_order": 3},
+    {"path": "westhofen-composite-v2.svg", "layer_id": "complete", "draw_order": 4}
+  ],
+  "history_state": "late-2026 documented state, empty central plaque frame and empty fire bowl pedestals; no synthetic names",
+  "reference_basis": "seven user-contributed Westhofen photographs and recorded video analysis; date of camera exposures not verified",
+  "source_licensing": "Illustrative SVG generated within this project, based on visual study. Do not publish original user photo/video material without proven rights.",
+  "runtime_preflight_needed": [
+    "rasterize SVG with controlled 768x512 transparency",
+    "inspect 64 and 128 pixel size on dark and light backgrounds",
+    "compare framing and perspective to verified photo/video references",
+    "export optimized WebP with 8px alpha inset and target below 160KB",
+    "test decode and exact loader URL in dist asset manager",
+    "run Chromium desktop and touch smoke; test actual Android 4GB hardware",
+    "merge and deploy only after branch protection and reviews"
+  ]
+}
