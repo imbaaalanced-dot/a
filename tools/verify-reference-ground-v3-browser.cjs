@@ -27,7 +27,7 @@ const server=http.createServer((req,res)=>{
  ]});
  const results=[];
  try{
-  // One default-mode comparison ensures V3 has no silent live activation.
+  // One explicit opt-out comparison ensures the original terrain is recoverable.
   const scenes=[{level:3,mobile:false,active:false},
    ...[1,2,3,4,5,6,7].flatMap(level=>[
     {level,mobile:false,active:true},{level,mobile:true,active:true}])];
@@ -39,7 +39,7 @@ const server=http.createServer((req,res)=>{
    page.on('response',r=>{if(r.status()>=400)failed.push(r.url());});
    page.on('request',r=>requests.push(r.url()));
    const url=`http://127.0.0.1:${server.address().port}/v4-style2/index.html`+
-    (active?'?td2GroundV3=1':'');
+    (active?'':'?td2GroundV3=0');
    await page.goto(url,{waitUntil:'networkidle'});
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const result=await page.evaluate(async lvl=>{
@@ -59,15 +59,16 @@ const server=http.createServer((req,res)=>{
     for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)visible++;
     if(visible<width*height*.08)throw Error('empty gameplay canvas');
     return {level:game.level,wave:game.wave,visible,canvas:{width,height},
-      material:TD2GroundV3.material(lvl,'base'),loaded:TD2GroundV3.loadedCount};
+      material:TD2GroundV3.material(lvl,'base'),loaded:TD2GroundV3.loadedCount,enabled:TD2GroundV3.enabled};
    },level);
+   assert.equal(result.enabled,active,'V3 default-on/legacy opt-out activation');
    const requestedAssets=requests.filter(u=>u.includes('assets/reference-ground-v3/'));
-   assert.equal(requestedAssets.length,active?9:0,'V3 requests must be opt-in and single-load');
+   assert.equal(requestedAssets.length,active?9:0,'V3 requests only in enabled mode, exactly once');
    assert.deepEqual(failed,[],'HTTP failures in game and image requests');
    assert.deepEqual(errors,[],'JavaScript exceptions during gameplay');
    await page.screenshot({path:path.join(output,
-    `${active?'v3':'default'}-${mobile?'touch':'desktop'}-level${level}.png`)});
-   results.push({mode:active?'v3':'default',touchEmulated:mobile,...result,failedRequests:failed,errors});
+    `${active?'v3-default':'v3-disabled'}-${mobile?'touch':'desktop'}-level${level}.png`)});
+   results.push({mode:active?'v3-default':'v3-disabled',touchEmulated:mobile,...result,failedRequests:failed,errors});
    await context.close();
   }
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({
