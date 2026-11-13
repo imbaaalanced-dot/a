@@ -1,0 +1,496 @@
+{
+  "chromium": "156.0.8078.79",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "level": 1,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 2,
+          "hash": 4274246678,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 4274246678,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 3,
+          "hash": 2833435778,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 3,
+          "hash": 2833435778,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 2,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 2,
+          "hash": 1101704189,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 1101704189,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 3,
+          "hash": 1779569493,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 3,
+          "hash": 1779569493,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 3,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 442398844,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 442398844,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 4,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 2362488928,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 2362488928,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 5,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 2526560686,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 2526560686,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 3585934612,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 3585934612,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 6,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1380833767,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1380833767,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 1038350130,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 1038350130,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 7,
+      "touchEmulation": false,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 271594781,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 271594781,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 681592567,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 681592567,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 1,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 2,
+          "hash": 4274246678,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 4274246678,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 3,
+          "hash": 2833435778,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 3,
+          "hash": 2833435778,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 2,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 2,
+          "hash": 1101704189,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 1101704189,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 3,
+          "hash": 1779569493,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 3,
+          "hash": 1779569493,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 3,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 442398844,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 442398844,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 4,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1127139546,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 2362488928,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 2362488928,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 5,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 2526560686,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 2526560686,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 3585934612,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 3585934612,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 6,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 1380833767,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 1380833767,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 1038350130,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 1038350130,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "level": 7,
+      "touchEmulation": true,
+      "before": {
+        "first": {
+          "allocations": 1,
+          "hash": 271594781,
+          "loaded": 0,
+          "revision": 0
+        },
+        "warm": {
+          "allocations": 1,
+          "hash": 271594781,
+          "loaded": 0,
+          "revision": 0
+        }
+      },
+      "after": {
+        "first": {
+          "allocations": 2,
+          "hash": 681592567,
+          "loaded": 9,
+          "revision": 1
+        },
+        "warm": {
+          "allocations": 2,
+          "hash": 681592567,
+          "loaded": 9,
+          "revision": 1
+        }
+      },
+      "requests": 9,
+      "errors": [],
+      "failed": []
+    }
+  ]
+}

@@ -23,7 +23,7 @@ const byLevel=Object.freeze({
  6:{base:'meadow_patchy',road:'goethe_brick',street:'urban_asphalt',sidewalk:'goethe_brick'},
  7:{base:'meadow_patchy',road:'memorial_gravel',street:'urban_asphalt',sidewalk:'churchyard_cobble',forecourt:'memorial_gravel'}
 });
-const images=new Map();let task=null;let patterns=new WeakMap();
+const images=new Map();let task=null,revision=0;let patterns=new WeakMap();
 function load(){
  if(!active||typeof Image!=='function')return Promise.resolve(false);
  if(task)return task;
@@ -35,7 +35,12 @@ function load(){
   };
   img.onerror=()=>resolve(false);
   img.src=base+name+'.webp?v=ground-v3-20261113';
- }))).then(results=>results.some(Boolean));
+ }))).then(results=>{
+  const loaded=results.some(Boolean);
+  // Publish a single cache revision after the batch settles, including partial success.
+  if(loaded)revision++;
+  return loaded;
+ });
  return task;
 }
 function material(level,kind='base'){
@@ -67,5 +72,6 @@ function drawBase(ctx,level){
 }
 function clearCache(){patterns=new WeakMap();}
 globalThis.TD2GroundV3=Object.freeze({enabled:active,names,byLevel,material,imageFor,pattern,patternFor,drawBase,load,clearCache,
+ get revision(){return revision;},
  get loadedCount(){return images.size;}});
 })();
