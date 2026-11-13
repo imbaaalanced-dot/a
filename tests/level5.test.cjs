@@ -57,9 +57,9 @@ vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/persisted-state.
 assert.equal(blocked.DenkmalLevels.completeLevel5(),false);
 assert.equal(blocked.DenkmalLevels.level5Completed,true,'blocked storage keeps session progress');
 // Renderer: test both cache reuse and objective anchoring, without a DOM or WebGL.
-let creations=0,images=0,patterns=0,environmentLoads=0;const drawArgs=[];
+let creations=0,images=0,patterns=0,environmentLoads=0;const drawArgs=[],renderedText=[];
 const paint=new Proxy({drawImage(...args){images++;drawArgs.push(args);},createLinearGradient(){return {addColorStop(){}};},
- createRadialGradient(){return {addColorStop(){}};},createPattern(){patterns++;return {}; }},{get:(o,k)=>k in o?o[k]:()=>{}});
+ createRadialGradient(){return {addColorStop(){}};},createPattern(){patterns++;return {}; },fillText(...a){renderedText.push(a);}},{get:(o,k)=>k in o?o[k]:()=>{}});
 box.document={createElement(tag){assert.equal(tag,'canvas');creations++;return {width:0,height:0,getContext:()=>paint};}};
 const environmentSprite={complete:true,naturalWidth:1536,naturalHeight:1024};
 box.KirchendeArt={loadEnvironment(){environmentLoads++;return Promise.resolve(true);},image(){return environmentSprite;}};
@@ -87,23 +87,48 @@ assert.equal(asset.toString('ascii',0,4),'RIFF');
 assert.equal(asset.toString('ascii',8,12),'WEBP');
 assert.equal(asset.toString('ascii',12,16),'VP8X');
 assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
+let unwantedImages=0;
 box.Image=class {
-  constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;}
-  set src(value){this.loadedFrom=value;}
+  constructor(){unwantedImages++;}
+  set src(_url){unwantedImages++;}
 };
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
-const beforeSprite=creations;
+const beforeClean=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
-assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
-const drawnSprite=drawArgs.at(-1);
-assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2\.webp\?v=style2a1/);
-assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
-assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
+assert.equal(creations,beforeClean+1,'text-free monument creates one cached canvas');
+const cleanDraw=drawArgs.at(-1);
+assert.equal(cleanDraw[0].width,480,'authored monument canvas is 480px wide');
+assert.equal(cleanDraw[0].height,540,'authored monument canvas is 540px high');
+assert.equal(cleanDraw[1],center.x-240,'unchanged monument center');
+assert.equal(cleanDraw[2],center.y-500,'unchanged monument foot anchor');
+box.DenkmalHohensyburgArt.drawMonument(paint,center);
+assert.equal(creations,beforeClean+1,'cached monument has no repeated allocations');
+assert.equal(unwantedImages,0,'branded monument image is never requested');
+assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
+assert.ok(renderedText.some(([t,x,y])=>t==='18 JANUAR 1871'&&x===0&&y===-373),
+ 'historically attested inscription appears above the upper arch');
+assert.ok(!renderedText.some(([t])=>t==='1871'),
+ 'do not relocate the historic inscription to the lower pedestal');
+const source=fs.readFileSync('dist/hohensyburg-art.js','utf8');
+assert.match(source,/function sideBronze\(/,'the two bronze attendants have their own sculpted renderer');
+assert.match(source,/sideBronze\(-146,true\);sideBronze\(149,false\)/,
+ 'Moltke stands west (left in front view), Bismarck east (right)');
+assert.match(source,/q\.ellipse\(-3,-203,52,32/,
+ 'equestrian group retains a separately sculpted horse body');
+assert.match(source,/q\.ellipse\(10,-309,15,19/,
+ 'equestrian rider has a separate visible head and helmet');
+assert.match(source,/q\.lineTo\(-37,-313\)/,
+ 'equestrian rider has raised arm in front of the monument arch');
+assert.match(source,/function weatheredPaving\(/,'paving must use the fixed-seed cache');
+assert.equal((source.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
+ 'upper and lower Hohensyburg terraces use irregular paving');
+assert.doesNotMatch(source,/Math\.abs\(Math\.floor\(x\/(?:74|76)\)/,
+ 'alternating tile checkerboard must not return');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
-assert.ok(html.includes('hohensyburg-art.js?v=late-ground-20261113'));
+assert.ok(html.includes('hohensyburg-art.js?v=syburg-bronze4-late-ground-20261114'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));

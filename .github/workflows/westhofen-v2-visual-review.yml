@@ -1,0 +1,79 @@
+name: Westhofen V2 visual review from verified Chromium artifact
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/westhofen-v2-visual-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact-sheet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download original successful Level 7 Chromium evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/westhofen-qa
+          gh run download 43452298337 -R "$GITHUB_REPOSITORY" -n westhofen-v2-gameplay-and-64-128px-screenshots -D /tmp/westhofen-qa
+          ls /tmp/westhofen-qa
+      - name: Build visual review panels from existing screenshots
+        run: |
+          python -m pip install --quiet 'Pillow>=11,<14'
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          from pathlib import Path
+          import io,base64,json
+          root=Path('/tmp/westhofen-qa')
+          out=Path('/tmp/westhofen-review');out.mkdir(exist_ok=True)
+          reports=json.loads((root/'results.json').read_text())
+          assert len(reports['results'])==2
+          def bg(w,h):
+              result=Image.new('RGB',(w,h),'#19201d')
+              d=ImageDraw.Draw(result)
+              return result,d
+          montage,d=bg(1280,930)
+          desktop=Image.open(root/'desktop-westhofen-gameplay.png').convert('RGB')
+          mobile=Image.open(root/'mobile-westhofen-gameplay.png').convert('RGB')
+          desktop.thumbnail((790,620),Image.Resampling.LANCZOS)
+          mobile.thumbnail((430,820),Image.Resampling.LANCZOS)
+          montage.paste(desktop,(20,70))
+          montage.paste(mobile,(850,70))
+          d.text((25,25),'WESTHOFEN V2 - DESKTOP CHROMIUM 1280x800',fill='#f0e1be')
+          d.text((850,25),'MOBILE TOUCH EMULATION 412x915',fill='#f0e1be')
+          d.text((25,760),'Decoded SVG: 768x512. Recorded gameplay draw calls: desktop 4, touch 5.',fill='#d0d7c9')
+          d.text((25,785),'This sheet is CI gameplay evidence, not a historical photo-comparison pass.',fill='#d0d7c9')
+          montage.save(out/'westhofen-v2-gameplay-review.jpg',quality=76,optimize=True)
+          strip,d=bg(1040,620)
+          d.text((20,20),'WESTHOFEN V2 - ISOLATED PIXEL-SCALE SILHOUETTE',fill='#eee0bd')
+          for i,(name,x,y,scale) in enumerate([
+            ('desktop-westhofen-v2-dark64.png',24,85,5),
+            ('desktop-westhofen-v2-light128.png',550,85,4),
+            ('mobile-westhofen-v2-dark64.png',24,390,4),
+            ('mobile-westhofen-v2-light128.png',550,390,2)
+          ]):
+            im=Image.open(root/name).convert('RGB')
+            d.text((x,y-20),name,fill='#e4d7ba')
+            strip.paste(im.resize((im.width*scale,im.height*scale),Image.Resampling.NEAREST),(x,y))
+          strip.save(out/'westhofen-v2-64-128-visual-review.jpg',quality=80,optimize=True)
+          for name in ['westhofen-v2-gameplay-review.jpg','westhofen-v2-64-128-visual-review.jpg']:
+              content=(out/name).read_bytes()
+              assert len(content)<380000,(name,len(content))
+              print('QA_IMAGE_'+name.replace('.jpg','').replace('-','_')+'='+base64.b64encode(content).decode('ascii'))
+              print('QA_INFO_'+name+'='+str(len(content)))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: westhofen-v2-visual-review-montages
+          path: /tmp/westhofen-review/
+          retention-days: 14
