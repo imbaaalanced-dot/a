@@ -1,0 +1,89 @@
+{
+  "status": "candidate-staged",
+  "runtime_active": false,
+  "android_4gb_qa": "not-tested",
+  "visual_canvas_qa": "marcel-down approved; others pending",
+  "format": "WebP lossless RGBA 768x768, rows attack=2/hit=4/death=5",
+  "files": [
+    {
+      "atlas": "marcel-down-actions-v5b.webp",
+      "sha256": "e1c7413a7311e42880e30c7e25eaf9b9461484bf29ba1973b9eb75f414c88f81",
+      "compressed_bytes": 247654,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        116
+      ],
+      "approval": "user-approved"
+    },
+    {
+      "atlas": "marcel-left-actions-v5b.webp",
+      "sha256": "19b7a70f269d483567b5d13c17177f7ad33df7603d6226cc4c1433635fd551b0",
+      "compressed_bytes": 201252,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        116
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    },
+    {
+      "atlas": "marcel-up-actions-v5b.webp",
+      "sha256": "2f826fa782d793ac24d48a464e2fc616e89814c62898d20cbde6fee05c5a310c",
+      "compressed_bytes": 236422,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        116
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    },
+    {
+      "atlas": "kim-right-actions-v5b.webp",
+      "sha256": "29ae7398558140167f3417814d69b59d59cc217c308cf7c40727118c5826f799",
+      "compressed_bytes": 252686,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        117
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    }
+  ]
+}
