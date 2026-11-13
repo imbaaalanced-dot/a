@@ -267,16 +267,17 @@
   function chapter(){return chapters.find(c=>game.wave<=c.until)||chapters.at(-1)}
   function setMapStatus(id,unlocked,completed=false){
     const button=$(id);if(!button)return;
-    button.disabled=!unlocked;
+    const available=unlocked||completed;
+    button.disabled=!available;
     const status=button.querySelector('[data-map-status]');
-    const label=completed?'ABGESCHLOSSEN':unlocked?'FREIGESCHALTET':'GESPERRT';
+    const label=completed?'ABGESCHLOSSEN':available?'FREIGESCHALTET':'GESPERRT';
     if(status)status.textContent=label;
     button.setAttribute('aria-label',(button.querySelector('.map-copy strong')?.textContent||'Karte')+' · '+label.toLowerCase());
   }
 
   function menuStatus(){
     setMapStatus('startBtn',true,campaign.unlocked);
-    setMapStatus('level2Btn',campaign.unlocked||alpha8Preview);
+    setMapStatus('level2Btn',campaign.unlocked||alpha8Preview,lootModel.profile.level3);
     setMapStatus('level3Btn',lootModel.profile.level3||style2Preview,lootModel.profile.kirchendeCompleted);
     if(style2Preview&&!lootModel.profile.level3){
       const label=$('level3Btn')?.querySelector('[data-map-status]');

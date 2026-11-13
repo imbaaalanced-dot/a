@@ -30,6 +30,9 @@ assert.equal(element('campaignMenu').hidden,true,'campaign is a submenu, initial
 assert.equal(element('startBtn').querySelector('[data-map-status]').textContent,'FREIGESCHALTET','first chapter is playable before any progress');
 assert.equal(element('level2Btn').querySelector('[data-map-status]').textContent,'GESPERRT','locked chapter status is explicit');
 const menuProgressBefore=t.lootModel.exportJSON();
+t.lootModel.unlockLevel3();t.mainMenu();
+assert.equal(element('level2Btn').querySelector('[data-map-status]').textContent,'ABGESCHLOSSEN','chapter II completion is described accurately');
+assert.equal(element('level3Btn').querySelector('[data-map-status]').textContent,'FREIGESCHALTET','chapter III unlock is not mislabeled as completed');
 t.lootModel.claimKirchendeCompletion();t.mainMenu();
 assert.equal(element('level3Btn').querySelector('[data-map-status]').textContent,'ABGESCHLOSSEN','completed map state is described accurately');
 t.lootModel.importJSON(menuProgressBefore);t.mainMenu();
