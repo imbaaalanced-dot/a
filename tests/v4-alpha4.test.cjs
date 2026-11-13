@@ -140,7 +140,7 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
   const polish=fs.readFileSync(path.join(root,'polish.css'),'utf8');
   const portrait=fs.readFileSync(path.join(root,'portrait-patch.css'),'utf8');
-  assert.ok(html.includes('name="application-version" content="v5-alpha"'),'metadata names the current V5 alpha');
+  assert.ok(html.includes('name="application-version" content="v6-alpha"'),'metadata names the current V6 alpha');
   assert.ok(html.includes('id="hudMenu"'),'the menu details element is addressable');
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
   // Current game.js cache key is audited centrally in cache-busting.test.cjs.

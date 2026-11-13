@@ -44,11 +44,12 @@ assert.match(game, /endless4Btn[^\n]*startGame\(4,'endless'\)/);
 assert.match(game, /level4Btn[^\n]*startGame\(4\)/);
 assert.doesNotMatch(endless, /Wellenrekord wird gespeichert/, 'do not promise records until persistence exists');
 assert.match(html, /id="speedBtn"[^>]*>TEMPO: 1×<\/button>/);
-assert.match(html, /id="menuDeveloperBtn"[^>]*aria-pressed="true"/, 'options show the developer switch active by default');
-assert.match(html, /id="menuDeveloperToast"[^>]*role="status"/, 'activation overlay is announced');
-assert.match(game, /developerRun:developerMode/, 'developer runs are isolated');
-assert.match(game, /const limit=game.developerRun\?3:2/, '3x is developer-only');
-assert.match(game, /if\(!game.developerRun\)/, 'developer runs do not save completion rewards');
+assert.doesNotMatch(html, /menuDeveloper(?:Btn|Info|Toast)/, 'the player menu has no developer-mode controls or activation overlay');
+for (const [id, label] of [['menuCampaignBtn','Kampagne'],['menuAnsturmBtn','Denkmal-Ansturm'],['menuCharacterBtn','Helden &amp; Ausrüstung'],['menuOptionsBtn','Optionen']]) {
+  assert.match(html, new RegExp('id="' + id + '"[^>]*>[\\s\\S]*?<strong>' + label + '<\\/strong>'), 'primary destination ' + label + ' is present');
+}
+assert.doesNotMatch(html, /<(?:strong|small|span)[^>]*>\s*Kampagne\s*(?:·|—|-)\s*Fortsetzen/i, 'campaign must not claim to resume an in-progress run');
+assert.doesNotMatch(game, /developer(?:Mode|Run|StorageKey|ToastTimer|Label|toggleDeveloperMode)/i, 'normal runtime has no developer unlock or speed path');
 assert.match(game, /function simulationStepsPerFrame\(\)/);
 assert.match(game, /game\.level>=2\|\|game\.mode==='endless'/);
 assert.match(html, /id="channelLink"[^>]*youtube\.com\/@denk-malnach/);

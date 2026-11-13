@@ -19,7 +19,8 @@ const document = {
   getElementById: id => elements[id] || null,
 };
 vm.runInNewContext(script, {document});
-assert.equal(elements.menuVersionTop.textContent, 'V5 · ALPHA');
+assert.equal(elements.menuVersionTop.textContent, 'V6 · ALPHA');
 assert.equal(elements.menuVersion.textContent, elements.menuVersionTop.textContent);
-assert.equal(elements.menuVersionTop.attributes['aria-label'], 'Spielversion V5 · ALPHA');
-console.log('Canonical V5 metadata updates both visible menu labels');
+assert.equal(elements.menuVersionTop.attributes['aria-label'], 'Spielversion V6 · ALPHA');
+assert.match(html, /<meta name="application-build" content="v6-alpha"/);
+console.log('Canonical V6 metadata updates both visible menu labels');

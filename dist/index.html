@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta name="application-version" content="v5-alpha" />
-  <meta name="application-build" content="v5-alpha" />
+  <meta name="application-version" content="v6-alpha" />
+  <meta name="application-build" content="v6-alpha" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#080b0c" />
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
   <link rel="stylesheet" href="loot.css?v=v5-armory-hub1" />
-  <link rel="stylesheet" href="menu.css?v=developer3x1" />
+  <link rel="stylesheet" href="menu.css?v=v6-menu-flow1" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
@@ -21,7 +21,6 @@
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
   <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a2" />
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
-<style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -113,7 +112,7 @@
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
       <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v3.webp" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v3.webp" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
-        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" aria-label="Spielversion V5 Alpha" style="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100;flex-shrink:0;margin-left:auto;padding:5px 9px;border:1px solid #b99a58;border-radius:7px;background:#142028;color:#f3e2b6;font:700 12px system-ui;letter-spacing:.04em;white-space:nowrap">V5 · ALPHA</span></header>
+        <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" class="menu-version menu-version-top">V6 · ALPHA</span></header>
         <div class="menu-content">
           <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" width="661" height="1050" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
@@ -132,7 +131,7 @@
               <button id="menuArcadeBtn" class="campaign-endless-link" type="button" aria-controls="endlessMenu">Freigeschaltete Karten endlos spielen <span aria-hidden="true">∞ ›</span></button>
               <div class="map-card-list">
                 <button id="startBtn" class="map-card map-card-primary" type="button">
-                  <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Die Grundlagen · Vier Tore · 20 Wellen</span></span><span class="map-arrow" aria-hidden="true">➜</span>
+                  <span class="map-number">01</span><span class="map-copy"><small>KAPITEL I · LEVEL 1</small><strong>EINLEITUNG</strong><span>Die Grundlagen · Vier Tore · 20 Wellen</span></span><span class="map-status" data-map-status>FREIGESCHALTET</span>
                 </button>
                 <button id="level2Btn" class="map-card" type="button" disabled>
                   <span class="map-number">02</span><span class="map-copy"><small>KAPITEL II · LEVEL 2</small><strong>DAS LABYRINTH</strong><span>20 Wellen · Verteidige die Wegkreuzung</span></span><span class="map-status" data-map-status>GESPERRT</span>
@@ -198,9 +197,6 @@
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
             <button id="menuFullscreenBtn" class="icon-btn" type="button" aria-label="Vollbild aktivieren" aria-pressed="false">VOLLBILD: AUS</button>
-            <button id="menuDeveloperBtn" class="icon-btn menu-developer-toggle" type="button" aria-pressed="true">DEVELOPER-MODUS: AN</button>
-            <p id="menuDeveloperInfo" class="menu-developer-note">Alle sieben Levels und Endloskarten testweise frei · Tempo 1× / 2× / 3× · Keine Fortschritts- oder Beutespeicherung in Testläufen.</p>
-            <div id="menuDeveloperToast" class="menu-developer-toast" role="status" aria-live="polite" hidden><strong>AKTIVIERT</strong><span>3× TEMPO · ALLE LEVELS</span></div>
             <details class="menu-save-details"><summary>Spielstand &amp; Sicherung</summary><p id="levelProgress" class="menu-progress"></p><p id="collectionSummary" class="menu-save"></p><p id="saveStatus" class="menu-save" role="status"></p><p>Dein Fortschritt wird lokal auf diesem Gerät gespeichert. In der Rüstkammer kannst du deinen Spielstand exportieren oder importieren.</p></details>
           </section>
           <p id="menuCompactStatus" class="menu-compact-status" aria-live="polite"></p>

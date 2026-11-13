@@ -27,6 +27,12 @@ let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.repla
 vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
 
 assert.equal(element('campaignMenu').hidden,true,'campaign is a submenu, initially hidden');
+assert.equal(element('startBtn').querySelector('[data-map-status]').textContent,'FREIGESCHALTET','first chapter is playable before any progress');
+assert.equal(element('level2Btn').querySelector('[data-map-status]').textContent,'GESPERRT','locked chapter status is explicit');
+const menuProgressBefore=t.lootModel.exportJSON();
+t.lootModel.claimKirchendeCompletion();t.mainMenu();
+assert.equal(element('level3Btn').querySelector('[data-map-status]').textContent,'ABGESCHLOSSEN','completed map state is described accurately');
+t.lootModel.importJSON(menuProgressBefore);t.mainMenu();
 element('menuCampaignBtn').onclick();
 assert.equal(element('campaignMenu').hidden,false,'campaign opens directly from home');
 assert.equal(element('menuHomeActions').hidden,true);
