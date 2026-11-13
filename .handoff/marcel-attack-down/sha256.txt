@@ -1,8 +1,8 @@
-source-art/hero/actions-v5/marcel/down/attack/00.png  bb7427089df085ecfe83cd2a3f39f8de6e7053e5e10fedcf549cadecaafb2513
-source-art/hero/actions-v5/marcel/down/attack/01.png  f3998c1b2c43969d1540342c8885c9ab57b5495853d61a9edad7f5bafe7b5db6
-source-art/hero/actions-v5/marcel/down/attack/02.png  94eba0c056ddad1a983e7c39912dd55d8a4973ab79007d059261e713a2b080a8
-source-art/hero/actions-v5/marcel/down/attack/03.png  b855670aa4432f83e9090f91f55927f48bff586b42a864c4f7c33d1a7093b4ec
-source-art/hero/actions-v5/marcel/down/attack/04.png  37845f39c400b44527bd30cff518e529018ed384cc1e7b834c5e135a07530855
-source-art/hero/actions-v5/marcel/down/attack/05.png  081739be7ed10f2db8217194811d9c7e780ac7520757df7a26fd163db8fb6fcd
-source-art/hero/actions-v5/marcel/down/marcel-attack-down-concept-3x2.png  d31b7a2c60f719387a60cc4cc6fbffda510f0397f41ad299e93767d54acdf1e1
-source-art/hero/actions-v5/marcel/down/marcel-attack-down-preview-6x1.png  03e31f5a6e9b95870bf767e79a54afc29e6e3c944dde78c2d8824133cd0e818f
+bb7427089df085ecfe83cd2a3f39f8de6e7053e5e10fedcf549cadecaafb2513  source-art/hero/actions-v5/marcel/down/attack/00.png
+f3998c1b2c43969d1540342c8885c9ab57b5495853d61a9edad7f5bafe7b5db6  source-art/hero/actions-v5/marcel/down/attack/01.png
+94eba0c056ddad1a983e7c39912dd55d8a4973ab79007d059261e713a2b080a8  source-art/hero/actions-v5/marcel/down/attack/02.png
+b855670aa4432f83e9090f91f55927f48bff586b42a864c4f7c33d1a7093b4ec  source-art/hero/actions-v5/marcel/down/attack/03.png
+37845f39c400b44527bd30cff518e529018ed384cc1e7b834c5e135a07530855  source-art/hero/actions-v5/marcel/down/attack/04.png
+081739be7ed10f2db8217194811d9c7e780ac7520757df7a26fd163db8fb6fcd  source-art/hero/actions-v5/marcel/down/attack/05.png
+d31b7a2c60f719387a60cc4cc6fbffda510f0397f41ad299e93767d54acdf1e1  source-art/hero/actions-v5/marcel/down/marcel-attack-down-concept-3x2.png
+03e31f5a6e9b95870bf767e79a54afc29e6e3c944dde78c2d8824133cd0e818f  source-art/hero/actions-v5/marcel/down/marcel-attack-down-preview-6x1.png
