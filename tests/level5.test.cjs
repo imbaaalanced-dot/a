@@ -87,18 +87,24 @@ assert.equal(asset.toString('ascii',0,4),'RIFF');
 assert.equal(asset.toString('ascii',8,12),'WEBP');
 assert.equal(asset.toString('ascii',12,16),'VP8X');
 assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
+let unwantedImages=0;
 box.Image=class {
-  constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;}
-  set src(value){this.loadedFrom=value;}
+  constructor(){unwantedImages++;}
+  set src(_url){unwantedImages++;}
 };
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
-const beforeSprite=creations;
+const beforeClean=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
-assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
-const drawnSprite=drawArgs.at(-1);
-assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2\.webp\?v=style2a1/);
-assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
-assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
+assert.equal(creations,beforeClean+1,'text-free monument creates one cached canvas');
+const cleanDraw=drawArgs.at(-1);
+assert.equal(cleanDraw[0].width,480,'authored monument canvas is 480px wide');
+assert.equal(cleanDraw[0].height,540,'authored monument canvas is 540px high');
+assert.equal(cleanDraw[1],center.x-240,'unchanged monument center');
+assert.equal(cleanDraw[2],center.y-500,'unchanged monument foot anchor');
+box.DenkmalHohensyburgArt.drawMonument(paint,center);
+assert.equal(creations,beforeClean+1,'cached monument has no repeated allocations');
+assert.equal(unwantedImages,0,'branded monument image is never requested');
+assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
