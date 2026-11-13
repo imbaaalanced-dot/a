@@ -75,9 +75,16 @@ def main():
     for key,path in CASES.items():
         im,bbox=render(path)
         im.save(out/(key+".png"),"PNG",optimize=True)
+        webp=out/(key+".webp")
+        im.save(webp,"WEBP",quality=84,method=6)
+        assert webp.stat().st_size<160_000,(key,"mobile download budget",webp.stat().st_size)
+        with Image.open(webp) as decoded:
+            decoded.load()
+            assert decoded.format=="WEBP" and decoded.mode=="RGBA" and decoded.size==(768,512),key
+            assert decoded.getchannel("A").getextrema()[0]==0 and decoded.getchannel("A").getextrema()[1]>200,key
         visible64=im.resize((64,43),Image.Resampling.LANCZOS).getchannel("A").point(lambda x:255 if x>=32 else 0).getbbox()
         assert visible64,("empty at 64px",key)
-        report["files"].append({"name":key,"rgba":True,"alpha_bbox_32":bbox,"alpha_bbox_64px":visible64,"png_bytes":(out/(key+".png")).stat().st_size})
+        report["files"].append({"name":key,"rgba":True,"alpha_bbox_32":bbox,"alpha_bbox_64px":visible64,"png_bytes":(out/(key+".png")).stat().st_size,"webp_bytes":webp.stat().st_size})
         imgs[key]=im
     panels(imgs,out)
     (out/"report.json").write_text(json.dumps(report,indent=2)+"\n")
