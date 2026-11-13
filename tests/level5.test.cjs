@@ -105,6 +105,12 @@ assert.equal(creations,beforeFallback+1,'repeated monument rendering is allocati
 assert.equal(unwantedLoads,0,'runtime must not load the branded Style-2 image');
 assert.doesNotMatch(fs.readFileSync('dist/hohensyburg-art.js','utf8'),/kaiser-wilhelm-style2\.webp/,
  'the defective branded image remains archived but is not a runtime dependency');
+const pavedSource=fs.readFileSync('dist/hohensyburg-art.js','utf8');
+assert.match(pavedSource,/function weatheredPaving\(/,'irregular paving uses a fixed-seed cached renderer');
+assert.equal((pavedSource.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
+ 'both Hohensyburg terraces use the same irregular low-contrast paving');
+assert.doesNotMatch(pavedSource,/Math\.abs\(Math\.floor\(x\/(?:74|76)\)/,
+ 'alternating checkerboard tiles must not return');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
