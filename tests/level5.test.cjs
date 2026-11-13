@@ -105,6 +105,12 @@ box.DenkmalHohensyburgArt.drawMonument(paint,center);
 assert.equal(creations,beforeClean+1,'cached monument has no repeated allocations');
 assert.equal(unwantedImages,0,'branded monument image is never requested');
 assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
+const source=fs.readFileSync('dist/hohensyburg-art.js','utf8');
+assert.match(source,/function weatheredPaving\(/,'paving must use the fixed-seed cache');
+assert.equal((source.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
+ 'upper and lower Hohensyburg terraces use irregular paving');
+assert.doesNotMatch(source,/Math\.abs\(Math\.floor\(x\/(?:74|76)\)/,
+ 'alternating tile checkerboard must not return');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
