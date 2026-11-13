@@ -58,7 +58,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','ground-v3-1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','ground-v3-1'],
-  ['game.js', 'android-canopy-pool1'],
+  ['game.js', 'dev-default-20261113'],
   ['barracks.js','td2-barracks5'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],

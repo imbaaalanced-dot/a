@@ -31,7 +31,15 @@ vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 source=source.replace('lootModel,drawMonument,drawEnemy,','lootModel,completeLevel,drawMonument,drawEnemy,');
-vm.runInContext(source,sandbox);const t=sandbox.test,saga=sandbox.HeroSaga;
+vm.runInContext(source,sandbox);
+assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),true,'developer mode starts enabled without a saved choice');
+assert.equal(element('menuDeveloperBtn')['aria-pressed'],'true');
+element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
+assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'disabled');
+vm.runInContext(source,sandbox);
+assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),false,'explicitly disabled mode survives a reload');
+assert.equal(element('menuDeveloperBtn')['aria-pressed'],'false');
+const t=sandbox.test,saga=sandbox.HeroSaga;
 if(process.env.TEST_MOBILE==='1'){
   sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
   t.resize(false);
