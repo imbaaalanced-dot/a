@@ -28,20 +28,43 @@
   // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
   // reconstruction while its image-embedded STYLE 2 text remains under art QA.
   // This changes the monument's visuals only; no level geometry or saves.
-  const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
-  let standaloneSprite=null;
-  const monumentImage=()=>{
-    const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
-    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
-    if(typeof Image!=='function')return null;
-    if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
-    return standaloneSprite;
-  };
+  const textFreePreview=true; // All production sessions use the text-free cached monument.
+  // The legacy WebP has a baked-in STYLE 2 label and must not be requested.
+  // Keep the original file archived for provenance, not for game rendering.
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
   function randomGenerator(seed){return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
+  // Subtle offset joints replace the two alternating rectangular checkerboards.
+  // Tiles are baked into the existing level-ground canvas, never per frame.
+  function weatheredPaving(q,x,y,w,h,stoneW,stoneH,seed){
+    const random=randomGenerator(seed);
+    const stones=['#898a7d','#8c8c7f','#929083','#85877b','#8f8f82','#8b8d80'];
+    q.save();q.beginPath();q.rect(x,y,w,h);q.clip();
+    q.fillStyle='#777b70';q.fillRect(x,y,w,h);
+    for(let row=0,sy=y-4;sy<y+h+stoneH;row++,sy+=stoneH){
+      const offset=(row%2)*stoneW*.5;
+      for(let sx=x-stoneW;sx<x+w+stoneW;sx+=stoneW){
+        const dx=(random()-.5)*8,dy=(random()-.5)*5;
+        const left=sx+offset+dx,top=sy+dy;
+        const width=stoneW-4+random()*2,height=stoneH-4+random()*2;
+        q.fillStyle=stones[Math.floor(random()*stones.length)];
+        q.beginPath();
+        q.moveTo(left+4,top);q.lineTo(left+width-5,top+1);
+        q.lineTo(left+width,top+height-5);q.lineTo(left+width-4,top+height);
+        q.lineTo(left+2,top+height-2);q.lineTo(left,top+4);
+        q.closePath();q.fill();
+        q.strokeStyle='#34443c2a';q.lineWidth=.8;q.stroke();
+        if(random()>.76){
+          q.fillStyle='#3e59412e';q.beginPath();
+          q.ellipse(left+width*.26,top+height*.86,3+random()*7,1+random()*2,0,0,Math.PI*2);
+          q.fill();
+        }
+      }
+    }
+    q.restore();
+  }
   // Terrain / terrace: all large geometry is rasterized only once per map.
   function createGround(level){
     const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;allocations++;
@@ -103,25 +126,8 @@
       f.right-f.left+48,92);
     q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
       f.right-f.left+48,f.bottom-f.top+10);
-    if(textFreePreview){
-      // Remove the game-viewport checkerboard: cached natural sandstone
-      // replaces alternating rectangles; identical court bounds and layering.
-      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#948c7b';
-      q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-      q.fillStyle='#29332924';q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-    }else{
-      q.fillStyle='#8d8878';q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-      for(let y=f.top+25;y<f.bottom-25;y+=48)for(let x=f.left+22;x<f.right-20;x+=76){
-        q.fillStyle=['#b6ab90a0','#8c887688','#c2b99c55','#85837266'][
-          Math.abs(Math.floor(x/76)+Math.floor(y/48))%4];
-        q.fillRect(c.x+x+2,c.y+y+2,70,41);
-        q.strokeStyle='#514f4555';q.lineWidth=2;
-        q.strokeRect(c.x+x+1,c.y+y+1,73,44);
-      }
-    }
+    weatheredPaving(q,c.x+f.left+22,c.y+f.top+20,
+      f.right-f.left-44,f.bottom-f.top-45,76,48,1902);
     // Viewpoint balustrade follows the southern edge, with stone-capped posts.
     q.fillStyle='#52564d';q.fillRect(c.x+f.left-20,c.y+f.bottom-12,f.right-f.left+40,45);
     q.fillStyle='#c1b49b';q.fillRect(c.x+f.left-24,c.y+f.bottom-20,f.right-f.left+48,13);
@@ -148,21 +154,8 @@
     }
     q.fillStyle='#a99d84';q.fillRect(c.x+r.left,c.y+r.top,
       r.right-r.left,r.bottom-r.top);
-    if(textFreePreview){
-      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#99917c';
-      q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-      q.fillStyle='#3442371c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-    }else{
-      q.fillStyle='#99917c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-      for(let y=r.top+20;y<r.bottom-35;y+=45)for(let x=r.left+20;x<r.right-35;x+=74){
-        q.fillStyle=['#b5ab92','#8f8878','#a19882','#b8ad93'][Math.abs(Math.floor(x/74)+Math.floor(y/45))%4];
-        q.fillRect(c.x+x+2,c.y+y+2,68,39);
-        q.fillStyle='#464d4344';q.fillRect(c.x+x,c.y+y+40,70,2);
-      }
-    }
+    weatheredPaving(q,c.x+r.left+24,c.y+r.top+20,
+      r.right-r.left-48,r.bottom-r.top-45,74,45,1936);
     // Plinth coping is interrupted where the two stair flights meet the deck.
     q.fillStyle='#c8bba2';q.fillRect(c.x+r.left-10,c.y+r.top-12,r.right-r.left+20,21);
     q.fillRect(c.x+r.left-12,c.y+r.top,22,r.bottom-r.top);
@@ -244,51 +237,175 @@
     q.fillStyle='#59594d';q.beginPath();
     q.moveTo(-102,-413);q.lineTo(80,-413);q.lineTo(98,-405);q.lineTo(-82,-405);q.closePath();q.fill();
     q.strokeStyle='#726f60';q.lineWidth=5;q.strokeRect(-104,-415,210,15);
-    // Two freestanding bronze figures: Bismarck and Moltke.
-    for(const x of [-146,149]){
-      q.fillStyle='#716b5c';q.fillRect(x-35,-93,70,47);
-      q.fillStyle='#ac9b82';q.fillRect(x-37,-100,74,12);
-      q.fillStyle='#2c5149';q.beginPath();
-      q.moveTo(x-17,-99);q.lineTo(x-28,-170);q.lineTo(x-17,-212);
-      q.lineTo(x+18,-212);q.lineTo(x+28,-165);q.lineTo(x+16,-99);
-      q.closePath();q.fill();
-      q.fillStyle='#43665d';q.beginPath();q.arc(x,-226,17,0,Math.PI*2);q.fill();
-      q.strokeStyle='#7c9e8f';q.lineWidth=3;q.beginPath();
-      q.moveTo(x-17,-181);q.lineTo(x-12,-119);q.stroke();
+    // The three preserved bronze monuments are shaded separately from stone:
+    // the equestrian figure Wilhelm I, flanked by Bismarck and Moltke.
+    // All details are rasterized once into the same 480x540 cached canvas.
+    function bronze(x,y,w,h){
+      const g=q.createLinearGradient(x-w*.55,y-h*.6,x+w*.6,y+h*.5);
+      g.addColorStop(0,'#9fbbab');g.addColorStop(.22,'#527e70');
+      g.addColorStop(.56,'#345e55');g.addColorStop(1,'#183a34');
+      return g;
     }
-    // Patinated bronze side-on horse, distinct rider above, standing in front
-    // of the arch, not replacing it with a generic tower sprite.
-    q.fillStyle='#203f3c';q.beginPath();
-    q.moveTo(-68,-165);q.lineTo(-72,-222);q.lineTo(-51,-243);
-    q.lineTo(-25,-228);q.lineTo(11,-215);q.lineTo(44,-228);
-    q.lineTo(72,-245);q.lineTo(93,-234);q.lineTo(80,-198);
-    q.lineTo(61,-188);q.lineTo(44,-196);q.lineTo(43,-143);
-    q.lineTo(26,-143);q.lineTo(14,-192);q.lineTo(-29,-191);
-    q.lineTo(-38,-141);q.lineTo(-58,-141);q.closePath();q.fill();
-    q.strokeStyle='#6b9586';q.lineWidth=4;q.beginPath();
-    q.moveTo(-55,-222);q.lineTo(55,-209);q.stroke();
-    q.fillStyle='#41685b';q.beginPath();q.moveTo(-7,-285);
-    q.lineTo(24,-288);q.lineTo(28,-210);q.lineTo(-9,-214);q.closePath();q.fill();
-    q.beginPath();q.arc(8,-301,16,0,Math.PI*2);q.fill();
-    q.strokeStyle='#9fae9b';q.lineWidth=6;q.beginPath();
-    q.moveTo(14,-255);q.lineTo(47,-230);q.stroke();
-    // 1871 commemorates the Reichsgründung; the monument opened in 1902.
-    q.fillStyle='#cab99c';q.font='bold 20px serif';q.textAlign='center';
-    q.fillText('1871',0,-76);
+    function sideBronze(x,officer){
+      q.save();q.translate(x,0);
+      // Chiselled sandstone plinth and recessed vertical contact shadow.
+      q.fillStyle='#383e35';q.fillRect(-37,-103,74,11);
+      q.fillStyle='#766e60';q.fillRect(-34,-98,68,51);
+      q.fillStyle='#c7b498';q.fillRect(-38,-103,76,9);
+      q.fillStyle='#a89a80';q.fillRect(-34,-94,8,43);
+      q.fillStyle='#203832bb';q.beginPath();q.ellipse(0,-105,26,9,0,0,Math.PI*2);q.fill();
+      // Distinct boot stance, two folds in the long cast-bronze greatcoat.
+      q.fillStyle='#21483f';q.beginPath();
+      q.moveTo(-17,-124);q.lineTo(-22,-103);q.lineTo(-5,-99);
+      q.lineTo(-1,-130);q.lineTo(4,-99);q.lineTo(24,-102);
+      q.lineTo(17,-136);q.closePath();q.fill();
+      q.fillStyle=bronze(0,-176,58,103);q.beginPath();
+      q.moveTo(-17,-207);q.bezierCurveTo(-31,-204,-35,-178,-29,-152);
+      q.lineTo(-25,-113);q.quadraticCurveTo(-5,-123,0,-117);
+      q.quadraticCurveTo(13,-122,27,-112);q.lineTo(28,-156);
+      q.bezierCurveTo(32,-178,23,-201,14,-207);q.closePath();q.fill();
+      // Asymmetrical coat lapels and the hanging cloak read at reduced scale.
+      q.strokeStyle='#a4b8a7';q.lineWidth=2.7;q.beginPath();
+      q.moveTo(-8,-202);q.lineTo(2,-183);q.lineTo(-4,-141);
+      q.moveTo(7,-201);q.lineTo(15,-181);q.lineTo(9,-147);q.stroke();
+      q.strokeStyle='#163b35';q.lineWidth=4;q.beginPath();
+      q.moveTo(-26,-155);q.quadraticCurveTo(-31,-135,-24,-116);
+      q.moveTo(27,-160);q.quadraticCurveTo(23,-134,26,-116);q.stroke();
+      // Bismarck (left): hands on staff; Moltke (right): lowered sabre.
+      q.strokeStyle='#2e584d';q.lineWidth=12;q.lineCap='round';q.beginPath();
+      q.moveTo(-22,-195);q.lineTo(-22,-154);q.lineTo(-6,-157);
+      q.moveTo(21,-196);q.lineTo(23,officer?-166:-156);
+      q.lineTo(officer?15:4,officer?-156:-158);q.stroke();
+      q.strokeStyle='#a0b9a7';q.lineWidth=3;q.beginPath();
+      q.moveTo(-25,-189);q.lineTo(-24,-163);
+      q.moveTo(22,-190);q.lineTo(23,-166);q.stroke();
+      q.fillStyle='#477467';q.beginPath();q.ellipse(-4,-158,7,5,0,0,Math.PI*2);q.fill();
+      q.strokeStyle='#172c2a';q.lineWidth=4;q.beginPath();
+      q.moveTo(officer?17:-4,-153);q.lineTo(officer?28:-5,-107);q.stroke();
+      // Sculpted neck, face, ear, cap and directional facial shadow.
+      q.fillStyle='#224b43';q.fillRect(-7,-217,14,13);
+      q.fillStyle=bronze(0,-227,30,37);q.beginPath();
+      q.ellipse(0,-231,14,17,-.12,0,Math.PI*2);q.fill();
+      q.fillStyle='#9bb7a7';q.beginPath();q.ellipse(-5,-232,4,9,-.2,0,Math.PI*2);q.fill();
+      q.fillStyle='#254a42';q.beginPath();q.moveTo(2,-236);
+      q.lineTo(11,-228);q.lineTo(2,-222);q.closePath();q.fill();
+      q.fillStyle=officer?'#456e61':'#2a4d45';q.beginPath();
+      q.moveTo(-15,-238);q.lineTo(-12,-249);q.lineTo(10,-252);
+      q.lineTo(16,-241);q.closePath();q.fill();
+      q.strokeStyle='#abc2ae';q.lineWidth=2;q.beginPath();
+      q.moveTo(-14,-241);q.lineTo(15,-241);q.stroke();
+      if(!officer){
+        q.fillStyle='#24483f';q.beginPath();q.moveTo(-10,-220);
+        q.quadraticCurveTo(0,-208,11,-222);q.lineTo(5,-213);
+        q.lineTo(-6,-212);q.closePath();q.fill();
+      }
+      q.restore();
+    }
+    // Front view from the south: Moltke west / left, Bismarck east / right.
+    sideBronze(-146,true);sideBronze(149,false);
+    // The bronze horse is read in three-quarter profile: four distinct legs,
+    // raised foreleg, head, reins, mane, sculpted chest and separate rider.
+    q.fillStyle='#152d2a99';q.beginPath();q.ellipse(-5,-126,74,12,0,0,Math.PI*2);q.fill();
+    q.lineCap='round';q.lineJoin='round';
+    // Far hind leg and foreground rear leg, not a featureless triangular body.
+    q.strokeStyle='#173d36';q.lineWidth=14;q.beginPath();
+    q.moveTo(29,-190);q.lineTo(42,-156);q.lineTo(38,-126);
+    q.moveTo(11,-183);q.lineTo(18,-155);q.lineTo(16,-125);q.stroke();
+    q.strokeStyle='#83aa95';q.lineWidth=3;q.beginPath();
+    q.moveTo(24,-180);q.lineTo(34,-155);q.lineTo(32,-138);q.stroke();
+    // Long tail emerges behind the saddle rather than the animal's head.
+    q.strokeStyle='#254f45';q.lineWidth=10;q.beginPath();
+    q.moveTo(47,-220);q.quadraticCurveTo(77,-198,66,-165);q.stroke();
+    q.strokeStyle='#86a996';q.lineWidth=2;q.beginPath();
+    q.moveTo(48,-221);q.quadraticCurveTo(71,-201,66,-183);q.stroke();
+    q.fillStyle=bronze(-4,-213,116,73);q.beginPath();
+    q.ellipse(-3,-203,52,32,-.13,0,Math.PI*2);q.fill();
+    q.fillStyle='#9abdab42';q.beginPath();
+    q.ellipse(-17,-214,29,11,-.2,0,Math.PI*2);q.fill();
+    q.strokeStyle='#1d443b';q.lineWidth=5;q.beginPath();
+    q.moveTo(-49,-198);q.quadraticCurveTo(-9,-174,32,-189);q.stroke();
+    // The front leg is raised; the other reaches the stone pedestal.
+    q.strokeStyle='#2b6155';q.lineWidth=14;q.beginPath();
+    q.moveTo(-34,-185);q.lineTo(-40,-156);q.lineTo(-38,-127);
+    q.moveTo(-49,-193);q.lineTo(-66,-169);q.lineTo(-78,-164);q.stroke();
+    q.strokeStyle='#add0b8';q.lineWidth=3;q.beginPath();
+    q.moveTo(-43,-184);q.lineTo(-47,-157);
+    q.moveTo(-60,-177);q.lineTo(-71,-166);q.stroke();
+    q.strokeStyle='#18332f';q.lineWidth=7;q.beginPath();
+    q.moveTo(-46,-126);q.lineTo(-30,-126);
+    q.moveTo(-79,-164);q.lineTo(-66,-164);q.stroke();
+    // Long neck, sculpted muzzle, separate ears and bridle.
+    q.fillStyle=bronze(-50,-244,63,89);q.beginPath();
+    q.moveTo(-43,-198);q.quadraticCurveTo(-58,-227,-66,-247);
+    q.lineTo(-48,-263);q.quadraticCurveTo(-31,-239,-18,-219);
+    q.lineTo(-17,-198);q.closePath();q.fill();
+    q.fillStyle='#365f53';q.beginPath();
+    q.ellipse(-66,-255,20,23,-.26,0,Math.PI*2);q.fill();
+    q.fillStyle='#7fa792';q.beginPath();
+    q.ellipse(-74,-255,9,17,-.3,0,Math.PI*2);q.fill();
+    q.fillStyle='#2b554a';q.beginPath();
+    q.moveTo(-79,-270);q.lineTo(-84,-286);q.lineTo(-70,-276);
+    q.lineTo(-62,-287);q.lineTo(-57,-272);q.closePath();q.fill();
+    q.strokeStyle='#182e2a';q.lineWidth=3;q.beginPath();
+    q.moveTo(-58,-260);q.quadraticCurveTo(-80,-253,-82,-240);
+    q.moveTo(-55,-250);q.lineTo(-40,-216);q.stroke();
+    q.fillStyle='#0c2723';q.beginPath();q.arc(-73,-262,2.6,0,Math.PI*2);q.fill();
+    // Uniformed rider, cape and mounted silhouette in front of arch.
+    q.fillStyle='#163a34';q.beginPath();q.ellipse(7,-229,23,9,-.18,0,Math.PI*2);q.fill();
+    q.fillStyle='#21483e';q.beginPath();
+    q.moveTo(5,-286);q.quadraticCurveTo(24,-284,34,-258);
+    q.lineTo(42,-225);q.lineTo(13,-223);q.lineTo(-10,-247);
+    q.closePath();q.fill();
+    q.fillStyle=bronze(10,-268,55,87);q.beginPath();
+    q.moveTo(-6,-286);q.quadraticCurveTo(14,-297,28,-279);
+    q.lineTo(27,-243);q.lineTo(-6,-241);q.closePath();q.fill();
+    q.strokeStyle='#a3c6b0';q.lineWidth=3;q.beginPath();
+    q.moveTo(0,-280);q.lineTo(10,-262);q.lineTo(7,-246);q.stroke();
+    // The rider raises one arm in greeting; the other holds the reins.
+    // Both silhouettes stay inside the original 480 x 540 memorial canvas.
+    q.strokeStyle='#234d42';q.lineWidth=11;q.beginPath();
+    q.moveTo(25,-275);q.lineTo(13,-258);q.lineTo(-14,-252);
+    q.moveTo(-3,-272);q.lineTo(-23,-295);q.lineTo(-37,-313);q.stroke();
+    q.strokeStyle='#b1c7ad';q.lineWidth=3;q.beginPath();
+    q.moveTo(22,-273);q.lineTo(10,-258);
+    q.moveTo(-6,-275);q.lineTo(-25,-298);q.stroke();
+    q.fillStyle='#8eae9d';q.beginPath();q.ellipse(-38,-316,7,10,-.25,0,Math.PI*2);q.fill();
+    q.strokeStyle='#274940';q.lineWidth=2;q.beginPath();
+    q.moveTo(-43,-322);q.lineTo(-47,-330);
+    q.moveTo(-38,-325);q.lineTo(-39,-334);
+    q.moveTo(-33,-322);q.lineTo(-31,-330);q.stroke();
+    q.fillStyle='#8eae9d';q.beginPath();q.arc(-14,-252,5,0,Math.PI*2);q.fill();
+    q.fillStyle=bronze(10,-307,33,47);q.beginPath();
+    q.ellipse(10,-309,15,19,-.13,0,Math.PI*2);q.fill();
+    q.fillStyle='#24463d';q.beginPath();
+    q.moveTo(-5,-321);q.lineTo(-3,-328);q.lineTo(25,-329);
+    q.lineTo(28,-320);q.closePath();q.fill();
+    q.strokeStyle='#9dbdaa';q.lineWidth=2;q.beginPath();
+    q.moveTo(-5,-320);q.lineTo(26,-320);q.stroke();
+    q.strokeStyle='#304e42';q.lineWidth=3;q.beginPath();
+    q.moveTo(10,-328);q.lineTo(10,-341);q.stroke();
+    // Bridle, reigns, stirrup and small highlights tie horse and rider together.
+    q.strokeStyle='#a8c3a4';q.lineWidth=2;q.beginPath();
+    q.moveTo(-38,-250);q.quadraticCurveTo(-20,-237,-13,-255);
+    q.lineTo(-19,-231);
+    q.moveTo(9,-240);q.lineTo(21,-205);q.lineTo(35,-202);q.stroke();
+    // Current 1935/36 arrangement: the Reichsgruendung date is above
+    // the arch, not written on the lower pedestal (LWL / contemporary views).
+    q.textAlign='center';q.textBaseline='alphabetic';
+    q.font='bold 14px Georgia,serif';q.lineWidth=1;
+    q.strokeStyle='#514b41';q.strokeText('18 JANUAR 1871',0,-373);
+    q.fillStyle='#d5bea0';q.fillText('18 JANUAR 1871',0,-373);
+    // Small crown relief in the stone course above the inscription.
+    q.fillStyle='#5b564a';q.beginPath();q.moveTo(-17,-393);
+    q.lineTo(-15,-400);q.lineTo(-7,-394);q.lineTo(0,-405);
+    q.lineTo(7,-394);q.lineTo(15,-400);q.lineTo(17,-393);
+    q.lineTo(15,-388);q.lineTo(-15,-388);q.closePath();q.fill();
+    q.strokeStyle='#bca78c';q.lineWidth=1.5;q.stroke();
     return canvas;
   }
   function drawMonument(ctx,m){
-    // The cached text-free reconstruction is an optional QA comparison only.
-    // Avoid requesting the branded image in this draw path when preview is on.
-    const monumentSprite=textFreePreview?null:monumentImage();
-    if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
-      // Foot anchor is on the existing upper terrace, not on the lower plaza.
-      // Canvas already applies the oblique camera's upright-sprite correction.
-      const height=570,width=height*monumentSprite.naturalWidth/monumentSprite.naturalHeight;
-      ctx.drawImage(monumentSprite,m.x-width/2,m.y-height+40,width,height);
-      return;
-    }
     if(!memorial)memorial=createMemorial();
+    // Preserves the existing level objective anchor and cached 2.5D footprint.
     ctx.drawImage(memorial,m.x-240,m.y-500,480,540);
   }
   function drawAirLane(ctx,level,active){
@@ -301,7 +418,7 @@
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
     textFreePreview,
-    release(){ground=null;memorial=null;standaloneSprite=null;},
+    release(){ground=null;memorial=null;},
     environmentLamps,
     get allocations(){return allocations;}};
 })();
