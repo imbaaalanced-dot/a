@@ -111,8 +111,15 @@ function percentile(numbers,fraction){
       assert.ok(result.gameTelemetrySampleCount>3,'in-game drawn FPS counter must update');
       assert.ok(result.gameTelemetryFpsMedian>0,'positive game draw FPS');
       results.push(result);
-      await page.screenshot({path:path.join(output,config.name+'-menu-'+(menuOpen?'open':'closed')+'.png'),animations:'disabled'});
       console.log('LEVEL4_PERF '+JSON.stringify(result));
+      // Persist before the screenshot. A GPU-bound CI runner may time out while
+      // copying the continuously rendered canvas, which must not discard metrics.
+      fs.writeFileSync(path.join(output,'partial-results.json'),JSON.stringify({phase,results},null,2));
+      try{
+        await page.screenshot({path:path.join(output,config.name+'-menu-'+(menuOpen?'open':'closed')+'.png'),animations:'allow',timeout:10000,scale:'css'});
+      }catch(error){
+        console.warn('OPTIONAL_SCREENSHOT_UNAVAILABLE '+config.name+' menuOpen='+menuOpen+' '+error.message.split('\\n')[0]);
+      }
     }
     assert.deepEqual(errors,[],config.name+' JavaScript errors');
     fs.writeFileSync(path.join(output,config.name+'-diagnostic.json'),JSON.stringify({errors,failedRequests:failed},null,2));
