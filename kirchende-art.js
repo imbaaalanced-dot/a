@@ -66,7 +66,7 @@
     return actors.some(a=>nearCrown(a,tree,tree.r+25))?.25:1;
   }
   // Photo-derived atmosphere, not a surveyed reconstruction. Gameplay coordinates stay separate.
-  const trees=[[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
+  const trees=[[-660,-760,115],[-320,-735,118],[40,-750,108],[510,-695,111],[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
   const shrubs=[[-90,195,45],[-95,260,45],[-95,325,45],[95,195,32],[95,255,32],[95,315,32],[-555,-310,65],[-360,-505,72],[360,-200,60],[520,-385,80],[-580,75,75],[535,90,75]];
   let site;
   function drawAtlas(ctx,index,x,y,size){
@@ -90,17 +90,30 @@
   }
   function createSite(){
     const c=document.createElement('canvas');c.width=c.height=384;const q=c.getContext('2d');q.translate(192,144);
-    q.fillStyle='#252d2440';q.fillRect(-145,-94,290,235);
-    q.fillStyle='#59664b';q.fillRect(-142,-101,284,234);
-    for(let row=0;row<5;row++)for(let col=0;col<6;col++){
-      const x=-136+col*45,y=-96+row*44;
-      q.fillStyle=['#7e8070','#868575','#747b6b','#8e8b77'][(row*5+col*3)%4];q.fillRect(x,y,43,42);
-      q.fillStyle='#c5bfa129';q.fillRect(x+1,y+1,41,1);
-      q.strokeStyle='#525c463f';q.lineWidth=1;q.beginPath();q.moveTo(x+5,y+16);q.lineTo(x+18,y+22);q.lineTo(x+16,y+33);q.stroke();
+    // Irregular, subdued stone enclosure. The former opaque 6x5 grid produced
+    // a pale checkerboard visible beneath the 2.5D memorial artwork.
+    q.save();q.beginPath();q.moveTo(-138,-81);
+    q.lineTo(-121,-104);q.lineTo(110,-101);q.lineTo(139,-83);
+    q.lineTo(143,90);q.lineTo(113,132);q.lineTo(-115,130);
+    q.lineTo(-144,96);q.closePath();q.clip();
+    const soil=q.createRadialGradient(0,0,20,0,0,198);
+    soil.addColorStop(0,'#58604bba');soil.addColorStop(.7,'#42513e9c');soil.addColorStop(1,'#32413022');
+    q.fillStyle=soil;q.fillRect(-150,-112,300,250);
+    let flagSeed=1927;
+    const flagRnd=()=>((flagSeed=(Math.imul(1664525,flagSeed)+1013904223)>>>0)/4294967296);
+    const palette=['#777969','#818372','#696e62','#888575','#656f62'];
+    for(let row=0;row<6;row++)for(let col=0;col<7;col++){
+      const x=-141+col*42+(row%2)*16+(flagRnd()-.5)*10;
+      const y=-103+row*40+(flagRnd()-.5)*8;
+      const w=30+flagRnd()*9,h=28+flagRnd()*8;
+      q.fillStyle=palette[(row*3+col)%palette.length];q.globalAlpha=.48+flagRnd()*.22;
+      q.beginPath();q.moveTo(x+4,y);q.lineTo(x+w-5,y+2);
+      q.lineTo(x+w,y+h-5);q.lineTo(x+w-4,y+h);
+      q.lineTo(x+2,y+h-2);q.lineTo(x,y+5);q.closePath();q.fill();
     }
-    for(let i=0;i<2800;i++){const x=-136+(i*73%270),y=-96+(i*131%220);q.fillStyle=i%2?'#bbb18a1c':'#40523924';q.fillRect(x,y,1+i%3,1);}
+    q.globalAlpha=1;q.restore();
     // Low stone edging, worn joints and three shallow treads at the paved approach.
-    q.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999b7f';q.lineWidth=3;q.strokeRect(-140,-100,280,232);
+    q.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999b7f';q.lineWidth=3;q.beginPath();q.moveTo(-138,-81);q.lineTo(-121,-104);q.lineTo(110,-101);q.lineTo(139,-83);q.lineTo(143,90);q.lineTo(113,132);q.lineTo(-115,130);q.lineTo(-144,96);q.closePath();q.stroke();
     for(let i=0;i<3;i++){
       q.fillStyle='#383e3388';q.fillRect(-44,138+i*11,128,11);
       q.fillStyle=['#929480','#868b75','#7b826d'][i];q.fillRect(-44,134+i*11,128,8);
@@ -283,7 +296,18 @@
     if(!crowns){
       // Village-edge hints remain outside the clearing, partly screened by vegetation.
       building(ctx,-790,-430,185,205,true);building(ctx,590,-475,230,300);
-      ctx.fillStyle='#77786b';ctx.fillRect(-820,700,1640,86);ctx.fillStyle='#a5a28a';ctx.fillRect(-820,700,1640,4);
+      // Existing south-side street: muted asphalt, readable kerbs and aged stone walls.
+      // Only scenery, never a new navigation path or collision barrier.
+      ctx.fillStyle='#242b2a';ctx.fillRect(-820,698,1640,98);
+      ctx.fillStyle='#555b53';ctx.fillRect(-820,694,1640,8);
+      ctx.fillStyle='#8e8c7a';ctx.fillRect(-820,693,1640,3);
+      ctx.fillStyle='#50574e';ctx.fillRect(-820,790,1640,6);
+      for(let i=0;i<30;i++){
+        const x=-820+i*56;
+        ctx.fillStyle=i%3===0?'#72786c':'#62695e';
+        ctx.fillRect(x,657,53,26);ctx.fillRect(x+((i%2)*7),683,49,11);
+        ctx.strokeStyle='#373f35';ctx.lineWidth=2;ctx.strokeRect(x,657,53,26);
+      }
       bench(ctx,-90,435,-.05);bench(ctx,105,435,.05);
       // Root decals sit below the tree trunks and below subsequently rendered routes.
       for(let i=0;i<trees.length;i++){

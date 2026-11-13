@@ -8,6 +8,33 @@ const pilot=/(?:^|[?&])td2Style2Pilot=1(?:&|$)/.test(globalThis.location?.search
 const baseGroundUrl='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
 const pilotGroundUrl='assets/style2-pilot-v1/environment/ground/forest_floor.webp?v=pilot1';
 const pilotRoad={earth:null,slabs:null};
+// Optional Level-4-only preview. Production keeps reference-ground V3.
+const level4Seamfix=!pilot&&/(?:^|[?&])td2Level4Seamfix=1(?:&|$)/.test(globalThis.location?.search||'');
+const level4Images={cobble:null,flagstone:null};
+let level4Loading=null;
+function loadLevel4Seamfix(){
+  if(!level4Seamfix||typeof Image!=='function')return Promise.resolve(false);
+  if(level4Loading)return level4Loading;
+  const sources=[
+    ['cobble','assets/level4/level4-cobblestone-512-seamfix.webp?v=seamfix-1'],
+    ['flagstone','assets/level4/level4-flagstone-512-seamfix.webp?v=seamfix-1']
+  ];
+  level4Loading=Promise.all(sources.map(([name,url])=>new Promise(resolve=>{
+    const image=new Image();image.decoding='async';
+    image.onload=()=>{
+      if(image.naturalWidth===512&&image.naturalHeight===512){
+        level4Images[name]=image;resolve(true);
+      }else resolve(false);
+    };
+    image.onerror=()=>resolve(false);
+    image.src=url;
+  }))).then(results=>{
+    // The fallback pattern may have been created while the images decoded.
+    patterns=new WeakMap();
+    return results.some(Boolean);
+  });
+  return level4Loading;
+}
 async function loadPilotRoads(){
   if(!pilot)return;
   const requests=[
@@ -31,7 +58,7 @@ function load(){
     image.onload=()=>{
       style2Ground=image;illustratedGround=null;illustratedMeadow=null;
       // This opt-in preview never blocks gameplay when a pilot texture is missing.
-      Promise.all([loadPilotRoads(),globalThis.TD2GroundV3?.load?.()||Promise.resolve(false)]).then(()=>resolve(true),()=>resolve(true));
+      Promise.all([loadPilotRoads(),loadLevel4Seamfix(),globalThis.TD2GroundV3?.load?.()||Promise.resolve(false)]).then(()=>resolve(true),()=>resolve(true));
     };
     image.onerror=()=>{
       if(pilot&&!triedFallback){triedFallback=true;image.src=baseGroundUrl;return;}
@@ -104,14 +131,25 @@ function texture(kind){
   textures.set(kind,c);return c;
 }
 function pattern(ctx,kind,groundLevel=3){
-  const material=globalThis.TD2GroundV3?.material?.(groundLevel,kind==='slabs'?'road':'earth');
+  const sample=level4Seamfix&&groundLevel===4
+    ?(kind==='slabs'?level4Images.cobble:kind==='flagstone'?level4Images.flagstone:null):null;
+  if(sample){
+    let cache=patterns.get(ctx);if(!cache){cache=new Map();patterns.set(ctx,cache);}
+    const key='level4-seamfix-'+kind;
+    if(!cache.has(key))cache.set(key,ctx.createPattern(sample,'repeat'));
+    return cache.get(key);
+  }
+  // Existing reference-ground material is the first fallback; no new paths.
+  const material=kind==='flagstone'?'dark_slab_lichen'
+    :globalThis.TD2GroundV3?.material?.(groundLevel,kind==='slabs'?'road':'earth');
   const reference=globalThis.TD2GroundV3?.pattern?.(ctx,material);
   if(reference)return reference;
   let cache=patterns.get(ctx);if(!cache){cache=new Map();patterns.set(ctx,cache);}
-  const pilotImage=pilot&&pilotRoad[kind];
-  const cacheKey=pilotImage?'pilot-'+kind:kind;
+  const fallbackKind=kind==='flagstone'?'slabs':kind;
+  const pilotImage=pilot&&pilotRoad[fallbackKind];
+  const cacheKey=pilotImage?'pilot-'+fallbackKind:fallbackKind;
   if(!cache.has(cacheKey)){
-    cache.set(cacheKey,ctx.createPattern(pilotImage||texture(kind),'repeat'));
+    cache.set(cacheKey,ctx.createPattern(pilotImage||texture(fallbackKind),'repeat'));
   }
   return cache.get(cacheKey);
 }
@@ -168,11 +206,11 @@ const ROAD_SHOULDERS={
 };
 function drawRoad(ctx,path,{surface='earth',groundLevel=3}={}){
   if(!path||path.length<2)return;
-  const material=surface==='slabs'?'slabs':'earth';
+  const material=surface==='flagstone'?'flagstone':surface==='slabs'?'slabs':'earth';
   ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
   ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
   // Soft mossy earth shoulders versus cooler stone margins. No traffic markings.
-  for(const [width,color] of ROAD_SHOULDERS[material]){
+  for(const [width,color] of ROAD_SHOULDERS[material==='flagstone'?'slabs':material]){
     ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
   ctx.strokeStyle=pattern(ctx,material,groundLevel)||(material==='slabs'?'#77796f':'#77674b');
@@ -184,5 +222,5 @@ for(let i=0;i<n;i++){const sx=x+(i-(n-1)/2)*29,sy=y+47;ctx.beginPath();
 for(let j=0;j<10;j++){let a=j*Math.PI/5-Math.PI/2,d=j%2?5.5:12.4,px=sx+Math.cos(a)*d,py=sy+Math.sin(a)*d;if(j)ctx.lineTo(px,py);else ctx.moveTo(px,py);}
 ctx.closePath();ctx.shadowBlur=low?0:7;ctx.shadowColor='#f1ae42';ctx.fillStyle='#ffcf51';ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#543c21';ctx.stroke();}
 ctx.restore();}
-globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,get groundImage(){return style2Ground;},load};
+globalThis.DenkmalTerrain={drawGround,drawRoad,drawStars,get groundImage(){return style2Ground;},load,level4SeamfixEnabled:level4Seamfix,get level4SeamfixLoaded(){return Number(!!level4Images.cobble)+Number(!!level4Images.flagstone);}};
 })();

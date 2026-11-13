@@ -9,6 +9,7 @@ const query=globalThis.location?.search||'';
 const active=!/(?:^|[?&])td2GroundV3=0(?:&|$)/.test(query)
  && !/(?:^|[?&])td2Style2Pilot=1(?:&|$)/.test(query);
 const base='assets/reference-ground-v3/';
+const pavementV4=/(?:^|[?&])td2PavementV4=1(?:&|$)/.test(query);
 const names=Object.freeze([
  'forest_moss_roots','dark_slab_lichen','meadow_patchy','churchyard_cobble',
  'syburg_bedrock','syburg_sandstone','memorial_gravel','goethe_brick','urban_asphalt'
@@ -26,10 +27,10 @@ const images=new Map();let task=null;let patterns=new WeakMap();
 function load(){
  if(!active||typeof Image!=='function')return Promise.resolve(false);
  if(task)return task;
- task=Promise.all(names.map(name=>new Promise(resolve=>{
+ task=Promise.all([...names,...(pavementV4?['churchyard_pavement_v4']:[])].map(name=>new Promise(resolve=>{
   const img=new Image();img.decoding='async';
   img.onload=()=>{
-   if(img.naturalWidth===256&&img.naturalHeight===256){images.set(name,img);resolve(true);}
+   if(img.naturalWidth===(name==='churchyard_pavement_v4'?512:256)&&img.naturalHeight===(name==='churchyard_pavement_v4'?512:256)){images.set(name,img);resolve(true);}
    else resolve(false);
   };
   img.onerror=()=>resolve(false);
@@ -38,6 +39,7 @@ function load(){
  return task;
 }
 function material(level,kind='base'){
+ if(level===4&&kind==='road'&&pavementV4&&images.has('churchyard_pavement_v4'))return 'churchyard_pavement_v4';
  const entry=byLevel[level];
  return entry&&(entry[kind]||entry.base)||null;
 }
@@ -48,7 +50,12 @@ function imageFor(level,kind='base'){
 function pattern(ctx,name){
  if(!active||!ctx||!name||!images.has(name))return null;
  let cache=patterns.get(ctx);if(!cache){cache=new Map();patterns.set(ctx,cache);}
- if(!cache.has(name))cache.set(name,ctx.createPattern(images.get(name),'repeat'));
+ if(!cache.has(name)){
+  const tile=ctx.createPattern(images.get(name),'repeat');
+  // 512 source pixels retain the existing 256-world-unit material scale.
+  if(name==='churchyard_pavement_v4'&&tile)tile.setTransform({a:.5,b:0,c:0,d:.5,e:0,f:0});
+  cache.set(name,tile);
+ }
  return cache.get(name);
 }
 function patternFor(ctx,level,kind='base'){return pattern(ctx,material(level,kind));}

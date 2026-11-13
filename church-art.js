@@ -319,8 +319,11 @@
     }
     ctx.restore();
   }
-  function drawRoad(ctx,path){
-    if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:'slabs',groundLevel:4});
+  function drawRoad(ctx,path,pathIndex=0){
+    // Only the existing KIRCHHOF WEST route previews large stone slabs.
+    // All other routes retain cobbles; default V3 remains unchanged.
+    const surface=globalThis.DenkmalTerrain?.level4SeamfixEnabled&&pathIndex===3?'flagstone':'slabs';
+    if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface,groundLevel:4});
     ctx.save();ctx.lineJoin='round';ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#444b4088';ctx.lineWidth=80;ctx.stroke();ctx.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999586';ctx.lineWidth=69;ctx.stroke();ctx.restore();
   }
   function drawSite(ctx,center){
@@ -520,8 +523,9 @@
     // Contact shadow belongs to the collision point. Everything else is cached.
     ctx.save();ctx.fillStyle='#17251b66';ctx.beginPath();
     ctx.ellipse(m.x,m.y+6,119,25,0,0,Math.PI*2);ctx.fill();
-    // Deliberately 20% smaller than the source canvas: the church dominates.
-    ctx.drawImage(lionSprite||lionArt,m.x-128,m.y-293,256,304);
+    // Photo comparison: the high memorial is prominent, but markedly narrower
+    // than the long church. Keep the lion's ground anchor and collision point.
+    ctx.drawImage(lionSprite||lionArt,m.x-106,m.y-239,212,250);
     if(m.hp/m.maxHp<.67){
       ctx.strokeStyle=m.hp/m.maxHp<.33?'#4a4f45':'#85816c';ctx.lineWidth=2;
       ctx.beginPath();ctx.moveTo(m.x-43,m.y-151);ctx.lineTo(m.x-30,m.y-135);
