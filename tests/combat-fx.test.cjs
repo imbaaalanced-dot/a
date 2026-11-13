@@ -36,7 +36,7 @@ const context=new Proxy({drawImage(...args){draws.push(args);}}, {get:(obj,key)=
 const wand={x:140,y:220,vx:560,vy:0,r:4,life:.95,color:'#83cfff',kind:'wand',heroShot:true,heroCharacter:'marcel'};
 spriteFx.draw(context,wand,false,'marcel');
 assert.equal(requests.length,1,'lazy FX request occurs on first Marcel shot');
-assert.match(requests[0],/marcel-staff-fx-v2-32\.png/);
+assert.match(requests[0],/marcel-staff-fx-v2-40\.png/);
 assert.equal(draws.length,1,'Marcel projectile uses atlas after decode');
 assert.equal(draws[0][2],0,'auto-attack uses projectile row zero');
 spriteFx.draw(context,wand,false,'marcel');assert.equal(requests.length,1,'warm asset is reused');
