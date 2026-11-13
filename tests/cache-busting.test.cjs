@@ -66,7 +66,7 @@ const expectedVersions = new Map([
   ['campaign-balance.js','portal1'],
   ['portal-ui.css','expansion2'],
   ['hohensyburg.js', 'syburg-balance2'],
-  ['hohensyburg-art.js','syburg-clean-preview-20261113'],
+  ['hohensyburg-art.js','syburg-art248-20261113'],
   ['style2-ambience.js', 'alpha9a2'],
   ['style2-ui-polish.css', 'ui-gold2'],
   ['style2-phase6.js', 'alpha9a5'],
