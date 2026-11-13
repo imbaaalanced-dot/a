@@ -1,0 +1,27 @@
+name: Pavement V4 browser QA
+on:
+  pull_request:
+    paths:
+      - 'dist/ground-v3.js'
+      - 'dist/assets/reference-ground-v3/churchyard_pavement_v4.webp'
+      - 'tools/verify-pavement-v4-browser.cjs'
+      - '.github/workflows/pavement-v4.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/reference-ground-v3.test.cjs
+      - run: node tools/verify-pavement-v4-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pavement-v4-browser-qa
+          path: /tmp/td2-pavement-v4/
