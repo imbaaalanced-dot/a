@@ -28,15 +28,9 @@
   // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
   // reconstruction while its image-embedded STYLE 2 text remains under art QA.
   // This changes the monument's visuals only; no level geometry or saves.
-  const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
-  let standaloneSprite=null;
-  const monumentImage=()=>{
-    const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
-    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
-    if(typeof Image!=='function')return null;
-    if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
-    return standaloneSprite;
-  };
+  const textFreePreview=true; // All production sessions use the text-free cached monument.
+  // The legacy WebP has a baked-in STYLE 2 label and must not be requested.
+  // Keep the original file archived for provenance, not for game rendering.
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -278,17 +272,8 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    // The cached text-free reconstruction is an optional QA comparison only.
-    // Avoid requesting the branded image in this draw path when preview is on.
-    const monumentSprite=textFreePreview?null:monumentImage();
-    if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
-      // Foot anchor is on the existing upper terrace, not on the lower plaza.
-      // Canvas already applies the oblique camera's upright-sprite correction.
-      const height=570,width=height*monumentSprite.naturalWidth/monumentSprite.naturalHeight;
-      ctx.drawImage(monumentSprite,m.x-width/2,m.y-height+40,width,height);
-      return;
-    }
     if(!memorial)memorial=createMemorial();
+    // Preserves the existing level objective anchor and cached 2.5D footprint.
     ctx.drawImage(memorial,m.x-240,m.y-500,480,540);
   }
   function drawAirLane(ctx,level,active){
@@ -301,7 +286,7 @@
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
     textFreePreview,
-    release(){ground=null;memorial=null;standaloneSprite=null;},
+    release(){ground=null;memorial=null;},
     environmentLamps,
     get allocations(){return allocations;}};
 })();
