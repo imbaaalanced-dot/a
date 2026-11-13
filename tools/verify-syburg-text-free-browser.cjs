@@ -43,8 +43,7 @@ const server=http.createServer((req,res)=>{
     if(!ready)throw Error('shared terrain did not load');
     DenkmalTestHooks.startGame(5);
     DenkmalTestHooks.launchWave();
-    await new Promise(resolve=>setTimeout(()=>requestAnimationFrame(
-      ()=>requestAnimationFrame(resolve)),1800));
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     const game=DenkmalTestHooks.getGame();
     if(game?.level!==5)throw Error('Hohensyburg level 5 did not launch');
     const canvas=document.querySelector('#game');
@@ -55,6 +54,17 @@ const server=http.createServer((req,res)=>{
      visible,textFreePreview:DenkmalHohensyburgArt.textFreePreview,
      allocations:DenkmalHohensyburgArt.allocations};
    });
+   // The first spawn triggers both the wave banner and a level toast.
+   // Wait until those transient overlays have finished before capturing art.
+   await page.waitForFunction(()=>{
+     const game=DenkmalTestHooks.getGame();
+     const banner=document.querySelector('#waveBanner');
+     const toast=document.querySelector('#toast');
+     return game?.level===5&&game.waveSpawned>0&&banner&&toast
+       &&!banner.classList.contains('show')&&!toast.classList.contains('show')
+       &&Number.parseFloat(getComputedStyle(banner).opacity)<.02
+       &&Number.parseFloat(getComputedStyle(toast).opacity)<.02;
+   },null,{timeout:12000});
    assert.equal(state.textFreePreview,true,'all sessions must use text-free monument');
    assert.ok(!requests.some(url=>url.includes('kaiser-wilhelm-style2.webp')),
      'branded Hohensyburg asset must not be requested');
