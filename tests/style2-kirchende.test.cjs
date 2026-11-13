@@ -47,7 +47,7 @@ const cached=canvases,images=drawn;
 art.drawSite(output,center);
 art.drawScenery(output,center,[],{crowns:false,low:false});
 assert.equal(canvases,cached,'repeated frames allocate no canvases');
-assert.equal(drawn-images,14,'repeat render reuses the site, eleven roots and both village buildings');
+assert.equal(drawn-images,18,'repeat render reuses the site, fifteen roots and both village buildings');
 art.drawScenery(output,center,[{x:center.x,y:center.y}],{crowns:true});
 assert.equal(canvases,cached,'canopy translucency must not allocate more buffers');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
