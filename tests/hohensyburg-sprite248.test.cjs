@@ -4,6 +4,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.join(__dirname,'../dist');
 const script=fs.readFileSync(path.join(root,'hohensyburg-art.js'),'utf8');
+assert.equal((script.match(/if\\(textFreePreview\\|\\|candidate248Preview\\)/g)||[]).length,2,
+ 'the 2 cleaned stone-material areas must also apply to sprite248 preview');
 for(const [filename,width,height,budget] of [
   ['kaiser-wilhelm-style2-qa-v1-1x.webp',256,304,35000],
   ['kaiser-wilhelm-style2-qa-v1-2x.webp',512,608,100000]
