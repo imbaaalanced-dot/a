@@ -8,7 +8,9 @@ assert.equal(script.split('if(textFreePreview||candidate248Preview){').length-1,
  'both cleaned stone-material areas must apply to sprite248 preview');
 for(const [filename,width,height,budget] of [
   ['kaiser-wilhelm-style2-qa-v1-1x.webp',256,304,35000],
-  ['kaiser-wilhelm-style2-qa-v1-2x.webp',512,608,100000]
+  ['kaiser-wilhelm-style2-qa-v1-2x.webp',512,608,100000],
+  ['kaiser-wilhelm-style2-qa-v2-1x.webp',256,304,35000],
+  ['kaiser-wilhelm-style2-qa-v2-2x.webp',512,608,100000]
 ]){
  const asset=fs.readFileSync(path.join(root,'assets/hohensyburg',filename));
  assert.equal(asset.subarray(0,4).toString(),'RIFF');
@@ -28,7 +30,7 @@ function scene(search,{pending=false,failed=false,invalid=false}={}){
   constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;images.push(this);}
   set src(url){
    this.loadedFrom=url;
-   if(url.includes('qa-v1-2x.webp')){
+   if(/qa-v[12]-2x\.webp/.test(url)){
     this.naturalWidth=invalid?511:512;this.naturalHeight=608;
     if(failed){this.complete=false;this.onerror?.();}
     else if(pending){this.complete=false;}
@@ -67,6 +69,22 @@ assert.ok(Math.abs(draw[1]-(ready.mark.x-width/2))<1e-8,'unchanged x anchor');
 assert.equal(draw[2],ready.mark.y-500,'unchanged foot anchor');
 assert.ok(Math.abs(draw[3]-width)<1e-8);
 assert.equal(draw[4],540);
+const upgraded=scene('?td2SyburgArt248=2');
+assert.equal(upgraded.art.candidate248Preview,true,'V2 activates the common preview');
+assert.equal(upgraded.art.candidate248V2,true,'V2 selection is exposed for browser QA');
+assert.equal(upgraded.art.candidate248Ready,true,'V2 decodes through the common loader');
+assert.equal(upgraded.images.length,1,'V2 loads only one artwork');
+assert.match(upgraded.images[0].loadedFrom,/qa-v2-2x\.webp\?v=syburg-248b1/);
+assert.equal(upgraded.canvases(),0,'V2 ready sprite avoids fallback Canvas');
+assert.equal(upgraded.draws[0][2],upgraded.mark.y-500,'V2 retains original foot anchor');
+const pendingV2=scene('?td2SyburgArt248=2',{pending:true});
+assert.equal(pendingV2.canvases(),1,'pending V2 uses cached Canvas fallback');
+pendingV2.images[0].complete=true;pendingV2.images[0].onload?.();
+pendingV2.render();
+assert.equal(pendingV2.art.candidate248Ready,true,'deferred V2 transitions to sprite');
+const brokenV2=scene('?td2SyburgArt248=2',{failed:true});
+assert.equal(brokenV2.art.candidate248Failed,true);
+assert.equal(brokenV2.canvases(),1,'broken V2 preserves the cached Canvas fallback');
 const pending=scene('?td2SyburgArt248=1',{pending:true});
 assert.equal(pending.images.length,1);
 assert.equal(pending.canvases(),1,'pending image uses cached Canvas fallback');
@@ -82,4 +100,4 @@ assert.equal(broken.canvases(),1,'load failure restores cached Canvas');
 const badSize=scene('?td2SyburgArt248=1',{invalid:true});
 assert.equal(badSize.art.candidate248Failed,true);
 assert.equal(badSize.canvases(),1,'invalid dimensions restore Canvas');
-console.log('Hohensyburg #248: 2 alpha WebPs, opt-in loader, caching, delayed decode, bad image fallback and original mode passed.');
+console.log('Hohensyburg #248: 4 alpha WebPs, V1/V2 opt-ins, caching, decode and fallback passed.');
