@@ -165,7 +165,7 @@
     if((api.getCharacter?.()||h.character)==='marcel'){
       // Marcel fires a directed blue staff spell instead of a melee-range shockwave.
       // Lock the target at cast time; damage and impact appear when the bolt arrives.
-      const target=api.nearest(h,520),fx=h.faceX||0,fy=h.faceY||1;
+      const target=api.nearest(h,520),fx=h.faceX??0,fy=h.faceY??1;
       const length=Math.hypot(fx,fy)||1;
       cast={sx:h.x+fx/length*18,sy:h.y+fy/length*18-24,
         tx:target?.x??h.x+fx/length*340,ty:target?.y??h.y+fy/length*340,
