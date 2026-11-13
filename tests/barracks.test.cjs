@@ -50,3 +50,28 @@ for(let scenario=0;scenario<500;scenario++){
 const edge={x:0,y:0,hp:1};assert.equal(b.aggroTarget({militia:[edge]},{x:90,y:0}),null);
 assert.equal(b.aggroTarget({militia:[edge]},{x:89.999,y:0}),edge);
 console.log('Barracks: 500 seeded nearest-target cases and range boundaries passed');
+
+
+// The original VP8 building atlas has no alpha channel. Its dark surrounding
+// pixels must be removed once per building, without erasing the colored sprite.
+{
+ const pixels=new Uint8ClampedArray(192*192*4);
+ for(let i=0;i<192*192;i++){const at=i*4;pixels[at]=pixels[at+1]=pixels[at+2]=5;pixels[at+3]=255;}
+ for(let y=65;y<120;y++)for(let x=60;x<134;x++){
+   const at=(y*192+x)*4;pixels[at]=172;pixels[at+1]=65;pixels[at+2]=39;
+ }
+ let allocations=0,output=null,painted=null;
+ s.document={createElement(){allocations++;return {width:0,height:0,getContext(){return {
+   drawImage(){},getImageData(){return {data:pixels};},putImageData(frame){output=frame.data;}
+ };}};}};
+ const opaqueAtlas={};s.DenkmalAssets.ready=()=>opaqueAtlas;
+ const dest={drawImage(...args){painted=args;}};
+ b.drawTower(dest,{kind:'barracks',level:2,x:300,y:400});
+ assert.equal(output[3],0,'outer opaque black is made transparent');
+ const center=(90*192+90)*4;
+ assert.equal(output[center+3],255,'painted building silhouette remains opaque');
+ assert.equal(painted.length,5,'cutout is one regular cached image draw');
+ b.drawTower(dest,{kind:'barracks',level:2,x:300,y:400});
+ assert.equal(allocations,1,'cutout allocated only once per atlas and level');
+}
+console.log('Barracks building background alpha cutout and caching passed.');
