@@ -1,6 +1,6 @@
 /* Reference-derived park composition. Cached ground, independent upright memorial. */
 (()=>{'use strict';
-let ground=null,memorial=null,environmentRequested=false;
+let ground=null,materialRevision=-1,memorial=null,environmentRequested=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-1050,-760],[1030,-740],[1040,300]];
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
@@ -56,7 +56,10 @@ function createGround(layout){
  }
  return canvas;
 }
-function drawGround(ctx,layout){requestSharedEnvironment();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
+function drawGround(ctx,layout){requestSharedEnvironment();
+ const revision=globalThis.TD2GroundV3?.revision||0;
+ if(!ground||materialRevision!==revision){ground=createGround(layout);materialRevision=revision;}
+ ctx.drawImage(ground,0,0,3072,3072);}
 function image(){
  const url='assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1';
  // The level group already owns this image. Reuse its decoded bitmap instead

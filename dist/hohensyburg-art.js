@@ -1,7 +1,7 @@
 /* Present-day Kaiser-Wilhelm-Denkmal, Hohensyburg: historical silhouette in a cached, illustrative Style 2 landscape. */
 (()=>{'use strict';
   const C={x:1536,y:1536},SIZE=3072;
-  let ground=null,memorial=null,allocations=0,environmentRequested=false;
+  let ground=null,materialRevision=-1,memorial=null,allocations=0,environmentRequested=false;
   const lampOffsets=[[-900,-260],[900,-310],[-890,550]];
   function environmentLamps(level){
     const terrace=level.syburgTerrace;
@@ -212,7 +212,10 @@
     }
     return canvas;
   }
-  function drawGround(ctx,level){requestSharedEnvironment();if(!ground)ground=createGround(level);ctx.drawImage(ground,0,0,SIZE,SIZE);}
+  function drawGround(ctx,level){requestSharedEnvironment();
+ const revision=globalThis.TD2GroundV3?.revision||0;
+ if(!ground||materialRevision!==revision){ground=createGround(level);materialRevision=revision;}
+ ctx.drawImage(ground,0,0,SIZE,SIZE);}
   function createMemorial(){
     const canvas=document.createElement('canvas');canvas.width=480;canvas.height=540;allocations++;
     const q=canvas.getContext('2d');q.translate(240,500);q.lineJoin='round';

@@ -1,0 +1,414 @@
+{
+  "chromium": "156.0.8078.79",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "touchEmulation": false,
+      "materialFailure": false,
+      "requested": 9,
+      "before": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1676,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "moving": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "after": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 9,
+        "revision": 1,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 2,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "warm": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 9,
+        "revision": 1,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 2,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;600;700&display=swap",
+          "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+        }
+      ]
+    },
+    {
+      "touchEmulation": false,
+      "materialFailure": true,
+      "requested": 9,
+      "before": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1676,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "moving": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "after": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "warm": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;600;700&display=swap",
+          "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/forest_moss_roots.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/dark_slab_lichen.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/meadow_patchy.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/churchyard_cobble.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/syburg_bedrock.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/syburg_sandstone.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/memorial_gravel.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/goethe_brick.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/urban_asphalt.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    },
+    {
+      "touchEmulation": true,
+      "materialFailure": false,
+      "requested": 9,
+      "before": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1676,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "moving": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "after": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 9,
+        "revision": 1,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 2,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "warm": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1727.2500000000011,
+          "y": 1616
+        },
+        "loaded": 9,
+        "revision": 1,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 2,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;600;700&display=swap",
+          "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+        }
+      ]
+    },
+    {
+      "touchEmulation": true,
+      "materialFailure": true,
+      "requested": 9,
+      "before": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1676,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "moving": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1717.000000000001,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "after": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1717.000000000001,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "warm": {
+        "level": 1,
+        "state": "playing",
+        "hero": {
+          "x": 1717.000000000001,
+          "y": 1616
+        },
+        "loaded": 0,
+        "revision": 0,
+        "maps": {
+          "activeLevel": 1,
+          "builds": 1,
+          "canvas": {
+            "width": 1536,
+            "height": 1536
+          }
+        }
+      },
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;600;700&display=swap",
+          "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/forest_moss_roots.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/dark_slab_lichen.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/meadow_patchy.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/churchyard_cobble.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/syburg_bedrock.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/syburg_sandstone.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/memorial_gravel.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/goethe_brick.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "http://127.0.0.1:34911/assets/reference-ground-v3/urban_asphalt.webp?v=ground-v3-20261113",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    }
+  ]
+}
