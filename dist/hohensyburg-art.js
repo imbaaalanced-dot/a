@@ -29,6 +29,23 @@
   // reconstruction while its image-embedded STYLE 2 text remains under art QA.
   // This changes the monument's visuals only; no level geometry or saves.
   const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
+  // Opt-in only until reference fidelity and hardware/visual QA are approved.
+  const candidate248Preview=/(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(globalThis.location?.search||'');
+  const candidate248Url='assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp?v=syburg-248a1';
+  let candidate248Sprite=null,candidate248Failed=false;
+  function candidate248Image(){
+    if(!candidate248Preview||candidate248Failed||typeof Image!=='function')return null;
+    if(!candidate248Sprite){
+      const img=new Image();img.decoding='async';candidate248Sprite=img;
+      img.onload=()=>{if(img.naturalWidth!==512||img.naturalHeight!==608){
+        candidate248Failed=true;candidate248Sprite=null;
+      }};
+      img.onerror=()=>{candidate248Failed=true;candidate248Sprite=null;};
+      img.src=candidate248Url;
+    }
+    return candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608
+      ?candidate248Sprite:null;
+  }
   let standaloneSprite=null;
   const monumentImage=()=>{
     const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
@@ -278,9 +295,17 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    // The cached text-free reconstruction is an optional QA comparison only.
-    // Avoid requesting the branded image in this draw path when preview is on.
-    const monumentSprite=textFreePreview?null:monumentImage();
+    // New 512×608 RGBA candidate: isolated opt-in and same bottom-center
+    // landmark anchor; never download this file in normal gameplay.
+    const replacement=candidate248Image();
+    if(replacement){
+      const height=540,width=height*replacement.naturalWidth/replacement.naturalHeight;
+      ctx.drawImage(replacement,m.x-width/2,m.y-height+40,width,height);
+      return;
+    }
+    // An absent/failed candidate uses the cached text-free Canvas monument.
+    // Preserve the historical default sprite when neither opt-in is active.
+    const monumentSprite=(textFreePreview||candidate248Preview)?null:monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
       // Canvas already applies the oblique camera's upright-sprite correction.
@@ -300,8 +325,10 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
-    textFreePreview,
-    release(){ground=null;memorial=null;standaloneSprite=null;},
+    textFreePreview,candidate248Preview,
+    get candidate248Ready(){return !!candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608;},
+    get candidate248Failed(){return candidate248Failed;},
+    release(){ground=null;memorial=null;standaloneSprite=null;candidate248Sprite=null;candidate248Failed=false;},
     environmentLamps,
     get allocations(){return allocations;}};
 })();
