@@ -14,7 +14,7 @@ assert.match(terrain, /ground-style2-v1\.webp/);
 assert.match(terrain, /const reference=globalThis\.TD2GroundV3\?\.imageFor\?\.\(groundLevel,'base'\)/,
   'V3 material lookup is isolated to the ground-painting path');
 assert.match(terrain, /createPattern\(reference\|\|style2Ground,'repeat'\)/,
-  'Kirchende's original texture remains the fallback');
+  'Original Kirchende texture remains the fallback');
 assert.match(terrain, /illustratedGround=null/);
 assert.match(scenery, /environment-atlas-style2-v1\.webp/);
 assert.match(scenery, /layout\.paths\?\.some/);
