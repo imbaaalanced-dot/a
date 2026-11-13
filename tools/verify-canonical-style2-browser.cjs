@@ -104,7 +104,7 @@ const server=http.createServer((req,res)=>{
       assert.equal(output.projectiles,15);
       assert.equal(output.impacts,15);
       assert.equal(output.staffRows.length,3,'all V2 rows render in real canvas');
-      assert.equal(requests.filter(url=>/marcel-staff-fx-v2-32\.png/.test(url)).length,1,'one Marcel FX texture per browser context');
+      assert.equal(requests.filter(url=>/marcel-staff-fx-v2-40\.png/.test(url)).length,1,'one Marcel FX texture per browser context');
       assert.equal(output.level,1);
       await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:false,animations:'disabled',timeout:60000});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;
