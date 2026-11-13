@@ -23,7 +23,8 @@ const server=http.createServer((req,res)=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox',
   '--disable-dev-shm-usage','--use-angle=swiftshader']});
  const modes=[{name:'original',query:''},{name:'canvas-clean',query:'?td2SyburgCleanPreview=1'},
-  {name:'sprite248',query:'?td2SyburgArt248=1'}];
+  {name:'sprite248',query:'?td2SyburgArt248=1'},
+  {name:'sprite248-v2',query:'?td2SyburgArt248=2'}];
  const results=[];
  try{
   for(const mobile of [false,true])for(const mode of modes){
@@ -51,11 +52,13 @@ const server=http.createServer((req,res)=>{
     if(visible<w*h*.08)throw Error('empty gameplay canvas');
     return {level:game.level,wave:game.wave,visible,canvas:{w,h},
       candidateEnabled:DenkmalHohensyburgArt.candidate248Preview,
+      candidateV2:DenkmalHohensyburgArt.candidate248V2,
       cleanEnabled:DenkmalHohensyburgArt.textFreePreview};
    });
-   assert.equal(scene.candidateEnabled,mode.name==='sprite248');
+   assert.equal(scene.candidateEnabled,mode.name.startsWith('sprite248'));
+   assert.equal(scene.candidateV2,mode.name==='sprite248-v2');
    assert.equal(scene.cleanEnabled,mode.name==='canvas-clean');
-   if(mode.name==='sprite248'){
+   if(mode.name.startsWith('sprite248')){
     await page.waitForFunction(()=>DenkmalHohensyburgArt.candidate248Ready,null,{timeout:15000});
     const meta=await page.evaluate(()=>({
       loaded:DenkmalHohensyburgArt.candidate248Ready,failed:DenkmalHohensyburgArt.candidate248Failed
@@ -63,8 +66,14 @@ const server=http.createServer((req,res)=>{
     assert(meta.loaded&&!meta.failed,'512x608 candidate decoded');
    }
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-   const requested=requests.filter(url=>url.includes('kaiser-wilhelm-style2-qa-v1-2x.webp'));
-   assert.equal(requested.length,mode.name==='sprite248'?1:0,'preview image request restricted to opt-in');
+   const requested=requests.filter(url=>/kaiser-wilhelm-style2-qa-v[12]-2x\.webp/.test(url));
+   const hasCandidate=mode.name.startsWith('sprite248');
+   assert.equal(requested.length,hasCandidate?1:0,'preview image request restricted to opt-in');
+   if(hasCandidate){
+     const chosenVersion=mode.name==='sprite248-v2'?'v2':'v1';
+     assert(requested[0].includes('qa-'+chosenVersion+'-2x.webp'),
+       'only the selected Hohensyburg sprite variant should load');
+   }
    assert.deepEqual(errors,[],'no JavaScript exceptions');
    assert.deepEqual(failed,[],'no 4xx/5xx requests');
    const label=`${mode.name}-${mobile?'touch':'desktop'}-level5`;
@@ -76,6 +85,6 @@ const server=http.createServer((req,res)=>{
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({
    chromium:browser.version(),physicalAndroidTested:false,results
   },null,2));
-  console.log('Hohensyburg #248: six browser scenes passed and candidate WebP loaded only in opt-in mode.');
+  console.log('Hohensyburg #248: eight browser scenes passed; correct V1/V2 WebP loaded only in opt-in mode.');
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());
