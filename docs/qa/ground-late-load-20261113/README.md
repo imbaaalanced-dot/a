@@ -46,3 +46,5 @@ Zusätzlich alle **114** Hauptworkflow-Testbefehle und alle **14** vollständige
 [Menüstart-Browserergebnisse](menu-start.json) · [Touch-Vergleich](menu-start-touch.webp) · [14 aktuelle Levelansichten](gameplay-current-main.json)
 
 Physisches Android weiterhin ungeprüft. Kein Merge/Deployment durch diese Ergänzung.
+
+Der Unit-Test prüft den automatischen Ladestart separat für Level 1 und 2 ohne Vorladeaufruf sowie jeweils 20 weitere Zeichnungen ohne zusätzliche Requests. Die beiden Abschaltvarianten (`td2GroundV3=0` und alter Style-2-Pilot) erzeugen dabei null V3-Requests.
