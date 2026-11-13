@@ -23,6 +23,6 @@ const menu=html.match(/<details class="hud-menu" id="hudMenu">([\s\S]*?)<\/detai
 assert.ok(menu,'in-game options menu must still exist');
 const btns=[...menu.matchAll(/<button\b/g)].length;
 assert.equal(btns,9,'all nine original option buttons preserved');
-for(const id of ['inventoryBtn','heroBtn','speedBtn','pauseBtn','soundBtn','graphicsBtn','zoomBtn','telemetryBtn','fullscreenBtn'])
+for(const id of ['inventoryBtn','heroBtn','speedBtn','menuPauseBtn','soundBtn','graphicsBtn','zoomBtn','telemetryBtn','fullscreenBtn'])
   assert.ok(menu.includes('id="'+id+'"'),'menu option '+id+' preserved');
 console.log('TD2 Level 4 menu CSS scoped; 9 options and 5 tower types preserved, touch targets intact');
