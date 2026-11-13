@@ -50,10 +50,17 @@ function scene(search,{pending=false,failed=false,invalid=false}={}){
  return {art,images,draws,mark,render,canvases:()=>canvases};
 }
 const normal=scene('');
-assert.equal(normal.art.candidate248Preview,false);
-assert.equal(normal.images.length,1,'default must request only the original');
-assert.match(normal.images[0].loadedFrom,/kaiser-wilhelm-style2.webp/);
+assert.equal(normal.art.candidate248Preview,true,'approved V2 is the Level 5 default');
+assert.equal(normal.art.candidate248V2,true);
+assert.equal(normal.images.length,1,'default decodes exactly one V2 sprite');
+assert.match(normal.images[0].loadedFrom,/kaiser-wilhelm-style2-qa-v2-2x.webp/);
 assert.equal(normal.canvases(),0);
+const legacy=scene('?td2SyburgLegacy=1');
+assert.equal(legacy.art.candidate248Preview,false,'legacy bypasses V2');
+assert.equal(legacy.art.legacyMonument,true);
+assert.equal(legacy.images.length,1,'legacy retains original WebP');
+assert.match(legacy.images[0].loadedFrom,/kaiser-wilhelm-style2.webp/);
+assert.equal(legacy.canvases(),0);
 const clean=scene('?td2SyburgCleanPreview=1');
 assert.equal(clean.images.length,0,'text-free preview still uses no new image');
 assert.equal(clean.canvases(),1);
@@ -100,4 +107,4 @@ assert.equal(broken.canvases(),1,'load failure restores cached Canvas');
 const badSize=scene('?td2SyburgArt248=1',{invalid:true});
 assert.equal(badSize.art.candidate248Failed,true);
 assert.equal(badSize.canvases(),1,'invalid dimensions restore Canvas');
-console.log('Hohensyburg #248: 4 alpha WebPs, V1/V2 opt-ins, caching, decode and fallback passed.');
+console.log('Hohensyburg #248: V2 default, legacy opt-out, four alpha WebPs, caching and fallback passed.');
