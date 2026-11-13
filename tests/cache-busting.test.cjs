@@ -58,7 +58,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','ground-v3-1'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','ground-v3-1'],
-  ['game.js', 'developer3x1'],
+  ['game.js', 'android-canopy-pool1'],
   ['barracks.js','td2-barracks5'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
@@ -71,11 +71,11 @@ const expectedVersions = new Map([
   ['style2-ui-polish.css', 'ui-gold2'],
   ['style2-phase6.js', 'alpha9a5'],
   ['kirchende-combat.js', 'v400a5combined1'],
-  ['kirchende-art.js', 'kirchende-helm-alpha2'],
+  ['kirchende-art.js', 'canopy-fast1'],
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js','ground-v3-1'],
   ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js','ground-v3-1'],
+  ['church-art.js','canopy-fast1'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 

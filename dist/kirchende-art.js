@@ -55,9 +55,15 @@
     const sw=img.naturalWidth,sh=img.naturalHeight,sx=0,sy=0;
     const width=height*sw/sh;ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.globalAlpha*=opacity;ctx.drawImage(img,sx,sy,sw,sh,-width/2,12-height,width,height);ctx.restore();return true;
   }
+  // Most enemies are nowhere near a crown. Reject those on the cheap x/y
+  // bounds before calling hypot; the circular boundary stays exactly the same.
+  function nearCrown(actor,tree,r){
+    const dx=actor.x-tree.x,dy=actor.y-tree.y;
+    return Math.abs(dx)<r&&Math.abs(dy)<r&&Math.hypot(dx,dy)<r;
+  }
   function crownOpacity(tree,actors,shielded){
-    if(shielded?.some(a=>Math.hypot(a.x-tree.x,a.y-tree.y)<tree.r+30))return 0;
-    return actors.some(a=>Math.hypot(a.x-tree.x,a.y-tree.y)<tree.r+25)?.25:1;
+    if(shielded?.some(a=>nearCrown(a,tree,tree.r+30)))return 0;
+    return actors.some(a=>nearCrown(a,tree,tree.r+25))?.25:1;
   }
   // Photo-derived atmosphere, not a surveyed reconstruction. Gameplay coordinates stay separate.
   const trees=[[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
