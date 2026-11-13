@@ -25,15 +25,17 @@
       if(ok)ground=null;else environmentRequested=false;
     }).catch(()=>{environmentRequested=false;});
   }
-  // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
-  // reconstruction while its image-embedded STYLE 2 text remains under art QA.
-  // This changes the monument's visuals only; no level geometry or saves.
-  const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
-  // Opt-in only until reference fidelity and hardware/visual QA are approved.
-  // V1 and the reference-corrected V2 remain separately selectable for visual QA.
-  const candidate248V2=/(?:^|[?&])td2SyburgArt248=2(?:&|$)/.test(globalThis.location?.search||'');
-  const candidate248Preview=candidate248V2||
-    /(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(globalThis.location?.search||'');
+  // V2 is the approved Style-2 *game illustration* for Level 5.
+  // The original WebP remains accessible as an explicit legacy fallback;
+  // the text-free Canvas is retained for failed image decoding and testing.
+  const syburgSearch=globalThis.location?.search||'';
+  const legacyMonument=/(?:^|[?&])td2SyburgLegacy=1(?:&|$)/.test(syburgSearch);
+  const textFreePreview=!legacyMonument&&
+    /(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(syburgSearch);
+  const candidate248V1=!legacyMonument&&!textFreePreview&&
+    /(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(syburgSearch);
+  const candidate248V2=!legacyMonument&&!textFreePreview&&!candidate248V1;
+  const candidate248Preview=candidate248V1||candidate248V2;
   const candidate248Url=candidate248V2
     ?'assets/hohensyburg/kaiser-wilhelm-style2-qa-v2-2x.webp?v=syburg-248b1'
     :'assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp?v=syburg-248a1';
@@ -330,7 +332,7 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
-    textFreePreview,candidate248Preview,candidate248V2,
+    legacyMonument,textFreePreview,candidate248Preview,candidate248V2,
     get candidate248Ready(){return !!candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608;},
     get candidate248Failed(){return candidate248Failed;},
     release(){ground=null;memorial=null;standaloneSprite=null;candidate248Sprite=null;candidate248Failed=false;},
