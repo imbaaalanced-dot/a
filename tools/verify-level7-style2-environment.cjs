@@ -20,13 +20,13 @@ const server=http.createServer((req,res)=>{
   const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
   const results=[];
   try{
-    for(const mobile of [false,true]){
+    for(const previewV2 of [false,true])for(const mobile of [false,true]){
       const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
       const page=await context.newPage(),errors=[],failed=[],requests=[];
       page.on('pageerror',error=>errors.push(error.message));
       page.on('response',response=>{if(response.status()>=400)failed.push(response.url());});
       page.on('request',request=>requests.push(request.url()));
-      await page.goto(`http://127.0.0.1:${server.address().port}/v4-style2/index.html`,{waitUntil:'networkidle'});
+      await page.goto(`http://127.0.0.1:${server.address().port}/v4-style2/index.html${previewV2?'?westhofenArt=v2':''}`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
       const state=await page.evaluate(async()=>{
         const environmentReady=await KirchendeArt.loadEnvironment();
@@ -43,13 +43,15 @@ const server=http.createServer((req,res)=>{
         if(visible<canvas.width*canvas.height*.08)throw Error('Westhofen gameplay canvas appears empty');
         return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible,environmentReady,groundReady};
       });
-      await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-westhofen-gameplay.png`)});
+      await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-westhofen-${previewV2?'v2':'gameplay'}.png`)});
       assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
-      assert(requests.some(url=>url.includes('westhofen-memorial-style2-v1.webp')),'reference-derived Westhofen memorial was not fetched');
+      const selectedMemorial=previewV2?'westhofen-memorial-style2-v2.webp':'westhofen-memorial-style2-v1.webp';
+      assert(requests.some(url=>url.includes(selectedMemorial)),`selected ${selectedMemorial} was not fetched`);
+      if(previewV2)assert(!requests.some(url=>url.includes('westhofen-memorial-style2-v1.webp')),'healthy V2 must not request V1');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(failed,[],'no failed asset or script requests');
-      results.push({mobileTouchEmulation:mobile,...state,errors,failedRequests:failed});
+      results.push({westhofenV2Preview:previewV2,mobileTouchEmulation:mobile,...state,errors,failedRequests:failed});
       await context.close();
     }
     fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,results},null,2));
