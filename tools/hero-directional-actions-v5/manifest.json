@@ -6,6 +6,66 @@
   "format": "WebP lossless RGBA 768x768, rows attack=2/hit=4/death=5",
   "files": [
     {
+      "atlas": "kim-down-actions-v5b.webp",
+      "sha256": "841ef2b4eb9fa6a2027f13106bc138866890ddd2fbf1180552644f3dc9fb4d89",
+      "compressed_bytes": 209388,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        117
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    },
+    {
+      "atlas": "kim-right-actions-v5b.webp",
+      "sha256": "29ae7398558140167f3417814d69b59d59cc217c308cf7c40727118c5826f799",
+      "compressed_bytes": 252686,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        117
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    },
+    {
+      "atlas": "kim-up-actions-v5b.webp",
+      "sha256": "f9ddd4d7b05ead8ad9f87c02d7be8ff6265a7b863ea0b7e1e1a7142e8f7513f0",
+      "compressed_bytes": 177680,
+      "rows": {
+        "attack": 2,
+        "hit": 4,
+        "death": 5
+      },
+      "grid": [
+        6,
+        6
+      ],
+      "cell": 128,
+      "pivot": [
+        64,
+        117
+      ],
+      "approval": "pixel-gates-passed, visual acceptance pending"
+    },
+    {
       "atlas": "marcel-down-actions-v5b.webp",
       "sha256": "e1c7413a7311e42880e30c7e25eaf9b9461484bf29ba1973b9eb75f414c88f81",
       "compressed_bytes": 247654,
@@ -62,26 +122,6 @@
       "pivot": [
         64,
         116
-      ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
-    },
-    {
-      "atlas": "kim-right-actions-v5b.webp",
-      "sha256": "29ae7398558140167f3417814d69b59d59cc217c308cf7c40727118c5826f799",
-      "compressed_bytes": 252686,
-      "rows": {
-        "attack": 2,
-        "hit": 4,
-        "death": 5
-      },
-      "grid": [
-        6,
-        6
-      ],
-      "cell": 128,
-      "pivot": [
-        64,
-        117
       ],
       "approval": "pixel-gates-passed, visual acceptance pending"
     }

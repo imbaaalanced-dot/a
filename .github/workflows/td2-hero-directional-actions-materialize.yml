@@ -2,7 +2,7 @@ name: TD2 hero directional actions v5b candidate materialization
 
 on:
   push:
-    branches: ['assets/hero-directional-v5-candidate-20261113']
+    branches: ['assets/hero-directional-v5-candidate-20261113', 'assets/hero-directional-v5-candidate2-20261113']
     paths:
       - '.github/workflows/td2-hero-directional-actions-materialize.yml'
       - 'tools/hero-directional-actions-v5/**'
@@ -51,8 +51,11 @@ jobs:
               sha = hashlib.sha256(data).hexdigest()
               assert sha == entry['sha256'], (name, sha)
               target = out / name
-              assert not target.exists(), 'Refuse to overwrite: ' + name
-              (out / name).write_bytes(data)
+              if target.exists():
+                  assert hashlib.sha256(target.read_bytes()).hexdigest() == sha, 'SHA mismatch on existing file: ' + name
+                  print('Already materialized, SHA matches:', name)
+              else:
+                  (out / name).write_bytes(data)
               with Image.open(target) as image:
                   image.load()
                   assert image.format == 'WEBP', name
