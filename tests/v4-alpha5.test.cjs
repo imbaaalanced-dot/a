@@ -64,9 +64,12 @@ check('Thorn and lantern towers are no longer available',()=>{
   assert.ok(!html.includes('tower-thorn')&&!html.includes('tower-lantern'));
   assert.ok(!game.includes("name:'DORNENWERFER'")&&!game.includes("name:'RUNENLATERNE'"));
   assert.ok(!art.includes("'thorn1'")&&!art.includes("'lantern1'"));
-  assert.ok(html.includes('data-tower="boomerang"'));
+  // No new boomerangs: legacy sprites and already built towers remain loadable
+  // for old saves, but the arsenal and selection can no longer sell this tower.
+  assert.ok(!html.includes('data-tower="boomerang"'));
   assert.equal(t.projectileSpeed('boomerang'),440);
-  t.selectTower('boomerang');assert.equal(t.game.selectedTower,'boomerang');
+  const previous=t.game.selectedTower;
+  t.selectTower('boomerang');assert.equal(t.game.selectedTower,previous);
 });
 check('Boomerang tower upgrades give three distinct low-damage levels',()=>{
   const h=t.game.hero;
