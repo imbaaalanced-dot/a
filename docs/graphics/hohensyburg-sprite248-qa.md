@@ -37,10 +37,11 @@ Issue: #248 · 13 November 2026 · Development-only preview
 - `?td2SyburgArt248=2`: requests only V2 2× (512×608), with the same
   foot anchor, footprint and Canvas fallback. It leaves V1 intact so both
   historical interpretations can be compared at identical zoom and camera.
-- Without flags, the old original WebP stays the default.
+- **Default:** V2 2× is used in Level 5; historical-motif review treats it as an illustrative game image, not a photo-faithful reconstruction.
+- `?td2SyburgLegacy=1` explicitly restores the original watermark-bearing WebP for comparison/rollback.
 - `?td2SyburgCleanPreview=1`: retains the old Canvas-only preview.
-- If both flags are supplied, the new candidate takes precedence; during
-  decoding it still draws the Canvas fallback. No UI/gameplay edits.
+- Clean-preview and legacy flags deliberately suppress V1/V2 loading; legacy takes precedence.
+  V1 (`?td2SyburgArt248=1`) remains opt-in. No UI/gameplay edits.
 - The sprite248 preview uses the same cleaned, cached natural-stone terrace
   and forecourt as the text-free Canvas preview; it does **not** retain the
   checkerboard stone rectangles from the default. No geometry is altered.
@@ -56,8 +57,9 @@ Issue: #248 · 13 November 2026 · Development-only preview
   partially hidden actor/tower markers.
 - Physical Android 4 GB: open game on device, inspect actual textures,
   touch/hit targets, FPS/frame p95 and long-session RAM in a separate report.
-- No merge or release until reference fidelity and visual/runtime QA are
-  approved. Desktop/mobile emulator alone does **not** equal Android QA.
+- Visual and CI checks approve V2 **as a stylized game-art replacement** (not a historical facsimile).
+  A real 4-GB Android session remains independently open; Chromium touch emulation is not Android hardware QA.
+  The original art and Canvas fallback must remain available for rollback.
 
 ## V2 reference sources and known uncertainties
 - [Dehio architectural history](https://de.dehio.org/bauwerk/syburg-hohensyburg-kaiser-wilhelm-denkmal):
@@ -71,5 +73,5 @@ Issue: #248 · 13 November 2026 · Development-only preview
   plinths and exact proportions are artistic interpretation pending careful
   image-to-image overlay. At 64 px the side figures are small; a separate
   photo-based silhouette QA is necessary.
-- QA status: WebP dimensions and alpha technically validated, **visual
-  and physical Android acceptance pending**. Keep PR #258 Draft.
+- QA status: V2's visual readability at game zoom and eight Chromium scenes reviewed; exact monument geometry and physical Android FPS/RAM acceptance remain outstanding.
+  Merge of the opt-in and default art is a game-art release decision, not a claim of historical equivalence or Android performance signoff.
