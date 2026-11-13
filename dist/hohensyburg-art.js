@@ -25,7 +25,10 @@
       if(ok)ground=null;else environmentRequested=false;
     }).catch(()=>{environmentRequested=false;});
   }
-  // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
+  // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
+  // reconstruction while its image-embedded STYLE 2 text remains under art QA.
+  // This changes the monument's visuals only; no level geometry or saves.
+  const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
   let standaloneSprite=null;
   const monumentImage=()=>{
     const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
@@ -100,14 +103,24 @@
       f.right-f.left+48,92);
     q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
       f.right-f.left+48,f.bottom-f.top+10);
-    q.fillStyle='#8d8878';q.fillRect(c.x+f.left+22,c.y+f.top+20,
-      f.right-f.left-44,f.bottom-f.top-45);
-    for(let y=f.top+25;y<f.bottom-25;y+=48)for(let x=f.left+22;x<f.right-20;x+=76){
-      q.fillStyle=['#b6ab90a0','#8c887688','#c2b99c55','#85837266'][
-        Math.abs(Math.floor(x/76)+Math.floor(y/48))%4];
-      q.fillRect(c.x+x+2,c.y+y+2,70,41);
-      q.strokeStyle='#514f4555';q.lineWidth=2;
-      q.strokeRect(c.x+x+1,c.y+y+1,73,44);
+    if(textFreePreview){
+      // Remove the game-viewport checkerboard: cached natural sandstone
+      // replaces alternating rectangles; identical court bounds and layering.
+      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#948c7b';
+      q.fillRect(c.x+f.left+22,c.y+f.top+20,
+        f.right-f.left-44,f.bottom-f.top-45);
+      q.fillStyle='#29332924';q.fillRect(c.x+f.left+22,c.y+f.top+20,
+        f.right-f.left-44,f.bottom-f.top-45);
+    }else{
+      q.fillStyle='#8d8878';q.fillRect(c.x+f.left+22,c.y+f.top+20,
+        f.right-f.left-44,f.bottom-f.top-45);
+      for(let y=f.top+25;y<f.bottom-25;y+=48)for(let x=f.left+22;x<f.right-20;x+=76){
+        q.fillStyle=['#b6ab90a0','#8c887688','#c2b99c55','#85837266'][
+          Math.abs(Math.floor(x/76)+Math.floor(y/48))%4];
+        q.fillRect(c.x+x+2,c.y+y+2,70,41);
+        q.strokeStyle='#514f4555';q.lineWidth=2;
+        q.strokeRect(c.x+x+1,c.y+y+1,73,44);
+      }
     }
     // Viewpoint balustrade follows the southern edge, with stone-capped posts.
     q.fillStyle='#52564d';q.fillRect(c.x+f.left-20,c.y+f.bottom-12,f.right-f.left+40,45);
@@ -135,12 +148,20 @@
     }
     q.fillStyle='#a99d84';q.fillRect(c.x+r.left,c.y+r.top,
       r.right-r.left,r.bottom-r.top);
-    q.fillStyle='#99917c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
-      r.right-r.left-48,r.bottom-r.top-45);
-    for(let y=r.top+20;y<r.bottom-35;y+=45)for(let x=r.left+20;x<r.right-35;x+=74){
-      q.fillStyle=['#b5ab92','#8f8878','#a19882','#b8ad93'][Math.abs(Math.floor(x/74)+Math.floor(y/45))%4];
-      q.fillRect(c.x+x+2,c.y+y+2,68,39);
-      q.fillStyle='#464d4344';q.fillRect(c.x+x,c.y+y+40,70,2);
+    if(textFreePreview){
+      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#99917c';
+      q.fillRect(c.x+r.left+24,c.y+r.top+20,
+        r.right-r.left-48,r.bottom-r.top-45);
+      q.fillStyle='#3442371c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
+        r.right-r.left-48,r.bottom-r.top-45);
+    }else{
+      q.fillStyle='#99917c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
+        r.right-r.left-48,r.bottom-r.top-45);
+      for(let y=r.top+20;y<r.bottom-35;y+=45)for(let x=r.left+20;x<r.right-35;x+=74){
+        q.fillStyle=['#b5ab92','#8f8878','#a19882','#b8ad93'][Math.abs(Math.floor(x/74)+Math.floor(y/45))%4];
+        q.fillRect(c.x+x+2,c.y+y+2,68,39);
+        q.fillStyle='#464d4344';q.fillRect(c.x+x,c.y+y+40,70,2);
+      }
     }
     // Plinth coping is interrupted where the two stair flights meet the deck.
     q.fillStyle='#c8bba2';q.fillRect(c.x+r.left-10,c.y+r.top-12,r.right-r.left+20,21);
@@ -257,7 +278,9 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    const monumentSprite=monumentImage();
+    // The cached text-free reconstruction is an optional QA comparison only.
+    // Avoid requesting the branded image in this draw path when preview is on.
+    const monumentSprite=textFreePreview?null:monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
       // Canvas already applies the oblique camera's upright-sprite correction.
@@ -277,6 +300,7 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
+    textFreePreview,
     release(){ground=null;memorial=null;standaloneSprite=null;},
     environmentLamps,
     get allocations(){return allocations;}};

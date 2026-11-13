@@ -34,6 +34,8 @@ on:
       - 'tools/verify-style2-environment-pilot.cjs'
       - 'tools/verify-level4-style2-environment.cjs'
       - 'tools/verify-level5-style2-environment.cjs'
+      - 'tools/verify-syburg-text-free-browser.cjs'
+      - 'tests/hohensyburg-text-free-preview.test.cjs'
       - 'tools/verify-level6-style2-environment.cjs'
       - 'tools/verify-level7-style2-environment.cjs'
   workflow_dispatch:
@@ -74,6 +76,10 @@ jobs:
         run: |
           node tests/level5.test.cjs
           node tools/verify-level5-style2-environment.cjs
+      - name: Hohensyburg text-free monument preview desktop and touch
+        run: |
+          node tests/hohensyburg-text-free-preview.test.cjs
+          node tools/verify-syburg-text-free-browser.cjs
       - name: Goethestraße shared Style-2 environment preview
         run: |
           node tests/goethestrasse.test.cjs
@@ -117,5 +123,12 @@ jobs:
         with:
           name: level7-westhofen-style2-environment-preview
           path: /tmp/td2-level7-environment/
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: level5-hohensyburg-text-free-comparison
+          path: /tmp/td2-syburg-text-free/
           if-no-files-found: warn
           retention-days: 7
