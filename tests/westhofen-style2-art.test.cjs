@@ -9,7 +9,7 @@ assert.equal(image.image,'level-07-westhofen.webp');
 assert.ok(fs.statSync(path.join(dist,'assets/menu/level-gallery',image.image)).size<250000,'gallery thumb mobile size');
 assert.equal(gallery.visibleLevel(7,false).image,undefined,'locked card hides illustration');
 const src=fs.readFileSync(path.join(dist,'westhofen-art.js'),'utf8');
-assert.match(src,/westhofen-memorial-style2-v1\.webp/);
+assert.match(src,/westhofen-memorial-style2-v2\.svg/);
 assert.match(src,/if\(readyMemorial\(\)\)/);
 assert.match(src,/fallback/i);
 assert.doesNotMatch(src.split('function drawMonument(ctx,m)')[1],/new Image\(/,'draw loop does not allocate images');
