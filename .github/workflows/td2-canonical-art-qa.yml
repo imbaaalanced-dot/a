@@ -35,6 +35,9 @@ on:
       - 'tools/verify-level4-style2-environment.cjs'
       - 'tools/verify-level5-style2-environment.cjs'
       - 'tools/verify-syburg-text-free-browser.cjs'
+      - 'tools/verify-hohensyburg-sprite248-browser.cjs'
+      - 'tests/hohensyburg-sprite248.test.cjs'
+      - 'dist/assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-*.webp'
       - 'tests/hohensyburg-text-free-preview.test.cjs'
       - 'tools/verify-level6-style2-environment.cjs'
       - 'tools/verify-level7-style2-environment.cjs'
@@ -80,6 +83,10 @@ jobs:
         run: |
           node tests/hohensyburg-text-free-preview.test.cjs
           node tools/verify-syburg-text-free-browser.cjs
+      - name: Hohensyburg Sprite248 gameplay comparison desktop and touch
+        run: |
+          node tests/hohensyburg-sprite248.test.cjs
+          node tools/verify-hohensyburg-sprite248-browser.cjs
       - name: Goethestraße shared Style-2 environment preview
         run: |
           node tests/goethestrasse.test.cjs
@@ -130,5 +137,12 @@ jobs:
         with:
           name: level5-hohensyburg-text-free-comparison
           path: /tmp/td2-syburg-text-free/
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: level5-hohensyburg-sprite248-comparison
+          path: /tmp/td2-syburg-248/
           if-no-files-found: warn
           retention-days: 7
