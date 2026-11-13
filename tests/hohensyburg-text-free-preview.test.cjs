@@ -1,4 +1,5 @@
-/* Hohensyburg: text-free cached monument is the default and query-compatible. */
+/* Hohensyburg: V2 is default. Legacy never requests the branded original;
+ * ?td2SyburgCleanPreview=1 selects the cached Canvas fallback. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -17,7 +18,9 @@ function sample(search){
    return {width:0,height:0,getContext(){return context;}};}},
   Image:class ImageMock{
    constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;images.push(this);}
-   set src(url){this.loadedFrom=url;}
+   set src(url){this.loadedFrom=url;
+    if(url.includes('qa-v2-2x.webp')){this.naturalWidth=512;this.naturalHeight=608;}
+   }
   }
  };
  sandbox.globalThis=sandbox;
@@ -28,19 +31,26 @@ function sample(search){
  return {art,calls,images,canvases,center};
 }
 const normal=sample('');
-assert.equal(normal.art.textFreePreview,true);
-assert.equal(normal.images.length,0,'default never loads the branded WebP');
-assert.equal(normal.canvases,1,'default monument uses exactly one canvas');
+assert.equal(normal.art.textFreePreview,false);
+assert.equal(normal.art.candidate248V2,true,'V2 is default');
+assert.equal(normal.images.length,1,'default loads one V2 WebP');
+assert.equal(normal.canvases,0,'ready V2 does not allocate fallback');
 assert.equal(normal.calls.length,2);
-assert.strictEqual(normal.calls[0][0],normal.calls[1][0],'cached monument reused');
-assert.equal(normal.calls[0][1],normal.center.x-240);
-assert.equal(normal.calls[0][2],normal.center.y-500);
-assert.equal(normal.calls[0][3],480);
-assert.equal(normal.calls[0][4],540);
-for(const search of ['?td2SyburgCleanPreview=1','?td2SyburgCleanPreview=0']){
- const state=sample(search);
- assert.equal(state.art.textFreePreview,true,'query parameters cannot re-enable branded image');
- assert.equal(state.images.length,0,'no legacy WebP loads in any mode');
- assert.equal(state.canvases,1,'only one cached canvas per renderer');
-}
-console.log('Hohensyburg: text-free default, legacy URL compatibility, caching and monument anchor passed.');
+assert.match(normal.calls[0][0].loadedFrom,/qa-v2-2x\.webp/);
+const legacy=sample('?td2SyburgLegacy=1');
+assert.equal(legacy.art.legacyMonument,true);
+assert.equal(legacy.art.textFreePreview,true);
+assert.equal(legacy.images.length,0,'watermarked legacy image never loads');
+assert.equal(legacy.canvases,1,'legacy URL uses cached text-free Canvas');
+const optin=sample('?td2SyburgCleanPreview=1');
+assert.equal(optin.art.textFreePreview,true);
+assert.equal(optin.images.length,0,'text-free preview does not request branded WebP in this renderer');
+assert.equal(optin.canvases,1,'Canvas monument cached across draws');
+assert.equal(optin.calls.length,2);
+assert.strictEqual(optin.calls[0][0],optin.calls[1][0],'reuses one cached canvas');
+assert.equal(optin.calls[0][1],optin.center.x-240);
+assert.equal(optin.calls[0][2],optin.center.y-500);
+assert.equal(optin.calls[0][3],480);
+assert.equal(optin.calls[0][4],540);
+assert.equal(sample('?td2SyburgCleanPreview=0').art.textFreePreview,false);
+console.log('Hohensyburg: V2 default, legacy WebP, cached Canvas preview and anchors passed.');
