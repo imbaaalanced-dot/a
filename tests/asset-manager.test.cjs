@@ -41,6 +41,9 @@ async function run(){
   assert.equal(assets.status('assets/kirchende/monument-photo-v2.webp?v=v400a5photo2'),'unrequested','previous level art is released');
   assert.deepEqual(Array.from(assets.levelAssets[4]),[],'Level 4 art owned by DenkmalChurch, not double-decoded by manager');
   assert.equal(assets.status('assets/lion-ende-style2.webp?v=style2a1'),'unrequested','opaque placeholder is never preloaded');
+  assert.deepEqual(Array.from(assets.levelAssets[5]),[],'rejected Hohensyburg sprite is not a Level 5 preload');
+  await assets.level(5);
+  assert.equal(assets.status('assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'),'unrequested','branded Hohensyburg artwork is never requested');
   // The seventh chapter is real; preloading must not stop at chapter six.
   await assets.level(6);
   const beforeWesthofen=created.length;
