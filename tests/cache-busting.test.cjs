@@ -7,7 +7,7 @@ const dist = path.resolve(__dirname, '../dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
 assert.ok(!html.includes('class="release-badge"'), 'main menu must not show a patch badge');
-assert.ok(html.includes('<meta name="application-version" content="v5-alpha"'), 'V5 version remains available as metadata');
+assert.ok(html.includes('<meta name="application-version" content="v6-alpha"'), 'V6 version remains available as metadata');
 assert.match(html, /id="td2-version-label"/, 'menu version labels use the canonical metadata');
 
 // Asset versions are intentionally per-file, not one global version.
@@ -22,7 +22,7 @@ const expectedVersions = new Map([
   ['hero.css', 'v400a4merge1'],
   ['polish.css', 'v5-style2a1'],
   ['loot.css', 'v5-armory-hub1'],
-  ['menu.css', 'developer3x1'],
+  ['menu.css', 'v6-menu-flow1'],
   ['level-gallery.css', 'gallery-combined1'],
   ['portrait-avatars-v5.css', 'duo-v5a1'],
   ['combat-hud-v2.css', 'v5hud2a2'],
@@ -114,4 +114,4 @@ assert.match(gameSource,/mobileRender&&graphicsMode!=='high'\?1000\/60:0/,'mobil
 assert.match(gameSource,/qualityTier==='medium'\?\(mobileRender\?\.85:1\.25\):mobileRender\?\.70:\.85/,'mobile renderer uses conservative DPR caps');
 assert.match(gameSource,/qualityTier==='high'\?1400000:qualityTier==='medium'\?650000:320000/,'mobile low tier stays within a 320k pixel budget');
 assert.match(gameSource,/for\(let s=0;s<steps;s\+\+\)update\(FIXED_STEP\)/,'simulation stays on the fixed 60 Hz path');
-console.log('TD2 V4.1 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');
+console.log('TD2 V6 preview metadata and ' + resources.length + ' static JS/CSS cache references verified.');
