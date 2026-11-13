@@ -2,7 +2,7 @@ name: TD2 hero directional actions v5b candidate materialization
 
 on:
   push:
-    branches: ['assets/hero-directional-v5-candidate-20261113', 'assets/hero-directional-v5-candidate2-20261113']
+    branches: ['assets/hero-directional-v5-candidate-20261113', 'assets/hero-directional-v5-candidate2-20261113', 'assets/hero-directional-v5-matte-20261114']
     paths:
       - '.github/workflows/td2-hero-directional-actions-materialize.yml'
       - 'tools/hero-directional-actions-v5/**'
@@ -52,8 +52,11 @@ jobs:
               assert sha == entry['sha256'], (name, sha)
               target = out / name
               if target.exists():
-                  assert hashlib.sha256(target.read_bytes()).hexdigest() == sha, 'SHA mismatch on existing file: ' + name
-                  print('Already materialized, SHA matches:', name)
+                  if hashlib.sha256(target.read_bytes()).hexdigest() == sha:
+                      print('Already materialized, SHA matches:', name)
+                  else:
+                      print('Manifest SHA differs, replacing:', name)
+                      (out / name).write_bytes(data)
               else:
                   (out / name).write_bytes(data)
               with Image.open(target) as image:
@@ -85,6 +88,9 @@ jobs:
                       if any(int(alpha[y, x]) >= 16 for y, x in [(0, 0), (0, 127), (127, 0), (127, 127)]):
                           problems.append(f'{name}/{row_name}/{col}:corner-alpha')
               assert not problems, problems
+              decoded = np.asarray(Image.open(target).convert('RGBA'))
+              hidden = int(((decoded[:,:,3]==0)&((decoded[:,:,0]!=0)|(decoded[:,:,1]!=0)|(decoded[:,:,2]!=0))).sum())
+              assert hidden == 0, (name, 'hidden RGB matte pixels', hidden)
               staged.append(name)
               print('Verified and gated:', name, len(data), 'bytes')
           print('Staged', len(staged), 'atlases:', ', '.join(staged))
@@ -101,4 +107,4 @@ jobs:
             exit 0
           fi
           git commit -m 'assets(hero): stage 4 SHA-verified non-active directional action atlases for review'
-          git push origin HEAD:assets/hero-directional-v5-candidate-20261113
+          git push origin HEAD:assets/hero-directional-v5-matte-20261114
