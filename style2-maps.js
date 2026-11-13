@@ -36,7 +36,7 @@ function tile(){
 }
 function worldGround(g,level,layout){
   g.fillStyle='#26362c';g.fillRect(0,0,WORLD,WORLD);
-  if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(g,0,0,WORLD,WORLD);
+  if(globalThis.TD2GroundV3?.drawBase?.(g,level)){}else if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(g,0,0,WORLD,WORLD);
   else{const pattern=g.createPattern(tile(),'repeat');if(pattern){g.fillStyle=pattern;g.fillRect(0,0,WORLD,WORLD);}}
   // Cool slate wash brings the tutorial maps into the same dark stone palette
   // as the historical sites without changing any gameplay geometry.
@@ -76,7 +76,7 @@ function road(g,path,level){
   line(g,path,112,'#434943');
   line(g,path,98,'#66685f');
   line(g,path,88,'#777669');
-  line(g,path,78,'#62645c');
+  line(g,path,78,globalThis.TD2GroundV3?.patternFor?.(g,level,'road')||'#62645c');
   // Small tessellated paving blocks follow the same path centreline.
   const rand=rng(1976+path[0].x*3+path[0].y);
   for(let j=1;j<path.length;j++){
