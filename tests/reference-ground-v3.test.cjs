@@ -17,7 +17,7 @@ for(const name of materials){
 let requests=[];
 class ImageMock{
  constructor(){this.naturalWidth=256;this.naturalHeight=256;}
- set src(url){requests.push(url);setImmediate(()=>this.onload?.());}
+ set src(url){if(url.includes('churchyard_pavement_v4'))this.naturalWidth=this.naturalHeight=512;requests.push(url);setImmediate(()=>this.onload?.());}
 }
 async function run(search){
  const context={globalThis:null,location:{search},Image:ImageMock,Promise};context.globalThis=context;
@@ -46,5 +46,10 @@ async function run(search){
  on.patternFor(canvas,7,'street');assert.equal(patterns,1,'context pattern reused');
  assert.equal(on.drawBase(canvas,3),true);assert.equal(fills,1);
  on.drawBase(canvas,3);assert.equal(patterns,2,'cached ground pattern reused');
+ const v4=await run('?td2PavementV4=1');await v4.load();
+ assert.equal(v4.material(4,'road'),'churchyard_pavement_v4');
+ assert.equal(v4.material(1,'road'),'churchyard_cobble');
+ let transform;const ctx={createPattern(){return {setTransform(t){transform=t;}}}};
+ v4.patternFor(ctx,4,'road');assert.equal(transform.a,.5);assert.equal(transform.d,.5);
  console.log('Reference-ground V3: 9 WebPs, default enabled, explicit opt-out, legacy pilot isolation, caching passed.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
