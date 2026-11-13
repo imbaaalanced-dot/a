@@ -1,6 +1,10 @@
 /* Alpha 9 image registry. Decoded images stay stable until all owning groups release them. */
 (()=>{'use strict';
   const entries=new Map(), groups=new Map();
+  // Optional art comparison: V1 remains the default until physical Android and visual approval.
+  const westhofenV2=/(?:^|[?&])westhofenArt=v2(?:&|$)/.test(globalThis.location?.search||'');
+  const westhofenV1Url='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+  const westhofenV2Url='assets/westhofen/westhofen-memorial-style2-v2.webp?v=westhofen-style2-v2a1';
   const levelAssets={
     1:['assets/monument-level1-style2.webp'],
     2:[],
@@ -12,7 +16,7 @@
     4:[],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
-    7:['assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1']
+    7:[westhofenV2?westhofenV2Url:westhofenV1Url]
   };
   const common=['assets/scenery-style2.webp?v=style2a1','assets/enemies/walk-style2.webp?v=style2a1'];
   function entry(url){
