@@ -79,7 +79,7 @@ assert.ok(churchDraw,'church must be drawn from its cached bitmap at new proport
 assert.equal(churchDraw[1],-500);
 assert.equal(churchDraw[2],-930);
 assert.ok(churchDraw[2]+churchDraw[4]<-150,'church must leave a clear forecourt before the lion');
-const lionDraw=imageCalls.find(args=>args.length===5&&args[1]===c.x-128&&args[2]===c.y-293&&args[3]===256&&args[4]===304);
+const lionDraw=imageCalls.find(args=>args.length===5&&args[1]===c.x-106&&args[2]===c.y-239&&args[3]===212&&args[4]===250);
 assert.ok(lionDraw,'detailed memorial art must render at the exact combat objective');
 assert.ok(lionDate,'sleeping lion honors the 1879 memorial, not the 1927 memorial');
 for(const line of [
@@ -102,7 +102,7 @@ assert.deepEqual([lionWebP.readUIntLE(24,3)+1,lionWebP.readUIntLE(27,3)+1],[512,
 const lionSource=fs.readFileSync(path.join(root,'church-art.js'),'utf8');
 assert.match(lionSource,/function requestPhotoLion\(\)/,'lazy loader exists');
 assert.match(lionSource,/lion-1879-style2-2x\.webp/,'only production photo lion requested on level 4');
-assert.match(lionSource,/drawImage\(lionSprite\|\|lionArt,m\.x-128,m\.y-293,256,304\)/,'lion collision anchor and size unchanged');
+assert.match(lionSource,/drawImage\(lionSprite\|\|lionArt,m\.x-106,m\.y-239,212,250\)/,'lion artwork is scaled while its ground contact stays at y+11');
 assert.ok(style2Radials>=1,'Style 2 paving should bake warm light during canvas creation');
 assert.match(lionSource,/Alpha falloff removes the previous hard square\/oval boundary/,'softly blended cobble plaza');
 assert.doesNotMatch(lionSource,/strokeRect\(-164,-139,328,286\)/,'no hard square paving border');
