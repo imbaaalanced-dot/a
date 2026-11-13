@@ -1,0 +1,101 @@
+name: TD2 hero directional actions v5b candidate materialization
+
+on:
+  push:
+    branches: ['assets/hero-directional-v5-candidate-20261113']
+    paths:
+      - '.github/workflows/td2-hero-directional-actions-materialize.yml'
+      - 'tools/hero-directional-actions-v5/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-hero-directional-actions-materialize
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install version-pinned asset runtime
+        run: python -m pip install 'Pillow==12.3.0' 'numpy==2.3.5'
+      - name: Verify, decode and gate staged hero directional action atlases
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib, json
+          from PIL import Image
+          import numpy as np
+
+          src = Path('tools/hero-directional-actions-v5')
+          manifest = json.loads((src / 'manifest.json').read_text(encoding='utf-8'))
+          assert manifest['status'] == 'candidate-staged'
+          assert manifest['runtime_active'] is False
+          out = Path('dist/assets/hero')
+          out.mkdir(parents=True, exist_ok=True)
+          staged = []
+          for entry in manifest['files']:
+              name = entry['atlas']
+              b64 = (src / (name + '.gz.b64')).read_text(encoding='utf-8').strip()
+              data = gzip.decompress(base64.b64decode(b64))
+              sha = hashlib.sha256(data).hexdigest()
+              assert sha == entry['sha256'], (name, sha)
+              target = out / name
+              assert not target.exists(), 'Refuse to overwrite: ' + name
+              (out / name).write_bytes(data)
+              with Image.open(target) as image:
+                  image.load()
+                  assert image.format == 'WEBP', name
+                  assert image.mode == 'RGBA', name
+                  assert image.size == (768, 768), name
+              # Runtime pixel gate reproduction (verify-hero-direction-candidate contract)
+              atlas = np.asarray(Image.open(target).convert('RGBA'))
+              problems = []
+              for row_name, row in entry['rows'].items():
+                  for col in range(6):
+                      cell = atlas[col*128:(col+1)*128, row*128:(row+1)*128]
+                      alpha = cell[:, :, 3]
+                      h = np.bincount(alpha.ravel(), minlength=256)
+                      transparent = int(h[:16].sum())
+                      bbox = alpha >= 32
+                      ys, xs = np.where(bbox)
+                      if transparent < 128*128//10:
+                          problems.append(f'{name}/{row_name}/{col}:opaque-background')
+                      if h[255] == 0:
+                          problems.append(f'{name}/{row_name}/{col}:no-solid-pixels')
+                      if len(xs) == 0:
+                          problems.append(f'{name}/{row_name}/{col}:empty')
+                      else:
+                          safe = min(int(xs.min()), int(ys.min()), 127-int(xs.max()), 127-int(ys.max()))
+                          if safe < 2:
+                              problems.append(f'{name}/{row_name}/{col}:edge-bleed({safe})')
+                      if any(int(alpha[y, x]) >= 16 for y, x in [(0, 0), (0, 127), (127, 0), (127, 127)]):
+                          problems.append(f'{name}/{row_name}/{col}:corner-alpha')
+              assert not problems, problems
+              staged.append(name)
+              print('Verified and gated:', name, len(data), 'bytes')
+          print('Staged', len(staged), 'atlases:', ', '.join(staged))
+          PY
+      - name: Check existing hero sprite regressions
+        run: python tests/hero-sprites-v5b.test.py
+      - name: Commit verified candidate atlases to feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist/assets/hero
+          if git diff --cached --quiet; then
+            echo 'Staged art unchanged.'
+            exit 0
+          fi
+          git commit -m 'assets(hero): stage 4 SHA-verified non-active directional action atlases for review'
+          git push origin HEAD:assets/hero-directional-v5-candidate-20261113
