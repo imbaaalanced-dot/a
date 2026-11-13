@@ -12,7 +12,7 @@
     4:[],
     5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
-    7:['assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1']
+    7:['assets/westhofen/westhofen-memorial-style2-v2.svg?v=westhofen-style2v2']
   };
   const common=['assets/scenery-style2.webp?v=style2a1','assets/enemies/walk-style2.webp?v=style2a1'];
   function entry(url){
