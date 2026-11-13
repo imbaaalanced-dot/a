@@ -54,7 +54,7 @@
   const walkRows={down:0,up:1,left:2,right:3};
   let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing';
   let selectedTab='equipment', lowHpSpoken=false, storySeen=new Set(), animationTime=0;
-  let pulse=null, echoes=[], trail=[], attackTime=0, walkTime=0;
+  let pulse=null, cast=null, echoes=[], trail=[], attackTime=0, walkTime=0;
   const getHero = () => api.getGame().hero;
   const ready = img => img && img.complete && img.naturalWidth > 0;
   const item = (h, slot) => equipment[slot].find(i=>i.id===h.equipment[slot])||{name:'Unbelegt',color:'#83cfff'};
@@ -64,7 +64,7 @@
     h.loadout=loadout||[];h.gear=globalThis.DenkmalLoot.totals(h.loadout);const p=h.gear.powers;
     h.equipment={weapon:p.echo?'echo':p.ember?'ember':'none',armor:p.ash?'ash':p.oath?'oath':'none',relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
     h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.attackDirection=null;h.hitFlash=0;
-    lowHpSpoken=false;storySeen=new Set();pulse=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
+    lowHpSpoken=false;storySeen=new Set();pulse=null;cast=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
   }
@@ -162,8 +162,19 @@
     const h=getHero();if(api.getState()!=='playing'||h.soul<100)return false;
     h.soul=0;h.invuln=Math.max(h.invuln,1.1);const power=h.equipment.relic==='bell'?1.4:1;
     if(h.equipment.relic==='lantern')h.hp=Math.min(h.maxHp,h.hp+25);
-    pulse={x:h.x,y:h.y,life:.8,max:.8};
-    for(const enemy of api.getGame().enemies){if(!enemy.dead&&distance(h,enemy)<270)api.hurtEnemy(enemy,(70+h.damage*2)*power);}
+    if((api.getCharacter?.()||h.character)==='marcel'){
+      // Marcel fires a directed blue staff spell instead of a melee-range shockwave.
+      // Lock the target at cast time; damage and impact appear when the bolt arrives.
+      const target=api.nearest(h,520),fx=h.faceX||0,fy=h.faceY||1;
+      const length=Math.hypot(fx,fy)||1;
+      cast={sx:h.x+fx/length*18,sy:h.y+fy/length*18-24,
+        tx:target?.x??h.x+fx/length*340,ty:target?.y??h.y+fy/length*340,
+        life:.28,max:.28,radius:150,damage:(70+h.damage*2)*power};
+    }else{
+      // Kim retains her existing close-range Seelenruf until her own skill review.
+      pulse={x:h.x,y:h.y,life:.8,max:.8,radius:270};
+      for(const enemy of api.getGame().enemies){if(!enemy.dead&&distance(h,enemy)<270)api.hurtEnemy(enemy,(70+h.damage*2)*power);}
+    }
     const count=h.equipment.weapon==='echo'?5:3;
     echoes=Array.from({length:count},(_,i)=>({angle:i*Math.PI*2/count,life:5,fire:.3+i*.14}));
     say('ultimate');api.spark(h.x,h.y,'#96ffdf',32);api.tone(180,.4,.05);api.updateUI();return true;
@@ -186,6 +197,18 @@
     if(h.dodge>0&&!reduced){trail.push({x:h.x,y:h.y,life:.2,direction:h.direction||'down'});if(trail.length>8)trail.shift();}
     for(const t of trail)t.life-=dt;trail=trail.filter(t=>t.life>0);
     if(pulse){pulse.life-=dt;if(pulse.life<=0)pulse=null;}
+    if(cast){
+      cast.life-=dt;
+      if(cast.life<=0){
+        const impact=cast;cast=null;
+        pulse={x:impact.tx,y:impact.ty,life:.7,max:.7,radius:impact.radius,color:'#64ddff'};
+        for(const enemy of api.getGame().enemies){
+          if(!enemy.dead&&distance({x:impact.tx,y:impact.ty},enemy)<impact.radius)
+            api.hurtEnemy(enemy,impact.damage);
+        }
+        api.spark(impact.tx,impact.ty,'#64ddff',12);
+      }
+    }
     for(const echo of echoes){
       echo.life-=dt;if(!reduced)echo.angle+=dt*1.7;echo.fire-=dt;
       const from={x:h.x+Math.cos(echo.angle)*70,y:h.y+Math.sin(echo.angle)*42};
@@ -233,7 +256,14 @@
     if(h.equipment.weapon==='echo'){ctx.fillStyle='#a4ffed';ctx.beginPath();ctx.arc((h.faceX||0)*25,-24+(h.faceY||0)*14,3,0,Math.PI*2);ctx.fill();}
     ctx.restore();
     for(const echo of echoes)drawSprite(ctx,h.x+Math.cos(echo.angle)*70,h.y+Math.sin(echo.angle)*42,direction,Math.min(.42,echo.life*.42),78,h.character);
-    if(pulse){ctx.save();ctx.globalAlpha=pulse.life/pulse.max;ctx.strokeStyle='#9affdf';ctx.lineWidth=4;ctx.beginPath();ctx.arc(pulse.x,pulse.y,reduced?270:270*(1-pulse.life/pulse.max),0,Math.PI*2);ctx.stroke();ctx.restore();}
+    if(cast){
+      const progress=clamp(1-cast.life/cast.max,0,1),x=cast.sx+(cast.tx-cast.sx)*progress,y=cast.sy+(cast.ty-cast.sy)*progress;
+      const previous=Math.max(0,progress-.08),px=cast.sx+(cast.tx-cast.sx)*previous,py=cast.sy+(cast.ty-cast.sy)*previous;
+      ctx.save();ctx.strokeStyle='#4dcfff';ctx.lineWidth=3;ctx.globalAlpha=.86;
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();
+      ctx.fillStyle='#b8f7ff';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
+    if(pulse){ctx.save();ctx.globalAlpha=pulse.life/pulse.max;ctx.strokeStyle=pulse.color||'#9affdf';ctx.lineWidth=4;ctx.beginPath();ctx.arc(pulse.x,pulse.y,reduced?pulse.radius:pulse.radius*(1-pulse.life/pulse.max),0,Math.PI*2);ctx.stroke();ctx.restore();}
   }
   function updateUI() {
     const h=getHero(),playing=api.getState()==='playing';
