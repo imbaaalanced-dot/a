@@ -46,7 +46,7 @@ const server=http.createServer((req,res)=>{
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-westhofen-gameplay.png`)});
       assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
-      assert(requests.some(url=>url.includes('westhofen-memorial-style2-v1.webp')),'reference-derived Westhofen memorial was not fetched');
+      assert(requests.some(url=>url.includes('westhofen-memorial-style2-v2.svg')),'reference-derived Westhofen memorial was not fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(failed,[],'no failed asset or script requests');
       results.push({mobileTouchEmulation:mobile,...state,errors,failedRequests:failed});
