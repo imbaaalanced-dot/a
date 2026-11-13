@@ -1,0 +1,46 @@
+name: TD2 tower shop and responsive HUD QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/game.js'
+      - 'dist/index.html'
+      - 'dist/combat-hud-layout-v3.css'
+      - 'tests/tower-shop-hud.test.cjs'
+      - 'tools/verify-tower-hud-browser.cjs'
+      - '.github/workflows/td2-tower-hud-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ui-qa:
+    name: Five-tower build shop and desktop/touch HUD
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static menu, cache and old-save regression
+        run: |
+          node tests/tower-shop-hud.test.cjs
+          node tests/cache-busting.test.cjs
+          node tests/v4-alpha5.test.cjs
+          node tests/touch-build.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Inspect HUD and keyboard selection in five actual Chromium viewports
+        env:
+          TD2_TOWER_HUD_OUT: /tmp/td2-tower-hud-qa
+        run: timeout 270s node tools/verify-tower-hud-browser.cjs
+      - name: Upload gameplay screenshots and QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: td2-five-tower-hud-chromium
+          path: /tmp/td2-tower-hud-qa/
+          retention-days: 14
+          if-no-files-found: warn
