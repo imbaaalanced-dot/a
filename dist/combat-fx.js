@@ -8,9 +8,9 @@
   const MAX_DAMAGE_TEXTS = 24, MAX_DAMAGE_TEXTS_REDUCED = 8;
   let audio, master, voices = 0;
   const lastSound = new Map();
-  // Compact, opt-in Marcel-only V2 FX atlas: 6 frames × 3 rows, 32 px per cell.
+  // Compact, opt-in Marcel-only V2 FX atlas: 6 frames × 3 rows, 40 px per cell.
   // Loaded only when Marcel fires. Keep procedural effects for decode/HTTP failures.
-  const STAFF_FX_FILE = 'assets/hero/marcel-staff-fx-v2-32.png?v=stafffx2';
+  const STAFF_FX_FILE = 'assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2';
   let staffImage = null, staffState = 'cold';
   const staffImpacts = new WeakSet(); // visual-only; never changes serializable simulation state
   function staffTexture() {
@@ -19,7 +19,7 @@
       try {
         const image = new Image();
         image.onload = () => {
-          if(image.naturalWidth === 192 && image.naturalHeight === 96){
+          if(image.naturalWidth === 240 && image.naturalHeight === 120){
             staffImage = image; staffState = 'ready';
           } else staffState = 'failed';
         };
@@ -34,7 +34,7 @@
     if(!atlas || row<0 || row>2)return false;
     const frame = Math.max(0,Math.min(5,Math.floor(Math.max(0,Math.min(.999,progress))*6)));
     ctx.save();ctx.translate(x,y);ctx.rotate(angle);
-    ctx.drawImage(atlas,frame*32,row*32,32,32,-size/2,-size/2,size,size);
+    ctx.drawImage(atlas,frame*40,row*40,40,40,-size/2,-size/2,size,size);
     ctx.restore();return true;
   }
   function unlock() {
