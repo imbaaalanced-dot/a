@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'tools/measure-level4-performance.cjs'
+      - 'tools/verify-level4-options-menu.cjs'
       - 'dist/level4-options-menu-compact.css'
       - 'dist/index.html'
       - 'tests/level4-options-menu.test.cjs'
@@ -24,6 +25,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify options menu, original tower shop and cache wiring
+        run: |
+          node tests/level4-options-menu.test.cjs
+          node tests/tower-shop-hud.test.cjs
+          node tests/cache-busting.test.cjs
+          node tests/portrait-hud.test.cjs
       - name: Install Chromium
         run: |
           npm install --no-save --package-lock=false playwright@1.62.1
@@ -33,6 +40,17 @@ jobs:
           TD2_LEVEL4_PERF_OUT: /tmp/td2-level4-perf
           TD2_LEVEL4_PERF_PHASE: ${{ hashFiles('dist/level4-options-menu-compact.css') != '' && 'compact' || 'baseline' }}
         run: timeout 240s node tools/measure-level4-performance.cjs
+      - name: Validate compact options panel in desktop and touch Chromium
+        env:
+          TD2_LEVEL4_MENU_OUT: /tmp/td2-level4-menu
+        run: timeout 210s node tools/verify-level4-options-menu.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: td2-level4-compact-menu-chromium
+          path: /tmp/td2-level4-menu/
+          if-no-files-found: warn
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:
