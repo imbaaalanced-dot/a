@@ -72,7 +72,13 @@ const server=http.createServer((req,res)=>{
    assert.deepEqual(failed,[],'no HTTP failures');
    const label=`${preview?'legacy-query-clean':'default-clean'}-${mobile?'touch':'desktop'}`;
    await page.screenshot({path:path.join(output,label+'.png')});
-   await page.locator('#game').screenshot({path:path.join(output,label+'-canvas.png')});
+   // In active gameplay the canvas continuously moves with the camera/shake.
+   // Playwright's locator screenshot waits for a stable element and can time out.
+   // Capture its native pixels directly without scrolling or freezing combat.
+   const canvasDataUrl=await page.evaluate(()=>document.querySelector('#game').toDataURL('image/png'));
+   assert.match(canvasDataUrl,/^data:image\/png;base64,/,'gameplay canvas exports a PNG');
+   fs.writeFileSync(path.join(output,label+'-canvas.png'),
+     Buffer.from(canvasDataUrl.slice(canvasDataUrl.indexOf(',')+1),'base64'));
    results.push({label,emulatedTouch:mobile,...state,errors,failed});
    await context.close();
   }
