@@ -35,6 +35,9 @@ Issue: #248 · 13 November 2026 · Development-only preview
 - `?td2SyburgCleanPreview=1`: retains the old Canvas-only preview.
 - If both flags are supplied, the new candidate takes precedence; during
   decoding it still draws the Canvas fallback. No UI/gameplay edits.
+- The sprite248 preview uses the same cleaned, cached natural-stone terrace
+  and forecourt as the text-free Canvas preview; it does **not** retain the
+  checkerboard stone rectangles from the default. No geometry is altered.
 
 ## Required QA before approval
 - `node tests/hohensyburg-sprite248.test.cjs` checks real WebP headers,
