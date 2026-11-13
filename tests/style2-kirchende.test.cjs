@@ -41,7 +41,7 @@ assert.ok(siteRadials>=1&&siteLinear>=1,'plaza uses static warm dapple and shade
 const firstTrees=drawn;
 art.drawScenery(output,center,[],{crowns:false,low:true});
 assert.equal(canvases,6,'two cached village buildings and three floor variants are created once');
-assert.equal(drawn-firstTrees,13,'eleven root sprites and two cached buildings render successfully');
+assert.equal(drawn-firstTrees,17,'fifteen root sprites and two cached buildings render successfully');
 assert.equal(rootRadials,3,'one baked shadow per root variant');
 const cached=canvases,images=drawn;
 art.drawSite(output,center);
