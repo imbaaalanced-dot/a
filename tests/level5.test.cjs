@@ -106,6 +106,13 @@ assert.equal(creations,beforeClean+1,'cached monument has no repeated allocation
 assert.equal(unwantedImages,0,'branded monument image is never requested');
 assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
 const source=fs.readFileSync('dist/hohensyburg-art.js','utf8');
+assert.match(source,/function sideBronze\(/,'the two bronze attendants have their own sculpted renderer');
+assert.match(source,/sideBronze\(-146,false\);sideBronze\(149,true\)/,
+ 'Bismarck and Moltke must remain separate statues on their approved pedestals');
+assert.match(source,/q\.ellipse\(-3,-203,52,32/,
+ 'equestrian group retains a separately sculpted horse body');
+assert.match(source,/q\.ellipse\(10,-309,15,19/,
+ 'equestrian rider has a separate visible head and helmet');
 assert.match(source,/function weatheredPaving\(/,'paving must use the fixed-seed cache');
 assert.equal((source.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
  'upper and lower Hohensyburg terraces use irregular paving');
