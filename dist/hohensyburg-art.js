@@ -360,12 +360,20 @@
     q.lineTo(27,-243);q.lineTo(-6,-241);q.closePath();q.fill();
     q.strokeStyle='#a3c6b0';q.lineWidth=3;q.beginPath();
     q.moveTo(0,-280);q.lineTo(10,-262);q.lineTo(7,-246);q.stroke();
+    // The rider raises one arm in greeting; the other holds the reins.
+    // Both silhouettes stay inside the original 480 x 540 memorial canvas.
     q.strokeStyle='#234d42';q.lineWidth=11;q.beginPath();
-    q.moveTo(25,-275);q.lineTo(44,-254);q.lineTo(46,-238);
-    q.moveTo(-3,-272);q.lineTo(-27,-247);q.stroke();
+    q.moveTo(25,-275);q.lineTo(13,-258);q.lineTo(-14,-252);
+    q.moveTo(-3,-272);q.lineTo(-23,-295);q.lineTo(-37,-313);q.stroke();
     q.strokeStyle='#b1c7ad';q.lineWidth=3;q.beginPath();
-    q.moveTo(26,-272);q.lineTo(40,-256);q.stroke();
-    q.fillStyle='#8eae9d';q.beginPath();q.arc(-27,-247,5,0,Math.PI*2);q.fill();
+    q.moveTo(22,-273);q.lineTo(10,-258);
+    q.moveTo(-6,-275);q.lineTo(-25,-298);q.stroke();
+    q.fillStyle='#8eae9d';q.beginPath();q.ellipse(-38,-316,7,10,-.25,0,Math.PI*2);q.fill();
+    q.strokeStyle='#274940';q.lineWidth=2;q.beginPath();
+    q.moveTo(-43,-322);q.lineTo(-47,-330);
+    q.moveTo(-38,-325);q.lineTo(-39,-334);
+    q.moveTo(-33,-322);q.lineTo(-31,-330);q.stroke();
+    q.fillStyle='#8eae9d';q.beginPath();q.arc(-14,-252,5,0,Math.PI*2);q.fill();
     q.fillStyle=bronze(10,-307,33,47);q.beginPath();
     q.ellipse(10,-309,15,19,-.13,0,Math.PI*2);q.fill();
     q.fillStyle='#24463d';q.beginPath();
@@ -380,9 +388,18 @@
     q.moveTo(-38,-250);q.quadraticCurveTo(-20,-237,-13,-255);
     q.lineTo(-19,-231);
     q.moveTo(9,-240);q.lineTo(21,-205);q.lineTo(35,-202);q.stroke();
-    // 1871 commemorates the Reichsgründung; the monument opened in 1902.
-    q.fillStyle='#cab99c';q.font='bold 20px serif';q.textAlign='center';
-    q.fillText('1871',0,-76);
+    // Current 1935/36 arrangement: the Reichsgruendung date is above
+    // the arch, not written on the lower pedestal (LWL / contemporary views).
+    q.textAlign='center';q.textBaseline='alphabetic';
+    q.font='bold 12px Georgia,serif';q.lineWidth=2;
+    q.strokeStyle='#514b41';q.strokeText('18 JANUAR 1871',0,-373);
+    q.fillStyle='#d5bea0';q.fillText('18 JANUAR 1871',0,-373);
+    // Small crown relief in the stone course above the inscription.
+    q.fillStyle='#5b564a';q.beginPath();q.moveTo(-17,-393);
+    q.lineTo(-15,-400);q.lineTo(-7,-394);q.lineTo(0,-405);
+    q.lineTo(7,-394);q.lineTo(15,-400);q.lineTo(17,-393);
+    q.lineTo(15,-388);q.lineTo(-15,-388);q.closePath();q.fill();
+    q.strokeStyle='#bca78c';q.lineWidth=1.5;q.stroke();
     return canvas;
   }
   function drawMonument(ctx,m){
