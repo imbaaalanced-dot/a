@@ -16,6 +16,8 @@ on:
       - 'dist/assets/reference-ground-v3/**'
       - 'tests/reference-ground-v3.test.cjs'
       - 'tools/verify-reference-ground-v3-browser.cjs'
+      - 'tools/verify-level4-seamfix-browser.cjs'
+      - 'dist/assets/level4/**'
       - '.github/workflows/td2-reference-ground-v3.yml'
   workflow_dispatch:
 permissions:
@@ -44,10 +46,19 @@ jobs:
           npx playwright install chromium
       - name: Compare default and V3 levels 1–7 desktop/mobile-touch
         run: node tools/verify-reference-ground-v3-browser.cjs
+      - name: Compare Level 4 standard V3 and seamfix preview desktop/mobile-touch
+        run: node tools/verify-level4-seamfix-browser.cjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: td2-reference-ground-v3-screenshots
           path: /tmp/td2-reference-ground-v3/
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-level4-seamfix-desktop-touch
+          path: /tmp/td2-level4-seamfix/
           if-no-files-found: warn
           retention-days: 7

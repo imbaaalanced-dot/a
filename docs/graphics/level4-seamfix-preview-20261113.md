@@ -1,10 +1,13 @@
 # TD2 Level 4 · Style-2 Seamfix Preview (13.11.2026)
 
 ## Status
-**Draft / binary assets integrated.** The two WebP sources were committed as verified Git blobs
-on 13.11.2026, commit `cf971759b572c7ac9c28e2756961cc0c21dc726c`.
-The default V3 terrain remains unchanged. **Do not merge or deploy**
-until the Chromium desktop/touch preview, visual seam review, CI and Android acceptance are completed.
+**Actual GitHub status (13.11.2026):** PR #240 was already merged into `main`
+at 16:29:24 UTC, merge commit `a36e6474913f78a7937be664cff0afb3f0b60288`.
+The two WebP sources were previously committed as verified Git blobs at
+`cf971759b572c7ac9c28e2756961cc0c21dc726c`.
+The default V3 terrain remains unchanged. A completed merge is **not** evidence
+of Level 4 seamfix visual acceptance, physical Android QA, or deployment.
+Remaining QA is pursued in a separate follow-up development PR.
 
 ## Verified binary assets in GitHub
 Both WebPs now exist in `dist/assets/level4/`, with expected Git blob SHA and SHA256 verified. Original source files are retained:
@@ -46,4 +49,14 @@ The 64px seam feather is a **technical preparation**, not proof of seamless tili
 - Review visible texture seams and path/build-slot contrast at 64/128 px.
 - Validate required CI after this binary-asset commit; no test result is inferred from a completed upload.
 - Perform physical Android 4 GB FPS/RAM/touch/runtime QA separately.
-- Keep Draft PR #240 unmerged until all checks and approval are complete.
+- PR #240 is already merged. Keep the focused screenshot-QA follow-up unmerged until actual test evidence and approval.
+
+## Focused Chromium follow-up (13.11.2026)
+- Branch `test/td2-level4-seamfix-chromium-20261113` introduces a dedicated
+  `tools/verify-level4-seamfix-browser.cjs` comparison for standard V3 vs
+  `?td2Level4Seamfix=1` using desktop and mobile-touch emulation.
+- The CI job checks successful WebP fetch/decode, unchanged route-material count,
+  no 4xx responses/JS exceptions, and nonempty gameplay screenshots.
+- Screenshots are uploaded as `td2-level4-seamfix-desktop-touch` for subsequent
+  human visual assessment of seams, 64/128px clarity and build pads.
+- Chromium emulation is not a physical 4-GB-Android test; do not claim one.
