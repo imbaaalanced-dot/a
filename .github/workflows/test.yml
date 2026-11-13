@@ -76,6 +76,7 @@ jobs:
           node tests/goethestrasse-preview.test.cjs
           node tests/level5.test.cjs
           node tests/hohensyburg-text-free-preview.test.cjs
+          node tests/hohensyburg-sprite248.test.cjs
           node tests/level5-preview.test.cjs
           TEST_MOBILE=1 node tests/level5-preview.test.cjs
           node tests/style2-maps.test.cjs
