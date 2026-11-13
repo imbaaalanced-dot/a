@@ -36,6 +36,35 @@
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
   function randomGenerator(seed){return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
+  // Subtle offset joints replace the two alternating rectangular checkerboards.
+  // Tiles are baked into the existing level-ground canvas, never per frame.
+  function weatheredPaving(q,x,y,w,h,stoneW,stoneH,seed){
+    const random=randomGenerator(seed);
+    const stones=['#898a7d','#8c8c7f','#929083','#85877b','#8f8f82','#8b8d80'];
+    q.save();q.beginPath();q.rect(x,y,w,h);q.clip();
+    q.fillStyle='#777b70';q.fillRect(x,y,w,h);
+    for(let row=0,sy=y-4;sy<y+h+stoneH;row++,sy+=stoneH){
+      const offset=(row%2)*stoneW*.5;
+      for(let sx=x-stoneW;sx<x+w+stoneW;sx+=stoneW){
+        const dx=(random()-.5)*8,dy=(random()-.5)*5;
+        const left=sx+offset+dx,top=sy+dy;
+        const width=stoneW-4+random()*2,height=stoneH-4+random()*2;
+        q.fillStyle=stones[Math.floor(random()*stones.length)];
+        q.beginPath();
+        q.moveTo(left+4,top);q.lineTo(left+width-5,top+1);
+        q.lineTo(left+width,top+height-5);q.lineTo(left+width-4,top+height);
+        q.lineTo(left+2,top+height-2);q.lineTo(left,top+4);
+        q.closePath();q.fill();
+        q.strokeStyle='#34443c2a';q.lineWidth=.8;q.stroke();
+        if(random()>.76){
+          q.fillStyle='#3e59412e';q.beginPath();
+          q.ellipse(left+width*.26,top+height*.86,3+random()*7,1+random()*2,0,0,Math.PI*2);
+          q.fill();
+        }
+      }
+    }
+    q.restore();
+  }
   // Terrain / terrace: all large geometry is rasterized only once per map.
   function createGround(level){
     const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;allocations++;
@@ -106,16 +135,8 @@
       q.fillStyle='#29332924';q.fillRect(c.x+f.left+22,c.y+f.top+20,
         f.right-f.left-44,f.bottom-f.top-45);
     }else{
-      q.fillStyle='#8d8878';q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-      for(let y=f.top+25;y<f.bottom-25;y+=48)for(let x=f.left+22;x<f.right-20;x+=76){
-        q.fillStyle=['#b6ab90a0','#8c887688','#c2b99c55','#85837266'][
-          Math.abs(Math.floor(x/76)+Math.floor(y/48))%4];
-        q.fillRect(c.x+x+2,c.y+y+2,70,41);
-        q.strokeStyle='#514f4555';q.lineWidth=2;
-        q.strokeRect(c.x+x+1,c.y+y+1,73,44);
-      }
-    }
+      weatheredPaving(q,c.x+f.left+22,c.y+f.top+20,
+      f.right-f.left-44,f.bottom-f.top-45,76,48,1902);
     // Viewpoint balustrade follows the southern edge, with stone-capped posts.
     q.fillStyle='#52564d';q.fillRect(c.x+f.left-20,c.y+f.bottom-12,f.right-f.left+40,45);
     q.fillStyle='#c1b49b';q.fillRect(c.x+f.left-24,c.y+f.bottom-20,f.right-f.left+48,13);
@@ -149,14 +170,8 @@
       q.fillStyle='#3442371c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
         r.right-r.left-48,r.bottom-r.top-45);
     }else{
-      q.fillStyle='#99917c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-      for(let y=r.top+20;y<r.bottom-35;y+=45)for(let x=r.left+20;x<r.right-35;x+=74){
-        q.fillStyle=['#b5ab92','#8f8878','#a19882','#b8ad93'][Math.abs(Math.floor(x/74)+Math.floor(y/45))%4];
-        q.fillRect(c.x+x+2,c.y+y+2,68,39);
-        q.fillStyle='#464d4344';q.fillRect(c.x+x,c.y+y+40,70,2);
-      }
-    }
+      weatheredPaving(q,c.x+r.left+24,c.y+r.top+20,
+      r.right-r.left-48,r.bottom-r.top-45,74,45,1936);
     // Plinth coping is interrupted where the two stair flights meet the deck.
     q.fillStyle='#c8bba2';q.fillRect(c.x+r.left-10,c.y+r.top-12,r.right-r.left+20,21);
     q.fillRect(c.x+r.left-12,c.y+r.top,22,r.bottom-r.top);
