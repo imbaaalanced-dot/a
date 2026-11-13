@@ -1,0 +1,23 @@
+=== runner context ===
+GITHUB_REF=refs/heads/art/marcel-down-attack-candidates-20261113 SHA=be6b57ce579a6ed98edf4165d8301592d4122105
+=== git status ===
+?? failure-diagnosis.txt
+?? source-art/hero/actions-v5/
+=== git log ===
+be6b57c ci(handoff): add checkout name, debug tracing and failure diagnosis step
+=== sha256 verbose ===
+sha256sum: .handoff/marcel-attack-down/sha256.txt: no properly formatted checksum lines found
+=== ls handoff ===
+total 1560
+drwxr-xr-x 2 runner runner    4096 Nov 13 17:35 .
+drwxr-xr-x 3 runner runner    4096 Nov 13 17:35 ..
+-rw-r--r-- 1 runner runner   23352 Nov 13 17:35 binary-probe-00.png
+-rw-r--r-- 1 runner runner   20859 Nov 13 17:35 candidate-00.b64.txt
+-rw-r--r-- 1 runner runner   16227 Nov 13 17:35 candidate-01.b64.txt
+-rw-r--r-- 1 runner runner   20093 Nov 13 17:35 candidate-02.b64.txt
+-rw-r--r-- 1 runner runner   20876 Nov 13 17:35 candidate-03.b64.txt
+-rw-r--r-- 1 runner runner   15445 Nov 13 17:35 candidate-04.b64.txt
+-rw-r--r-- 1 runner runner   15413 Nov 13 17:35 candidate-05.b64.txt
+-rw-r--r-- 1 runner runner 1316012 Nov 13 17:35 concept-sheet.b64.txt
+-rw-r--r-- 1 runner runner  119427 Nov 13 17:35 preview-6x1.b64.txt
+-rw-r--r-- 1 runner runner     994 Nov 13 17:35 sha256.txt
