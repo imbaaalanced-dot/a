@@ -49,6 +49,8 @@ jobs:
           node tests/cpu-render-profiling.test.cjs
       - name: Release badge and cache key regression
         run: node tests/cache-busting.test.cjs
+      - name: Level 4 seamfix preview and V3 fallback
+        run: node tests/level4-seamfix-preview.test.cjs
       - name: Kirchende terrain and renderer caching
         run: |
           node tests/terrain-polish.test.cjs

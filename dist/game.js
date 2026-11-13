@@ -882,7 +882,7 @@
       // The cached Style 2 atlas already paints existing Level 1/2 routes.
       if((game.level===1||game.level===2)&&globalThis.Style2Maps)continue;
       if(game.level===5||game.level===6)continue;
-      if(game.level===4&&globalThis.DenkmalChurch?.drawRoad){globalThis.DenkmalChurch.drawRoad(ctx,path);continue;}
+      if(game.level===4&&globalThis.DenkmalChurch?.drawRoad){globalThis.DenkmalChurch.drawRoad(ctx,path,pathIndex);continue;}
       if(game.level===3&&globalThis.DenkmalTerrain?.drawRoad){globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:pathIndex===3?'slabs':'earth'});continue;}
       ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
       ctx.strokeStyle='#0a0f1188';ctx.lineWidth=94;ctx.stroke();

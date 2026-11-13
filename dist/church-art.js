@@ -319,8 +319,11 @@
     }
     ctx.restore();
   }
-  function drawRoad(ctx,path){
-    if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface:'slabs',groundLevel:4});
+  function drawRoad(ctx,path,pathIndex=0){
+    // Only the existing KIRCHHOF WEST route previews large stone slabs.
+    // All other routes retain cobbles; default V3 remains unchanged.
+    const surface=globalThis.DenkmalTerrain?.level4SeamfixEnabled&&pathIndex===3?'flagstone':'slabs';
+    if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface,groundLevel:4});
     ctx.save();ctx.lineJoin='round';ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#444b4088';ctx.lineWidth=80;ctx.stroke();ctx.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999586';ctx.lineWidth=69;ctx.stroke();ctx.restore();
   }
   function drawSite(ctx,center){
