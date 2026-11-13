@@ -5,7 +5,7 @@
 (() => {
 'use strict';
 const WORLD=3072,SCALE=.5;
-let activeLevel=0,background=null,baseTile=null,builds=0,materialRevision=-1;
+let activeLevel=0,background=null,baseTile=null,builds=0,materialRevision=-1,materialsRequested=false;
 function rng(seed){return()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
 function line(g,points,width,color){
   if(!points||points.length<2)return;
@@ -192,6 +192,11 @@ function make(level,layout){
 }
 function draw(ctx,level,camera,viewWidth,viewHeight,layout){
   if(level!==1&&level!==2)return false;
+  // Tutorial entry must work without the historical levels' environment loader.
+  // Keep the fallback playable while the shared singleton batch downloads.
+  if(!materialsRequested&&globalThis.TD2GroundV3?.enabled){
+    materialsRequested=true;globalThis.TD2GroundV3.load();
+  }
   const revision=globalThis.TD2GroundV3?.revision||0;
   if(activeLevel!==level||!background||materialRevision!==revision){background=make(level,layout);activeLevel=level;materialRevision=revision;}
   const x=Math.max(0,camera.x-56),y=Math.max(0,camera.y-56);

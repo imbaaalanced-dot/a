@@ -17,6 +17,7 @@ on:
       - 'tests/reference-ground-v3.test.cjs'
       - 'tests/ground-late-load.test.cjs'
       - 'tools/verify-ground-late-load-browser.cjs'
+      - 'tools/verify-game-cold-start-browser.cjs'
       - 'tools/verify-reference-ground-v3-browser.cjs'
       - 'tools/verify-level4-seamfix-browser.cjs'
       - 'dist/assets/level4/**'
@@ -49,6 +50,8 @@ jobs:
           npx playwright install chromium
       - name: Delayed V3 decode refreshes all seven cached grounds
         run: node tools/verify-ground-late-load-browser.cjs
+      - name: Normal menu startup with delayed and failed material downloads
+        run: node tools/verify-game-cold-start-browser.cjs
       - name: Compare default and V3 levels 1–7 desktop/mobile-touch
         run: node tools/verify-reference-ground-v3-browser.cjs
       - name: Compare Level 4 standard V3 and seamfix preview desktop/mobile-touch
@@ -72,5 +75,12 @@ jobs:
         with:
           name: td2-ground-late-load-desktop-touch
           path: /tmp/td2-late-ground/
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-game-cold-start-desktop-touch
+          path: /tmp/td2-game-cold-start/
           if-no-files-found: warn
           retention-days: 7

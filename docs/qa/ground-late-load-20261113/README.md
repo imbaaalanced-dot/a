@@ -27,3 +27,22 @@ Außerdem lieferte ein zweiter Aufruf von `DenkmalTerrain.load()` bereits Erfolg
 [Level-1-Vergleich](level1-delayed-decode.webp) · [14 Renderer-Ergebnisse](delayed-decode.json)
 
 Keine physische Android-Abnahme oder FPS-/Gesamtspeichermessung. Der einmalige Neuaufbau nach spätem Laden benötigt Renderarbeit; eine Performanceverbesserung wird nicht behauptet. Kein Merge oder Deployment dieses Folgepatches ohne gesonderte Freigabe.
+
+
+## Ergänzung: normaler Menüstart ohne Vorladen
+
+Kompatibilitätsbasis: aktueller `main` @ `7e79f6d` mit Westhofen-V3-Grafik/Vorplatz und Marcel-Stab-Effekten, konfliktfrei in diesen Prüfbranch übernommen. Keine fremden PRs oder `main` dabei geändert.
+
+Der Menütest deckte eine zusätzliche Lücke auf: Nach normalem Start über Kampagne → Level 1 war der Spielzustand `playing`, aber es gab **null V3-Materialrequests** und **null geladene Materialien**. Die Grafiktests hatten das Laden ausdrücklich gestartet und diesen Unterschied damit verdeckt. [Vorher-Befund](menu-start-before.json).
+
+Die ersten beiden Karten starten jetzt beim ersten Zeichnen selbst das gemeinsame V3-Ladepaket. Währenddessen bleibt die Ersatzdarstellung verfügbar; die bereits geprüfte Materialrevision aktualisiert den Boden nach dem Decode. Weitere Frames und Kartenwechsel starten keine zusätzlichen Pakete. `td2GroundV3=0` und der isolierte alte Style-2-Pilot bleiben ohne V3-Downloads.
+
+`tools/verify-game-cold-start-browser.cjs` startet das Spiel ausschließlich über Menüschaltflächen und schließt Story/Tutorial über deren Bedienelemente. Keine Vorladeaufrufe oder manuelle Cache-Resets. Vier Fälle bestanden: Desktop und Touch-Emulation, jeweils mit zurückgehaltenen und absichtlich fehlgeschlagenen Materialdownloads. Tastatureingaben bewegen den Helden bereits während der zurückgehaltenen Downloads. Genau neun Materialrequests; nach Erfolg genau ein Karten-Neuaufbau; nach komplettem Fehlschlag kein Neuaufbau und keine Downloadschleife. Keine JavaScript-Ausnahmen oder unerwarteten lokalen Assetfehler.
+
+Die Arbeitsumgebung blockiert die optionale externe Google-Fonts-Anfrage; die Tests verwenden dabei die vorhandenen Ersatzschriften. Diese externe Anfrage wird getrennt von lokalen Spielassets in den Ergebnissen protokolliert.
+
+Zusätzlich alle **114** Hauptworkflow-Testbefehle und alle **14** vollständigen Levelansichten auf dieser aktuellen Integrationsbasis bestanden. Der neue Menüstart-Test ist mit seinen Bild-/JSON-Artefakten in die Referenzboden-CI eingebunden.
+
+[Menüstart-Browserergebnisse](menu-start.json) · [Touch-Vergleich](menu-start-touch.webp) · [14 aktuelle Levelansichten](gameplay-current-main.json)
+
+Physisches Android weiterhin ungeprüft. Kein Merge/Deployment durch diese Ergänzung.

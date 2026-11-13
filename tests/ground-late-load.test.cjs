@@ -1,11 +1,11 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.join(__dirname,'../dist');
-function setup(){
+function setup(search=''){
  let allocations=0;const requests=[],patterns=[];
  const ctx=new Proxy({drawImage(){},createPattern(img){patterns.push(img);return {};},createRadialGradient(){return {addColorStop(){}};},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
  class ImageMock{constructor(){this.naturalWidth=this.naturalHeight=256;this.complete=true;}set src(url){this.url=url;requests.push(this);}}
- const box={Math,Promise,Image:ImageMock,document:{createElement(){allocations++;return {width:0,height:0,getContext:()=>ctx};}},localStorage:{getItem(){return null;},setItem(){}}};
+ const box={Math,Promise,location:{search},Image:ImageMock,document:{createElement(){allocations++;return {width:0,height:0,getContext:()=>ctx};}},localStorage:{getItem(){return null;},setItem(){}}};
  vm.createContext(box);
  for(const file of ['persisted-state.js','levels.js','ground-v3.js','terrain-polish.js','style2-maps.js','hohensyburg-art.js','goethestrasse-art.js','westhofen-art.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),box,{filename:file});
  const draw=level=>{
@@ -17,6 +17,17 @@ function setup(){
  return {box,requests,patterns,draw,get allocations(){return allocations;}};
 }
 (async()=>{
+ for(const level of [1,2]){
+  const auto=setup();auto.draw(level);
+  assert.equal(auto.requests.length,9,'tutorial maps start their own material load without QA prewarming');
+  for(let frame=0;frame<20;frame++)auto.draw(level);
+  assert.equal(auto.requests.length,9,'drawing never repeats material downloads');
+ }
+ for(const search of ['?td2GroundV3=0','?td2Style2Pilot=1']){
+  const off=setup(search);off.draw(1);off.draw(2);
+  assert.equal(off.requests.length,0,'explicit opt-out and legacy pilot do not start V3 downloads');
+ }
+
  for(let level=1;level<=7;level++){
   const test=setup(),api=test.box.TD2GroundV3,original=JSON.stringify(test.box.DenkmalLevels.levels);
   const pending=api.load();assert.equal(api.revision||0,0,'no material revision before decode');
