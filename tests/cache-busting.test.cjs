@@ -51,7 +51,7 @@ const expectedVersions = new Map([
   ['style2-user-towers-v4.js', 'style2-v4a1'],
   ['enemy-animations.js', 'v410a1'],
   ['style2-markers.js', 'markers2'],
-  ['ground-v3.js','reference-ground-v3-20261113'],
+  ['ground-v3.js','reference-ground-v3-default-20261113'],
   ['style2-maps.js','ground-v3-1'],
   ['flight-enemies.js', 'flight2'],
   ['goethestrasse.js', 'goethe2'],

@@ -1,5 +1,5 @@
 'use strict';
-// Isolated opt-in loader/pattern contract. Does not pretend to be browser or Android QA.
+// Default-on V3 loader and explicit legacy fallback; not a physical Android test.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -25,12 +25,16 @@ async function run(search){
  return context.TD2GroundV3;
 }
 (async()=>{
- const off=await run('');assert.equal(off.enabled,false);assert.equal(await off.load(),false);
+ const off=await run('?td2GroundV3=0');assert.equal(off.enabled,false);assert.equal(await off.load(),false);
  assert.equal(off.imageFor(3,'base'),null);
- assert.equal(requests.length,0,'default mode must not request V3');
- const on=await run('?td2GroundV3=1');assert.equal(on.enabled,true);
+ assert.equal(requests.length,0,'explicit opt-out must not download V3 assets');
+ const pilot=await run('?td2Style2Pilot=1');assert.equal(pilot.enabled,false);
+ assert.equal(await pilot.load(),false,'legacy pilot is isolated from V3');
+ assert.equal(requests.length,0,'pilot mode must not download V3 assets');
+ const on=await run('');assert.equal(on.enabled,true,'V3 is now default');
  assert.equal(await on.load(),true);assert.equal(on.loadedCount,9);
- assert.equal(requests.length,9,'opt-in loads nine assets exactly once');
+ assert.equal(requests.length,9,'default-on V3 loads exactly nine assets');
+ const explicit=await run('?td2GroundV3=1');assert.equal(explicit.enabled,true,'previous preview URL still works');
  await on.load();assert.equal(requests.length,9,'one load batch only');
  assert.equal(on.material(5,'road'),'syburg_sandstone');
  assert.equal(on.material(7,'street'),'urban_asphalt');
@@ -42,5 +46,5 @@ async function run(search){
  on.patternFor(canvas,7,'street');assert.equal(patterns,1,'context pattern reused');
  assert.equal(on.drawBase(canvas,3),true);assert.equal(fills,1);
  on.drawBase(canvas,3);assert.equal(patterns,2,'cached ground pattern reused');
- console.log('Reference-ground V3: 9 WebPs, opt-in only, material map, caching, fallback contract passed.');
+ console.log('Reference-ground V3: 9 WebPs, default enabled, explicit opt-out, legacy pilot isolation, caching passed.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
