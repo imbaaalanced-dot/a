@@ -120,7 +120,7 @@
       f.right-f.left+48,92);
     q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
       f.right-f.left+48,f.bottom-f.top+10);
-    if(textFreePreview){
+    if(textFreePreview||candidate248Preview){
       // Remove the game-viewport checkerboard: cached natural sandstone
       // replaces alternating rectangles; identical court bounds and layering.
       q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#948c7b';
@@ -165,7 +165,7 @@
     }
     q.fillStyle='#a99d84';q.fillRect(c.x+r.left,c.y+r.top,
       r.right-r.left,r.bottom-r.top);
-    if(textFreePreview){
+    if(textFreePreview||candidate248Preview){
       q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#99917c';
       q.fillRect(c.x+r.left+24,c.y+r.top+20,
         r.right-r.left-48,r.bottom-r.top-45);
