@@ -41,6 +41,40 @@ jobs:
         env:
           TD2_LEVEL7_ENVIRONMENT_OUT: /tmp/td2-westhofen-v3-integration
         run: timeout 240s node tools/verify-level7-style2-environment.cjs
+      - name: Build V3 gameplay contact sheet for actual visual QA
+        env:
+          TD2_LEVEL7_ENVIRONMENT_OUT: /tmp/td2-westhofen-v3-integration
+        run: |
+          python3 -m pip install --quiet 'Pillow>=11,<14'
+          python3 - <<'PY'
+          import os, base64
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          root=Path(os.environ['TD2_LEVEL7_ENVIRONMENT_OUT'])
+          output=Image.new('RGB',(1280,940),'#19221d')
+          d=ImageDraw.Draw(output)
+          d.text((20,22),'WESTHOFEN V3 - ACTUAL CHROMIUM LEVEL-7 GAMEPLAY / NOT HISTORICALLY APPROVED',fill='#f0e3bc')
+          for source,x,y,size in (
+              ('desktop-westhofen-gameplay.png',20,64,(820,510)),
+              ('mobile-westhofen-gameplay.png',910,64,(340,750))):
+              img=Image.open(root/source).convert('RGB')
+              img.thumbnail(size,Image.Resampling.LANCZOS)
+              output.paste(img,(x,y))
+              d.text((x,y+img.height+7),source,fill='#c5d0c0')
+          for source,x,y,size in (
+              ('desktop-westhofen-v3-light128.png',20,635,(384,256)),
+              ('desktop-westhofen-v3-dark64.png',445,635,(384,256))):
+              img=Image.open(root/source).convert('RGB')
+              img=img.resize(size,Image.Resampling.NEAREST)
+              output.paste(img,(x,y))
+              d.text((x,y-24),source,fill='#f0e3bc')
+          d.text((20,911),'V3 candidate only: real desktop Chromium + mobile touch emulation; physical Android and historical QA remain open.',fill='#d6d3ba')
+          target=root/'westhofen-v3-gameplay-contact-sheet.jpg'
+          output.save(target,quality=76,optimize=True)
+          data=target.read_bytes()
+          print('WESTHOFEN_V3_GAMEPLAY_CONTACT_B64='+base64.b64encode(data).decode('ascii'))
+          print('WESTHOFEN_V3_GAMEPLAY_CONTACT_BYTES='+str(len(data)))
+          PY
       - name: Save actual Chromium gameplay and sprite review images
         uses: actions/upload-artifact@v4
         if: always()
