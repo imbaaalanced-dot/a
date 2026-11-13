@@ -329,8 +329,16 @@
   function drawCanopies(ctx,center,actors,shielded){
     ctx.save();ctx.translate(center.x,center.y);
     trees.forEach(([x,y,r],i)=>{
-      const near=actors?.some(a=>Math.hypot(a.x-center.x-x,a.y-center.y-y)<r+25);
-      const blocked=shielded?.some(a=>Math.hypot(a.x-center.x-x,a.y-center.y-y)<r+30);
+      // Bounding rejection skips nearly all hypot calls during crowded waves.
+      // Evaluate shields first: fully hidden crowns need no actor distance scan.
+      const blocked=shielded?.some(a=>{
+        const dx=a.x-center.x-x,dy=a.y-center.y-y,limit=r+30;
+        return Math.abs(dx)<limit&&Math.abs(dy)<limit&&Math.hypot(dx,dy)<limit;
+      });
+      const near=!blocked&&actors?.some(a=>{
+        const dx=a.x-center.x-x,dy=a.y-center.y-y,limit=r+25;
+        return Math.abs(dx)<limit&&Math.abs(dy)<limit&&Math.hypot(dx,dy)<limit;
+      });
       ctx.globalAlpha=blocked?0:(near?.22:1);
       if(!globalThis.DenkmalForest?.drawCrown(ctx,x,y,r,i)){
         ctx.fillStyle='#3f5838';ctx.beginPath();ctx.arc(x,y-43,r,0,7);ctx.fill();
