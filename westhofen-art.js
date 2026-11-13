@@ -4,7 +4,7 @@
    two side tablets flank the empty central tablet frame, and the two fire-bowl
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
-let ground=null,environmentRequested=false;
+let ground=null,materialRevision=-1,environmentRequested=false;
 let memorialSprite=null,memorialRequested=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
@@ -113,7 +113,10 @@ function createGround(layout){
  }
  return canvas;
 }
-function drawGround(ctx,layout){requestSharedEnvironment();if(!ground)ground=createGround(layout);ctx.drawImage(ground,0,0,3072,3072);}
+function drawGround(ctx,layout){requestSharedEnvironment();
+ const revision=globalThis.TD2GroundV3?.revision||0;
+ if(!ground||materialRevision!==revision){ground=createGround(layout);materialRevision=revision;}
+ ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
  if(readyMemorial()){
   // Identical objective anchor and collision footprint; bitmap is visual only.

@@ -49,9 +49,9 @@ async function loadPilotRoads(){
   })));
 }
 function load(){
+  if(groundLoading)return groundLoading;
   if(style2Ground)return Promise.resolve(true);
   if(typeof Image==='undefined')return Promise.resolve(false);
-  if(groundLoading)return groundLoading;
   groundLoading=new Promise(resolve=>{
     const image=new Image();image.decoding='async';
     let triedFallback=false;
@@ -153,14 +153,16 @@ function pattern(ctx,kind,groundLevel=3){
   }
   return cache.get(cacheKey);
 }
-let illustratedGround=null,illustratedMeadow=null;
+let illustratedGround=null,illustratedMeadow=null,materialRevision=-1;
 function groundPainting(groundLevel=3){
+  const revision=globalThis.TD2GroundV3?.revision||0;
+  if(materialRevision!==revision){illustratedGround=illustratedMeadow=null;materialRevision=revision;}
   if(groundLevel===4&&illustratedMeadow)return illustratedMeadow;
   if(groundLevel!==4&&illustratedGround)return illustratedGround;
   const c=document.createElement('canvas');c.width=c.height=1536;
   const q=c.getContext('2d'),r=rng(671629);
-  if(style2Ground){
-    const reference=globalThis.TD2GroundV3?.imageFor?.(groundLevel,'base');
+  const reference=globalThis.TD2GroundV3?.imageFor?.(groundLevel,'base');
+  if(reference||style2Ground){
     const pattern=q.createPattern(reference||style2Ground,'repeat');
     if(pattern){q.fillStyle=pattern;q.fillRect(0,0,1536,1536);}
     else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
