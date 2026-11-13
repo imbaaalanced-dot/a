@@ -13,4 +13,6 @@ assert.match(src,/westhofen-memorial-style2-v1\.webp/);
 assert.match(src,/if\(readyMemorial\(\)\)/);
 assert.match(src,/fallback/i);
 assert.doesNotMatch(src.split('function drawMonument(ctx,m)')[1],/new Image\(/,'draw loop does not allocate images');
+assert.match(src,/westhofen-memorial-style2-v2\\.webp/,'V2 preview URL is wired');
+assert.match(src,/westhofenArt=v2/,'V2 remains opt-in');
 console.log('Westhofen gallery and optional memorial sprite passed');
