@@ -1,13 +1,13 @@
 # TD2 Level 4 · Style-2 Seamfix Preview (13.11.2026)
 
 ## Status
-**Draft / blocked on binary asset upload.** Opt-in renderer wiring exists on this branch,
-but both WebP files have **not** been committed to GitHub. The default V3 terrain remains
-unchanged. Do **not** merge or deploy the candidate until the exact two WebPs are
-added and tested in Chromium desktop and touch emulation.
+**Draft / binary assets integrated.** The two WebP sources were committed as verified Git blobs
+on 13.11.2026, commit `cf971759b572c7ac9c28e2756961cc0c21dc726c`.
+The default V3 terrain remains unchanged. **Do not merge or deploy**
+until the Chromium desktop/touch preview, visual seam review, CI and Android acceptance are completed.
 
-## Assets to stage from the locally prepared seamfix package
-Copy, without altering source files, into `dist/assets/level4/`:
+## Verified binary assets in GitHub
+Both WebPs now exist in `dist/assets/level4/`, with expected Git blob SHA and SHA256 verified. Original source files are retained:
 
 | Filename | Dimensions | Byte size | SHA256 |
 | --- | --- | ---: | --- |
@@ -41,8 +41,9 @@ The 64px seam feather is a **technical preparation**, not proof of seamless tili
 5. Check required CI checks; physical Android with 4 GB RAM separately.
    No merge or deployment until actual review and approval.
 
-## Known limitation
-This GitHub integration is currently **source-only** because the GitHub text-file
-connector cannot transfer the two prepared local WebP binaries. Preview URL
-will request missing files and fall back rather than break gameplay. This
-is **not ready for publication** until the binaries are present.
+## Remaining release blockers
+- Compare default V3 and opt-in seamfix in identical Chromium desktop and touch screenshots.
+- Review visible texture seams and path/build-slot contrast at 64/128 px.
+- Validate required CI after this binary-asset commit; no test result is inferred from a completed upload.
+- Perform physical Android 4 GB FPS/RAM/touch/runtime QA separately.
+- Keep Draft PR #240 unmerged until all checks and approval are complete.
