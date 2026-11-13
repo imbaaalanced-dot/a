@@ -8,9 +8,9 @@ let ground=null,environmentRequested=false;
 let memorialSprite=null,memorialRequested=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
-const memorialUrl='assets/westhofen/westhofen-memorial-style2-v2.svg?v=westhofen-style2v2';
+const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview1';
 function readyMemorial(){
- // Level 7 preloads the same WebP through the shared asset manager.
+ // Level 7 preloads the same preview SVG through the shared asset manager.
  // Keep the standalone fallback for previews without the manager.
  if(globalThis.DenkmalAssets?.ready){
   memorialSprite=globalThis.DenkmalAssets.ready(memorialUrl);
