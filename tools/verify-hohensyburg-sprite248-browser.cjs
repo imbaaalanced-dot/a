@@ -22,9 +22,10 @@ const server=http.createServer((req,res)=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true,args:['--no-sandbox',
   '--disable-dev-shm-usage','--use-angle=swiftshader']});
- const modes=[{name:'original',query:''},{name:'canvas-clean',query:'?td2SyburgCleanPreview=1'},
+ const modes=[{name:'original',query:'?td2SyburgLegacy=1'},
+  {name:'canvas-clean',query:'?td2SyburgCleanPreview=1'},
   {name:'sprite248',query:'?td2SyburgArt248=1'},
-  {name:'sprite248-v2',query:'?td2SyburgArt248=2'}];
+  {name:'sprite248-v2',query:''}];
  const results=[];
  try{
   for(const mobile of [false,true])for(const mode of modes){
@@ -85,6 +86,6 @@ const server=http.createServer((req,res)=>{
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({
    chromium:browser.version(),physicalAndroidTested:false,results
   },null,2));
-  console.log('Hohensyburg #248: eight browser scenes passed; correct V1/V2 WebP loaded only in opt-in mode.');
+  console.log('Hohensyburg #248: 8 scenes passed; V2 default, legacy opt-out and V1 opt-in; correct WebP loaded once.');
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>server.close());
