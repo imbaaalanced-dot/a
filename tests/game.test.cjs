@@ -224,7 +224,28 @@ check('Resize does not clear the canvas when pixel dimensions are unchanged',()=
 check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
 check('Legacy wardrobe cannot change gear at any wave and stats do not stack',()=>{const h=t.game.hero;h.damage=26;t.game.wave=8;saga.openCharacter();for(let i=0;i<5;i++)assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.damage,26);assert.equal(saga.stats(h).damage,32.5);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();});
 check('Armor reduces incoming damage and does not heal on equip',()=>{const h=t.game.hero;saga.damage(20);assert.equal(h.hp,85);t.game.wave=3;saga.openCharacter();saga.equip('armor','ash');saga.equip('armor','oath');assert.equal(h.hp,85);saga.closeCharacter();});
-check('Soul call has bounded range heal and resource use',()=>{const h=t.game.hero;h.hp=50;const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};t.game.enemies=[near,far];assert.equal(saga.unleash(),true);assert.ok(near.hp<1000);assert.equal(far.hp,1000);assert.equal(h.hp,75);assert.equal(h.soul,0);assert.equal(saga.unleash(),false);saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1);});
+check('Marcel Seelenruf launches a ranged staff blast and retains heal, echoes and resource cost',()=>{
+  const h=t.game.hero;assert.equal(h.character,'marcel');h.hp=50;h.faceX=1;h.faceY=0;
+  const target={x:h.x+410,y:h.y,hp:1000,r:12},cluster={x:h.x+460,y:h.y+40,hp:1000,r:12};
+  t.game.enemies=[target,cluster];
+  assert.equal(saga.unleash(),true);assert.equal(target.hp,1000,'the blue blast must travel before impact');
+  assert.equal(h.hp,75);assert.equal(h.soul,0);assert.ok(h.invuln>=1);
+  assert.equal(saga.unleash(),false,'the cast cannot be repeated before rebuilding soul');
+  const behind={x:h.x+50,y:h.y,hp:1000,r:12};t.game.enemies.push(behind);
+  saga.update(.29,false,{x:1,y:0});
+  assert.ok(target.hp<1000,'ranged target takes the staff blast');
+  assert.ok(cluster.hp<1000,'nearby enemies take bounded splash damage');
+  assert.equal(behind.hp,1000,'no melee-radius damage around Marcel');
+  saga.update(.6,false,{x:1,y:0});assert.ok(t.game.bullets.length>=1,'existing echoes still fire');
+});
+check('Kim retains her existing Seelenruf behavior',()=>{
+  t.mainMenu();element('chooseKim').onclick();t.startGame();saga.continueStory();
+  const h=t.game.hero;assert.equal(h.character,'kim');
+  const near={x:h.x+80,y:h.y,hp:1000,r:12},far={x:h.x+400,y:h.y,hp:1000,r:12};
+  t.game.enemies=[near,far];assert.equal(saga.unleash(),true);
+  assert.ok(near.hp<1000);assert.equal(far.hp,1000);
+  t.mainMenu();element('chooseMarcel').onclick();
+});
 check('Soul call cannot trigger in pause or wardrobe',()=>{t.pauseGame();assert.equal(saga.unleash(),false);assert.equal(t.game.hero.soul,100);t.resumeGame();saga.openCharacter();assert.equal(saga.unleash(),false);});
 check('Story milestones pause and never repeat; final stand begins at wave 20',()=>{t.game.wave=3;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Siegel/);saga.continueStory();assert.equal(saga.chapter(4),false);t.game.wave=19;t.endWave();t.selectPerk({name:'Test',apply(){}});assert.equal(t.state,'story');assert.match(element('storyTitle').textContent,/Jetzt entscheidet sich alles/);saga.continueStory();assert.equal(t.state,'playing');assert.equal(element('sagaComplete').classList.contains('hidden'),false);});
 check('Marcel never uses an unrelated legacy sprite while V5b decodes',()=>{const h=t.game.hero;draws.length=0;saga.draw(context,h);assert.ok(!draws.some(d=>d[0].src?.includes('marcel-lantern-sprite-v1')));});
