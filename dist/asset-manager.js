@@ -10,7 +10,9 @@
     // DenkmalChurch owns the church WebP; the 1879 lion is cached Canvas
     // artwork. Avoid duplicate decodes and never preload placeholder images.
     4:[],
-    5:['assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1'],
+    // Level 5 monument uses cached Canvas art until the branded WebP is replaced.
+    // Never preload the rejected artwork from the shared image manager.
+    5:[],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
     7:['assets/westhofen/westhofen-memorial-style2-v2.svg?v=westhofen-style2v2']
   };
