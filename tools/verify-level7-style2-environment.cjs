@@ -28,7 +28,10 @@ const server=http.createServer((req,res)=>{
       page.on('request',request=>requests.push(request.url()));
       await page.goto(`http://127.0.0.1:${server.address().port}/v4-style2/index.html${previewV2?'?westhofenArt=v2':''}`,{waitUntil:'networkidle'});
       await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
-      const state=await page.evaluate(async()=>{
+      const state=await page.evaluate(async(previewV2)=>{
+        const selectedAsset=previewV2?'assets/westhofen/westhofen-memorial-style2-v2.webp?v=westhofen-style2-v2a1':'assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+        const decoded=await DenkmalAssets.load(selectedAsset);
+        if(!decoded?.naturalWidth||DenkmalAssets.status(selectedAsset)!=='ready')throw Error('Westhofen memorial did not decode: '+selectedAsset);
         const environmentReady=await KirchendeArt.loadEnvironment();
         const groundReady=await DenkmalTerrain.load();
         if(!environmentReady||!KirchendeArt.ready('environment'))throw Error('shared environment atlas failed to load');
@@ -41,8 +44,8 @@ const server=http.createServer((req,res)=>{
         const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
         let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)visible++;
         if(visible<canvas.width*canvas.height*.08)throw Error('Westhofen gameplay canvas appears empty');
-        return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible,environmentReady,groundReady};
-      });
+        return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible,selectedAsset,memorialDecoded:!!decoded.naturalWidth,environmentReady,groundReady};
+      },previewV2);
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-westhofen-${previewV2?'v2':'gameplay'}.png`)});
       assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
