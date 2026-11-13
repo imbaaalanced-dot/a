@@ -25,15 +25,10 @@
       if(ok)ground=null;else environmentRequested=false;
     }).catch(()=>{environmentRequested=false;});
   }
-  // Pre-cut transparent Style 2 sprite. Keep the cached Canvas pylon as offline fallback.
-  let standaloneSprite=null;
-  const monumentImage=()=>{
-    const url='assets/hohensyburg/kaiser-wilhelm-style2.webp?v=style2a1';
-    if(globalThis.DenkmalAssets)return globalThis.DenkmalAssets.ready(url);
-    if(typeof Image!=='function')return null;
-    if(!standaloneSprite){standaloneSprite=new Image();standaloneSprite.decoding='async';standaloneSprite.src=url;}
-    return standaloneSprite;
-  };
+  // The archived transparent WebP contains a baked-in "STYLE 2" label over
+  // the historical figures. It is not suitable for runtime rendering.
+  // Use the existing cached present-day monument illustration until a verified
+  // replacement passes art QA; do not request the defective WebP.
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -257,15 +252,8 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    const monumentSprite=monumentImage();
-    if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
-      // Foot anchor is on the existing upper terrace, not on the lower plaza.
-      // Canvas already applies the oblique camera's upright-sprite correction.
-      const height=570,width=height*monumentSprite.naturalWidth/monumentSprite.naturalHeight;
-      ctx.drawImage(monumentSprite,m.x-width/2,m.y-height+40,width,height);
-      return;
-    }
     if(!memorial)memorial=createMemorial();
+    // One cached canvas, same foot anchor and projected rectangle as fallback.
     ctx.drawImage(memorial,m.x-240,m.y-500,480,540);
   }
   function drawAirLane(ctx,level,active){
@@ -277,7 +265,7 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
-    release(){ground=null;memorial=null;standaloneSprite=null;},
+    release(){ground=null;memorial=null;},
     environmentLamps,
     get allocations(){return allocations;}};
 })();
