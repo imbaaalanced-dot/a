@@ -1,5 +1,4 @@
-/* Hohensyburg: the known text-embedded WebP remains default;
- * ?td2SyburgCleanPreview=1 selects the existing cached Canvas fallback. */
+/* Hohensyburg: text-free cached monument is the default and query-compatible. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -29,20 +28,19 @@ function sample(search){
  return {art,calls,images,canvases,center};
 }
 const normal=sample('');
-assert.equal(normal.art.textFreePreview,false);
-assert.equal(normal.images.length,1,'default keeps the original loaded WebP');
-assert.equal(normal.canvases,0,'default sprite does not allocate fallback');
+assert.equal(normal.art.textFreePreview,true);
+assert.equal(normal.images.length,0,'default never loads the branded WebP');
+assert.equal(normal.canvases,1,'default monument uses exactly one canvas');
 assert.equal(normal.calls.length,2);
-assert.match(normal.calls[0][0].loadedFrom,/kaiser-wilhelm-style2\.webp/);
-const optin=sample('?td2SyburgCleanPreview=1');
-assert.equal(optin.art.textFreePreview,true);
-assert.equal(optin.images.length,0,'text-free preview does not request branded WebP in this renderer');
-assert.equal(optin.canvases,1,'Canvas monument cached across draws');
-assert.equal(optin.calls.length,2);
-assert.strictEqual(optin.calls[0][0],optin.calls[1][0],'reuses one cached canvas');
-assert.equal(optin.calls[0][1],optin.center.x-240);
-assert.equal(optin.calls[0][2],optin.center.y-500);
-assert.equal(optin.calls[0][3],480);
-assert.equal(optin.calls[0][4],540);
-assert.equal(sample('?td2SyburgCleanPreview=0').art.textFreePreview,false);
-console.log('Hohensyburg: default sprite, text-free preview, cached fallback and monument anchor passed.');
+assert.strictEqual(normal.calls[0][0],normal.calls[1][0],'cached monument reused');
+assert.equal(normal.calls[0][1],normal.center.x-240);
+assert.equal(normal.calls[0][2],normal.center.y-500);
+assert.equal(normal.calls[0][3],480);
+assert.equal(normal.calls[0][4],540);
+for(const search of ['?td2SyburgCleanPreview=1','?td2SyburgCleanPreview=0']){
+ const state=sample(search);
+ assert.equal(state.art.textFreePreview,true,'query parameters cannot re-enable branded image');
+ assert.equal(state.images.length,0,'no legacy WebP loads in any mode');
+ assert.equal(state.canvases,1,'only one cached canvas per renderer');
+}
+console.log('Hohensyburg: text-free default, legacy URL compatibility, caching and monument anchor passed.');
