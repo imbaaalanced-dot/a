@@ -87,18 +87,24 @@ assert.equal(asset.toString('ascii',0,4),'RIFF');
 assert.equal(asset.toString('ascii',8,12),'WEBP');
 assert.equal(asset.toString('ascii',12,16),'VP8X');
 assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
+let unwantedLoads=0;
 box.Image=class {
-  constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;}
-  set src(value){this.loadedFrom=value;}
+  constructor(){unwantedLoads++;}
+  set src(_value){unwantedLoads++;}
 };
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
-const beforeSprite=creations;
+const beforeFallback=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
-assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
-const drawnSprite=drawArgs.at(-1);
-assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2\.webp\?v=style2a1/);
-assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
-assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
+assert.equal(creations,beforeFallback+1,'a fresh renderer creates its cached memorial only once');
+const drawnMemorial=drawArgs.at(-1);
+assert.equal(drawnMemorial[0].width,480,'cached fallback uses the authored memorial canvas');
+assert.ok(Math.abs(drawnMemorial[1]+240-center.x)<.01,'memorial x remains centered on objective');
+assert.ok(Math.abs(drawnMemorial[2]+500-center.y)<.01,'memorial anchor stays on upper terrace');
+box.DenkmalHohensyburgArt.drawMonument(paint,center);
+assert.equal(creations,beforeFallback+1,'repeated monument rendering is allocation-free');
+assert.equal(unwantedLoads,0,'runtime must not load the branded Style-2 image');
+assert.doesNotMatch(fs.readFileSync('dist/hohensyburg-art.js','utf8'),/kaiser-wilhelm-style2\.webp/,
+ 'the defective branded image remains archived but is not a runtime dependency');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
