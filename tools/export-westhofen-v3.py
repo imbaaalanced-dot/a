@@ -41,6 +41,20 @@ def review(out):
     panel.save(f,"JPEG",quality=78,optimize=True)
     print("REVIEW_IMAGE_BASE64="+base64.b64encode(f.read_bytes()).decode("ascii"))
     print("REVIEW_IMAGE_BYTES="+str(f.stat().st_size))
+    small = Image.new("RGB", (920, 400), "#1a2320")
+    sd = ImageDraw.Draw(small)
+    sd.text((16, 14), "64PX ACTUAL RASTER / NEAREST-NEIGHBOR ZOOM", fill="#eee2bf")
+    for col,(label,source) in enumerate((("V2 ORIGINAL",left),("V3 BRONZE",right))):
+        x = 16 + 460*col
+        sd.text((x, 46), label, fill="#eee2bf")
+        sprite = source.resize((64,43), Image.Resampling.LANCZOS)
+        for row,bg in enumerate(("#d8d6cc", "#202a27")):
+            baseimg = Image.new("RGBA",(64,43),bg)
+            baseimg.alpha_composite(sprite)
+            small.paste(baseimg.convert("RGB").resize((448,150),Image.Resampling.NEAREST),(x,66+row*160))
+    sf=out/"westhofen-v2-v3-64px-review.jpg"
+    small.save(sf,"JPEG",quality=80,optimize=True)
+    print("REVIEW_64_BASE64="+base64.b64encode(sf.read_bytes()).decode("ascii"))
     for name,source in (("v2",left),("v3",right)):
         for width in (64,128):
             p=out/f"westhofen-{name}-{width}-dark-light.png"
