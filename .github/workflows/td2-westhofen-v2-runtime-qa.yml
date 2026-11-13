@@ -1,0 +1,48 @@
+name: TD2 Westhofen V2 focused Chromium QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/westhofen-art.js'
+      - 'dist/asset-manager.js'
+      - 'dist/assets/westhofen/**'
+      - 'tests/westhofen*.test.cjs'
+      - 'tools/verify-level7-style2-environment.cjs'
+      - '.github/workflows/td2-westhofen-v2-runtime-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  westhofen-v2:
+    name: Level 7 desktop Chromium and emulated touch portrait
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Level 7 game and asset contracts
+        run: |
+          node tests/westhofen.test.cjs
+          node tests/westhofen-style2-art.test.cjs
+          node tests/westhofen-v2-runtime.test.cjs
+          node tests/level67-single-image-owner.test.cjs
+      - name: Install Chromium for real browser checks
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Test Level 7 desktop and touch portrait image loading and gameplay draw
+        env:
+          TD2_LEVEL7_ENVIRONMENT_OUT: /tmp/td2-level7-westhofen-v2-qa
+        run: timeout 240s node tools/verify-level7-style2-environment.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: westhofen-v2-gameplay-and-64-128px-screenshots
+          path: /tmp/td2-level7-westhofen-v2-qa/
+          if-no-files-found: warn
+          retention-days: 14
