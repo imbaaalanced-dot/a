@@ -17,7 +17,7 @@ const expectedVersions = new Map([
   ['canonical-hero-art-v5.js', 'hero-lock2'],
   ['directional-assets-v410.js','v410a1'],
   ['directional-actions-v410.js','v5-hero-canonical1'],
-  ['map-polish-v410.js','v410a1'],
+  ['map-polish-v410.js','all-levels-20261113'],
   ['styles.css', 'v400a4merge1'],
   ['hero.css', 'v400a4merge1'],
   ['polish.css', 'v5-style2a1'],
