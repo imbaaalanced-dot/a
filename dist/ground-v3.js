@@ -1,10 +1,13 @@
 /* Reference-guided Style 2 material pass V3.
- * Opt-in only: ?td2GroundV3=1. Original layouts, save data and routes unchanged.
+ * Enabled by default; ?td2GroundV3=0 restores original terrain. Original layouts, saves and routes unchanged.
  * The nine 256px WebPs are AI interpretations of documented material families,
  * not literal original photographs or historically exact reconstruction. */
 (()=>{
 'use strict';
-const active=/(?:^|[?&])td2GroundV3=1(?:&|$)/.test(globalThis.location?.search||'');
+const query=globalThis.location?.search||'';
+// Legacy Style-2 pilot remains isolated from V3; explicit opt-out is always respected.
+const active=!/(?:^|[?&])td2GroundV3=0(?:&|$)/.test(query)
+ && !/(?:^|[?&])td2Style2Pilot=1(?:&|$)/.test(query);
 const base='assets/reference-ground-v3/';
 const names=Object.freeze([
  'forest_moss_roots','dark_slab_lichen','meadow_patchy','churchyard_cobble',
