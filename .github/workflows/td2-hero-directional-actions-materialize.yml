@@ -63,7 +63,7 @@ jobs:
               problems = []
               for row_name, row in entry['rows'].items():
                   for col in range(6):
-                      cell = atlas[col*128:(col+1)*128, row*128:(row+1)*128]
+                      cell = atlas[row*128:(row+1)*128, col*128:(col+1)*128]
                       alpha = cell[:, :, 3]
                       h = np.bincount(alpha.ravel(), minlength=256)
                       transparent = int(h[:16].sum())
