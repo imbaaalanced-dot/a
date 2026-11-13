@@ -87,11 +87,12 @@ assert.equal(asset.toString('ascii',0,4),'RIFF');
 assert.equal(asset.toString('ascii',8,12),'WEBP');
 assert.equal(asset.toString('ascii',12,16),'VP8X');
 assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
-let unwantedImages=0;
+let unwantedImages=0,loadedUrl=null;
 box.Image=class {
-  constructor(){unwantedImages++;}
-  set src(_url){unwantedImages++;}
+  constructor(){this.complete=true;this.naturalWidth=512;this.naturalHeight=608;unwantedImages++;}
+  set src(url){this.loadedFrom=url;loadedUrl=url;}
 };
+box.location={search:'?td2SyburgCleanPreview=1'};
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
 const beforeClean=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
@@ -104,7 +105,7 @@ assert.equal(cleanDraw[2],center.y-500,'unchanged monument foot anchor');
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
 assert.equal(creations,beforeClean+1,'cached monument has no repeated allocations');
 assert.equal(unwantedImages,0,'branded monument image is never requested');
-assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
+assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'Canvas preview remains text-free');
 assert.ok(renderedText.some(([t,x,y])=>t==='18 JANUAR 1871'&&x===0&&y===-373),
  'historically attested inscription appears above the upper arch');
 assert.ok(!renderedText.some(([t])=>t==='1871'),
@@ -124,11 +125,21 @@ assert.equal((source.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
  'upper and lower Hohensyburg terraces use irregular paving');
 assert.doesNotMatch(source,/Math\.abs\(Math\.floor\(x\/(?:74|76)\)/,
  'alternating tile checkerboard must not return');
+box.location={search:''};
+vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
+const beforeV2=creations;
+box.DenkmalHohensyburgArt.drawMonument(paint,center);
+assert.equal(creations,beforeV2,'ready default V2 avoids a new Canvas');
+assert.equal(unwantedImages,1,'V2 decode is singleton');
+assert.match(loadedUrl,/kaiser-wilhelm-style2-qa-v2-2x\.webp\?v=syburg-248b1/);
+const v2Draw=drawArgs.at(-1);
+assert.equal(v2Draw[2],center.y-500,'V2 foot anchor is unchanged');
+assert.ok(Math.abs(v2Draw[1]+v2Draw[3]/2-center.x)<.01,'V2 objective center unchanged');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
-assert.ok(html.includes('hohensyburg-art.js?v=syburg-bronze4-late-ground-20261114'));
+assert.ok(html.includes('hohensyburg-art.js?v=syburg-v2-late-ground-20261114'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
 assert.ok(game.includes('DenkmalHohensyburgArt?.drawGround'));

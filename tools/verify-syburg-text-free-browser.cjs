@@ -65,7 +65,7 @@ const server=http.createServer((req,res)=>{
        &&Number.parseFloat(getComputedStyle(banner).opacity)<.02
        &&Number.parseFloat(getComputedStyle(toast).opacity)<.02;
    },null,{timeout:12000});
-   assert.equal(state.textFreePreview,true,'all sessions must use text-free monument');
+   assert.equal(state.textFreePreview,preview,'explicit Canvas mode controls the fallback');
    assert.ok(!requests.some(url=>url.includes('kaiser-wilhelm-style2.webp')),
      'branded Hohensyburg asset must not be requested');
    assert.deepEqual(errors,[],'no JavaScript exceptions');

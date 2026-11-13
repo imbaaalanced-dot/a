@@ -25,12 +25,31 @@
       if(ok)ground=null;else environmentRequested=false;
     }).catch(()=>{environmentRequested=false;});
   }
-  // Preserve the approved sprite as default. Opt-in isolates the legacy Canvas
-  // reconstruction while its image-embedded STYLE 2 text remains under art QA.
-  // This changes the monument's visuals only; no level geometry or saves.
-  const textFreePreview=true; // All production sessions use the text-free cached monument.
-  // The legacy WebP has a baked-in STYLE 2 label and must not be requested.
-  // Keep the original file archived for provenance, not for game rendering.
+  // Style-2 V2 is the Level-5 default; the original branded sprite is archival only.
+  // A clean Canvas reconstruction from current main remains the only fallback.
+  const syburgSearch=globalThis.location?.search||'';
+  const legacyMonument=/(?:^|[?&])td2SyburgLegacy=1(?:&|$)/.test(syburgSearch);
+  const textFreePreview=legacyMonument||/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(syburgSearch);
+  const candidate248V1=!textFreePreview&&/(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(syburgSearch);
+  const candidate248V2=!textFreePreview&&!candidate248V1;
+  const candidate248Preview=candidate248V1||candidate248V2;
+  const candidate248Url=candidate248V2
+    ?'assets/hohensyburg/kaiser-wilhelm-style2-qa-v2-2x.webp?v=syburg-248b1'
+    :'assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp?v=syburg-248a1';
+  let candidate248Sprite=null,candidate248Failed=false;
+  function candidate248Image(){
+    if(!candidate248Preview||candidate248Failed||typeof Image!=='function')return null;
+    if(!candidate248Sprite){
+      const img=new Image();img.decoding='async';candidate248Sprite=img;
+      img.onload=()=>{if(img.naturalWidth!==512||img.naturalHeight!==608){
+        candidate248Failed=true;candidate248Sprite=null;
+      }};
+      img.onerror=()=>{candidate248Failed=true;candidate248Sprite=null;};
+      img.src=candidate248Url;
+    }
+    return candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608
+      ?candidate248Sprite:null;
+  }
   function stroke(ctx,points,color,width){
     ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
     ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
@@ -407,8 +426,14 @@
     return canvas;
   }
   function drawMonument(ctx,m){
+    const sprite=candidate248Image();
+    if(sprite){
+      const height=540,width=height*sprite.naturalWidth/sprite.naturalHeight;
+      ctx.drawImage(sprite,m.x-width/2,m.y-height+40,width,height);
+      return;
+    }
+    // Existing sculpted Canvas fallback is cached and has no embedded logo.
     if(!memorial)memorial=createMemorial();
-    // Preserves the existing level objective anchor and cached 2.5D footprint.
     ctx.drawImage(memorial,m.x-240,m.y-500,480,540);
   }
   function drawAirLane(ctx,level,active){
@@ -420,8 +445,10 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
-    textFreePreview,
-    release(){ground=null;memorial=null;},
+    legacyMonument,textFreePreview,candidate248Preview,candidate248V2,
+    get candidate248Ready(){return !!candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608;},
+    get candidate248Failed(){return candidate248Failed;},
+    release(){ground=null;memorial=null;candidate248Sprite=null;candidate248Failed=false;},
     environmentLamps,
     get allocations(){return allocations;}};
 })();
