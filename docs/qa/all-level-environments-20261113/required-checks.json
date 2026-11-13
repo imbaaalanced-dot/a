@@ -1,0 +1,572 @@
+{
+  "source": ".github/workflows/test.yml",
+  "total": 113,
+  "passed": 113,
+  "checks": [
+    {
+      "command": "node tests/ansturm-legacy-links.test.cjs",
+      "exit": 0,
+      "seconds": 0.18
+    },
+    {
+      "command": "node tests/loot-ui.test.cjs",
+      "exit": 0,
+      "seconds": 0.43
+    },
+    {
+      "command": "node tests/menu-navigation.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/menu-navigation.test.cjs",
+      "exit": 0,
+      "seconds": 0.15
+    },
+    {
+      "command": "node tests/startup-loading.test.cjs",
+      "exit": 0,
+      "seconds": 0.05
+    },
+    {
+      "command": "node tests/alpha8-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/alpha8-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/main-menu.test.cjs",
+      "exit": 0,
+      "seconds": 0.05
+    },
+    {
+      "command": "node tests/portrait-home-v1.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/intro-tutorial.test.cjs",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node tests/preloader.test.cjs",
+      "exit": 0,
+      "seconds": 0.54
+    },
+    {
+      "command": "node tests/asset-manager.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/level67-single-image-owner.test.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/menu-v3b-preload.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/mobile-frame-pacing.test.cjs",
+      "exit": 0,
+      "seconds": 0.36
+    },
+    {
+      "command": "node tests/mobile-fps-render-budget.test.cjs",
+      "exit": 0,
+      "seconds": 0.17
+    },
+    {
+      "command": "node tests/adaptive-mobile-resolution.test.cjs",
+      "exit": 0,
+      "seconds": 0.2
+    },
+    {
+      "command": "node tests/cpu-render-profiling.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/cache-busting.test.cjs",
+      "exit": 0,
+      "seconds": 0.19
+    },
+    {
+      "command": "node tests/level4-seamfix-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/terrain-polish.test.cjs",
+      "exit": 0,
+      "seconds": 0.24
+    },
+    {
+      "command": "node tests/kirchende-loading.test.cjs",
+      "exit": 0,
+      "seconds": 0.35
+    },
+    {
+      "command": "node tests/kirchende-memorial-pilot.test.cjs",
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "command": "node tests/style2-kirchende.test.cjs",
+      "exit": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "node tests/style2-cannon.test.cjs",
+      "exit": 0,
+      "seconds": 0.22
+    },
+    {
+      "command": "node tests/style2-towers.test.cjs",
+      "exit": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "node tests/elemental-sprites.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/style2-user-towers.test.cjs",
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "command": "node tests/style2-reference-refresh.test.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/style2-default.test.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/style2-adapter-regression.cjs",
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "command": "node tests/style2-cache-pressure.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/style2-manager-pressure.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/style2-impact-pass4.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/style2-impact-atlas.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/v2-expansion.test.cjs",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node tests/style2-review-page.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/enemy-animations.test.cjs",
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "command": "node tests/flight-enemies.test.cjs",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node tests/goethestrasse.test.cjs",
+      "exit": 0,
+      "seconds": 0.12
+    },
+    {
+      "command": "node tests/goethestrasse-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.12
+    },
+    {
+      "command": "node tests/level5.test.cjs",
+      "exit": 0,
+      "seconds": 0.15
+    },
+    {
+      "command": "node tests/hohensyburg-text-free-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/level5-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.16
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/level5-preview.test.cjs",
+      "exit": 0,
+      "seconds": 0.13
+    },
+    {
+      "command": "node tests/style2-maps.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "node tests/style2-phase6.test.cjs",
+      "exit": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "node tests/style2-ground.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "node tests/style2-markers.test.cjs",
+      "exit": 0,
+      "seconds": 0.17
+    },
+    {
+      "command": "node tests/style2-ambience.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/style2-level4-reference.test.cjs",
+      "exit": 0,
+      "seconds": 0.15
+    },
+    {
+      "command": "node tests/style2-church-sprite.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/canonical-hero-art-v5.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/pixel-marcel-atlas.test.cjs",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "command": "node tests/portrait-hud.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/hero-style2-v5.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/hero-sprites-v5b.test.cjs",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node tests/hero-action-pivot-contract.test.cjs",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "command": "node tests/hero-direction-ready.test.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/canonical-style2-runtime.test.cjs",
+      "exit": 0,
+      "seconds": 0.17
+    },
+    {
+      "command": "node tests/portal-run.test.cjs",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node tests/portal-perks.test.cjs",
+      "exit": 0,
+      "seconds": 0.05
+    },
+    {
+      "command": "node tests/portal-storage.test.cjs",
+      "exit": 0,
+      "seconds": 0.15
+    },
+    {
+      "command": "node tests/portal-gameplay.test.cjs",
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/portal-gameplay.test.cjs",
+      "exit": 0,
+      "seconds": 0.17
+    },
+    {
+      "command": "node tests/campaign-balance.test.cjs",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "command": "node tests/loot.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/equipment-catalog.test.cjs",
+      "exit": 0,
+      "seconds": 0.83
+    },
+    {
+      "command": "node tests/equipment-migration.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "node tests/boss-loot.test.cjs",
+      "exit": 0,
+      "seconds": 15.97
+    },
+    {
+      "command": "node tests/equipment-effects.test.cjs",
+      "exit": 0,
+      "seconds": 0.21
+    },
+    {
+      "command": "npm test --prefix ansturm-alpha1-5",
+      "exit": 0,
+      "seconds": 2.72
+    },
+    {
+      "command": "node tests/simulation-work.test.cjs",
+      "exit": 0,
+      "seconds": 0.18
+    },
+    {
+      "command": "node tests/simulation-equivalence.test.cjs",
+      "exit": 0,
+      "seconds": 30.42
+    },
+    {
+      "command": "node tests/ansturm-source-parity.test.cjs",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tests/game.test.cjs",
+      "exit": 0,
+      "seconds": 0.58
+    },
+    {
+      "command": "node tests/barracks.test.cjs",
+      "exit": 0,
+      "seconds": 0.21
+    },
+    {
+      "command": "node tests/barracks-matchups.test.cjs",
+      "exit": 0,
+      "seconds": 0.69
+    },
+    {
+      "command": "node tests/barracks-campaign-runs.test.cjs",
+      "exit": 0,
+      "seconds": 62.22
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/game.test.cjs",
+      "exit": 0,
+      "seconds": 1.39
+    },
+    {
+      "command": "node tests/combat-fx.test.cjs",
+      "exit": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tests/v4-alpha4.test.cjs",
+      "exit": 0,
+      "seconds": 0.2
+    },
+    {
+      "command": "node tests/v4-alpha5.test.cjs",
+      "exit": 0,
+      "seconds": 0.2
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/v4-alpha5.test.cjs",
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "command": "node tests/level4.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "TEST_MOBILE=1 node tests/level4.test.cjs",
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "node tests/v3.1-features.test.cjs",
+      "exit": 0,
+      "seconds": 0.13
+    },
+    {
+      "command": "python tests/hero-sprites-v5b.test.py",
+      "exit": 0,
+      "seconds": 1.66
+    },
+    {
+      "command": "python tests/active-hero-atlas-alpha.test.py",
+      "exit": 0,
+      "seconds": 1.04
+    },
+    {
+      "command": "python tests/hero-direction-candidate-gate.test.py",
+      "exit": 0,
+      "seconds": 0.55
+    },
+    {
+      "command": "python tests/hero-direction-packer.test.py",
+      "exit": 0,
+      "seconds": 1.36
+    },
+    {
+      "command": "python tests/hero-attack-sheet-intake.test.py",
+      "exit": 0,
+      "seconds": 1.29
+    },
+    {
+      "command": "python tests/style2-pilot-staging.test.py",
+      "exit": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "python tests/style2-pilot-runtime-assets.test.py",
+      "exit": 0,
+      "seconds": 0.33
+    },
+    {
+      "command": "python tests/assets.test.py",
+      "exit": 0,
+      "seconds": 2.69
+    },
+    {
+      "command": "python tests/kirchende-memorial-pilot.test.py",
+      "exit": 0,
+      "seconds": 0.26
+    },
+    {
+      "command": "python tests/style2-v2-assets.test.py",
+      "exit": 0,
+      "seconds": 0.99
+    },
+    {
+      "command": "python tests/v2-expansion-assets.test.py",
+      "exit": 0,
+      "seconds": 2.85
+    },
+    {
+      "command": "python tests/alpha8-assets.test.py",
+      "exit": 0,
+      "seconds": 1.06
+    },
+    {
+      "command": "python tests/alpha9-assets.test.py",
+      "exit": 0,
+      "seconds": 2.91
+    },
+    {
+      "command": "python tests/alpha9-user-towers.test.py",
+      "exit": 0,
+      "seconds": 0.93
+    },
+    {
+      "command": "python tests/style2-cleanup-assets.test.py",
+      "exit": 0,
+      "seconds": 1.18
+    },
+    {
+      "command": "python tests/style2-cleanup-pass3.test.py",
+      "exit": 0,
+      "seconds": 14.79
+    },
+    {
+      "command": "python tests/style2-reference-assets.test.py",
+      "exit": 0,
+      "seconds": 1.0
+    },
+    {
+      "command": "python tests/enemy-animation-assets.test.py",
+      "exit": 0,
+      "seconds": 0.71
+    },
+    {
+      "command": "python tests/style2-enemy-boss-audit.test.py",
+      "exit": 0,
+      "seconds": 1.47
+    },
+    {
+      "command": "python tests/barracks-assets.test.py",
+      "exit": 0,
+      "seconds": 0.36
+    },
+    {
+      "command": "python tests/style2-active-atlas-pilot-v5.test.py",
+      "exit": 0,
+      "seconds": 1.2
+    },
+    {
+      "command": "node tests/directional-actions-v410.test.cjs",
+      "exit": 0,
+      "seconds": 0.19
+    },
+    {
+      "command": "node tests/map-polish-v410.test.cjs",
+      "exit": 0,
+      "seconds": 0.6
+    },
+    {
+      "command": "node tests/v410-balance.test.cjs",
+      "exit": 0,
+      "seconds": 0.65
+    },
+    {
+      "command": "python tests/v410-source-extraction.test.py",
+      "exit": 0,
+      "seconds": 2.26
+    },
+    {
+      "command": "python tests/v410-directional-assets.test.py",
+      "exit": 0,
+      "seconds": 1.16
+    }
+  ]
+}
