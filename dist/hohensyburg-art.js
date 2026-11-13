@@ -30,8 +30,13 @@
   // This changes the monument's visuals only; no level geometry or saves.
   const textFreePreview=/(?:^|[?&])td2SyburgCleanPreview=1(?:&|$)/.test(globalThis.location?.search||'');
   // Opt-in only until reference fidelity and hardware/visual QA are approved.
-  const candidate248Preview=/(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(globalThis.location?.search||'');
-  const candidate248Url='assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp?v=syburg-248a1';
+  // V1 and the reference-corrected V2 remain separately selectable for visual QA.
+  const candidate248V2=/(?:^|[?&])td2SyburgArt248=2(?:&|$)/.test(globalThis.location?.search||'');
+  const candidate248Preview=candidate248V2||
+    /(?:^|[?&])td2SyburgArt248=1(?:&|$)/.test(globalThis.location?.search||'');
+  const candidate248Url=candidate248V2
+    ?'assets/hohensyburg/kaiser-wilhelm-style2-qa-v2-2x.webp?v=syburg-248b1'
+    :'assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp?v=syburg-248a1';
   let candidate248Sprite=null,candidate248Failed=false;
   function candidate248Image(){
     if(!candidate248Preview||candidate248Failed||typeof Image!=='function')return null;
@@ -325,7 +330,7 @@
     }finally{ctx.restore();}
   }
   globalThis.DenkmalHohensyburgArt={drawGround,drawMonument,drawAirLane,
-    textFreePreview,candidate248Preview,
+    textFreePreview,candidate248Preview,candidate248V2,
     get candidate248Ready(){return !!candidate248Sprite?.complete&&candidate248Sprite.naturalWidth===512&&candidate248Sprite.naturalHeight===608;},
     get candidate248Failed(){return candidate248Failed;},
     release(){ground=null;memorial=null;standaloneSprite=null;candidate248Sprite=null;candidate248Failed=false;},
