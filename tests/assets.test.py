@@ -126,3 +126,18 @@ with Image.open(westhofen) as image:
     assert visible_bbox[2] <= image.width - inset and visible_bbox[3] <= image.height - inset, ('clipped visible Westhofen bottom/right edge', bbox, visible_bbox)
     assert westhofen.stat().st_size < 160000, 'Westhofen memorial WebP exceeds the current mobile download budget'
     print(f'Westhofen memorial: {image.width}x{image.height} RGBA WebP, alpha bbox {bbox}, under 160 KB')
+
+# Preview-only Westhofen V2 must be a real optimized RGBA WebP, not an SVG
+# wrapped as an image URL. The original V1 still has a separate contract above.
+westhofen_v2 = root.parent / 'westhofen' / 'westhofen-memorial-style2-v2.webp'
+with Image.open(westhofen_v2) as img:
+    img.load()
+    assert img.format == 'WEBP' and img.mode == 'RGBA', 'Westhofen V2 decodes as transparent WebP'
+    assert img.size == (768, 512), 'same 3:2 aspect ratio and anchor as V1'
+    assert westhofen_v2.stat().st_size < 160000, 'mobile V2 WebP budget'
+    alpha = img.getchannel('A')
+    assert alpha.getextrema()[0] == 0 and alpha.getextrema()[1] > 200
+    bbox = alpha.point(lambda a: 255 if a >= 32 else 0).getbbox()
+    assert bbox and bbox[0] >= 8 and bbox[1] >= 8
+    assert bbox[2] <= img.width-8 and bbox[3] <= img.height-8, ('V2 clipped silhouette', bbox)
+    print(f'Westhofen V2 opt-in: 768x512 RGBA WebP, {westhofen_v2.stat().st_size} bytes, visible bbox {bbox}')
