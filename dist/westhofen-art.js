@@ -5,21 +5,42 @@
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
 let ground=null,environmentRequested=false;
-let memorialSprite=null,memorialRequested=false;
+let memorialSprite=null,memorialRequested=false,fallbackRetained=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
-const memorialUrl='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+// Visual comparison only. V1 remains the default until V2 is visually/device-approved.
+const previewV2=/(?:^|[?&])westhofenArt=v2(?:&|$)/.test(globalThis.location?.search||'');
+const memorialUrlV1='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+const memorialUrlV2='assets/westhofen/westhofen-memorial-style2-v2.webp?v=westhofen-style2-v2a1';
+const memorialUrl=previewV2?memorialUrlV2:memorialUrlV1;
 function readyMemorial(){
- // Level 7 preloads the same WebP through the shared asset manager.
- // Keep the standalone fallback for previews without the manager.
- if(globalThis.DenkmalAssets?.ready){
-  memorialSprite=globalThis.DenkmalAssets.ready(memorialUrl);
-  return !!(memorialSprite?.naturalWidth&&memorialSprite.naturalHeight);
+ // Both the preloader and the renderer select exactly the same WebP URL.
+ // If optional V2 fails, retain V1 only then; avoid two decodes in the healthy path.
+ const assets=globalThis.DenkmalAssets;
+ if(assets?.ready){
+  memorialSprite=assets.ready(memorialUrl);
+  if(memorialSprite?.naturalWidth&&memorialSprite.naturalHeight)return true;
+  if(previewV2&&assets.status?.(memorialUrl)==='failed'){
+   if(!fallbackRetained&&typeof assets.retain==='function'){
+    fallbackRetained=true;
+    void assets.retain('westhofen:v1-fallback',[memorialUrlV1]);
+   }
+   memorialSprite=assets.ready(memorialUrlV1);
+   return !!(memorialSprite?.naturalWidth&&memorialSprite.naturalHeight);
+  }
+  return false;
  }
+ // Standalone previews without the asset manager must also recover from V2 failure.
  if(!memorialRequested){
   memorialRequested=true;
   if(typeof Image==='function'){
    memorialSprite=new Image();memorialSprite.decoding='async';
+   if(previewV2){
+    memorialSprite.onerror=()=>{
+     memorialSprite.onerror=null;
+     memorialSprite.src=memorialUrlV1;
+    };
+   }
    memorialSprite.src=memorialUrl;
   }
  }
@@ -138,4 +159,4 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;memorialSprite=null;memorialRequested=false;environmentRequested=false;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){globalThis.DenkmalAssets?.release?.('westhofen:v1-fallback');ground=null;memorialSprite=null;memorialRequested=false;fallbackRetained=false;environmentRequested=false;}};})();
