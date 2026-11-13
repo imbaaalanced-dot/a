@@ -8,6 +8,34 @@
   const MAX_DAMAGE_TEXTS = 24, MAX_DAMAGE_TEXTS_REDUCED = 8;
   let audio, master, voices = 0;
   const lastSound = new Map();
+  // Compact, opt-in Marcel-only V2 FX atlas: 6 frames × 3 rows, 32 px per cell.
+  // Loaded only when Marcel fires. Keep procedural effects for decode/HTTP failures.
+  const STAFF_FX_FILE = 'assets/hero/marcel-staff-fx-v2-32.png?v=stafffx2';
+  let staffImage = null, staffState = 'cold';
+  function staffTexture() {
+    if(staffState === 'cold'){
+      staffState = 'loading';
+      try {
+        const image = new Image();
+        image.onload = () => {
+          if(image.naturalWidth === 192 && image.naturalHeight === 96){
+            staffImage = image; staffState = 'ready';
+          } else staffState = 'failed';
+        };
+        image.onerror = () => { staffState = 'failed'; };
+        image.src = STAFF_FX_FILE;
+      } catch { staffState = 'failed'; }
+    }
+    return staffState === 'ready' ? staffImage : null;
+  }
+  function drawStaffFrame(ctx,x,y,row,progress,angle=0,size=30){
+    const atlas = staffTexture();
+    if(!atlas || row<0 || row>2)return false;
+    const frame = Math.max(0,Math.min(5,Math.floor(Math.max(0,Math.min(.999,progress))*6)));
+    ctx.save();ctx.translate(x,y);ctx.rotate(angle);
+    ctx.drawImage(atlas,frame*32,row*32,32,32,-size/2,-size/2,size,size);
+    ctx.restore();return true;
+  }
   function unlock() {
     try {
       const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
@@ -50,7 +78,8 @@
     if (impact) {
       // Expanding shock ring marks the exact hit spot.
       const ringLife = reduced ? .22 : .34;
-      push(game, {x:bullet.x,y:bullet.y,vx:0,vy:0,life:ringLife,max:ringLife,r:heavy?12:9,color:bullet.color,ring:true});
+      push(game, {x:bullet.x,y:bullet.y,vx:0,vy:0,life:ringLife,max:ringLife,r:heavy?12:9,color:bullet.color,ring:true,
+        staffImpact:!!(bullet.heroShot&&bullet.heroCharacter==='marcel'&&bullet.kind==='wand')});
       // Debris kicks back against the projectile direction, so hits read as directional.
       const dirX = Math.sign(bullet.vx || 0), dirY = Math.sign(bullet.vy || 0);
       const debris = reduced ? 6 : heavy ? 14 : 9;
@@ -120,6 +149,8 @@
   const getContext=()=>audio,getMaster=()=>master;
   function draw(ctx,b,reduced) {
     const kind=b.kind||'magic', level=b.level||1, arrow=kind==='bow'||kind==='ballista',heavy=kind==='cannon'||kind==='mortar';
+    if(b.heroShot&&b.heroCharacter==='marcel'&&kind==='wand'&&
+       drawStaffFrame(ctx,b.x,b.y,0,(Math.max(0,1.1-b.life)*4)%1,Math.atan2(b.vy,b.vx),30))return;
     ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx));
     ctx.strokeStyle=b.color;ctx.fillStyle=b.color;ctx.lineWidth=1+level*.45;
     // Motion streak grows with speed so fast shells read as fast.
@@ -137,6 +168,7 @@
   }
   function drawParticle(ctx,p){
     if(!p)return false;
+    if(p.staffImpact&&drawStaffFrame(ctx,p.x,p.y,2,1-Math.max(0,p.life/p.max),0,36))return true;
     if(p.userStyle2Impact&&globalThis.UserStyle2Towers?.drawImpact?.(ctx,p))return true;
     const t=Math.max(0,Math.min(1,p.life/p.max));
     if(p.ring){
@@ -162,5 +194,5 @@
     }
     return false;
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,getContext,getMaster};
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster};
 })();
