@@ -126,16 +126,7 @@
       f.right-f.left+48,92);
     q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
       f.right-f.left+48,f.bottom-f.top+10);
-    if(textFreePreview){
-      // Remove the game-viewport checkerboard: cached natural sandstone
-      // replaces alternating rectangles; identical court bounds and layering.
-      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#948c7b';
-      q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-      q.fillStyle='#29332924';q.fillRect(c.x+f.left+22,c.y+f.top+20,
-        f.right-f.left-44,f.bottom-f.top-45);
-    }else{
-      weatheredPaving(q,c.x+f.left+22,c.y+f.top+20,
+    weatheredPaving(q,c.x+f.left+22,c.y+f.top+20,
       f.right-f.left-44,f.bottom-f.top-45,76,48,1902);
     // Viewpoint balustrade follows the southern edge, with stone-capped posts.
     q.fillStyle='#52564d';q.fillRect(c.x+f.left-20,c.y+f.bottom-12,f.right-f.left+40,45);
@@ -163,14 +154,7 @@
     }
     q.fillStyle='#a99d84';q.fillRect(c.x+r.left,c.y+r.top,
       r.right-r.left,r.bottom-r.top);
-    if(textFreePreview){
-      q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#99917c';
-      q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-      q.fillStyle='#3442371c';q.fillRect(c.x+r.left+24,c.y+r.top+20,
-        r.right-r.left-48,r.bottom-r.top-45);
-    }else{
-      weatheredPaving(q,c.x+r.left+24,c.y+r.top+20,
+    weatheredPaving(q,c.x+r.left+24,c.y+r.top+20,
       r.right-r.left-48,r.bottom-r.top-45,74,45,1936);
     // Plinth coping is interrupted where the two stair flights meet the deck.
     q.fillStyle='#c8bba2';q.fillRect(c.x+r.left-10,c.y+r.top-12,r.right-r.left+20,21);
