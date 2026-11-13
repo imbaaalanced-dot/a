@@ -237,34 +237,149 @@
     q.fillStyle='#59594d';q.beginPath();
     q.moveTo(-102,-413);q.lineTo(80,-413);q.lineTo(98,-405);q.lineTo(-82,-405);q.closePath();q.fill();
     q.strokeStyle='#726f60';q.lineWidth=5;q.strokeRect(-104,-415,210,15);
-    // Two freestanding bronze figures: Bismarck and Moltke.
-    for(const x of [-146,149]){
-      q.fillStyle='#716b5c';q.fillRect(x-35,-93,70,47);
-      q.fillStyle='#ac9b82';q.fillRect(x-37,-100,74,12);
-      q.fillStyle='#2c5149';q.beginPath();
-      q.moveTo(x-17,-99);q.lineTo(x-28,-170);q.lineTo(x-17,-212);
-      q.lineTo(x+18,-212);q.lineTo(x+28,-165);q.lineTo(x+16,-99);
-      q.closePath();q.fill();
-      q.fillStyle='#43665d';q.beginPath();q.arc(x,-226,17,0,Math.PI*2);q.fill();
-      q.strokeStyle='#7c9e8f';q.lineWidth=3;q.beginPath();
-      q.moveTo(x-17,-181);q.lineTo(x-12,-119);q.stroke();
+    // The three preserved bronze monuments are shaded separately from stone:
+    // the equestrian figure Wilhelm I, flanked by Bismarck and Moltke.
+    // All details are rasterized once into the same 480x540 cached canvas.
+    function bronze(x,y,w,h){
+      const g=q.createLinearGradient(x-w*.55,y-h*.6,x+w*.6,y+h*.5);
+      g.addColorStop(0,'#9fbbab');g.addColorStop(.22,'#527e70');
+      g.addColorStop(.56,'#345e55');g.addColorStop(1,'#183a34');
+      return g;
     }
-    // Patinated bronze side-on horse, distinct rider above, standing in front
-    // of the arch, not replacing it with a generic tower sprite.
-    q.fillStyle='#203f3c';q.beginPath();
-    q.moveTo(-68,-165);q.lineTo(-72,-222);q.lineTo(-51,-243);
-    q.lineTo(-25,-228);q.lineTo(11,-215);q.lineTo(44,-228);
-    q.lineTo(72,-245);q.lineTo(93,-234);q.lineTo(80,-198);
-    q.lineTo(61,-188);q.lineTo(44,-196);q.lineTo(43,-143);
-    q.lineTo(26,-143);q.lineTo(14,-192);q.lineTo(-29,-191);
-    q.lineTo(-38,-141);q.lineTo(-58,-141);q.closePath();q.fill();
-    q.strokeStyle='#6b9586';q.lineWidth=4;q.beginPath();
-    q.moveTo(-55,-222);q.lineTo(55,-209);q.stroke();
-    q.fillStyle='#41685b';q.beginPath();q.moveTo(-7,-285);
-    q.lineTo(24,-288);q.lineTo(28,-210);q.lineTo(-9,-214);q.closePath();q.fill();
-    q.beginPath();q.arc(8,-301,16,0,Math.PI*2);q.fill();
-    q.strokeStyle='#9fae9b';q.lineWidth=6;q.beginPath();
-    q.moveTo(14,-255);q.lineTo(47,-230);q.stroke();
+    function sideBronze(x,officer){
+      q.save();q.translate(x,0);
+      // Chiselled sandstone plinth and recessed vertical contact shadow.
+      q.fillStyle='#383e35';q.fillRect(-37,-103,74,11);
+      q.fillStyle='#766e60';q.fillRect(-34,-98,68,51);
+      q.fillStyle='#c7b498';q.fillRect(-38,-103,76,9);
+      q.fillStyle='#a89a80';q.fillRect(-34,-94,8,43);
+      q.fillStyle='#203832bb';q.beginPath();q.ellipse(0,-105,26,9,0,0,Math.PI*2);q.fill();
+      // Distinct boot stance, two folds in the long cast-bronze greatcoat.
+      q.fillStyle='#21483f';q.beginPath();
+      q.moveTo(-17,-124);q.lineTo(-22,-103);q.lineTo(-5,-99);
+      q.lineTo(-1,-130);q.lineTo(4,-99);q.lineTo(24,-102);
+      q.lineTo(17,-136);q.closePath();q.fill();
+      q.fillStyle=bronze(0,-176,58,103);q.beginPath();
+      q.moveTo(-17,-207);q.bezierCurveTo(-31,-204,-35,-178,-29,-152);
+      q.lineTo(-25,-113);q.quadraticCurveTo(-5,-123,0,-117);
+      q.quadraticCurveTo(13,-122,27,-112);q.lineTo(28,-156);
+      q.bezierCurveTo(32,-178,23,-201,14,-207);q.closePath();q.fill();
+      // Asymmetrical coat lapels and the hanging cloak read at reduced scale.
+      q.strokeStyle='#a4b8a7';q.lineWidth=2.7;q.beginPath();
+      q.moveTo(-8,-202);q.lineTo(2,-183);q.lineTo(-4,-141);
+      q.moveTo(7,-201);q.lineTo(15,-181);q.lineTo(9,-147);q.stroke();
+      q.strokeStyle='#163b35';q.lineWidth=4;q.beginPath();
+      q.moveTo(-26,-155);q.quadraticCurveTo(-31,-135,-24,-116);
+      q.moveTo(27,-160);q.quadraticCurveTo(23,-134,26,-116);q.stroke();
+      // Bismarck (left): hands on staff; Moltke (right): lowered sabre.
+      q.strokeStyle='#2e584d';q.lineWidth=12;q.lineCap='round';q.beginPath();
+      q.moveTo(-22,-195);q.lineTo(-22,-154);q.lineTo(-6,-157);
+      q.moveTo(21,-196);q.lineTo(23,officer?-166:-156);
+      q.lineTo(officer?15:4,officer?-156:-158);q.stroke();
+      q.strokeStyle='#a0b9a7';q.lineWidth=3;q.beginPath();
+      q.moveTo(-25,-189);q.lineTo(-24,-163);
+      q.moveTo(22,-190);q.lineTo(23,-166);q.stroke();
+      q.fillStyle='#477467';q.beginPath();q.ellipse(-4,-158,7,5,0,0,Math.PI*2);q.fill();
+      q.strokeStyle='#172c2a';q.lineWidth=4;q.beginPath();
+      q.moveTo(officer?17:-4,-153);q.lineTo(officer?28:-5,-107);q.stroke();
+      // Sculpted neck, face, ear, cap and directional facial shadow.
+      q.fillStyle='#224b43';q.fillRect(-7,-217,14,13);
+      q.fillStyle=bronze(0,-227,30,37);q.beginPath();
+      q.ellipse(0,-231,14,17,-.12,0,Math.PI*2);q.fill();
+      q.fillStyle='#9bb7a7';q.beginPath();q.ellipse(-5,-232,4,9,-.2,0,Math.PI*2);q.fill();
+      q.fillStyle='#254a42';q.beginPath();q.moveTo(2,-236);
+      q.lineTo(11,-228);q.lineTo(2,-222);q.closePath();q.fill();
+      q.fillStyle=officer?'#456e61':'#2a4d45';q.beginPath();
+      q.moveTo(-15,-238);q.lineTo(-12,-249);q.lineTo(10,-252);
+      q.lineTo(16,-241);q.closePath();q.fill();
+      q.strokeStyle='#abc2ae';q.lineWidth=2;q.beginPath();
+      q.moveTo(-14,-241);q.lineTo(15,-241);q.stroke();
+      if(!officer){
+        q.fillStyle='#24483f';q.beginPath();q.moveTo(-10,-220);
+        q.quadraticCurveTo(0,-208,11,-222);q.lineTo(5,-213);
+        q.lineTo(-6,-212);q.closePath();q.fill();
+      }
+      q.restore();
+    }
+    sideBronze(-146,false);sideBronze(149,true);
+    // The bronze horse is read in three-quarter profile: four distinct legs,
+    // raised foreleg, head, reins, mane, sculpted chest and separate rider.
+    q.fillStyle='#152d2a99';q.beginPath();q.ellipse(-5,-126,74,12,0,0,Math.PI*2);q.fill();
+    q.lineCap='round';q.lineJoin='round';
+    // Far hind leg and foreground rear leg, not a featureless triangular body.
+    q.strokeStyle='#173d36';q.lineWidth=14;q.beginPath();
+    q.moveTo(29,-190);q.lineTo(42,-156);q.lineTo(38,-126);
+    q.moveTo(11,-183);q.lineTo(18,-155);q.lineTo(16,-125);q.stroke();
+    q.strokeStyle='#83aa95';q.lineWidth=3;q.beginPath();
+    q.moveTo(24,-180);q.lineTo(34,-155);q.lineTo(32,-138);q.stroke();
+    // Long tail emerges behind the saddle rather than the animal's head.
+    q.strokeStyle='#254f45';q.lineWidth=10;q.beginPath();
+    q.moveTo(47,-220);q.quadraticCurveTo(77,-198,66,-165);q.stroke();
+    q.strokeStyle='#86a996';q.lineWidth=2;q.beginPath();
+    q.moveTo(48,-221);q.quadraticCurveTo(71,-201,66,-183);q.stroke();
+    q.fillStyle=bronze(-4,-213,116,73);q.beginPath();
+    q.ellipse(-3,-203,52,32,-.13,0,Math.PI*2);q.fill();
+    q.fillStyle='#9abdab42';q.beginPath();
+    q.ellipse(-17,-214,29,11,-.2,0,Math.PI*2);q.fill();
+    q.strokeStyle='#1d443b';q.lineWidth=5;q.beginPath();
+    q.moveTo(-49,-198);q.quadraticCurveTo(-9,-174,32,-189);q.stroke();
+    // The front leg is raised; the other reaches the stone pedestal.
+    q.strokeStyle='#2b6155';q.lineWidth=14;q.beginPath();
+    q.moveTo(-34,-185);q.lineTo(-40,-156);q.lineTo(-38,-127);
+    q.moveTo(-49,-193);q.lineTo(-66,-169);q.lineTo(-78,-164);q.stroke();
+    q.strokeStyle='#add0b8';q.lineWidth=3;q.beginPath();
+    q.moveTo(-43,-184);q.lineTo(-47,-157);
+    q.moveTo(-60,-177);q.lineTo(-71,-166);q.stroke();
+    q.strokeStyle='#18332f';q.lineWidth=7;q.beginPath();
+    q.moveTo(-46,-126);q.lineTo(-30,-126);
+    q.moveTo(-79,-164);q.lineTo(-66,-164);q.stroke();
+    // Long neck, sculpted muzzle, separate ears and bridle.
+    q.fillStyle=bronze(-50,-244,63,89);q.beginPath();
+    q.moveTo(-43,-198);q.quadraticCurveTo(-58,-227,-66,-247);
+    q.lineTo(-48,-263);q.quadraticCurveTo(-31,-239,-18,-219);
+    q.lineTo(-17,-198);q.closePath();q.fill();
+    q.fillStyle='#365f53';q.beginPath();
+    q.ellipse(-66,-255,20,23,-.26,0,Math.PI*2);q.fill();
+    q.fillStyle='#7fa792';q.beginPath();
+    q.ellipse(-74,-255,9,17,-.3,0,Math.PI*2);q.fill();
+    q.fillStyle='#2b554a';q.beginPath();
+    q.moveTo(-79,-270);q.lineTo(-84,-286);q.lineTo(-70,-276);
+    q.lineTo(-62,-287);q.lineTo(-57,-272);q.closePath();q.fill();
+    q.strokeStyle='#182e2a';q.lineWidth=3;q.beginPath();
+    q.moveTo(-58,-260);q.quadraticCurveTo(-80,-253,-82,-240);
+    q.moveTo(-55,-250);q.lineTo(-40,-216);q.stroke();
+    q.fillStyle='#0c2723';q.beginPath();q.arc(-73,-262,2.6,0,Math.PI*2);q.fill();
+    // Uniformed rider, cape and mounted silhouette in front of arch.
+    q.fillStyle='#163a34';q.beginPath();q.ellipse(7,-229,23,9,-.18,0,Math.PI*2);q.fill();
+    q.fillStyle='#21483e';q.beginPath();
+    q.moveTo(5,-286);q.quadraticCurveTo(24,-284,34,-258);
+    q.lineTo(42,-225);q.lineTo(13,-223);q.lineTo(-10,-247);
+    q.closePath();q.fill();
+    q.fillStyle=bronze(10,-268,55,87);q.beginPath();
+    q.moveTo(-6,-286);q.quadraticCurveTo(14,-297,28,-279);
+    q.lineTo(27,-243);q.lineTo(-6,-241);q.closePath();q.fill();
+    q.strokeStyle='#a3c6b0';q.lineWidth=3;q.beginPath();
+    q.moveTo(0,-280);q.lineTo(10,-262);q.lineTo(7,-246);q.stroke();
+    q.strokeStyle='#234d42';q.lineWidth=11;q.beginPath();
+    q.moveTo(25,-275);q.lineTo(44,-254);q.lineTo(46,-238);
+    q.moveTo(-3,-272);q.lineTo(-27,-247);q.stroke();
+    q.strokeStyle='#b1c7ad';q.lineWidth=3;q.beginPath();
+    q.moveTo(26,-272);q.lineTo(40,-256);q.stroke();
+    q.fillStyle='#8eae9d';q.beginPath();q.arc(-27,-247,5,0,Math.PI*2);q.fill();
+    q.fillStyle=bronze(10,-307,33,47);q.beginPath();
+    q.ellipse(10,-309,15,19,-.13,0,Math.PI*2);q.fill();
+    q.fillStyle='#24463d';q.beginPath();
+    q.moveTo(-5,-321);q.lineTo(-3,-328);q.lineTo(25,-329);
+    q.lineTo(28,-320);q.closePath();q.fill();
+    q.strokeStyle='#9dbdaa';q.lineWidth=2;q.beginPath();
+    q.moveTo(-5,-320);q.lineTo(26,-320);q.stroke();
+    q.strokeStyle='#304e42';q.lineWidth=3;q.beginPath();
+    q.moveTo(10,-328);q.lineTo(10,-341);q.stroke();
+    // Bridle, reigns, stirrup and small highlights tie horse and rider together.
+    q.strokeStyle='#a8c3a4';q.lineWidth=2;q.beginPath();
+    q.moveTo(-38,-250);q.quadraticCurveTo(-20,-237,-13,-255);
+    q.lineTo(-19,-231);
+    q.moveTo(9,-240);q.lineTo(21,-205);q.lineTo(35,-202);q.stroke();
     // 1871 commemorates the Reichsgründung; the monument opened in 1902.
     q.fillStyle='#cab99c';q.font='bold 20px serif';q.textAlign='center';
     q.fillText('1871',0,-76);
