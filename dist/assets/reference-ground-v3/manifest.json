@@ -1,0 +1,60 @@
+{
+  "collection": "TD2 reference-ground-v3",
+  "date": "2026-11-13",
+  "dimensions": [
+    256,
+    256
+  ],
+  "format": "WEBP",
+  "source": "AI-generated material families based on photo/reference research; not an original photograph",
+  "defaultActive": false,
+  "optInParam": "td2GroundV3=1",
+  "photoAccuracy": "material approximation, no historically measured paving or routing",
+  "materials": {
+    "forest_moss_roots": {
+      "file": "forest_moss_roots.webp",
+      "git_blob_sha": "9cf107ab8bfe421c0083f0c2bebe1951e47989b2",
+      "sha256": "c7fffe9a588ad3afebac404327e3f6fc692b3a415b6fbda85efa5566389fc537"
+    },
+    "dark_slab_lichen": {
+      "file": "dark_slab_lichen.webp",
+      "git_blob_sha": "caa9b847a92b77e90b3eea454e28b385c8d48101",
+      "sha256": "7a098a10d0b8db0c6886cba956cdc9225508391288232de72a7ea8d8e63a5285"
+    },
+    "meadow_patchy": {
+      "file": "meadow_patchy.webp",
+      "git_blob_sha": "601a0f3644099c5e892624d1b56eea0c92af4518",
+      "sha256": "7f21f3b44b478676e82b196ca4eed23c5c3c1d9d2453d5b62eb26c137245a864"
+    },
+    "churchyard_cobble": {
+      "file": "churchyard_cobble.webp",
+      "git_blob_sha": "4fb6f844ec239843548a24f68aa776bcc07fdb85",
+      "sha256": "a15ae03ae146f7fc57018d9da8f2d435cf088b14c71122d12c634028b2d34d5d"
+    },
+    "syburg_bedrock": {
+      "file": "syburg_bedrock.webp",
+      "git_blob_sha": "3d7d571add314f3684ea3c2cd393010e9991266b",
+      "sha256": "85a68a6fff02dc9b8b0ca43ea445cf9d59d5c543e531bc44f58110a8de5f4bd0"
+    },
+    "syburg_sandstone": {
+      "file": "syburg_sandstone.webp",
+      "git_blob_sha": "cc82cf4c9b6ec86d4fa942d573db75fb932ea5bd",
+      "sha256": "7d5581c7f01a2821f4613f35b4a1fd8b21f4055dda3903fef6803f015c19e813"
+    },
+    "memorial_gravel": {
+      "file": "memorial_gravel.webp",
+      "git_blob_sha": "63464f4994a616aad62742b0f552bc69d06bdcfa",
+      "sha256": "4b27d0c46019d328a0f50509028cddb82b2ec10c0e7b23d488653acdf7c405d5"
+    },
+    "goethe_brick": {
+      "file": "goethe_brick.webp",
+      "git_blob_sha": "c629796a92ca6515b8ca35a67f0a734431564363",
+      "sha256": "9b194dd8491af86acd1b8916d7bb02d245127da0d34c214f1e94c96613a1a2dd"
+    },
+    "urban_asphalt": {
+      "file": "urban_asphalt.webp",
+      "git_blob_sha": "348d2107e894b6424c44246042613ed2440c4a66",
+      "sha256": "0917973cff2b1f63aefc364a7781c867fa87c40bc198b64571c0bd8771fdc5b8"
+    }
+  }
+}

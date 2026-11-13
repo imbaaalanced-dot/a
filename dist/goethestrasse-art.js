@@ -24,16 +24,16 @@ function requestSharedEnvironment(){
 }
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
- q.fillStyle=globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);
+ q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,6,'base')||globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);
  const tile=globalThis.DenkmalTerrain?.groundImage;
- if(tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
+ if(!globalThis.TD2GroundV3?.imageFor?.(6,'base')&&tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
  let seed=18631;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<2300;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#69795424','#b09b6330','#1c322b32'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Street along the park's east and front edges. Flight does not receive a ground road.
  const street=[{x:C.x+730,y:C.y-900},{x:C.x+730,y:C.y+120},{x:C.x+800,y:C.y+540},{x:C.x+1120,y:C.y+780}];
  const front=[{x:C.x-1120,y:C.y+820},{x:C.x-530,y:C.y+600},{x:C.x+20,y:C.y+720},{x:C.x+800,y:C.y+540}];
- for(const road of [street,front]){path(q,road,'#a5a28c',155);path(q,road,'#676f6b',133);path(q,road,'#767d7444',110);}
- for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,'#b9907244',58);
+ for(const road of [street,front]){path(q,road,'#a5a28c',155);path(q,road,'#676f6b',133);path(q,road,globalThis.TD2GroundV3?.patternFor?.(q,6,'street')||'#767d7444',110);}
+ for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,6,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
  // Flagstone forecourt and rose borders leave the endpoint and build pads free.
