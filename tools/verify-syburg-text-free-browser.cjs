@@ -44,7 +44,7 @@ const server=http.createServer((req,res)=>{
     DenkmalTestHooks.startGame(5);
     DenkmalTestHooks.launchWave();
     await new Promise(resolve=>setTimeout(()=>requestAnimationFrame(
-      ()=>requestAnimationFrame(resolve)),700));
+      ()=>requestAnimationFrame(resolve)),1800));
     const game=DenkmalTestHooks.getGame();
     if(game?.level!==5)throw Error('Hohensyburg level 5 did not launch');
     const canvas=document.querySelector('#game');
