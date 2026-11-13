@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="512" viewBox="0 0 768 512" role="img" aria-label="Westhofen V3 source pilot with curved winged helmet broad oval shield and horizontal sword"><defs>
+<linearGradient id="stone" x1="0" x2=".85" y1="0" y2="1"><stop stop-color="#a6a091"/><stop offset=".42" stop-color="#767266"/><stop offset="1" stop-color="#464b46"/></linearGradient>
+<linearGradient id="stoneTop" x1="0" x2=".25" y1="0" y2="1"><stop stop-color="#c1b5a0"/><stop offset="1" stop-color="#80796a"/></linearGradient>
+<linearGradient id="stoneSide" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#545951"/><stop offset="1" stop-color="#2c3331"/></linearGradient>
+<linearGradient id="bronze" x1=".05" x2=".95" y1="0" y2="1"><stop stop-color="#9aa99b"/><stop offset=".28" stop-color="#697d73"/><stop offset=".58" stop-color="#3e5952"/><stop offset="1" stop-color="#202e2e"/></linearGradient>
+<linearGradient id="shield" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#969d8e"/><stop offset=".5" stop-color="#5f6d64"/><stop offset="1" stop-color="#364440"/></linearGradient>
+<linearGradient id="deep" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#333e3a"/><stop offset="1" stop-color="#171f1d"/></linearGradient>
+<linearGradient id="metalLight" x1="0" x2=".9" y1="0" y2="1"><stop stop-color="#c2b8a3"/><stop offset="1" stop-color="#777c75"/></linearGradient>
+<filter id="texture" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="2" seed="31" result="noise"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".075"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+</defs>
+<g id="bronze-emblem-v3" data-part="bronze-emblem" stroke-linejoin="round" stroke-linecap="round">
+<!-- Source pilot based on user-supplied photo detail: wide low relief shield, horizontal sword, curved feathered wings. -->
+<!-- Sword rests horizontally behind the broad shield, with a readable left grip, circular pommel and fuller. -->
+<g id="horizontal-sword-v3">
+<path d="M275 230 Q370 225 528 223 L552 230 L528 239 Q375 239 275 238 Z" fill="url(#metalLight)" stroke="#44564f" stroke-width="3.5"/>
+<path d="M288 230 Q380 229 529 229" fill="none" stroke="#ced0bd" stroke-width="2.7" opacity=".78"/>
+<path d="M284 214 l10 4 l-1 22 l-13 3 l-8 -9 l-8 6 l-10 -8 l11 -8 l4 -11 Z" fill="url(#bronze)" stroke="#30443e" stroke-width="3"/>
+<path d="M222 223 L274 222 L274 235 L222 237 Z" fill="#566a60" stroke="#2c433b" stroke-width="3"/>
+<path d="M226 224 l7 10 M239 223 l7 10 M252 223 l7 10 M265 223 l6 10" fill="none" stroke="#a4aa98" stroke-width="2.3" opacity=".75"/>
+<path d="M221 221 C204 223 200 237 216 241 Q227 239 230 232 Z" fill="#829286" stroke="#30483f" stroke-width="3"/>
+</g>
+<!-- The original's broad, flattened oval stone/bronze shield; wider than the V2 heraldic silhouette. -->
+<g id="broad-oval-shield-v3">
+<path d="M260 244 Q284 224 345 224 Q392 216 449 226 Q503 234 514 246 Q508 284 473 306 Q434 326 386 326 Q337 323 296 306 Q269 291 260 244 Z" fill="url(#shield)" stroke="#2c4039" stroke-width="6"/>
+<path d="M266 247 Q315 229 387 230 Q462 229 507 248" fill="none" stroke="#b5b9a9" stroke-width="6" opacity=".8"/>
+<path d="M268 258 Q292 297 347 310 Q385 321 427 312 Q486 299 507 257" fill="none" stroke="#40544b" stroke-width="4" opacity=".86"/>
+<path d="M329 254 Q350 271 369 284 L382 306 L390 279 L404 306 Q422 279 443 256" fill="none" stroke="#344c43" stroke-width="10" opacity=".85"/>
+<path d="M331 254 Q351 274 370 287 L380 305 M444 255 Q427 273 408 289 L397 305" fill="none" stroke="#9ba99b" stroke-width="3.2" opacity=".72"/>
+<path d="M381 244 Q391 260 388 284 Q386 295 385 310" fill="none" stroke="#9ca99c" stroke-width="3" opacity=".7"/>
+<path d="M281 278 Q317 310 365 313 M410 313 Q470 310 495 277" stroke="#233a34" stroke-width="3.2" fill="none" opacity=".4"/>
+<circle cx="279" cy="255" r="4.3" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="301" cy="271" r="4" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="330" cy="289" r="4" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="359" cy="306" r="3.5" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="413" cy="307" r="3.5" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="451" cy="293" r="4" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="481" cy="274" r="4" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+<circle cx="501" cy="253" r="4.3" fill="#aaa89a" stroke="#455e54" stroke-width="1.5"/>
+</g>
+<!-- Curved feather-bearing wings, reduced height and strengthened transverse feather ridges. -->
+<g id="curved-wing-left-v3">
+<path d="M354 209 Q334 188 312 166 Q286 146 274 128 Q260 108 272 103 Q287 94 305 112 Q324 131 339 154 Q355 177 363 194 Z" fill="url(#bronze)" stroke="#2e493f" stroke-width="5"/>
+<path d="M276 106 Q302 119 329 154 Q344 178 355 200" fill="none" stroke="#b5c0ab" stroke-width="3.7" opacity=".8"/>
+<path d="M270 120 Q291 124 310 147 M281 132 Q300 135 318 157 M292 143 Q309 146 328 168 M304 155 Q319 157 338 180 M315 166 Q329 169 346 190" fill="none" stroke="#203b34" stroke-width="3.4"/>
+<path d="M272 117 Q287 114 302 127 M283 130 Q300 129 314 144 M296 143 Q315 143 325 157 M309 158 Q328 160 337 174" fill="none" stroke="#8da69a" stroke-width="2.1" opacity=".8"/>
+<path d="M284 104 Q302 109 311 123" fill="none" stroke="#d0c5b0" stroke-width="2.5" opacity=".7"/>
+</g>
+<g id="curved-wing-right-v3" transform="translate(768 0) scale(-1 1)">
+<path d="M354 209 Q334 188 312 166 Q286 146 274 128 Q260 108 272 103 Q287 94 305 112 Q324 131 339 154 Q355 177 363 194 Z" fill="url(#bronze)" stroke="#2e493f" stroke-width="5"/>
+<path d="M276 106 Q302 119 329 154 Q344 178 355 200" fill="none" stroke="#b5c0ab" stroke-width="3.7" opacity=".8"/>
+<path d="M270 120 Q291 124 310 147 M281 132 Q300 135 318 157 M292 143 Q309 146 328 168 M304 155 Q319 157 338 180 M315 166 Q329 169 346 190" fill="none" stroke="#203b34" stroke-width="3.4"/>
+<path d="M272 117 Q287 114 302 127 M283 130 Q300 129 314 144 M296 143 Q315 143 325 157 M309 158 Q328 160 337 174" fill="none" stroke="#8da69a" stroke-width="2.1" opacity=".8"/>
+<path d="M284 104 Q302 109 311 123" fill="none" stroke="#d0c5b0" stroke-width="2.5" opacity=".7"/>
+</g>
+<!-- Broad bowl of helmet, open dark mouth and hanging cheek pieces visible at small scale. -->
+<g id="open-helmet-v3">
+<path d="M349 209 Q342 186 353 171 Q370 149 387 149 Q408 149 424 169 Q432 181 427 210 L429 255 Q425 265 414 258 L411 226 Q387 223 361 226 L359 258 Q350 266 340 255 Z" fill="url(#bronze)" stroke="#2a453c" stroke-width="5"/>
+<path d="M360 220 Q389 211 412 222 L409 248 Q386 255 361 246 Z" fill="url(#deep)" stroke="#22372f" stroke-width="4"/>
+<path d="M364 240 Q389 249 408 241" fill="none" stroke="#485d53" stroke-width="3.2" opacity=".56"/>
+<path d="M353 207 Q386 198 426 207 L426 218 Q393 213 349 224 Z" fill="#64776c" stroke="#33493f" stroke-width="3"/>
+<path d="M355 207 Q390 198 422 207" fill="none" stroke="#bbb8aa" stroke-width="3.4"/>
+<path d="M383 151 Q392 172 386 203" stroke="#bbc1b2" stroke-width="3" opacity=".66" fill="none"/>
+<path d="M357 183 Q384 170 415 183" stroke="#9caca0" stroke-width="3.5" opacity=".63" fill="none"/>
+<path d="M353 214 l8 5 l-6 6 l-7 -5 Z M367 211 l8 5 l-7 6 l-7 -5 Z M382 209 l8 5 l-7 7 l-8 -6 Z M398 209 l8 5 l-7 6 l-8 -6 Z M412 211 l7 5 l-7 7 l-7 -6 Z" fill="none" stroke="#293f36" stroke-width="2.2"/>
+<path d="M344 224 Q340 241 343 251 Q349 256 355 250 M420 223 Q426 241 423 251 Q419 257 413 249" fill="none" stroke="#98aaa0" stroke-width="2.7" opacity=".6"/>
+</g>
+</g></svg>

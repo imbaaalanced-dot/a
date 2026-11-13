@@ -1,0 +1,38 @@
+name: Westhofen V3 Bronze Pilot QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/graphics/westhofen-v3/**'
+      - 'tests/westhofen-v3-bronze-source.test.py'
+      - 'tools/export-westhofen-v3-bronze.py'
+      - '.github/workflows/westhofen-v3-bronze-pilot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bronze-source-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated preview renderer
+        run: python -m pip install 'CairoSVG>=2.7,<3' 'Pillow>=11,<14'
+      - name: Validate V3 safe XML, V2 untouched and compositing
+        run: python tests/westhofen-v3-bronze-source.test.py
+      - name: Export V2/V3 comparison (64px, 128px, source size, alpha QA)
+        env:
+          TD2_QA_LOG_IMAGE: '1'
+        run: python tools/export-westhofen-v3-bronze.py --out build/westhofen-v3-bronze
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: westhofen-v3-bronze-review-only
+          path: build/westhofen-v3-bronze/
+          if-no-files-found: warn
+          retention-days: 14
