@@ -45,7 +45,7 @@ async function run(){
   await assets.level(6);
   const beforeWesthofen=created.length;
   await assets.next(6);
-  const westhofenUrl='assets/westhofen/westhofen-memorial-style2-v1.webp?v=westhofen-style2a1';
+  const westhofenUrl='assets/westhofen/westhofen-memorial-style2-v2.svg?v=westhofen-style2v2';
   assert.equal(assets.status(westhofenUrl),'ready','chapter 6 preloads Westhofen memorial');
   assert.equal(created.length,beforeWesthofen+1,'Westhofen has exactly one new decoder');
   await assets.level(7);
