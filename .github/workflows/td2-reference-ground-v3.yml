@@ -32,6 +32,7 @@ jobs:
       - name: Material and renderer unit/regression tests
         run: |
           node tests/reference-ground-v3.test.cjs
+          node tests/cache-busting.test.cjs
           node tests/terrain-polish.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-ground.test.cjs
