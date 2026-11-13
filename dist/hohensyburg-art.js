@@ -302,16 +302,16 @@
     return canvas;
   }
   function drawMonument(ctx,m){
-    // New 512×608 RGBA candidate: isolated opt-in and same bottom-center
-    // landmark anchor; never download this file in normal gameplay.
+    // Use the 512×608 RGBA V2 sprite by default (V1 opt-in), with the
+    // existing bottom-center landmark anchor and one deferred image decode.
     const replacement=candidate248Image();
     if(replacement){
       const height=540,width=height*replacement.naturalWidth/replacement.naturalHeight;
       ctx.drawImage(replacement,m.x-width/2,m.y-height+40,width,height);
       return;
     }
-    // An absent/failed candidate uses the cached text-free Canvas monument.
-    // Preserve the historical default sprite when neither opt-in is active.
+    // A delayed/failed V2/V1 decode uses the cached text-free Canvas monument.
+    // Only the explicit legacy flag requests the original branded WebP.
     const monumentSprite=(textFreePreview||candidate248Preview)?null:monumentImage();
     if(monumentSprite?.complete&&monumentSprite.naturalWidth>0){
       // Foot anchor is on the existing upper terrace, not on the lower plaza.
