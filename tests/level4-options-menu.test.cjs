@@ -1,0 +1,28 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const dist=path.join(__dirname,'../dist');
+const read=name=>fs.readFileSync(path.join(dist,name),'utf8');
+const css=read('level4-options-menu-compact.css');
+const html=read('index.html');
+const game=read('game.js');
+assert.match(html,/combat-hud-layout-v3\.css\?v=td2hud-layout-20261113a"[\s\S]*?level4-options-menu-compact\.css\?v=level4menu-20261114a"/);
+assert.match(css,/#hudMenu \.hud-menu-panel\s*\{/);
+assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+assert.match(css,/#hudMenu \.hud-menu-panel #fullscreenBtn\{grid-column:1\/-1\}/);
+assert.match(css,/@media \(pointer:coarse\)\{/);
+assert.match(css,/min-height:48px/,'touch options remain >=48px tall');
+assert.doesNotMatch(css,/\.arsenal\s*\{|#controls\s*\{|#buildBtn\s*\{/,'new stylesheet cannot alter tower selection or action controls');
+assert.match(html,/data-tower="bow"/);
+assert.match(html,/data-tower="cannon"/);
+assert.match(html,/data-tower="mage"/);
+assert.match(html,/data-tower="rift"/);
+assert.match(html,/data-tower="barracks"/);
+assert.doesNotMatch(html,/data-tower="boomerang"/);
+assert.match(game,/const enabledTowers=new Set\(\['bow','cannon','mage','rift','barracks'\]\)/);
+const menu=html.match(/<details class="hud-menu" id="hudMenu">([\s\S]*?)<\/details>/)?.[1];
+assert.ok(menu,'in-game options menu must still exist');
+const btns=[...menu.matchAll(/<button\b/g)].length;
+assert.equal(btns,9,'all nine original option buttons preserved');
+for(const id of ['inventoryBtn','heroBtn','speedBtn','menuPauseBtn','soundBtn','graphicsBtn','zoomBtn','telemetryBtn','fullscreenBtn'])
+  assert.ok(menu.includes('id="'+id+'"'),'menu option '+id+' preserved');
+console.log('TD2 Level 4 menu CSS scoped; 9 options and 5 tower types preserved, touch targets intact');

@@ -28,6 +28,7 @@ const expectedVersions = new Map([
   ['combat-hud-v2.css', 'v5hud2a2'],
   ['style2-v5-ui-refinement.css', '20261109a'],
   ['combat-hud-layout-v3.css','td2hud-layout-20261113a'],
+  ['level4-options-menu-compact.css','level4menu-20261114a'],
   ['portrait-avatars-v5.js', 'copy-20261112-urlfix'],
   ['level-gallery.js', 'v5-style2a1'],
   ['preloader.css', 'td2preload1'],
