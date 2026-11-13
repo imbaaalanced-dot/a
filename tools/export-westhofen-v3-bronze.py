@@ -49,14 +49,14 @@ def panels(imgs,out):
             full.paste(p,(x,y))
     full.save(out/"westhofen-v3-bronze-detailed-compare.jpg",quality=77,optimize=True)
 
-    pixels=Image.new("RGB",(1360,1160),"#16211d")
+    pixels=Image.new("RGB",(1360,1460),"#16211d")
     d=ImageDraw.Draw(pixels)
     for row,(kind,w,background) in enumerate([
         ("emblem",128,"#dbd8ce"),("emblem",64,"#202a27"),
         ("composite",128,"#dbd8ce"),("composite",64,"#202a27"),
     ]):
         for col,version in enumerate(("v2","v3")):
-            x,y=24+col*675,48+row*270
+            x,y=24+col*675,(48,414,745,1111)[row]
             key=f"{kind}_{version}"
             d.text((x,y-26),f"{key} - {w}px displayed on {'light' if row%2==0 else 'dark'}",fill="#e5d9ba")
             p=backdrop(imgs[key],w,background)
