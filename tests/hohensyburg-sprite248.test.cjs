@@ -4,8 +4,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.join(__dirname,'../dist');
 const script=fs.readFileSync(path.join(root,'hohensyburg-art.js'),'utf8');
-assert.equal(script.split('if(textFreePreview||candidate248Preview){').length-1,2,
- 'both cleaned stone-material areas must apply to sprite248 preview');
+assert.equal((script.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
+ 'the merged default keeps both deterministic, non-checkerboard terraces');
 for(const [filename,width,height,budget] of [
   ['kaiser-wilhelm-style2-qa-v1-1x.webp',256,304,35000],
   ['kaiser-wilhelm-style2-qa-v1-2x.webp',512,608,100000],
