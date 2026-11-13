@@ -111,8 +111,8 @@ assert.ok(!renderedText.some(([t])=>t==='1871'),
  'do not relocate the historic inscription to the lower pedestal');
 const source=fs.readFileSync('dist/hohensyburg-art.js','utf8');
 assert.match(source,/function sideBronze\(/,'the two bronze attendants have their own sculpted renderer');
-assert.match(source,/sideBronze\(-146,false\);sideBronze\(149,true\)/,
- 'Bismarck and Moltke must remain separate statues on their approved pedestals');
+assert.match(source,/sideBronze\(-146,true\);sideBronze\(149,false\)/,
+ 'Moltke stands west (left in front view), Bismarck east (right)');
 assert.match(source,/q\.ellipse\(-3,-203,52,32/,
  'equestrian group retains a separately sculpted horse body');
 assert.match(source,/q\.ellipse\(10,-309,15,19/,
