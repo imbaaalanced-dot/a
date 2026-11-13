@@ -576,7 +576,7 @@
     const heroShot=from===game.hero,gear=game.hero.gear;
     if(heroShot&&gear?.powers.chain)effect={...effect,chain:Math.max(1,effect.chain||0)};
     if(!heroShot&&towerSpecs[from.kind])damage*=(1+(gear?.tower||0))*(inPortal()?perkStats().towerDamage:1);
-    const aim=interceptPoint(from,target,speed);const d=dist(from,aim)||1;const bullet={heroShot,kind:from.kind||'magic',level:from.level||1,x:from.x,y:from.y,vx:(aim.x-from.x)/d*speed,vy:(aim.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
+    const aim=interceptPoint(from,target,speed);const d=dist(from,aim)||1;const bullet={heroShot,heroCharacter:heroShot?game.hero.character:null,kind:from.kind||'magic',level:from.level||1,x:from.x,y:from.y,vx:(aim.x-from.x)/d*speed,vy:(aim.y-from.y)/d*speed,r:effect.splash?7:4,damage,life:1.1,color,...effect};game.bullets.push(bullet);fx.burst(game,bullet,false,audioOn,reducedMotion);
   }
   // One low-damage hit per enemy on the way out, and one on the way back.
   // Both legs have independent hit sets: no damage falloff or critical hits.
