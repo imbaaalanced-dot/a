@@ -41,13 +41,13 @@ assert.ok(siteRadials>=1&&siteLinear>=1,'plaza uses static warm dapple and shade
 const firstTrees=drawn;
 art.drawScenery(output,center,[],{crowns:false,low:true});
 assert.equal(canvases,6,'two cached village buildings and three floor variants are created once');
-assert.equal(drawn-firstTrees,13,'eleven root sprites and two cached buildings render successfully');
+assert.equal(drawn-firstTrees,17,'fifteen root sprites and two cached buildings render successfully');
 assert.equal(rootRadials,3,'one baked shadow per root variant');
 const cached=canvases,images=drawn;
 art.drawSite(output,center);
 art.drawScenery(output,center,[],{crowns:false,low:false});
 assert.equal(canvases,cached,'repeated frames allocate no canvases');
-assert.equal(drawn-images,14,'repeat render reuses the site, eleven roots and both village buildings');
+assert.equal(drawn-images,18,'repeat render reuses the site, fifteen roots and both village buildings');
 art.drawScenery(output,center,[{x:center.x,y:center.y}],{crowns:true});
 assert.equal(canvases,cached,'canopy translucency must not allocate more buffers');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
