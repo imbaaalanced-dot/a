@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="512" viewBox="0 0 768 512" role="img" aria-label="Westhofen isolated stone patina overlay"><defs>
+<linearGradient id="stone" x1="0" x2=".85" y1="0" y2="1"><stop stop-color="#a6a091"/><stop offset=".42" stop-color="#767266"/><stop offset="1" stop-color="#464b46"/></linearGradient>
+<linearGradient id="stoneTop" x1="0" x2=".25" y1="0" y2="1"><stop stop-color="#c1b5a0"/><stop offset="1" stop-color="#80796a"/></linearGradient>
+<linearGradient id="stoneSide" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#545951"/><stop offset="1" stop-color="#2c3331"/></linearGradient>
+<linearGradient id="bronze" x1=".05" x2=".95" y1="0" y2="1"><stop stop-color="#9aa99b"/><stop offset=".28" stop-color="#697d73"/><stop offset=".58" stop-color="#3e5952"/><stop offset="1" stop-color="#202e2e"/></linearGradient>
+<linearGradient id="shield" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#969d8e"/><stop offset=".5" stop-color="#5f6d64"/><stop offset="1" stop-color="#364440"/></linearGradient>
+<linearGradient id="deep" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#333e3a"/><stop offset="1" stop-color="#171f1d"/></linearGradient>
+<linearGradient id="metalLight" x1="0" x2=".9" y1="0" y2="1"><stop stop-color="#c2b8a3"/><stop offset="1" stop-color="#777c75"/></linearGradient>
+<filter id="texture" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="2" seed="31" result="noise"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".075"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+</defs><g id="stone-weathering-v3" data-part="stone-weathering" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<!-- Surface study on existing 2026 monument blocks: no added architecture or imaginary inscriptions. -->
+<g id="uneven-lintel-weathering" stroke-width="3">
+<path d="M68 85 l9 -2 l16 2 l11 -3 M125 86 l13 4 l21 -3 l10 2 M216 85 l19 3 l10 -3 M344 88 l17 -4 l17 3 M491 88 l14 -2 l19 5 M612 89 l18 -3 l21 4" stroke="#d1c5ab" opacity=".43"/>
+<path d="M91 101 l10 4 l-4 8 M184 99 l-7 7 l12 7 M270 98 l4 10 l-8 8 M359 100 l-3 13 M460 101 l7 12 l-7 5 M570 102 l-5 7 l4 8 M665 101 l7 6" stroke="#303c34" opacity=".58"/>
+<path d="M85 114 Q91 119 101 116 M308 116 q8 3 18 -1 M481 115 l19 2 M602 116 q9 2 14 -2" stroke="#b5a990" opacity=".56"/>
+</g>
+<g id="pillar-fissures" stroke="#303b33" stroke-width="2.4" opacity=".72">
+<path d="M63 163 l12 -5 l9 6 l-5 14 M103 215 l-8 11 l5 13 l-8 13 M68 297 l14 -9 l-2 13 l8 8 M108 333 l-6 8 l5 8"/>
+<path d="M179 177 l8 6 l-4 12 l12 8 M214 240 l-9 12 l4 10 l-12 13 M177 310 l12 12 l-5 11"/>
+<path d="M532 168 l11 8 l-7 13 M566 215 l-12 11 l8 15 l-7 12 M533 288 l13 9 l-6 16"/>
+<path d="M652 150 l9 10 l-3 15 M690 206 l-13 7 l5 11 l-8 13 M654 275 l12 9 l-7 13 M686 320 l-12 12 l4 12"/>
+</g>
+<g id="stone-light-chips" fill="#a6a291" fill-opacity=".42" stroke="none">
+<path d="M60 176 l9 -3 l-3 12 l-6 2 Z M111 244 l7 -2 l-2 12 l-6 -2 Z M167 254 l8 -6 l-2 13 l-6 4 Z"/>
+<path d="M221 296 l8 -4 l-2 11 l-7 6 Z M527 268 l6 -5 l-2 12 l-5 3 Z M578 189 l6 -8 l-2 16 l-6 4 Z"/>
+<path d="M649 239 l8 -4 l-3 11 l-5 2 Z M698 310 l7 -8 l-2 14 l-5 6 Z"/>
+</g>
+<g id="stone-patina" fill="#2d4337" stroke="none" opacity=".24">
+<path d="M63 290 q13 -7 27 1 l-8 20 l-19 0 Z M194 135 q19 -3 28 9 l-2 15 l-21 -4 Z"/>
+<path d="M531 318 q15 -9 30 2 l-6 23 l-24 -3 Z M664 257 q21 -9 30 9 l-11 16 l-20 -10 Z"/>
+</g></g></svg>

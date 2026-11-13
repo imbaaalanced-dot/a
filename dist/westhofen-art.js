@@ -8,9 +8,9 @@ let ground=null,materialRevision=-1,environmentRequested=false;
 let memorialSprite=null,memorialRequested=false;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
-const memorialUrl='assets/westhofen/westhofen-memorial-style2-v2.svg?v=westhofen-style2v2';
+const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview1';
 function readyMemorial(){
- // Level 7 preloads the same WebP through the shared asset manager.
+ // Level 7 preloads the same preview SVG through the shared asset manager.
  // Keep the standalone fallback for previews without the manager.
  if(globalThis.DenkmalAssets?.ready){
   memorialSprite=globalThis.DenkmalAssets.ready(memorialUrl);
@@ -65,9 +65,35 @@ function createGround(layout){
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,7,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
- // Gravel apron around the memorial leaves the objective and build pads free.
- q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'forecourt')||'#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
- for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
+ // Gravel apron around the memorial stays oval and blends into the grass.
+ // Previous 48x28 bright rectangles overlapped on a 37x20 grid, producing an
+ // opaque rectangular mat behind the altar in mobile portrait. Keep deliberate
+ // gaps between individually weathered flagstones and clip them to the apron.
+ q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'forecourt')||'#505b50';
+ q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,Math.PI*2);q.fill();
+ q.save();
+ q.beginPath();q.ellipse(C.x,C.y+8,292,183,0,0,Math.PI*2);q.clip();
+ for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){
+  // Grid stride is 37.44 x 20.4 world px; stone bounds never overlap.
+  const salt=Math.abs((x*31+y*17)^((x-y)*13))%5;
+  const px=C.x+x*.72+(salt%3),py=C.y+y*.6+((salt+1)%3);
+  const w=29+salt,h=13+(salt%4);
+  q.fillStyle='#27382e66';
+  q.beginPath();q.moveTo(px+2,py+2);q.lineTo(px+w+2,py+2);
+  q.lineTo(px+w,py+h+2);q.lineTo(px+1,py+h+2);q.closePath();q.fill();
+  q.fillStyle=['#596353','#656d5d','#727665','#5d675b','#69705d'][salt];
+  q.beginPath();q.moveTo(px+2,py);q.lineTo(px+w-3,py+1);
+  q.lineTo(px+w,py+3);q.lineTo(px+w-2,py+h-1);
+  q.lineTo(px+2,py+h);q.lineTo(px,py+h-3);q.closePath();q.fill();
+  q.strokeStyle='#a3a99544';q.lineWidth=1;
+  q.beginPath();q.moveTo(px+4,py+2);q.lineTo(px+w-5,py+2);q.stroke();
+ }
+ q.restore();
+ // A translucent, soft contact shade ties the transparent sprite's stair
+ // footing to the dark forecourt without changing the objective's geometry.
+ const seam=q.createRadialGradient(C.x,C.y+75,40,C.x,C.y+75,235);
+ seam.addColorStop(0,'#1a2b2070');seam.addColorStop(.65,'#26392a28');seam.addColorStop(1,'#27392a00');
+ q.fillStyle=seam;q.beginPath();q.ellipse(C.x,C.y+64,245,125,0,0,Math.PI*2);q.fill();
  // Hedges with benches frame the green; both stay clear of lanes and pads.
  for(const side of [-1,1]){const hx=C.x+side*430,hy=C.y-260;q.fillStyle='#27361f';q.beginPath();q.ellipse(hx,hy,90,46,side*.3,0,7);q.fill();
   for(let j=0;j<26;j++){const px=hx+(rnd()-.5)*160,py=hy+(rnd()-.5)*76;globalThis.DenkmalForest?.drawShrub?.(q,px,py,12,j);q.fillStyle=j%5?'#5e7044':'#4c5f3a';q.beginPath();q.arc(px,py,4+rnd()*4,0,7);q.fill();}
