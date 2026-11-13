@@ -98,11 +98,51 @@
     if(u.hp>0){ctx.save();ctx.fillStyle='#211b1b';ctx.fillRect(u.x-15,u.y-54,30,3);ctx.fillStyle='#7acaae';ctx.fillRect(u.x-15,u.y-54,30*(u.hp/u.maxHp),3);ctx.restore();}
     return true;
   }
+  // The legacy 768px barracks atlas is an opaque VP8 WebP: dark backdrop pixels
+  // are baked into its three building cells. Build transparent cache tiles once.
+  // Flood only neutral/dark pixels connected to tile edges so doors, ironwork,
+  // roofs and shaded interiors are retained instead of globally chroma-keyed.
+  const buildingTiles=new WeakMap();
+  function buildingCutout(img,level){
+    if(typeof document==='undefined'||!document.createElement)return null;
+    let tiles=buildingTiles.get(img);
+    if(!tiles){tiles=[null,null,null];buildingTiles.set(img,tiles);}
+    if(tiles[level-1])return tiles[level-1];
+    const c=document.createElement('canvas');c.width=c.height=192;
+    const q=c.getContext('2d',{willReadFrequently:true});
+    if(!q?.drawImage||!q.getImageData||!q.putImageData)return null;
+    try{
+      q.drawImage(img,(level-1)*192,576,192,192,0,0,192,192);
+      const pixels=q.getImageData(0,0,192,192),rgba=pixels.data;
+      const count=192*192,seen=new Uint8Array(count),queue=new Uint32Array(count);
+      let head=0,tail=0;
+      const dark=i=>{
+        const p=i*4,r=rgba[p],g=rgba[p+1],b=rgba[p+2];
+        const hi=Math.max(r,g,b),lo=Math.min(r,g,b);
+        return rgba[p+3]===255&&hi<122&&hi-lo<38;
+      };
+      function enter(i){if(!seen[i]&&dark(i)){seen[i]=1;queue[tail++]=i;}}
+      for(let x=0;x<192;x++){enter(x);enter(191*192+x);}
+      for(let y=1;y<191;y++){enter(y*192);enter(y*192+191);}
+      while(head<tail){
+        const i=queue[head++],x=i%192,y=(i/192)|0;
+        rgba[i*4+3]=0;
+        if(x)enter(i-1);if(x<191)enter(i+1);
+        if(y)enter(i-192);if(y<191)enter(i+192);
+      }
+      q.putImageData(pixels,0,0);
+      tiles[level-1]=c;
+      return c;
+    }catch(_error){return null;} // keep the original asset on restricted canvases
+  }
   function drawTower(ctx,tower){
     if(!ctx||!tower||tower.kind!=='barracks')return false;
     const img=atlas();if(!img)return true;
     const l=Math.max(1,Math.min(3,tower.level||1));
-    ctx.drawImage(img,(l-1)*192,576,192,192,tower.x-48,tower.y-87,96,96);return true;
+    const tile=buildingCutout(img,l);
+    if(tile)ctx.drawImage(tile,tower.x-48,tower.y-87,96,96);
+    else ctx.drawImage(img,(l-1)*192,576,192,192,tower.x-48,tower.y-87,96,96);
+    return true;
   }
   globalThis.DenkmalBarracks={LEVELS,MAX_ALLIES,ATLAS,STATES,preload,animation,nearestLanePoint,makeUnit,update,aggroTarget,damageAlly,drawUnit,drawTower};
 })();
