@@ -1,5 +1,5 @@
-/* Hohensyburg present-day pylon: compare approved sprite with existing
- * cached Canvas reconstruction as an opt-in text-free preview.
+/* Hohensyburg: verify the cached text-free monument is used with and without
+ * the legacy optional preview parameter.
  * Chromium touch emulation is not an Android 4 GB hardware test. */
 'use strict';
 const assert=require('node:assert/strict');
@@ -30,7 +30,8 @@ const server=http.createServer((req,res)=>{
     viewport:mobile?{width:412,height:915}:{width:1280,height:800},
     isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1
    });
-   const page=await context.newPage(),errors=[],failed=[];
+   const page=await context.newPage(),errors=[],failed=[],requests=[];
+   page.on('request',req=>requests.push(req.url()));
    page.on('pageerror',e=>errors.push(e.message));
    page.on('response',r=>{if(r.status()>=400)failed.push(r.url());});
    const url=`http://127.0.0.1:${server.address().port}/v4-style2/index.html`+
@@ -42,8 +43,7 @@ const server=http.createServer((req,res)=>{
     if(!ready)throw Error('shared terrain did not load');
     DenkmalTestHooks.startGame(5);
     DenkmalTestHooks.launchWave();
-    await new Promise(resolve=>setTimeout(()=>requestAnimationFrame(
-      ()=>requestAnimationFrame(resolve)),700));
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     const game=DenkmalTestHooks.getGame();
     if(game?.level!==5)throw Error('Hohensyburg level 5 did not launch');
     const canvas=document.querySelector('#game');
@@ -54,18 +54,37 @@ const server=http.createServer((req,res)=>{
      visible,textFreePreview:DenkmalHohensyburgArt.textFreePreview,
      allocations:DenkmalHohensyburgArt.allocations};
    });
-   assert.equal(state.textFreePreview,preview,'monument mode must match URL flag');
+   // The first spawn triggers both the wave banner and a level toast.
+   // Wait until those transient overlays have finished before capturing art.
+   await page.waitForFunction(()=>{
+     const game=DenkmalTestHooks.getGame();
+     const banner=document.querySelector('#waveBanner');
+     const toast=document.querySelector('#toast');
+     return game?.level===5&&game.waveSpawned>0&&banner&&toast
+       &&!banner.classList.contains('show')&&!toast.classList.contains('show')
+       &&Number.parseFloat(getComputedStyle(banner).opacity)<.02
+       &&Number.parseFloat(getComputedStyle(toast).opacity)<.02;
+   },null,{timeout:12000});
+   assert.equal(state.textFreePreview,true,'all sessions must use text-free monument');
+   assert.ok(!requests.some(url=>url.includes('kaiser-wilhelm-style2.webp')),
+     'branded Hohensyburg asset must not be requested');
    assert.deepEqual(errors,[],'no JavaScript exceptions');
    assert.deepEqual(failed,[],'no HTTP failures');
-   const label=`${preview?'canvas-clean':'original-webp'}-${mobile?'touch':'desktop'}`;
+   const label=`${preview?'legacy-query-clean':'default-clean'}-${mobile?'touch':'desktop'}`;
    await page.screenshot({path:path.join(output,label+'.png')});
-   await page.locator('#game').screenshot({path:path.join(output,label+'-canvas.png')});
+   // In active gameplay the canvas continuously moves with the camera/shake.
+   // Playwright's locator screenshot waits for a stable element and can time out.
+   // Capture its native pixels directly without scrolling or freezing combat.
+   const canvasDataUrl=await page.evaluate(()=>document.querySelector('#game').toDataURL('image/png'));
+   assert.match(canvasDataUrl,/^data:image\/png;base64,/,'gameplay canvas exports a PNG');
+   fs.writeFileSync(path.join(output,label+'-canvas.png'),
+     Buffer.from(canvasDataUrl.slice(canvasDataUrl.indexOf(',')+1),'base64'));
    results.push({label,emulatedTouch:mobile,...state,errors,failed});
    await context.close();
   }
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({
     chromium:browser.version(),physicalAndroidTested:false,results
   },null,2));
-  console.log('Hohensyburg text-free preview: 4 Chromium scenes, no script/asset errors');
+  console.log('Hohensyburg text-free runtime: 4 Chromium scenes without branded asset requests');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());

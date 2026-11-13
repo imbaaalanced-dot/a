@@ -79,13 +79,32 @@ const server=http.createServer((req,res)=>{
           if(!atlas||atlas.naturalWidth!==768||atlas.naturalHeight!==384)throw Error(`invalid V4 ${kind} impact atlas`);
           impacts++;
         }
+        // Decode each V2 Marcel FX row in the real Canvas API. Mobile touch
+        // uses the same atlas; no browser-only or asset-free mock passes here.
+        const staffCanvas=document.createElement('canvas');staffCanvas.width=64;staffCanvas.height=64;
+        const staffCtx=staffCanvas.getContext('2d'),staffRows=[];
+        for(let row=0;row<3;row++){
+          const started=performance.now();
+          while(true){
+            staffCtx.clearRect(0,0,64,64);
+            if(DenkmalCombatFX.drawStaffFrame(staffCtx,32,32,row,.5,0,40))break;
+            if(performance.now()-started>15000)throw Error('Marcel staff V2 atlas did not decode');
+            await new Promise(resolve=>setTimeout(resolve,35));
+          }
+          const alpha=staffCtx.getImageData(0,0,64,64).data;
+          const pixels=alpha.filter((value,index)=>index%4===3&&value>16).length;
+          if(pixels<20)throw Error('empty Marcel staff V2 row '+row);
+          staffRows.push(pixels);
+        }
         DenkmalTestHooks.startGame(1);HeroSaga.continueStory();
-        return {rendered,projectiles,impacts,level:DenkmalTestHooks.getGame()?.level};
+        return {rendered,projectiles,impacts,staffRows,level:DenkmalTestHooks.getGame()?.level};
       });
       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       assert.equal(output.rendered,15);
       assert.equal(output.projectiles,15);
       assert.equal(output.impacts,15);
+      assert.equal(output.staffRows.length,3,'all V2 rows render in real canvas');
+      assert.equal(requests.filter(url=>/marcel-staff-fx-v2-40\.png/.test(url)).length,1,'one Marcel FX texture per browser context');
       assert.equal(output.level,1);
       await page.screenshot({path:path.join(screenshots,`${device}-gameplay.png`),fullPage:false,animations:'disabled',timeout:60000});
       const banned=/marcel-lantern-sprite|directional-v410\/(?:kim|marcel)[.-]|tower-boomerang-atlas|projectile-fx-v3\.svg|tower-(?:bow|cannon|mage|rift|boomerang)-(?:l[123]|infernal|ash)/i;

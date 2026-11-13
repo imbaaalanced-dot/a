@@ -1,0 +1,38 @@
+name: Westhofen V3 bronze source and visual preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/graphics/westhofen-v3/**'
+      - 'tests/westhofen-v3-source.test.py'
+      - 'tools/export-westhofen-v3.py'
+      - '.github/workflows/westhofen-v3-bronze-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bronze-review:
+    name: Validate V3 SVG and compare 64/128px previews
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rasterizer dependencies
+        run: python -m pip install 'CairoSVG>=2.7,<3' 'Pillow>=11,<14'
+      - name: Test V3 bronze source and untouched V2 background
+        run: python tests/westhofen-v3-source.test.py
+      - name: Rasterize V3 source and compare current V2 at 64/128px
+        run: python tools/export-westhofen-v3.py --out build/westhofen-v3
+      - name: Upload V3 source review, not runtime assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: westhofen-v3-bronze-review-only
+          path: build/westhofen-v3/
+          if-no-files-found: error
+          retention-days: 14
