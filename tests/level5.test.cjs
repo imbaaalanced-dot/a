@@ -57,9 +57,9 @@ vm.createContext(blocked);vm.runInContext(fs.readFileSync('dist/persisted-state.
 assert.equal(blocked.DenkmalLevels.completeLevel5(),false);
 assert.equal(blocked.DenkmalLevels.level5Completed,true,'blocked storage keeps session progress');
 // Renderer: test both cache reuse and objective anchoring, without a DOM or WebGL.
-let creations=0,images=0,patterns=0,environmentLoads=0;const drawArgs=[];
+let creations=0,images=0,patterns=0,environmentLoads=0;const drawArgs=[],renderedText=[];
 const paint=new Proxy({drawImage(...args){images++;drawArgs.push(args);},createLinearGradient(){return {addColorStop(){}};},
- createRadialGradient(){return {addColorStop(){}};},createPattern(){patterns++;return {}; }},{get:(o,k)=>k in o?o[k]:()=>{}});
+ createRadialGradient(){return {addColorStop(){}};},createPattern(){patterns++;return {}; },fillText(...a){renderedText.push(a);}},{get:(o,k)=>k in o?o[k]:()=>{}});
 box.document={createElement(tag){assert.equal(tag,'canvas');creations++;return {width:0,height:0,getContext:()=>paint};}};
 const environmentSprite={complete:true,naturalWidth:1536,naturalHeight:1024};
 box.KirchendeArt={loadEnvironment(){environmentLoads++;return Promise.resolve(true);},image(){return environmentSprite;}};
@@ -105,6 +105,10 @@ box.DenkmalHohensyburgArt.drawMonument(paint,center);
 assert.equal(creations,beforeClean+1,'cached monument has no repeated allocations');
 assert.equal(unwantedImages,0,'branded monument image is never requested');
 assert.equal(box.DenkmalHohensyburgArt.textFreePreview,true,'text-free artwork is the default');
+assert.ok(renderedText.some(([t,x,y])=>t==='18 JANUAR 1871'&&x===0&&y===-373),
+ 'historically attested inscription appears above the upper arch');
+assert.ok(!renderedText.some(([t])=>t==='1871'),
+ 'do not relocate the historic inscription to the lower pedestal');
 const source=fs.readFileSync('dist/hohensyburg-art.js','utf8');
 assert.match(source,/function sideBronze\(/,'the two bronze attendants have their own sculpted renderer');
 assert.match(source,/sideBronze\(-146,false\);sideBronze\(149,true\)/,
@@ -113,6 +117,8 @@ assert.match(source,/q\.ellipse\(-3,-203,52,32/,
  'equestrian group retains a separately sculpted horse body');
 assert.match(source,/q\.ellipse\(10,-309,15,19/,
  'equestrian rider has a separate visible head and helmet');
+assert.match(source,/q\.lineTo\(-37,-313\)/,
+ 'equestrian rider has raised arm in front of the monument arch');
 assert.match(source,/function weatheredPaving\(/,'paving must use the fixed-seed cache');
 assert.equal((source.match(/weatheredPaving\(q,c\.x\+/g)||[]).length,2,
  'upper and lower Hohensyburg terraces use irregular paving');
