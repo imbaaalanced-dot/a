@@ -88,7 +88,7 @@ assert.equal(asset.toString('ascii',8,12),'WEBP');
 assert.equal(asset.toString('ascii',12,16),'VP8X');
 assert.ok(asset[20]&0x10,'VP8X alpha flag set for transparency');
 box.Image=class {
-  constructor(){this.complete=true;this.naturalWidth=361;this.naturalHeight=550;}
+  constructor(){this.complete=true;this.naturalWidth=512;this.naturalHeight=608;}
   set src(value){this.loadedFrom=value;}
 };
 vm.runInContext(fs.readFileSync('dist/hohensyburg-art.js','utf8'),box);
@@ -96,7 +96,7 @@ const beforeSprite=creations;
 box.DenkmalHohensyburgArt.drawMonument(paint,center);
 assert.equal(creations,beforeSprite,'loaded sprite does not allocate a fallback canvas');
 const drawnSprite=drawArgs.at(-1);
-assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2\.webp\?v=style2a1/);
+assert.match(drawnSprite[0].loadedFrom,/hohensyburg\/kaiser-wilhelm-style2-qa-v2-2x\.webp\?v=syburg-248b1/);
 assert.ok(Math.abs(drawnSprite[1]+drawnSprite[3]/2-center.x)<.01,'asset x remains at monument anchor');
 assert.ok(Math.abs(drawnSprite[2]+drawnSprite[4]-center.y-40)<.01,'asset foot rests on raised terrace');
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
