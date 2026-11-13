@@ -1,0 +1,49 @@
+name: Westhofen V2 browser smoke
+
+on:
+  pull_request:
+    paths:
+      - 'dist/westhofen-art.js'
+      - 'dist/asset-manager.js'
+      - 'dist/index.html'
+      - 'dist/assets/westhofen/**'
+      - 'tools/verify-level7-style2-environment.cjs'
+      - 'tests/westhofen-v2-preview-runtime.test.cjs'
+      - '.github/workflows/westhofen-v2-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Selective V1 and V2 runtime tests
+        run: |
+          node --check dist/westhofen-art.js
+          node --check dist/asset-manager.js
+          node tests/westhofen-v2-preview-runtime.test.cjs
+          node tests/level67-single-image-owner.test.cjs
+          node tests/asset-manager.test.cjs
+      - name: Install Chromium for real desktop and emulated mobile interaction
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Gameplay screenshot and load checks for V1 and opt-in V2
+        env:
+          TD2_LEVEL7_ENVIRONMENT_OUT: /tmp/td2-level7-environment
+        run: timeout 240s node tools/verify-level7-style2-environment.cjs
+      - name: Preserve comparison screenshots and results, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: westhofen-v1-v2-browser-qa
+          path: /tmp/td2-level7-environment/
+          if-no-files-found: warn
+          retention-days: 14
