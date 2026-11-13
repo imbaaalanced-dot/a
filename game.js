@@ -87,8 +87,9 @@
   let storage;try{storage=localStorage;}catch{}
   // Separate test preference. Do not import the obsolete td2_developer_mode_enabled flag.
   const developerStorageKey='td2-developer-mode-v2';
-  let developerMode=false,developerToastTimer=0;
-  try{developerMode=storage?.getItem(developerStorageKey)==='enabled';}catch{}
+  // New sessions start in developer mode; a player's explicit choice survives reloads.
+  let developerMode=true,developerToastTimer=0;
+  try{developerMode=storage?.getItem(developerStorageKey)!=='disabled';}catch{}
   const preferenceKey='denkmal-preferences-v1',preferenceVersion=1;
   const preferenceDefaults={character:'marcel',graphics:'auto',zoom:'wide',sound:true,telemetry:false,tutorialSeen:false};
   const validPreferences=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['marcel','kim'].includes(p.character)&&['auto','low','high'].includes(p.graphics)&&['wide','standard'].includes(p.zoom)&&typeof p.sound==='boolean'&&typeof p.telemetry==='boolean'&&typeof p.tutorialSeen==='boolean';
