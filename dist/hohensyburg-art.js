@@ -301,7 +301,8 @@
       }
       q.restore();
     }
-    sideBronze(-146,false);sideBronze(149,true);
+    // Front view from the south: Moltke west / left, Bismarck east / right.
+    sideBronze(-146,true);sideBronze(149,false);
     // The bronze horse is read in three-quarter profile: four distinct legs,
     // raised foreleg, head, reins, mane, sculpted chest and separate rider.
     q.fillStyle='#152d2a99';q.beginPath();q.ellipse(-5,-126,74,12,0,0,Math.PI*2);q.fill();
