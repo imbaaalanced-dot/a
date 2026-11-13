@@ -1,0 +1,16 @@
+827232651f101a7fc7f232105e6f969c1cb33637ab349b584628fcb9356ff95a  source-art/hero/actions-v5/marcel/down/hit/00.png
+a7a5c090a42241c17ea7701b476e84600ab0864d5c3c43a595b3277f05822e46  source-art/hero/actions-v5/marcel/down/death/00.png
+528dbf8e960f14dab32ee797170adeffd246ca0efecdf696da55ac47def45ef4  source-art/hero/actions-v5/marcel/down/hit/01.png
+57eab2468a675f2853697f36e412f4beed5a5224a429c22f286d44115b91f222  source-art/hero/actions-v5/marcel/down/death/01.png
+7ff009e2f6eeb1589ae202b48d2dbb31b8714614599b22c93b63520c5a29f301  source-art/hero/actions-v5/marcel/down/hit/02.png
+a129a8a3ecc8dde0e4ae279c2d8b381aa708c9a1ab8a634eaedf6287f44bb494  source-art/hero/actions-v5/marcel/down/death/02.png
+f7fd2cfe14cc828670ee3e9517ed82f56e495246fc1cd8b3ade60d977ccf56b8  source-art/hero/actions-v5/marcel/down/hit/03.png
+ee868175d71fdcd0344573d9a37c55976017afec82fec5122c24ee901052af7d  source-art/hero/actions-v5/marcel/down/death/03.png
+5e08202165525588afa2621be934455c866dbc916ecc05125fca1019c10677c9  source-art/hero/actions-v5/marcel/down/hit/04.png
+d3eb4e216c486ce3e768f2bbc822d8f93ac1791869511643714c34fdb0ade1fb  source-art/hero/actions-v5/marcel/down/death/04.png
+32e2304e67f191e8a2d774cac393648820d39f43d4b4ca9e85af3438fc6eb474  source-art/hero/actions-v5/marcel/down/hit/05.png
+84cd225df7231c12ce471d7150defad16450c95bcab4fa96128f2ac088d43f77  source-art/hero/actions-v5/marcel/down/death/05.png
+029133d345efc8dea583d0f2514b17e3fa9ba1a5a19d0e1aacb37ed8ab2f75aa  source-art/hero/actions-v5/marcel/down/marcel-hit-down-concept-3x2.png
+6e6985734ffad8c5dc7700a47f3c8f063b8d096f7bd858c382ee5dad17383eb6  source-art/hero/actions-v5/marcel/down/marcel-death-down-concept-3x2.png
+463eb1601eabe77d4940a239e47cc6680969c6519e74d405d515a24cfdfce1fb  source-art/hero/actions-v5/marcel/down/marcel-hit-down-preview-6x1.png
+cf9ce321f578308b6eaf661f2f02964aae7114a15681d4fcd4956bdceb2b6621  source-art/hero/actions-v5/marcel/down/marcel-death-down-preview-6x1.png
