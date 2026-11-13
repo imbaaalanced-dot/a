@@ -392,7 +392,7 @@
     // Current 1935/36 arrangement: the Reichsgruendung date is above
     // the arch, not written on the lower pedestal (LWL / contemporary views).
     q.textAlign='center';q.textBaseline='alphabetic';
-    q.font='bold 12px Georgia,serif';q.lineWidth=2;
+    q.font='bold 14px Georgia,serif';q.lineWidth=1;
     q.strokeStyle='#514b41';q.strokeText('18 JANUAR 1871',0,-373);
     q.fillStyle='#d5bea0';q.fillText('18 JANUAR 1871',0,-373);
     // Small crown relief in the stone course above the inscription.
