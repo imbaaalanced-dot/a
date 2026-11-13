@@ -44,7 +44,7 @@ assert.match(game, /endless4Btn[^\n]*startGame\(4,'endless'\)/);
 assert.match(game, /level4Btn[^\n]*startGame\(4\)/);
 assert.doesNotMatch(endless, /Wellenrekord wird gespeichert/, 'do not promise records until persistence exists');
 assert.match(html, /id="speedBtn"[^>]*>TEMPO: 1×<\/button>/);
-assert.match(html, /id="menuDeveloperBtn"[^>]*aria-pressed="false"/, 'options show the developer switch');
+assert.match(html, /id="menuDeveloperBtn"[^>]*aria-pressed="true"/, 'options show the developer switch active by default');
 assert.match(html, /id="menuDeveloperToast"[^>]*role="status"/, 'activation overlay is announced');
 assert.match(game, /developerRun:developerMode/, 'developer runs are isolated');
 assert.match(game, /const limit=game.developerRun\?3:2/, '3x is developer-only');

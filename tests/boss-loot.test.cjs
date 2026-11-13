@@ -9,7 +9,8 @@ assert.equal(m.claimBoss({...req,bossType:'wraith'}).state,'rejected');assert.eq
 const original=storage.setItem;storage.setItem=()=>{throw Error('quota')};const quota=m.claimBoss({...req,runId:'quota'});assert.equal(quota.state,'granted');assert.equal(quota.persisted,false);assert.ok(m.find(quota.item.id));assert.match(m.status,/Sitzung/);storage.setItem=original;
 const stale=L.create({storage});m.save();const newer=storage.getItem(L.KEY);const pending=stale.claimBoss({...req,runId:'stale'});assert.equal(pending.state,'pending');assert.equal(storage.getItem(L.KEY),newer);assert.equal(JSON.parse(stale.exportJSON()).pendingRewards.length,1);
 const bad=JSON.parse(stale.exportJSON());bad.pendingRewards.push(bad.pendingRewards[0]);assert.equal(m.importJSON(JSON.stringify(bad)),false);
-const {t,saga,element}=require('./helpers/game.cjs')();t.startGame(1);saga.continueStory();let n=t.lootModel.profile.owned.length;
+const {t,saga,element}=require('./helpers/game.cjs')({developerMode:false});t.startGame(1);saga.continueStory();let n=t.lootModel.profile.owned.length;
+assert.equal(t.game.developerRun,false,'loot is tested in a normal campaign run');
 for(let i=0;i<500;i++){t.spawnEnemy('wraith');const e=t.game.enemies.at(-1);t.hurtEnemy(e,1e7,{fixedDamage:true});}assert.ok(t.lootModel.profile.owned.length>=n+12,'normal kills now grant loot with pity');n=t.lootModel.profile.owned.length;
 t.spawnEnemy('boss');const e=t.game.enemies.at(-1);t.hurtEnemy(e,1e7,{fixedDamage:true});assert.equal(t.lootModel.profile.owned.length,n+1);assert.match(element('toast').textContent,/(Episch|Legendär)/,'boss toast includes rarity');assert.equal(t.game.loot.filter(x=>x.kind==='item').length,0);t.hurtEnemy(e,1e7,{fixedDamage:true});t.game.wave=5;t.endWave();assert.equal(t.lootModel.profile.owned.length,n+1);
 t.startGame(2);saga.continueStory();n=t.lootModel.profile.owned.length;t.game.wave=8;t.completeLevel();assert.equal(t.lootModel.profile.owned.length,n);
