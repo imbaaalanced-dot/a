@@ -47,26 +47,26 @@ function requestSharedEnvironment(){
 }
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
- q.fillStyle='#3c503b';q.fillRect(0,0,3072,3072);
+ q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'base')||'#3c503b';q.fillRect(0,0,3072,3072);
  const tile=globalThis.DenkmalTerrain?.groundImage;
- if(tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
+ if(!globalThis.TD2GroundV3?.imageFor?.(7,'base')&&tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
  let seed=4127;const rnd=()=>((seed=(Math.imul(seed,1664525))+1013904223)>>>0)/4294967296;
  for(let i=0;i<2100;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#6a7c5224','#a89a642c','#1a2f2834'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Reichshofstraße runs along the southern edge of the memorial green.
  const street=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
- path(q,street,'#a5a28c',165);path(q,street,'#676f6b',143);path(q,street,'#767d7444',118);
+ path(q,street,'#a5a28c',165);path(q,street,'#676f6b',143);path(q,street,globalThis.TD2GroundV3?.patternFor?.(q,7,'street')||'#767d7444',118);
  for(let i=1;i<street.length;i++){const a=street[i-1],b=street[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}
  // Sidewalk between street and green strip; the air corridor crosses it.
  const walk=[{x:C.x-1120,y:C.y+632},{x:C.x-560,y:C.y+574},{x:C.x+40,y:C.y+592},{x:C.x+640,y:C.y+536},{x:C.x+1120,y:C.y+574}];
- path(q,walk,'#8f9482',54);
+ path(q,walk,globalThis.TD2GroundV3?.patternFor?.(q,7,'sidewalk')||'#8f9482',54);
  // Bus stop "Westhofen Denkmal" at the eastern roadside (Reichshofstr. 142).
  const bx=C.x+330,by=C.y+596;q.fillStyle='#565d58';q.fillRect(bx-58,by-40,116,46);q.fillStyle='#7e837a';q.fillRect(bx-58,by-48,116,10);q.fillStyle='#33383444';q.beginPath();q.ellipse(bx,by+10,72,14,0,0,7);q.fill();q.fillStyle='#4b524d';q.fillRect(bx-50,by-24,100,10);q.fillStyle='#2c332f';q.fillRect(bx+40,by-22,8,28);
  // Lane footpaths: two street accesses and the northern green corridor.
- for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,'#b9907244',58);
+ for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,7,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
  // Gravel apron around the memorial leaves the objective and build pads free.
- q.fillStyle='#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
+ q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'forecourt')||'#5f6657';q.beginPath();q.ellipse(C.x,C.y+8,300,190,0,0,7);q.fill();
  for(let y=-140;y<150;y+=34)for(let x=-250;x<250;x+=52){q.fillStyle=(x+y)%3?'#93937c':'#83856f';q.fillRect(C.x+x*.72,C.y+y*.6,48,28);q.fillStyle='#bfc0a026';q.fillRect(C.x+x*.72+3,C.y+y*.6+2,40,3);}
  // Hedges with benches frame the green; both stay clear of lanes and pads.
  for(const side of [-1,1]){const hx=C.x+side*430,hy=C.y-260;q.fillStyle='#27361f';q.beginPath();q.ellipse(hx,hy,90,46,side*.3,0,7);q.fill();

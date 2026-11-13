@@ -74,7 +74,7 @@ assert.equal(reloaded.DenkmalLevels.level7Completed,true,'completion survives a 
 // Wiring: scripts, cache keys, menu cards and game hooks must reference Westhofen.
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 assert.ok(html.includes('westhofen.js?v=westhofen2'));
-assert.ok(html.includes('westhofen-art.js?v=westhofen-env-style2b2'));
+assert.ok(html.includes('westhofen-art.js?v=ground-v3-1'));
 assert.ok(html.includes('levels.js?v=level7btouch1'));
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
 for(const id of ['level7Btn','endless7Btn'])assert.ok(html.includes('id="'+id+'"'),id+' exists in the menu');

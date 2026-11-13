@@ -29,9 +29,9 @@ function load(){
     const image=new Image();image.decoding='async';
     let triedFallback=false;
     image.onload=()=>{
-      style2Ground=image;illustratedGround=null;
+      style2Ground=image;illustratedGround=null;illustratedMeadow=null;
       // This opt-in preview never blocks gameplay when a pilot texture is missing.
-      Promise.resolve(loadPilotRoads()).then(()=>resolve(true),()=>resolve(true));
+      Promise.all([loadPilotRoads(),globalThis.TD2GroundV3?.load?.()||Promise.resolve(false)]).then(()=>resolve(true),()=>resolve(true));
     };
     image.onerror=()=>{
       if(pilot&&!triedFallback){triedFallback=true;image.src=baseGroundUrl;return;}
@@ -103,7 +103,10 @@ function texture(kind){
   }
   textures.set(kind,c);return c;
 }
-function pattern(ctx,kind){
+function pattern(ctx,kind,groundLevel=3){
+  const material=globalThis.TD2GroundV3?.material?.(groundLevel,kind==='slabs'?'road':'earth');
+  const reference=globalThis.TD2GroundV3?.pattern?.(ctx,material);
+  if(reference)return reference;
   let cache=patterns.get(ctx);if(!cache){cache=new Map();patterns.set(ctx,cache);}
   const pilotImage=pilot&&pilotRoad[kind];
   const cacheKey=pilotImage?'pilot-'+kind:kind;
@@ -112,13 +115,15 @@ function pattern(ctx,kind){
   }
   return cache.get(cacheKey);
 }
-let illustratedGround=null;
-function groundPainting(){
-  if(illustratedGround)return illustratedGround;
+let illustratedGround=null,illustratedMeadow=null;
+function groundPainting(groundLevel=3){
+  if(groundLevel===4&&illustratedMeadow)return illustratedMeadow;
+  if(groundLevel!==4&&illustratedGround)return illustratedGround;
   const c=document.createElement('canvas');c.width=c.height=1536;
   const q=c.getContext('2d'),r=rng(671629);
   if(style2Ground){
-    const pattern=q.createPattern(style2Ground,'repeat');
+    const reference=globalThis.TD2GroundV3?.imageFor?.(groundLevel,'base');
+    const pattern=q.createPattern(reference||style2Ground,'repeat');
     if(pattern){q.fillStyle=pattern;q.fillRect(0,0,1536,1536);}
     else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
     q.fillStyle='#17231c22';q.fillRect(0,0,1536,1536);
@@ -144,10 +149,11 @@ function groundPainting(){
   const vignette=q.createRadialGradient(768,768,210,768,768,1100);
   vignette.addColorStop(0,'#c5b78506');vignette.addColorStop(.65,'#11272100');vignette.addColorStop(1,'#0b1c2966');
   q.fillStyle=vignette;q.fillRect(0,0,1536,1536);
-  illustratedGround=c;return c;
+  if(groundLevel===4)illustratedMeadow=c;else illustratedGround=c;
+  return c;
 }
-function drawGround(ctx,x,y,w,h){
-  const painting=groundPainting(),left=Math.max(0,x),top=Math.max(0,y);
+function drawGround(ctx,x,y,w,h,groundLevel=3){
+  const painting=groundPainting(groundLevel),left=Math.max(0,x),top=Math.max(0,y);
   const right=Math.min(3072,x+w),bottom=Math.min(3072,y+h);
   if(right>left&&bottom>top)ctx.drawImage(painting,left*.5,top*.5,(right-left)*.5,(bottom-top)*.5,left,top,right-left,bottom-top);
 }
@@ -160,7 +166,7 @@ const ROAD_SHOULDERS={
   slabs:[[148,'#192b2812'],[138,'#33403720'],[126,'#424c4236'],[114,'#535b5055'],
     [104,'#65696075'],[94,'#787e7199'],[86,'#86877c'],[80,'#77796f']]
 };
-function drawRoad(ctx,path,{surface='earth'}={}){
+function drawRoad(ctx,path,{surface='earth',groundLevel=3}={}){
   if(!path||path.length<2)return;
   const material=surface==='slabs'?'slabs':'earth';
   ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
@@ -169,7 +175,7 @@ function drawRoad(ctx,path,{surface='earth'}={}){
   for(const [width,color] of ROAD_SHOULDERS[material]){
     ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
-  ctx.strokeStyle=pattern(ctx,material)||(material==='slabs'?'#77796f':'#77674b');
+  ctx.strokeStyle=pattern(ctx,material,groundLevel)||(material==='slabs'?'#77796f':'#77674b');
   ctx.lineWidth=72;ctx.stroke();
   ctx.restore();
 }

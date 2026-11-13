@@ -46,9 +46,9 @@
     const rand=randomGenerator(1902),t=level.syburgTerrace;
     const c=C,r=t.raised,f=t.forecourt;
     // Woodland surrounds the north-facing Y junction. South is the wooded drop.
-    q.fillStyle=globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);
+    q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'base')||globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);
     const texture=globalThis.DenkmalTerrain?.groundImage;
-    if(texture?.complete&&texture.naturalWidth){
+    if(!globalThis.TD2GroundV3?.imageFor?.(5,'base')&&texture?.complete&&texture.naturalWidth){
       const pattern=q.createPattern(texture,'repeat');
       if(pattern){q.save();q.globalAlpha=.2;q.fillStyle=pattern;q.fillRect(0,0,SIZE,SIZE);q.restore();}
     }
@@ -67,7 +67,7 @@
     // Three lanes are authored in levels.js, so rendered paths and AI agree.
     for(const lane of level.paths){
       stroke(q,lane,'#182820',122);stroke(q,lane,'#626c54',105);
-      stroke(q,lane,globalThis.TD2Style2Materials?.stone||'#a39b7d',84);
+      stroke(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,5,'road')||globalThis.TD2Style2Materials?.stone||'#a39b7d',84);
       for(let i=1;i<lane.length;i++){
         const a=lane[i-1],b=lane[i],d=Math.hypot(b.x-a.x,b.y-a.y);
         if(d<1)continue;
@@ -98,7 +98,7 @@
       f.right-f.left+42,f.bottom-f.top+84);
     q.fillStyle='#55594e';q.fillRect(c.x+f.left-24,c.y+f.bottom-4,
       f.right-f.left+48,92);
-    q.fillStyle='#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
+    q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'forecourt')||'#a9a18b';q.fillRect(c.x+f.left-24,c.y+f.top-10,
       f.right-f.left+48,f.bottom-f.top+10);
     q.fillStyle='#8d8878';q.fillRect(c.x+f.left+22,c.y+f.top+20,
       f.right-f.left-44,f.bottom-f.top-45);
