@@ -1,4 +1,4 @@
-/* TD2 Level 4 FPS profiling: each condition runs in a FRESH Chromium context.
+/* TD2 Level 4 FPS profiling (focused menu-open case): each case gets a fresh Chromium context.
    Prevents old frame/sprite loop state and screenshot compositor throttling from
    biasing the baseline-vs-compact comparison. No gameplay/code changes. */
 'use strict';
@@ -27,7 +27,7 @@ const pctl=(values,p)=>{
   for(const t of [
     {device:'desktop-1649x890-high',width:1649,height:890,touch:false,graphics:'high'},
     {device:'portrait-412x915-auto',width:412,height:915,touch:true,graphics:'auto'}
-  ])for(const cssProfile of ['baseline','compact'])for(const menuOpen of [false,true]){
+  ])for(const cssProfile of ['baseline','compact'])for(const menuOpen of [true]){
     // Each measurement starts a fresh page, wave and rAF history. Never take
     // screenshots in an FPS timing run: canvas copies stall SwiftShader.
     const context=await browser.newContext({viewport:{width:t.width,height:t.height},isMobile:t.touch,hasTouch:t.touch,deviceScaleFactor:1,reducedMotion:'reduce'});
