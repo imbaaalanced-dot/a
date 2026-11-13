@@ -1,4 +1,4 @@
-/* Hohensyburg: V2 is default. Explicit legacy keeps the original WebP;
+/* Hohensyburg: V2 is default. Legacy never requests the branded original;
  * ?td2SyburgCleanPreview=1 selects the cached Canvas fallback. */
 'use strict';
 const assert=require('node:assert/strict');
@@ -39,9 +39,9 @@ assert.equal(normal.calls.length,2);
 assert.match(normal.calls[0][0].loadedFrom,/qa-v2-2x\.webp/);
 const legacy=sample('?td2SyburgLegacy=1');
 assert.equal(legacy.art.legacyMonument,true);
-assert.equal(legacy.images.length,1);
-assert.equal(legacy.canvases,0);
-assert.match(legacy.calls[0][0].loadedFrom,/kaiser-wilhelm-style2\.webp/);
+assert.equal(legacy.art.textFreePreview,true);
+assert.equal(legacy.images.length,0,'watermarked legacy image never loads');
+assert.equal(legacy.canvases,1,'legacy URL uses cached text-free Canvas');
 const optin=sample('?td2SyburgCleanPreview=1');
 assert.equal(optin.art.textFreePreview,true);
 assert.equal(optin.images.length,0,'text-free preview does not request branded WebP in this renderer');

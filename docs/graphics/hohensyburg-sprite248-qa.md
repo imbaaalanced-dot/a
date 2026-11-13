@@ -38,7 +38,7 @@ Issue: #248 · 13 November 2026 · Development-only preview
   foot anchor, footprint and Canvas fallback. It leaves V1 intact so both
   historical interpretations can be compared at identical zoom and camera.
 - **Default:** V2 2× is used in Level 5; historical-motif review treats it as an illustrative game image, not a photo-faithful reconstruction.
-- `?td2SyburgLegacy=1` explicitly restores the original watermark-bearing WebP for comparison/rollback.
+- `?td2SyburgLegacy=1` explicitly selects the upgraded text-free Canvas fallback; the branded original remains archival.
 - `?td2SyburgCleanPreview=1`: retains the old Canvas-only preview.
 - Clean-preview and legacy flags deliberately suppress V1/V2 loading; legacy takes precedence.
   V1 (`?td2SyburgArt248=1`) remains opt-in. No UI/gameplay edits.
@@ -75,3 +75,6 @@ Issue: #248 · 13 November 2026 · Development-only preview
   photo-based silhouette QA is necessary.
 - QA status: V2's visual readability at game zoom and eight Chromium scenes reviewed; exact monument geometry and physical Android FPS/RAM acceptance remain outstanding.
   Merge of the opt-in and default art is a game-art release decision, not a claim of historical equivalence or Android performance signoff.
+
+## Reconciled with current main
+The existing main branch's detailed bronze-figure Canvas, documented '18 JANUAR 1871' stone inscription, and deterministic weathered paving are preserved. V2 is the default sprite. Original branded WebP is archived, never loaded; clean and legacy URL parameters select sculpted Canvas. Real Android 4 GB performance signoff remains pending.

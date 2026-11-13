@@ -10,11 +10,26 @@ for(const name of ['persisted-state.js','levels.js','map-polish-v410.js'])vm.run
 const api=box.DenkmalMapPolish,levels=box.DenkmalLevels;
 assert.equal(allocated,0,'loading creates no canvases or downloads');
 const original=JSON.stringify(levels.levels),plans=[];
-for(let level=1;level<=6;level++){
+for(let level=1;level<=7;level++){
  const layout={...levels.levels[level],center:levels.center};
  const plan=api.getPlan(level,layout);plans.push(plan);
  assert.ok(Object.isFrozen(plan)&&Object.isFrozen(plan.vegetation),'cached plans cannot mutate');
  assert.ok(plan.vegetation.length>20&&plan.vegetation.length<=240,'every map receives bounded vegetation');
+ assert.ok(plan.weathering.length>=20&&plan.weathering.length<=64,'all maps break up repetitive ground with bounded stains');
+ assert.ok(Object.isFrozen(plan.weathering),'weathering plans are immutable');
+ for(const p of [...plan.weathering,...plan.vegetation,...plan.edges]){
+  assert.ok((layout.gates||[]).every(g=>Math.hypot(p.x-g.x,p.y-g.y)>p.r+125),'complete decoration clears spawn gates');
+  if(layout.airGate)assert.ok(Math.hypot(p.x-layout.airGate.x,p.y-layout.airGate.y)>p.r+125,'air gate stays visible');
+  if(level===6)assert.ok(p.x+p.r<=layout.center.x+620&&p.y+p.r<=layout.center.y+500,'Goethe street frontage stays bare');
+  if(level===7){
+   assert.ok(p.y+p.r<=layout.center.y+460,'Westhofen street, bus stop and pavement stay bare');
+   assert.ok(p.x+p.r<layout.center.x-320||p.x-p.r>layout.center.x+320||p.y+p.r<layout.center.y-210||p.y-p.r>layout.center.y+220,'Westhofen memorial apron stays bare');
+  }
+ }
+ for(const p of plan.weathering){
+  assert.ok(layout.paths.every(route=>levels.pathDistance(p,route)>=76+p.r),'full weathering radius clears lanes');
+  assert.ok(layout.slots.every(slot=>Math.hypot(p.x-slot.x,p.y-slot.y)>=65+p.r),'weathering clears build pads');
+ }
  assert.ok(plan.edges.length>10&&plan.edges.length<=900,'every route receives bounded transition texture');
  assert.ok(plan.contact.length>=12,'each monument has contact patches');
  for(const p of plan.vegetation){
@@ -53,4 +68,4 @@ let unavailableAllocations=0;fallback.document={createElement(){unavailableAlloc
 fallback.DenkmalMapPolish.reset();
 for(let frame=0;frame<12;frame++)assert.equal(fallback.DenkmalMapPolish.drawGround(ctx,1,{...levels.levels[1],center:levels.center},{x:0,y:0},100,100),false);
 assert.equal(unavailableAllocations,2,'failed context is remembered instead of allocating every frame');
-console.log('V4.1 map polish: all six deterministic plans, exclusions, immutable layouts, bounded warm/low caches and canvas fallback passed.');
+console.log('V4.1 map polish: all seven deterministic plans, exclusions, immutable layouts, bounded warm/low caches and canvas fallback passed.');

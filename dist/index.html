@@ -21,12 +21,13 @@
   <link rel="stylesheet" href="portrait-avatars-v5.css?v=duo-v5a1" />
   <link rel="stylesheet" href="combat-hud-v2.css?v=v5hud2a2" />
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
+  <link rel="stylesheet" href="combat-hud-layout-v3.css?v=td2hud-layout-20261113a" />
 <style id="td2-menu-version-visibility">#startScreen .menu-masthead{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px;min-height:32px}#startScreen #menuVersionTop{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:100!important}#startScreen #menuVersion{display:inline-block!important;visibility:visible!important;opacity:1!important;color:#f3e2b6!important;font-size:11px!important}@media(max-width:380px){#startScreen #menuVersionTop{font-size:11px!important;padding:4px 6px!important}}</style>
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="canonical-hero-art-v5.js?v=hero-lock2"></script>
-  <script src="asset-manager.js?v=alpha9a6"></script>
+  <script src="asset-manager.js?v=syburg-clean-runtime1"></script>
   <script src="preloader.js?v=copy-20261110a"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal TD2. Bewegen mit WASD oder Pfeiltasten, ausweichen mit Leertaste, Turm bauen mit E, pausieren mit Escape."></canvas>
@@ -86,8 +87,8 @@
       <button data-tower="cannon" title="Flächenschaden gegen Gruppen"><kbd>2</kbd><span>KANONE</span><b>35</b></button>
       <button data-tower="mage" title="Verlangsamt getroffene Gegner"><kbd>3</kbd><span>MAGIE</span><b>46</b></button>
       <button data-tower="rift" title="Kettenblitz trifft mehrere Gegner"><kbd>4</kbd><span>RISS</span><b>58</b></button>
-    <button data-tower="barracks" title="Rekrutiert Miliz, die den Weg verteidigt"><kbd>6</kbd><span>KASERNE</span><b>55</b></button>
-    <button id="tower-boomerang" data-tower="boomerang" hidden title="Trifft Gegner auf dem Hin- und Rückflug"><kbd>5</kbd><span>BUMERANG</span><b>48</b></button></section>
+    <button data-tower="barracks" title="Rekrutiert Miliz, die den Weg verteidigt"><kbd>5</kbd><span>KASERNE</span><b>55</b></button>
+    </section>
 
     <section class="controls" id="controls" aria-label="Spielaktionen">
       <div class="move-hint"><kbd>WASD / ↑↓←→</kbd><span>BEWEGEN</span></div>
@@ -328,14 +329,14 @@
   <script src="westhofen.js?v=westhofen2"></script>
   <script src="westhofen-art.js?v=ground-v3-1"></script>
   <script src="hohensyburg.js?v=syburg-balance2"></script>
-  <script src="hohensyburg-art.js?v=syburg-v2-default-20261113"></script>
+  <script src="hohensyburg-art.js?v=syburg-v2-combined-20261113"></script>
   <script src="campaign-balance.js?v=portal1"></script>
   <script src="portal-run.js?v=save2"></script>
   <script src="portal-perks.js?v=portal1"></script>
-  <script src="map-polish-v410.js?v=v410a1"></script>
+  <script src="map-polish-v410.js?v=all-levels-20261113"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
   <script src="barracks.js?v=td2-barracks5"></script>
-  <script src="game.js?v=dev-default-20261113"></script>
+  <script src="game.js?v=towerhud-20261113a"></script>
   <script src="portrait-avatars-v5.js?v=copy-20261112-urlfix"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-version-label">
