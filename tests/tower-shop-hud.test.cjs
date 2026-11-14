@@ -18,7 +18,7 @@ assert.match(game,/function moveBoomerang\(/,'legacy projectiles retained');
 for(const kind of ['bow','cannon','mage','rift','barracks'])
   assert.match(html,new RegExp('data-tower="'+kind+'"'),'active '+kind+' still available');
 assert.match(html,/combat-hud-layout-v3\.css\?v=td2hud-layout-20261113a/,'new CSS cache key');
-assert.match(html,/game\.js\?v=towerhud-20261113a/,'changed JS cache key');
+assert.match(html,/game\.js\?v=church-camera-20261114a/,'changed JS cache key');
 assert.match(css,/@media \(hover:hover\) and \(pointer:fine\) and \(min-width:701px\)/,'scoped desktop layout');
 assert.match(css,/#arsenal:not\(\.hidden\)/,'preserve hidden arsenal semantics');
 assert.match(css,/@media \(hover:hover\) and \(pointer:fine\) and \(max-width:700px\)/,'narrow mouse layout');

@@ -60,7 +60,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','late-ground-20261113'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','late-ground-20261113'],
-  ['game.js', 'towerhud-20261113a'],
+  ['game.js', 'church-camera-20261114a'],
   ['barracks.js','td2-barracks5'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
@@ -77,7 +77,7 @@ const expectedVersions = new Map([
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js','late-ground-20261113'],
   ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js','kirchende-layout-20261114a'],
+  ['church-art.js','church-reference-20261114b'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 

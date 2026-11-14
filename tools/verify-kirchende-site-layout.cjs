@@ -32,9 +32,23 @@ const server=http.createServer((req,res)=>{
     const canvas=document.querySelector('#game'),q=canvas.getContext('2d');
     const pixels=q.getImageData(0,0,canvas.width,canvas.height).data;
     let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)visible++;
-    return {level:g.level,slots:DenkmalLevels.levels[level].slots.length,visible,width:canvas.width,height:canvas.height};
+    let churchBounds=null;
+    if(level===4){
+     const view=h.getView(),f=DenkmalChurch.churchSpriteFrame,c=DenkmalLevels.center;
+     // Style2Phase6.upright keeps the sprite's ground anchor projected while
+     // cancelling vertical depth compression across the building itself.
+     const bottom=(c.y+f.y+f.h-view.camera.y)*view.zoom*view.viewDepth;
+     churchBounds={left:(c.x+f.x-view.camera.x)*view.zoom,right:(c.x+f.x+f.w-view.camera.x)*view.zoom,top:bottom-f.h*view.zoom,bottom};
+    }
+    return {level:g.level,slots:DenkmalLevels.levels[level].slots.length,visible,width:canvas.width,height:canvas.height,viewportWidth:innerWidth,viewportHeight:innerHeight,churchBounds};
    },level);
    assert.equal(state.level,level);assert.ok(state.visible>state.width*state.height*.08,'nonempty game canvas');
+   if(mobile&&level===4){
+    assert.ok(state.churchBounds.left>=-14,'portrait opening keeps the church left edge visible: '+JSON.stringify(state.churchBounds));
+    assert.ok(state.churchBounds.right<=state.viewportWidth+14,'portrait opening keeps the church right edge visible: '+JSON.stringify(state.churchBounds));
+    assert.ok(state.churchBounds.top>=100,'portrait opening clears the compact top HUD: '+JSON.stringify(state.churchBounds));
+    assert.ok(state.churchBounds.bottom<state.viewportHeight*.65,'portrait opening keeps gameplay space below the church');
+   }
    assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
    await page.screenshot({path:path.join(out,`level${level}-${mobile?'touch':'desktop'}.png`)});
    results.push({mobile,...state,errors,failed});await context.close();
