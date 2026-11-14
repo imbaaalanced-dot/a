@@ -245,9 +245,9 @@
   function openingCameraBias(){
     // Establish the Ender Dorfkirche on tall phones, then return smoothly to
     // the normal hero camera before the first wave reaches the monument.
-    if(!game||game.level!==4||!portraitLayout()||game.intermission<=0)return {x:0,y:0};
+    if(!game||game.level!==4||game.intermission<=0)return {x:0,y:0};
     const reveal=clamp(game.intermission/2.25,0,1);
-    return {x:-280*reveal,y:-460*reveal};
+    return portraitLayout()?{x:-280*reveal,y:-460*reveal}:{x:0,y:-340*reveal};
   }
   function updateCamera(dt=0){
     if(!game)return;

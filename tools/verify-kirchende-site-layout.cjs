@@ -49,6 +49,10 @@ const server=http.createServer((req,res)=>{
     assert.ok(state.churchBounds.top>=100,'portrait opening clears the compact top HUD: '+JSON.stringify(state.churchBounds));
     assert.ok(state.churchBounds.bottom<state.viewportHeight*.65,'portrait opening keeps gameplay space below the church');
    }
+   if(!mobile&&level===4){
+    assert.ok(state.churchBounds.top>=90,'desktop opening clears the top HUD: '+JSON.stringify(state.churchBounds));
+    assert.ok(state.churchBounds.bottom<state.viewportHeight*.60,'desktop opening keeps gameplay space below the church');
+   }
    assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
    await page.screenshot({path:path.join(out,`level${level}-${mobile?'touch':'desktop'}.png`)});
    results.push({mobile,...state,errors,failed});await context.close();
