@@ -30,3 +30,12 @@ Der Nutzer meldete den Praxistest auf einem Redmi 15C mit **4 GB physischem RAM 
 Der dabei getestete veröffentlichte Build und die exakte Testdauer sind nicht zweifelsfrei belegt. Die Rückmeldung bestätigt deshalb nicht gesondert die danach neu hinzugekommenen Standortänderungen oder diesen noch unveröffentlichten Hausdekorations-Patch. Keine automatische physische Android-Prüfung durchgeführt.
 
 Eine historische Bildabnahme gegen die privaten Originalaufnahmen wird mit diesen technischen Screenshots nicht behauptet. Kein Merge oder Deployment dieses Folgepatches.
+
+
+## Zusätzlicher CI-Befund
+
+Der erste Referenzboden-Lauf dieses PRs bestand den neuen Hausflächen-Test sowie den verzögerten V3-Decode-Test. Danach scheiterte der vorhandene Menü-Kaltstarttest beim Screenshot mit `waiting for fonts to load` / 30-Sekunden-Timeout. Ursache der Testabhängigkeit: externe Google-Fonts-Schriften; keine gemeldete Haus-, Weg- oder Spielausnahme.
+
+Der Menü-Kaltstarttest isoliert nun vor der Navigation die externe Fonts-CSS mit einer leeren CSS-Antwort und verwendet die bereits vorhandenen Ersatzschriften der App. Sämtliche lokalen Spielrequests und die absichtlich verzögerten/fehlschlagenden V3-Materialrequests bleiben unverändert real. Das ist eine deterministische Testkonfiguration, keine Änderung der veröffentlichten Schriftgestaltung. Der Ergebnisbericht kennzeichnet diese Schriftkonfiguration ausdrücklich.
+
+Alle vier Menü-Kaltstarts mit der isolierten Schriftanfrage sind lokal bestanden: [Ergebnisse](cold-start-font-isolated.json). Die bestehende Spielsteuerung und beide Material-Fehlerfälle bleiben geprüft.
