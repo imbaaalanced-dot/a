@@ -5,6 +5,7 @@ on:
     paths:
       - 'dist/levels.js'
       - 'dist/church-art.js'
+      - 'tests/church-grave-cache.test.cjs'
       - 'dist/kirchende-art.js'
       - 'tools/verify-kirchende-site-layout.cjs'
       - 'tests/kirchende-site-layout.test.cjs'
@@ -21,6 +22,7 @@ jobs:
         with:
           node-version: '22'
       - run: node tests/kirchende-site-layout.test.cjs
+      - run: node tests/church-grave-cache.test.cjs
       - run: npm install --no-save --package-lock=false playwright@1.62.1
       - run: npx playwright install chromium
       - run: node tools/verify-kirchende-site-layout.cjs
