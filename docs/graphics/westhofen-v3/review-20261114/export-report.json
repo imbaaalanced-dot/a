@@ -1,0 +1,34 @@
+{
+  "asset": "westhofen-v2-source",
+  "status": "NOT_RUNTIME_APPROVED",
+  "width": 768,
+  "height": 512,
+  "files": [
+    {
+      "name": "westhofen-emblem-v3",
+      "rgba": true,
+      "png_bytes": 51343,
+      "webp_bytes": 9612,
+      "alpha_32_bbox": [
+        223,
+        78,
+        530,
+        313
+      ],
+      "sha256_webp": "dc94246bf54073f30370a32867e38ecf725dbcf77ad9be61fecb33c54cac0005"
+    },
+    {
+      "name": "westhofen-composite-v3",
+      "rgba": true,
+      "png_bytes": 126056,
+      "webp_bytes": 28862,
+      "alpha_32_bbox": [
+        38,
+        67,
+        734,
+        499
+      ],
+      "sha256_webp": "979573127d53134e54728c587f095dd94c4da2bf40bcccc7dd31a12e44ca055b"
+    }
+  ]
+}
