@@ -54,6 +54,7 @@ jobs:
       - name: Kirchende terrain and renderer caching
         run: |
           node tests/kirchende-site-layout.test.cjs
+          node tests/kirchende-building-decoration.test.cjs
           node tests/ground-late-load.test.cjs
           node tests/terrain-polish.test.cjs
           node tests/kirchende-loading.test.cjs
