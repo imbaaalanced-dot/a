@@ -75,9 +75,9 @@ const expectedVersions = new Map([
   ['kirchende-combat.js', 'v400a5combined1'],
   ['kirchende-art.js', 'building-clearance-20261114'],
   ['style2-environment-palette.js','v5-style2a1'],
-  ['terrain-polish.js','late-ground-20261113'],
-  ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js','kirchende-layout-20261114a'],
+  ['terrain-polish.js','late-ground-20261113-churchyard1'],
+  ['forest-crowns.js', 'style2-forest6a'],
+  ['church-art.js','kirchende-layout-20261114a-graves1'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 
