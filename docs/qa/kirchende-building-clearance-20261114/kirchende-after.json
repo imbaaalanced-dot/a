@@ -1,0 +1,52 @@
+{
+  "chromium": "156.0.8078.79",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "mobileTouchEmulation": false,
+      "level": 3,
+      "wave": 41,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 3,
+        "builds": 2,
+        "planBuilds": 2,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 3,
+      "wave": 41,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 3,
+        "builds": 1,
+        "planBuilds": 1,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    }
+  ]
+}
