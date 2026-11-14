@@ -18,7 +18,7 @@ function ansturm(count,{ref,lethal=false,instrument=false,bossWave=20}={}){const
 for(let i=0;i<count;i++){const e=api.spawnEnemy(s),a=i*2.399963229728653,r=.12+(i%11)*.045;e.x=Math.cos(a)*r;e.y=Math.sin(a)*r;e.hp=e.maxHp=lethal?60+i%7*25:1e8;e.burnUntil=1000;e.burnDps=3;e.slowUntil=i%2?2:0;}
 s.hp=1e8;s.tech.hp=4e6;s.tech.range=15;s.tech.tempo=20;for(const k of Object.keys(s.upgrades))s.upgrades[k]=3;
 return {state:s,tick:()=>api.step(s,1/30),calls:api.calls};}
-function campaign(count,{ref,instrument=false,lethal=false,level=2,mixed=false}={}){const m=mathBox(instrument),sourceOverrides={};if(ref)for(const file of ['game.js','levels.js'])sourceOverrides[file]=read('dist/'+file,ref);
+function campaign(count,{ref,layoutRef=ref,instrument=false,lethal=false,level=2,mixed=false}={}){const m=mathBox(instrument),sourceOverrides={};if(ref)sourceOverrides['game.js']=read('dist/game.js',ref);sourceOverrides['levels.js']=read('dist/levels.js',layoutRef);
 const h=createRenderSandbox({countOps:false,sourceOverrides,math:m.math,initialStorage:{'td2-v4-intro-tutorial':'done','td2-developer-mode-v2':'disabled'}}),t=h.test;t.startGame(1);h.sandbox.HeroSaga.continueStory?.();const g=t.getGame();g.level=level;g.wave=3;g.intermission=0;g.waveTotal=g.waveSpawned=count;g.monument.hp=g.monument.maxHp=1e9;g.hero.hp=g.hero.maxHp=1e9;g.hero.invuln=1e9;
 // The production cap remains 40. Inject fixtures directly for deliberate overload.
 t.spawnEnemy('normal');const template=g.enemies[0];g.enemies=[];g.waveSpawned=count;

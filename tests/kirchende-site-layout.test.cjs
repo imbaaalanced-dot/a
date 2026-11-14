@@ -33,4 +33,12 @@ sandbox.DenkmalTerrain.drawRoad=(ctx,path,options)=>surfaces.push(options.surfac
 church.paths.forEach((route,i)=>sandbox.DenkmalChurch.drawRoad({},route,i));
 assert.deepEqual(surfaces,['slabs','slabs','slabs','flagstone'],'side passage uses plates, other routes cobbles');
 assert.notEqual(memorial.name,church.name,'two separate sites stay separate chapters');
+const streetPaint=[];
+const output={save(){},restore(){},translate(){},strokeRect(){},
+  fillRect(...r){streetPaint.push({kind:'rect',r,color:this.fillStyle});},
+  drawImage(){streetPaint.push({kind:'site'});}};
+sandbox.KirchendeArt.drawSite(output,c);
+const asphalt=streetPaint.find(p=>p.kind==='rect'&&p.color==='#242b2a');
+assert.deepEqual(asphalt.r,[-820,431,1640,98],'asphalt is repainted after lanes at their shared street axis');
+assert.equal(streetPaint.at(-1).kind,'site','plaza remains the final cached overlay');
 console.log('Kirchende site layout: street/stair access, separate chapters, clear tower pads and grave cluster passed.');

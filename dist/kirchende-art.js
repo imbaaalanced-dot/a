@@ -165,8 +165,29 @@
     q.restore();
     return c;
   }
+  function drawStreet(ctx){
+    // User walk-through, 14 Nov: this memorial is across the road from the
+    // churchyard. Share the road center with the actual approach lanes.
+    // Dimensions remain gameplay approximations, not measured street widths.
+    const street=globalThis.DenkmalLevels?.levels?.[3]?.street||{y:480,left:-820,right:820,width:98};
+    const top=street.y-street.width/2,bottom=street.y+street.width/2;
+    ctx.fillStyle='#242b2a';ctx.fillRect(street.left,top,street.right-street.left,street.width);
+    ctx.fillStyle='#555b53';ctx.fillRect(street.left,top-4,street.right-street.left,8);
+    ctx.fillStyle='#8e8c7a';ctx.fillRect(street.left,top-5,street.right-street.left,3);
+    ctx.fillStyle='#50574e';ctx.fillRect(street.left,bottom-6,street.right-street.left,6);
+    for(let i=0;i<30;i++){
+      const x=-820+i*56;
+      ctx.fillStyle=i%3===0?'#72786c':'#62695e';
+      // Leave the axial entrance open: no wall across the stairs/access.
+      if(x<90&&x+53>-50)continue;
+      ctx.fillRect(x,top-39,53,26);ctx.fillRect(x+((i%2)*7),top-13,49,11);
+      ctx.strokeStyle='#373f35';ctx.lineWidth=2;ctx.strokeRect(x,top-39,53,26);
+    }
+  }
   function drawSite(ctx,center){
     if(!site)site=createSite();
+    // Paint after the lane textures, so earth does not overwrite the asphalt.
+    ctx.save();ctx.translate(center.x,center.y);drawStreet(ctx);ctx.restore();
     ctx.drawImage(site,center.x-192,center.y-144);
     // The centered plaque is already baked into the site canvas. No second layer.
   }
@@ -296,23 +317,6 @@
     if(!crowns){
       // Village-edge hints remain outside the clearing, partly screened by vegetation.
       building(ctx,-790,-430,185,205,true);building(ctx,590,-475,230,300);
-      // User walk-through, 14 Nov: this memorial is across the road from the
-      // churchyard. Share the road center with the actual approach lanes.
-      // Dimensions remain gameplay approximations, not measured street widths.
-      const street=globalThis.DenkmalLevels?.levels?.[3]?.street||{y:480,left:-820,right:820,width:98};
-      const top=street.y-street.width/2,bottom=street.y+street.width/2;
-      ctx.fillStyle='#242b2a';ctx.fillRect(street.left,top,street.right-street.left,street.width);
-      ctx.fillStyle='#555b53';ctx.fillRect(street.left,top-4,street.right-street.left,8);
-      ctx.fillStyle='#8e8c7a';ctx.fillRect(street.left,top-5,street.right-street.left,3);
-      ctx.fillStyle='#50574e';ctx.fillRect(street.left,bottom-6,street.right-street.left,6);
-      for(let i=0;i<30;i++){
-        const x=-820+i*56;
-        ctx.fillStyle=i%3===0?'#72786c':'#62695e';
-        // Leave the axial entrance open: no wall across the stairs/access.
-        if(x<90&&x+53>-50)continue;
-        ctx.fillRect(x,top-39,53,26);ctx.fillRect(x+((i%2)*7),top-13,49,11);
-        ctx.strokeStyle='#373f35';ctx.lineWidth=2;ctx.strokeRect(x,top-39,53,26);
-      }
       bench(ctx,-155,350,-.05);bench(ctx,180,350,.05);
       // Root decals sit below the tree trunks and below subsequently rendered routes.
       for(let i=0;i<trees.length;i++){
