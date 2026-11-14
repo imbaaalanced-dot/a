@@ -4,11 +4,11 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-let allocations=0;
+let allocations=0,paintOps=0;
 const shapes=[];
 function context(id){
  const c={globalCompositeOperation:'source-over',
-  beginPath(){},arc(){},fill(){},fillRect(){},drawImage(){},
+  beginPath(){},closePath(){},moveTo(){},lineTo(){},arc(){},fill(){paintOps++;},fillRect(){paintOps++;},drawImage(){},
   createRadialGradient(){return {addColorStop(){}};},
   createLinearGradient(){return {addColorStop(){}};},
   ellipse(x,y,rx,ry){if(((x===128&&y===130)||(x===96&&y===100))&&rx>50&&ry>50)shapes[id].push([rx,ry]);}
@@ -25,12 +25,17 @@ const filename=path.join(__dirname,'../dist/forest-crowns.js');
 vm.runInContext(fs.readFileSync(filename,'utf8'),sandbox);
 const forest=sandbox.DenkmalForest;
 assert.ok(forest?.drawCrown,'forest renderer registered');
-const draw={drawImage(){}};
+const copies=[];const draw={drawImage(...args){copies.push(args);}};
 for(let i=0;i<5;i++)forest.drawCrown(draw,150,180,72,i);
 assert.equal(allocations,5,'five profiles use only five lazily cached 256px textures');
 const silhouettes=shapes.map(v=>v[0]?.map(n=>Number(n.toFixed(2))).join(':'));
 assert.equal(new Set(silhouettes).size,5,'five silhouettes have distinct broad/tall/sparse proportions');
+const warmPaint=paintOps;
 for(let i=0;i<50;i++)forest.drawCrown(draw,150,180,72,i);
+assert.equal(paintOps,warmPaint,'warm drawing never repaints foliage into the cache');
+for(const args of copies){
+ assert.deepEqual(args.slice(1),[150-72*1.08,180-35-72*1.08,72*2.16,72*2.16],'crown size and anchor remain unchanged');
+}
 assert.equal(allocations,5,'every repeat reuses one of five cached crown variants');
 for(let i=0;i<3;i++)forest.drawShrub(draw,150,180,42,i);
 assert.equal(allocations,8,'three shrubs add exactly three lazily cached 192px textures');

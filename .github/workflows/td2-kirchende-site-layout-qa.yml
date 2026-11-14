@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'dist/forest-crowns.js'
+      - 'tests/style2-forest-silhouettes.test.cjs'
       - 'dist/levels.js'
       - 'dist/church-art.js'
       - 'dist/kirchende-art.js'
@@ -20,10 +22,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node tests/style2-forest-silhouettes.test.cjs
       - run: node tests/kirchende-site-layout.test.cjs
       - run: npm install --no-save --package-lock=false playwright@1.62.1
       - run: npx playwright install chromium
       - run: node tools/verify-kirchende-site-layout.cjs
+        env:
+          TD2_FOREST_QA: "1"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
