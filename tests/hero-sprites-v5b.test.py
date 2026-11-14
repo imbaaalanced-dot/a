@@ -1,17 +1,28 @@
-"""Pixel-level QA for the four actual V5b runtime atlases."""
+"""Pixel-level QA for the actual V5b runtime atlases.
+
+The four base sheets (walk + side-actions) have every grid cell painted.
+The six direction sheets added for v5b-20261114 only paint the combat rows
+(attack=2, hit=4, death=5) that the runtime reads; rows 0/1/3 stay empty.
+"""
 from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / 'dist/assets/hero'
 SPEC = {
-    'kim-walk-v5b.webp': (3, 4, (768, 1024)),
-    'marcel-walk-v5b.webp': (3, 4, (768, 1024)),
-    'kim-side-actions-v5b.webp': (6, 6, (768, 768)),
-    'marcel-side-actions-v5b.webp': (6, 6, (768, 768)),
+    'kim-walk-v5b.webp': (3, 4, (768, 1024), None),
+    'marcel-walk-v5b.webp': (3, 4, (768, 1024), None),
+    'kim-side-actions-v5b.webp': (6, 6, (768, 768), None),
+    'marcel-side-actions-v5b.webp': (6, 6, (768, 768), None),
+    'marcel-down-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
+    'marcel-left-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
+    'marcel-up-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
+    'kim-right-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
+    'kim-up-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
+    'kim-down-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
 }
 
-for name, (columns, rows, size) in SPEC.items():
+for name, (columns, rows, size, painted_rows) in SPEC.items():
     with Image.open(ASSETS / name) as image:
         assert image.format == 'WEBP', name
         assert image.size == size and image.mode == 'RGBA', (name, image.size, image.mode)
@@ -29,8 +40,11 @@ for name, (columns, rows, size) in SPEC.items():
                                    (column + 1) * cell_w, (row + 1) * cell_h))
                 mask = cell.getchannel('A').point(lambda a: 255 if a >= 32 else 0)
                 bounds = mask.getbbox()
+                if painted_rows is not None and row not in painted_rows:
+                    assert bounds is None, (name, row, column, 'row outside the runtime contract must stay empty')
+                    continue
                 assert bounds is not None, (name, row, column, 'empty frame')
                 left, top, right, bottom = bounds
                 assert min(left, top, cell_w - right, cell_h - bottom) >= 2, (
                     name, row, column, 'frame risks bleeding into neighbor', bounds)
-print('V5b WebP decode, true alpha, grid, all 96 frames and safe margins passed')
+print('V5b WebP decode, true alpha, grid, all frames, safe margins and direction-row contract passed')
