@@ -16,5 +16,5 @@ assert.match(floor,/const seam=q\.createRadialGradient/,'soft contact shade avoi
 assert.match(floor,/addColorStop\(1,'#27392a00'\)/,'contact shade fades into the level');
 assert.doesNotMatch(floor,/#93937c|#83856f|#bfc0a026/i,'old bright continuous tile colors must be removed');
 assert.match(art,/ctx\.drawImage\(memorialSprite,m\.x-225,m\.y-265,450,300\)/,'do not change monument anchor or footprint');
-assert.match(art,/const memorialUrl='assets\/westhofen\/westhofen-memorial-style2-v3-preview\.svg\?v=westhofen-style2v3-preview1'/);
+assert.match(art,/const memorialUrl='assets\/westhofen\/westhofen-memorial-style2-v3-preview\.svg\?v=westhofen-style2v3-preview2'/);
 console.log('Westhofen V3 forecourt has clipped non-overlapping stones and a soft contact shadow; world anchor unchanged');
