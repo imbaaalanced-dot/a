@@ -98,8 +98,8 @@ check('Level 1 monument uses the new sprite with undistorted gameplay proportion
 check('Level 4 portrait opening reveals the church and releases the camera before combat',()=>{
   const width=sandbox.innerWidth,height=sandbox.innerHeight;
   sandbox.innerWidth=390;sandbox.innerHeight=844;t.game.level=4;t.game.intermission=5;t.resize(false);
-  assert.deepEqual({...t.openingCameraBias()},{x:-270,y:-400},'portrait preparation starts with the church establishing shot');
-  t.game.intermission=1.125;assert.deepEqual({...t.openingCameraBias()},{x:-135,y:-200},'camera bias fades continuously');
+  assert.deepEqual({...t.openingCameraBias()},{x:-280,y:-460},'portrait preparation starts with the church establishing shot');
+  t.game.intermission=1.125;assert.deepEqual({...t.openingCameraBias()},{x:-140,y:-230},'camera bias fades continuously');
   t.game.intermission=0;assert.deepEqual({...t.openingCameraBias()},{x:0,y:0},'combat uses the normal hero camera');
   sandbox.innerWidth=width;sandbox.innerHeight=height;t.resize(false);
 });

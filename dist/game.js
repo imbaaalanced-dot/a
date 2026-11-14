@@ -247,7 +247,7 @@
     // the normal hero camera before the first wave reaches the monument.
     if(!game||game.level!==4||!portraitLayout()||game.intermission<=0)return {x:0,y:0};
     const reveal=clamp(game.intermission/2.25,0,1);
-    return {x:-270*reveal,y:-400*reveal};
+    return {x:-280*reveal,y:-460*reveal};
   }
   function updateCamera(dt=0){
     if(!game)return;
