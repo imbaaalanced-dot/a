@@ -164,9 +164,14 @@ function groundPainting(groundLevel=3){
   const reference=globalThis.TD2GroundV3?.imageFor?.(groundLevel,'base');
   if(reference||style2Ground){
     const pattern=q.createPattern(reference||style2Ground,'repeat');
-    if(pattern){q.fillStyle=pattern;q.fillRect(0,0,1536,1536);}
+    if(pattern){
+      // The cached painting is enlarged 2x in world space. Keep churchyard
+      // grass at its source scale rather than enlarging individual blades.
+      if(groundLevel===4)pattern.setTransform?.({a:.5,b:0,c:0,d:.5,e:0,f:0});
+      q.fillStyle=pattern;q.fillRect(0,0,1536,1536);
+    }
     else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
-    q.fillStyle='#17231c22';q.fillRect(0,0,1536,1536);
+    q.fillStyle=groundLevel===4?'#27382c55':'#17231c22';q.fillRect(0,0,1536,1536);
   }else{q.fillStyle='#364335';q.fillRect(0,0,1536,1536);}
   // Large softly blended moss/earth masses, painted once across the whole world.
   // No tiled photograph and no repeated leaf/stone landmarks.
@@ -206,13 +211,18 @@ const ROAD_SHOULDERS={
   slabs:[[148,'#192b2812'],[138,'#33403720'],[126,'#424c4236'],[114,'#535b5055'],
     [104,'#65696075'],[94,'#787e7199'],[86,'#86877c'],[80,'#77796f']]
 };
+// Narrow, muted moss margins for the churchyard: the opaque pale bands
+// previously read as continuous concrete kerbs around every footpath.
+const CHURCH_SHOULDERS=[[116,'#192b2810'],[110,'#293d3020'],[104,'#35433330'],[98,'#414c3e40'],
+  [92,'#4c544650'],[86,'#555d4d66'],[80,'#60645499'],[76,'#64685aaa']];
 function drawRoad(ctx,path,{surface='earth',groundLevel=3}={}){
   if(!path||path.length<2)return;
   const material=surface==='flagstone'?'flagstone':surface==='slabs'?'slabs':'earth';
   ctx.save();ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';
   ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
   // Soft mossy earth shoulders versus cooler stone margins. No traffic markings.
-  for(const [width,color] of ROAD_SHOULDERS[material==='flagstone'?'slabs':material]){
+  const shoulders=groundLevel===4&&material!=='earth'?CHURCH_SHOULDERS:ROAD_SHOULDERS[material==='flagstone'?'slabs':material];
+  for(const [width,color] of shoulders){
     ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
   }
   ctx.strokeStyle=pattern(ctx,material,groundLevel)||(material==='slabs'?'#77796f':'#77674b');
