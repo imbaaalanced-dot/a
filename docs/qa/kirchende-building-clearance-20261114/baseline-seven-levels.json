@@ -1,0 +1,328 @@
+{
+  "chromium": "156.0.8078.79",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "mobileTouchEmulation": false,
+      "level": 1,
+      "wave": 1,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 1,
+        "builds": 1,
+        "planBuilds": 1,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 2,
+      "wave": 21,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 2,
+        "builds": 2,
+        "planBuilds": 2,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 3,
+      "wave": 41,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 3,
+        "builds": 3,
+        "planBuilds": 3,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 4,
+      "wave": 61,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 4,
+        "builds": 4,
+        "planBuilds": 4,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 5,
+      "wave": 81,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 5,
+        "builds": 5,
+        "planBuilds": 5,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 6,
+      "wave": 101,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 6,
+        "builds": 6,
+        "planBuilds": 6,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": false,
+      "level": 7,
+      "wave": 121,
+      "canvas": {
+        "width": 1280,
+        "height": 800
+      },
+      "visiblePixels": 1024000,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 7,
+        "builds": 7,
+        "planBuilds": 7,
+        "size": 1536,
+        "retainedCanvases": 2,
+        "bytes": 18874368
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 1,
+      "wave": 1,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 1,
+        "builds": 1,
+        "planBuilds": 1,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 2,
+      "wave": 21,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 2,
+        "builds": 2,
+        "planBuilds": 2,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 3,
+      "wave": 41,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 3,
+        "builds": 3,
+        "planBuilds": 3,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 4,
+      "wave": 61,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 4,
+        "builds": 4,
+        "planBuilds": 4,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 5,
+      "wave": 81,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 5,
+        "builds": 5,
+        "planBuilds": 5,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 6,
+      "wave": 101,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 6,
+        "builds": 6,
+        "planBuilds": 6,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "mobileTouchEmulation": true,
+      "level": 7,
+      "wave": 121,
+      "canvas": {
+        "width": 288,
+        "height": 641
+      },
+      "visiblePixels": 184608,
+      "environmentReady": true,
+      "groundReady": true,
+      "polish": {
+        "activeLevel": 7,
+        "builds": 7,
+        "planBuilds": 7,
+        "size": 768,
+        "retainedCanvases": 2,
+        "bytes": 4718592
+      },
+      "materialTextures": 9,
+      "errors": [],
+      "failedRequests": []
+    }
+  ]
+}
