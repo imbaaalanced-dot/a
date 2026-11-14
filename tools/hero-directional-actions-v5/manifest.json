@@ -2,7 +2,7 @@
   "status": "runtime-active",
   "runtime_active": true,
   "android_4gb_qa": "not-tested",
-  "visual_canvas_qa": "marcel-down user-approved; others pixel-gates-passed, canvas QA pending",
+  "visual_canvas_qa": "all six directions user-approved 2026-11-14 (marcel-down, marcel-left, marcel-up, kim-right, kim-up, kim-down)",
   "format": "WebP lossless RGBA 768x768 exact=true, rows attack=2/hit=4/death=5",
   "files": [
     {
@@ -23,7 +23,7 @@
         64,
         117
       ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
+      "approval": "user-approved"
     },
     {
       "atlas": "kim-right-actions-v5b.webp",
@@ -43,7 +43,7 @@
         64,
         117
       ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
+      "approval": "user-approved"
     },
     {
       "atlas": "kim-up-actions-v5b.webp",
@@ -63,7 +63,7 @@
         64,
         117
       ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
+      "approval": "user-approved"
     },
     {
       "atlas": "marcel-down-actions-v5b.webp",
@@ -103,7 +103,7 @@
         64,
         116
       ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
+      "approval": "user-approved"
     },
     {
       "atlas": "marcel-up-actions-v5b.webp",
@@ -123,7 +123,7 @@
         64,
         116
       ],
-      "approval": "pixel-gates-passed, visual acceptance pending"
+      "approval": "user-approved"
     }
   ],
   "runtime": {
