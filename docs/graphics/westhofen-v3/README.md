@@ -1,6 +1,6 @@
 # Westhofen V3 – Bronzeemblem-Kandidat
 
-**Status:** `source_only_visual_review_pending`. Keine Runtime-Integration.
+**Status:** `bronze_module_user_approved_20261114` (Runtime-Integration folgt; Stein/Relief/Podest aus Issue #252 bleiben offen). Keine Runtime-Integration.
 
 Anlass: [Issue #252](https://github.com/imbaaalanced-dot/a/issues/252); die V2-Grafik zeichnet technisch korrekt, die Bronze-Silhouette wurde nach Vergleich der echten Gameplay-Screenshots mit Nutzerfotos nicht visuell freigegeben.
 
@@ -38,3 +38,6 @@ Marcel Schneider hat den ersten V3-Bronzeentwurf am 14.11.2026 abgelehnt und das
 - Dunkle Patinabasis mit helleren abgetragenen Bronze-Höhen.
 
 Status bleibt `source_only_visual_review_pending`; keine Runtime-Integration vor kunstabnahme. Die Vergleichsraster (V2 gegen V3b, 64/128 px, hell/dunkel) werden über den Review-Workflow unter `review-20261114/` veröffentlicht.
+
+
+- **Kunstabnahme 14.11.2026:** Marcel Schneider hat das V3b-Bronzemodul gegen die Referenzfotos freigegeben (Canvas-Review, 64/128-px-Bögen unter `review-20261114/`).
