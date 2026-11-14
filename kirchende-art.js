@@ -240,6 +240,15 @@
     for(let i=0;i<3;i++){ctx.fillStyle=i===0?'#9b7964':'#796153';ctx.fillRect(-6+i*5,-32,4,67);}
     ctx.fillStyle='#b495772f';ctx.fillRect(-6,-31,1,64);ctx.restore();
   }
+  // Visual sprite bounds only: houses do not add navigation or collision geometry.
+  const buildings=Object.freeze([
+    Object.freeze({x:-790,y:-430,width:185,height:205,halfTimber:true}),
+    Object.freeze({x:590,y:-475,width:230,height:300,halfTimber:false})
+  ]);
+  const buildingFootprints=Object.freeze(buildings.map(b=>Object.freeze({left:b.x-30,top:b.y-30,right:b.x+b.width+50,bottom:b.y+b.height+50})));
+  function groundDecorationClear(x,y,r,center){
+    return buildingFootprints.every(f=>x+r<center.x+f.left||x-r>center.x+f.right||y+r<center.y+f.top||y-r>center.y+f.bottom);
+  }
   const buildingCache=new Map();
   function building(ctx,x,y,w,h,halfTimber=false){
     const key=w+':'+h+':'+halfTimber;
@@ -316,7 +325,7 @@
     ctx.save();ctx.translate(center.x,center.y);
     if(!crowns){
       // Village-edge hints remain outside the clearing, partly screened by vegetation.
-      building(ctx,-790,-430,185,205,true);building(ctx,590,-475,230,300);
+      for(const b of buildings)building(ctx,b.x,b.y,b.width,b.height,b.halfTimber);
       bench(ctx,-155,350,-.05);bench(ctx,180,350,.05);
       // Root decals sit below the tree trunks and below subsequently rendered routes.
       for(let i=0;i<trees.length;i++){
@@ -337,5 +346,5 @@
     ctx.restore();
   }
   function drawCracks(ctx,m){if(m.hp/m.maxHp>.66)return;ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle=m.hp/m.maxHp<=.33?'#db8b5555':'#34261b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-12,-130);ctx.lineTo(8,-105);ctx.lineTo(-3,-82);ctx.lineTo(16,-55);if(m.hp/m.maxHp<=.33){ctx.moveTo(28,-110);ctx.lineTo(10,-75);ctx.lineTo(22,-40);}ctx.stroke();ctx.restore();}
-  globalThis.KirchendeArt={load,loadEnvironment,ready,image(key){return ready(key)?images[key]:null;},draw,drawScenery,drawSite,drawCracks,crownOpacity};
+  globalThis.KirchendeArt={load,loadEnvironment,ready,image(key){return ready(key)?images[key]:null;},draw,drawScenery,drawSite,drawCracks,crownOpacity,buildingFootprints,groundDecorationClear};
 })();
