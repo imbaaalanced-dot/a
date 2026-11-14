@@ -66,7 +66,7 @@
     return actors.some(a=>nearCrown(a,tree,tree.r+25))?.25:1;
   }
   // Photo-derived atmosphere, not a surveyed reconstruction. Gameplay coordinates stay separate.
-  const trees=[[-660,-760,115],[-320,-735,118],[40,-750,108],[510,-695,111],[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,480,92],[460,500,94]];
+  const trees=[[-660,-760,115],[-320,-735,118],[40,-750,108],[510,-695,111],[-510,-490,108],[-160,-480,110],[150,-450,102],[380,-290,96],[-510,-160,98],[-210,35,88],[260,35,96],[-500,260,100],[450,235,106],[-480,350,92],[560,350,94]];
   const shrubs=[[-90,195,45],[-95,260,45],[-95,325,45],[95,195,32],[95,255,32],[95,315,32],[-555,-310,65],[-360,-505,72],[360,-200,60],[520,-385,80],[-580,75,75],[535,90,75]];
   let site;
   function drawAtlas(ctx,index,x,y,size){
@@ -296,19 +296,24 @@
     if(!crowns){
       // Village-edge hints remain outside the clearing, partly screened by vegetation.
       building(ctx,-790,-430,185,205,true);building(ctx,590,-475,230,300);
-      // Existing south-side street: muted asphalt, readable kerbs and aged stone walls.
-      // Only scenery, never a new navigation path or collision barrier.
-      ctx.fillStyle='#242b2a';ctx.fillRect(-820,698,1640,98);
-      ctx.fillStyle='#555b53';ctx.fillRect(-820,694,1640,8);
-      ctx.fillStyle='#8e8c7a';ctx.fillRect(-820,693,1640,3);
-      ctx.fillStyle='#50574e';ctx.fillRect(-820,790,1640,6);
+      // User walk-through, 14 Nov: this memorial is across the road from the
+      // churchyard. Share the road center with the actual approach lanes.
+      // Dimensions remain gameplay approximations, not measured street widths.
+      const street=globalThis.DenkmalLevels?.levels?.[3]?.street||{y:480,left:-820,right:820,width:98};
+      const top=street.y-street.width/2,bottom=street.y+street.width/2;
+      ctx.fillStyle='#242b2a';ctx.fillRect(street.left,top,street.right-street.left,street.width);
+      ctx.fillStyle='#555b53';ctx.fillRect(street.left,top-4,street.right-street.left,8);
+      ctx.fillStyle='#8e8c7a';ctx.fillRect(street.left,top-5,street.right-street.left,3);
+      ctx.fillStyle='#50574e';ctx.fillRect(street.left,bottom-6,street.right-street.left,6);
       for(let i=0;i<30;i++){
         const x=-820+i*56;
         ctx.fillStyle=i%3===0?'#72786c':'#62695e';
-        ctx.fillRect(x,657,53,26);ctx.fillRect(x+((i%2)*7),683,49,11);
-        ctx.strokeStyle='#373f35';ctx.lineWidth=2;ctx.strokeRect(x,657,53,26);
+        // Leave the axial entrance open: no wall across the stairs/access.
+        if(x<90&&x+53>-50)continue;
+        ctx.fillRect(x,top-39,53,26);ctx.fillRect(x+((i%2)*7),top-13,49,11);
+        ctx.strokeStyle='#373f35';ctx.lineWidth=2;ctx.strokeRect(x,top-39,53,26);
       }
-      bench(ctx,-90,435,-.05);bench(ctx,105,435,.05);
+      bench(ctx,-155,350,-.05);bench(ctx,180,350,.05);
       // Root decals sit below the tree trunks and below subsequently rendered routes.
       for(let i=0;i<trees.length;i++){
         const [x,y]=trees[i];ctx.drawImage(rootPatch(i%3),x-96,y-48);

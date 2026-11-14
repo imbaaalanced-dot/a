@@ -68,8 +68,8 @@ const server=http.createServer((req,res)=>{
    });
    assert.equal(scene.enabled,preview,'preview flag must control the actual renderer');
    assert(scene.surfaces.includes('slabs'),'existing cobblestone approaches must render');
-   assert.equal(scene.surfaces.includes('flagstone'),preview,
-    'Kirchhof West flagstone only appears in the opted-in scene');
+   assert.equal(scene.surfaces.includes('flagstone'),true,
+    'Kirchhof West uses plates in both modes; opt-in only replaces the texture');
    assert.equal(scene.loaded,preview?2:0,'both 512px materials must decode in preview');
    const loaded=requests.filter(x=>x.includes('/assets/level4/level4-')&&x.includes('-seamfix.webp'));
    assert.equal(loaded.length,preview?2:0,'new WebP requests restricted to opt-in');
