@@ -7,7 +7,7 @@ const html=fs.readFileSync('dist/index.html','utf8');
 const png=fs.readFileSync('dist/assets/church-ende-reference-20261114.webp');
 assert.equal(png.subarray(0,4).toString('ascii'),'RIFF');
 assert.equal(png.subarray(8,12).toString('ascii'),'WEBP');
-assert.match(html,/church-art\.js\?v=church-reference-20261114b/);
+assert.match(html,/church-art\.js\?v=church-reference-graves-20261114a/);
 let canvases=0,draws=[],save=0,loadUrls=[];
 const grad=()=>({addColorStop(){}});
 const ctx=new Proxy({
@@ -19,10 +19,14 @@ const document={createElement(tag){
   assert.equal(tag,'canvas');canvases++;
   return {width:0,height:0,getContext:()=>ctx};
 }};
-let imageInstance=null;
+let imageInstance=null,graveImage=null;
 class ImageMock {
   constructor(){this.naturalWidth=960;this.naturalHeight=640;if(!imageInstance)imageInstance=this;}
-  set src(url){loadUrls.push(url);this.onload?.();}
+  set src(url){
+    loadUrls.push(url);
+    if(url.includes('graves-style2')){this.naturalWidth=1024;this.naturalHeight=1024;graveImage=this;}
+    this.onload?.();
+  }
 }
 const box={Math,document,Image:ImageMock};
 vm.createContext(box);vm.runInContext(src,box);
@@ -33,10 +37,15 @@ assert.equal(loadUrls.length,1,'opaque lion placeholder is never requested');
 assert.equal(art.lionSpriteReady,false,'unapproved placeholder cannot become live art');
 assert.doesNotMatch(src,/sprite\.src\s*=\s*['"]assets\/lion-ende-style2\.webp/,'no placeholder loader');
 art.drawBackdrop(ctx,center);
+assert.equal(loadUrls[1],'assets/level4/graves-style2-20261114.png?v=1');
+assert.ok(art.graveAtlasReady&&!art.graveAtlasFailed,'four-grave atlas decodes at its audited dimensions');
 const first=draws.find(a=>a[0]===imageInstance);
 assert.ok(first,'the generated church WebP must be drawn, not only loaded');
 assert.deepEqual(first.slice(1),[-520,-847,760,507]);
 assert.ok(Math.abs(first[3]/first[4]-960/640)<0.01,'preserve the source aspect ratio');
+const graveDraws=draws.filter(a=>a[0]===graveImage&&a.length===9);
+assert.equal(graveDraws.length,8,'all authored grave positions use atlas sprites');
+assert.deepEqual(graveDraws.slice(0,4).map(a=>a.slice(1,5)),[[0,0,512,512],[512,0,512,512],[0,512,512,512],[512,512,512,512]],'the four grave variants use stable atlas cells');
 assert.equal(canvases,0,'loaded asset should bypass procedural church rasterization');
 for(let i=0;i<70;i++)art.drawBackdrop(ctx,center);
 assert.equal(canvases,0,'no new architecture canvases per frame');

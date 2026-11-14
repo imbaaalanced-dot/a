@@ -115,7 +115,10 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 for(const id of ['level4Btn','endless4Btn'])
   assert.match(html,new RegExp('id="'+id+'"'),'new chapter navigation must be reachable');
-assert.ok(html.includes('church-art.js?v=church-reference-20261114b'));
+assert.ok(html.includes('church-art.js?v=church-reference-graves-20261114a'));
+const graveAtlas=fs.readFileSync(path.join(root,'assets/level4/graves-style2-20261114.png'));
+assert.deepEqual(Array.from(graveAtlas.subarray(1,4)),[80,78,71],'grave atlas is a real PNG');
+assert.match(lionSource,/requestGraveAtlas\(\)/,'grave atlas is loaded lazily with its procedural fallback retained');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintChurchFinish(g)'),'reference pass 2 bakes masonry into the church sprite');
 assert.ok(fs.readFileSync(path.join(root,'church-art.js'),'utf8').includes('paintLionFinish(g)'),'the south-facing lion gets the same cached material pass');
 assert.ok(html.includes('kirchende-art.js?v=building-clearance-20261114'))
