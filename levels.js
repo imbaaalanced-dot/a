@@ -26,8 +26,8 @@
   // Joining points under tree crowns remain an approximation, not survey data.
   const kirchendePaths=[
     [[-340,-620],[-340,-260],[-250,-90],[0,0]],
-    [[-700,480],[-340,480],[-340,190],[-250,-90],[0,0]],
-    [[700,480],[160,480],[160,210],[90,90],[0,0]],
+    [[-700,480],[-340,480],[20,480],[20,180],[0,0]],
+    [[700,480],[350,480],[20,480],[20,180],[0,0]],
     [[20,740],[20,480],[20,180],[0,0]]
   ].map(route=>route.map(([x,y])=>point(x,y)));
   const kirchendeSlots=[];
@@ -145,7 +145,7 @@
   const levels={
     1:{name:'EINLEITUNG',gates,paths:gates.map(g=>[g,center]),slots:laneSlots,firstWave:1},
     2:{name:'DAS LABYRINTH',gates:[maze[0]],paths:[maze],slots,firstWave:6},
-    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
+    3:{name:'KRIEGERDENKMAL KIRCHENDE',gates:kirchendePaths.map(p=>p[0]),paths:kirchendePaths,slots:kirchendeSlots,gateLabels:['WALDRAND','STRASSE WEST','STRASSE OST','KIRCHENSEITE'],street:{y:480,left:-820,right:820,width:98},firstWave:9,lastWave:12,startEssence:180,maxTowers:8,approximate:true},
     5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,syburgTerrace,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
     6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
     7:{name:'KRIEGERDENKMAL WESTHOFEN',gates:westhofenPaths.map(p=>p[0]),paths:westhofenPaths,slots:westhofenSlots,airGate:point(60,940),gateLabels:['REICHSHOFSTRASSE WEST','REICHSHOFSTRASSE OST','GRÜNZUG NORD'],firstWave:25,lastWave:28,startEssence:340,maxTowers:12,approximate:true},
