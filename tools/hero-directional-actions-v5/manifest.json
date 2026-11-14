@@ -1,6 +1,6 @@
 {
-  "status": "candidate-staged",
-  "runtime_active": false,
+  "status": "runtime-active",
+  "runtime_active": true,
   "android_4gb_qa": "not-tested",
   "visual_canvas_qa": "marcel-down user-approved; others pixel-gates-passed, canvas QA pending",
   "format": "WebP lossless RGBA 768x768 exact=true, rows attack=2/hit=4/death=5",
@@ -125,5 +125,13 @@
       ],
       "approval": "pixel-gates-passed, visual acceptance pending"
     }
-  ]
+  ],
+  "runtime": {
+    "pull_request": 268,
+    "squash_commit": "a00a461f3fb4826e156ce8c455369f4b105f3fed",
+    "registry": "dist/directional-hero-assets-v5.js",
+    "sheet_cache_key": "hero-dir-v5b-20261114",
+    "index_cache_key": "v5-canonical-art3",
+    "deployed_url": "https://imbaaalanced-dot.github.io/a/"
+  }
 }

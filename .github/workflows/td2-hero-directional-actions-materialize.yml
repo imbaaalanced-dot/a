@@ -39,8 +39,9 @@ jobs:
 
           src = Path('tools/hero-directional-actions-v5')
           manifest = json.loads((src / 'manifest.json').read_text(encoding='utf-8'))
-          assert manifest['status'] == 'candidate-staged'
-          assert manifest['runtime_active'] is False
+          assert manifest['status'] in ('candidate-staged', 'runtime-active'), manifest['status']
+          if manifest['runtime_active']:
+              print('Runtime already active: verifying SHAs and gates only')
           out = Path('dist/assets/hero')
           out.mkdir(parents=True, exist_ok=True)
           staged = []
