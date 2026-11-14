@@ -20,6 +20,9 @@ const server=http.createServer((req,res)=>{
    const page=await context.newPage(),errors=[],failed=[];let requested=0,release;
    const held=new Promise(resolve=>{release=resolve;});
    page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
+   // Screenshot timing must not depend on a third-party font CDN. Exercise the
+   // existing app fallback fonts while keeping all local game requests real.
+   await page.route('https://fonts.googleapis.com/**',route=>route.fulfill({status:200,contentType:'text/css',body:'/* QA: use existing fallback fonts. */'}));
    await page.route('**/assets/reference-ground-v3/*.webp*',async route=>{requested++;await held;if(fail)await route.abort('failed');else await route.continue();});
    await page.goto(`http://127.0.0.1:${server.address().port}/index.html`,{waitUntil:'domcontentloaded'});
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
@@ -46,7 +49,7 @@ const server=http.createServer((req,res)=>{
    await page.screenshot({path:path.join(output,name+'-settled.png')});
    results.push({touchEmulation:mobile,materialFailure:fail,requested,before,moving,after,warm,errors,failedRequests:failed});await context.close();
   }
-  fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,results},null,2));
+  fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,fontPolicy:'app fallback fonts; external Google Fonts CSS isolated',results},null,2));
   console.log(JSON.stringify({chromium:browser.version(),menuStartupScenarios:results.length,physicalAndroidTested:false}));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());

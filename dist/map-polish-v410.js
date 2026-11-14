@@ -11,6 +11,7 @@ function padsClear(x,y,r,slots){for(let i=0;i<slots.length;i++)if(Math.hypot(x-s
 function rectClear(x,y,r,c,f){return x+r<c.x+f.left||x-r>c.x+f.right||y+r<c.y+f.top||y-r>c.y+f.bottom;}
 function builtClear(x,y,r,layout,level){
  const c=layout.center;
+ if(level===3&&globalThis.KirchendeArt?.groundDecorationClear?.(x,y,r+35,c)===false)return false;
  if(layout.churchFootprint&&!rectClear(x,y,r+35,c,layout.churchFootprint))return false;
  // Park frontage remains bare: road, pavement, bus stop and memorial apron.
  if(level===6&&(x+r>c.x+620||y+r>c.y+500))return false;
@@ -31,7 +32,7 @@ function gatesClear(x,y,r,layout){
  return (layout.gates||[]).every(p=>Math.hypot(x-p.x,y-p.y)>r+125)
   &&(!layout.airGate||Math.hypot(x-layout.airGate.x,y-layout.airGate.y)>r+125);
 }
-function same(level,l){return active&&active.level===level&&active.paths===l.paths&&active.slots===l.slots&&active.church===l.churchFootprint&&active.terrace===l.syburgTerrace&&active.cx===l.center.x&&active.cy===l.center.y&&active.gates===l.gates&&active.airGate===l.airGate;}
+function same(level,l){return active&&active.level===level&&active.paths===l.paths&&active.slots===l.slots&&active.church===l.churchFootprint&&active.terrace===l.syburgTerrace&&active.cx===l.center.x&&active.cy===l.center.y&&active.gates===l.gates&&active.airGate===l.airGate&&active.sceneryGuard===(level===3?globalThis.KirchendeArt?.groundDecorationClear:null);}
 function getPlan(level,layout){
  if(!valid(level,layout))return null;
  if(same(level,layout))return active.plan;
@@ -78,7 +79,7 @@ function getPlan(level,layout){
  if(layout.churchFootprint)foundation(layout.churchFootprint);
  if(layout.syburgTerrace){foundation(layout.syburgTerrace.raised);foundation(layout.syburgTerrace.forecourt);}
  const plan=Object.freeze({level,weathering:Object.freeze(weathering),vegetation:Object.freeze(vegetation),edges:Object.freeze(edges),contact:Object.freeze(contact)});
- active={level,paths:layout.paths,slots:layout.slots,church:layout.churchFootprint,terrace:layout.syburgTerrace,cx:c.x,cy:c.y,gates:layout.gates,airGate:layout.airGate,plan};planBuilds++;return plan;
+ active={level,paths:layout.paths,slots:layout.slots,church:layout.churchFootprint,terrace:layout.syburgTerrace,cx:c.x,cy:c.y,gates:layout.gates,airGate:layout.airGate,sceneryGuard:level===3?globalThis.KirchendeArt?.groundDecorationClear:null,plan};planBuilds++;return plan;
 }
 function oval(g,x,y,rx,ry,angle,color){g.fillStyle=color;g.beginPath();g.ellipse(x,y,rx,ry,angle,0,TAU);g.fill();}
 function raster(level,layout,low){

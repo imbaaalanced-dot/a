@@ -62,13 +62,14 @@ function legacy(ctx,key,x,y,height,face=1,opacity=1){
 }
 const placementCache=new Map();
 function placements(level,layout){
- const key=level+':'+JSON.stringify([layout.paths,layout.slots,layout.churchFootprint,layout.syburgTerrace]);if(placementCache.has(key))return placementCache.get(key);
+ const key=level+':'+JSON.stringify([layout.paths,layout.slots,layout.churchFootprint,layout.syburgTerrace,level===3?globalThis.KirchendeArt?.buildingFootprints:null]);if(placementCache.has(key))return placementCache.get(key);
  const result=[];let seed=9973+level*5197;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<220&&result.length<40;i++){
   const p={x:layout.center.x-740+random()*1480,y:layout.center.y-740+random()*1480,index:i%8,size:42+(i%3)*9};
   if(Math.hypot(p.x-layout.center.x,p.y-layout.center.y)<240)continue;
   if(layout.paths.some(path=>globalThis.DenkmalLevels.pathDistance(p,path)<140))continue;
   if(layout.slots.some(s=>Math.hypot(s.x-p.x,s.y-p.y)<125))continue;
+  if(level===3&&globalThis.KirchendeArt?.groundDecorationClear?.(p.x,p.y,p.size,layout.center)===false)continue;
   const f=layout.churchFootprint;if(f&&p.x>layout.center.x+f.left-130&&p.x<layout.center.x+f.right+130&&p.y>layout.center.y+f.top-130&&p.y<layout.center.y+f.bottom+130)continue;
   if(layout.syburgTerrace&&[layout.syburgTerrace.raised,layout.syburgTerrace.forecourt].some(f=>p.x>layout.center.x+f.left-100&&p.x<layout.center.x+f.right+100&&p.y>layout.center.y+f.top-100&&p.y<layout.center.y+f.bottom+100))continue;
   if(result.some(s=>Math.hypot(s.x-p.x,s.y-p.y)<90))continue;result.push(p);
