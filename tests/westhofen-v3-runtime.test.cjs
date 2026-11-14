@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'../dist');
 const filename='assets/westhofen/westhofen-memorial-style2-v3-preview.svg';
-const url=filename+'?v=westhofen-style2v3-preview1';
+const url=filename+'?v=westhofen-style2v3-preview2';
 const asset=path.join(root,filename);
 const svg=fs.readFileSync(asset,'utf8');
 assert.match(svg,/<svg\b/);
