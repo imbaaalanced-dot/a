@@ -1,0 +1,45 @@
+name: Westhofen V3 bronze review raster push
+
+on:
+  push:
+    branches: ['art/westhofen-v3-bronze-review-20261114']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: westhofen-v3-bronze-review-push
+  cancel-in-progress: false
+
+jobs:
+  rasterize-and-push:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rasterizer dependencies
+        run: python -m pip install 'CairoSVG>=2.7,<3' 'Pillow>=11,<14'
+      - name: Validate V3 source and untouched V2 background
+        run: python tests/westhofen-v3-source.test.py
+      - name: Rasterize V3 and build 64/128px review sheets
+        run: python tools/export-westhofen-v3.py --out build/westhofen-v3
+      - name: Publish review rasters on this branch
+        run: |
+          mkdir -p docs/graphics/westhofen-v3/review-20261114
+          cp build/westhofen-v3/* docs/graphics/westhofen-v3/review-20261114/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/graphics/westhofen-v3/review-20261114
+          if git diff --cached --quiet; then
+            echo 'Review rasters unchanged.'
+            exit 0
+          fi
+          git commit -m 'review(westhofen-v3): publish 64/128px V2-vs-V3 bronze review rasters (review only, not runtime)'
+          git push
