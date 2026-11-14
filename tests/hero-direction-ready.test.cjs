@@ -1,6 +1,7 @@
 'use strict';
-/* Integration contract for opt-in, independently painted 6x6 hero views.
- * No unapproved textures are declared by this test. */
+/* Integration contract for independently painted 6x6 hero views.
+ * The six approved direction sheets (v5b-20261114) are active in the runtime;
+ * this test locks them in and keeps fail-closed behaviour for anything else. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
@@ -31,8 +32,19 @@ const context=()=>({draws:[],translations:[],flips:[],depth:0,globalAlpha:1,
 const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r));while(pending.length)pending.shift()();}};
 (async()=>{
   const specs=sandbox.TD2HeroSideAssets;
+  // The approved, independently painted direction sheets must be active and
+  // their atlas files must exist on disk. Nothing else may be declared.
+  const approved={
+    marcel:{down:'marcel-down-actions-v5b.webp',left:'marcel-left-actions-v5b.webp',up:'marcel-up-actions-v5b.webp'},
+    kim:{down:'kim-down-actions-v5b.webp',right:'kim-right-actions-v5b.webp',up:'kim-up-actions-v5b.webp'}
+  };
   for(const actor of ['marcel','kim']){
-    assert.deepEqual(Object.keys(specs[actor].sheets),[],'No unverified direction is active');
+    assert.deepEqual(Object.keys(specs[actor].sheets).sort(),Object.keys(approved[actor]).sort(),
+      'exactly the approved painted directions are active');
+    for(const [dir,file] of Object.entries(approved[actor])){
+      assert.ok(specs[actor].sheets[dir].includes(file),actor+' '+dir+' points at its own atlas');
+      assert.ok(fs.existsSync('dist/'+specs[actor].sheets[dir].split('?')[0]),file+' must exist');
+    }
   }
   const marcel=specs.marcel,kim=specs.kim;
   const down='assets/hero/marcel-down-actions-approved.webp?v=test';
@@ -40,10 +52,12 @@ const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r))
   marcel.sheets.down=down;
   kim.sheets.up=up;
   // No request should be made for a missing or non-authored direction.
+  const removed=marcel.sheets.left;delete marcel.sheets.left;
   const missing=context();
   assert.equal(api.drawHeroSide(missing,'marcel','attack','left',.3,10,20,70),false);
   assert.equal(missing.draws.length,0);
   assert.equal(requested.length,0);
+  marcel.sheets.left=removed;
   for(const [actor,dir,filename,row,anchorY,height] of [
     ['marcel','down',down,2,116,95],
     ['kim','up',up,2,117,100]
@@ -84,5 +98,5 @@ const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r))
   const active=context();
   assert.equal(api.drawHeroSide(active,'marcel','attack','right',.4,0,0,70),true);
   assert.ok(requested.includes(marcel.file));
-  console.log('Hero directional V5b extension: 36 independent frames, stable pivots, missing/alias/cold/malformed fallback passed');
+  console.log('Hero directional V5b extension: six approved sheets active, 36 independent frames, stable pivots, missing/alias/cold/malformed fallback passed');
 })().catch(error=>{console.error(error);process.exitCode=1;});

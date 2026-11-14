@@ -45,7 +45,7 @@ const expectedVersions = new Map([
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'copy-20261110a'],
   ['hero-saga.js', 'copy-20261112-urlfix'],
-  ['directional-hero-assets-v5.js','v5-canonical-art2'],
+  ['directional-hero-assets-v5.js','v5-canonical-art3'],
   ['combat-fx.js', 'v5-projectile-canonical1'],
   ['style2-user-towers.js', 'v5-canonical-art1'],
   ['style2-impact-atlas.js', 'reference-refresh-1'],
