@@ -7,7 +7,10 @@ const results={};
 // Both engines execute under the same Node/Math implementation. Cross-version
 // floating point digests are diagnostic only; no rounding or tolerance is used.
 function trace(name,build,count,options,ticks,prepare=()=>{}){
- const actual=build(count,{...options,ref}),expected=build(count,{...options,ref:'baseline'});
+ // Compare both simulation engines on the same authored map. Layout changes
+ // belong to geometry tests; the immutable baseline engine remains untouched.
+ const layoutRef=record?ref:null;
+ const actual=build(count,{...options,ref,layoutRef}),expected=build(count,{...options,ref:'baseline',layoutRef});
  prepare(actual.state);prepare(expected.state);const hash=crypto.createHash('sha256');
  for(let i=0;i<ticks;i++){
   actual.tick();expected.tick();if(i===0){assert.ok(actual.state.elapsed>0,name+' advances');assert.ok(expected.state.elapsed>0,name+' baseline advances');}const value=JSON.stringify(snapshot(actual.state));

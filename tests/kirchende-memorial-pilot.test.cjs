@@ -25,7 +25,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(plaque,undefined,'unapproved candle-bearing plaque sprite must not be requested');
  assert.ok(!loaded.some(i=>i.src?.includes('monument-photo-v2.webp')),'no double preload of original monument');
  loaded.forEach(i=>i.ok());await loading;
- const draws=[],ctx={globalAlpha:1,drawImage(...args){draws.push(args);},save(){},restore(){},translate(){},scale(){}};
+ const draws=[],ctx={fillRect(){},strokeRect(){},globalAlpha:1,drawImage(...args){draws.push(args);},save(){},restore(){},translate(){},scale(){}};
  assert.equal(art.draw(ctx,'monument',100,200,235),true);
  art.drawSite(ctx,{x:100,y:200});
  assert.equal(draws.length,2,'monument and one cached plaza draw, no duplicate plaque image');

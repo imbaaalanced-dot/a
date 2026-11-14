@@ -1,0 +1,33 @@
+name: TD2 Kirchende site layout QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/levels.js'
+      - 'dist/church-art.js'
+      - 'dist/kirchende-art.js'
+      - 'tools/verify-kirchende-site-layout.cjs'
+      - 'tests/kirchende-site-layout.test.cjs'
+      - '.github/workflows/td2-kirchende-site-layout-qa.yml'
+permissions:
+  contents: read
+jobs:
+  site-layout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/kirchende-site-layout.test.cjs
+      - run: npm install --no-save --package-lock=false playwright@1.62.1
+      - run: npx playwright install chromium
+      - run: node tools/verify-kirchende-site-layout.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-kirchende-site-layout-desktop-touch
+          path: /tmp/td2-site-layout/
+          if-no-files-found: warn
+          retention-days: 7

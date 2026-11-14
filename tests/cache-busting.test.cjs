@@ -37,7 +37,7 @@ const expectedVersions = new Map([
   ['preloader.js', 'copy-20261110a'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
-  ['levels.js', 'level7btouch1campaign20'],
+  ['levels.js', 'level7btouch1campaign20-kirchende-layout-20261114a'],
   ['visuals.js', 'expansion2'],
   ['equipment-catalog.js', 'loot-v2-20261029'],
   ['loot.js', 'loot-v2-20261029'],
@@ -73,11 +73,11 @@ const expectedVersions = new Map([
   ['style2-ui-polish.css', 'ui-gold2'],
   ['style2-phase6.js', 'alpha9a5'],
   ['kirchende-combat.js', 'v400a5combined1'],
-  ['kirchende-art.js', 'canopy-fast1'],
+  ['kirchende-art.js', 'kirchende-layout-20261114a'],
   ['style2-environment-palette.js','v5-style2a1'],
   ['terrain-polish.js','late-ground-20261113'],
   ['forest-crowns.js', 'style2-forest5a'],
-  ['church-art.js','canopy-fast1'],
+  ['church-art.js','kirchende-layout-20261114a'],
   ['style2-level4-reference.js', 'ref4a2'],
 ]);
 

@@ -6,7 +6,9 @@
   // The model is 22 gameplay pixels per metre; footprint excludes decorative roof.
   const churchFrame={x:-500,y:-930,w:720,h:760};
   const trees=[[-760,-920,96],[-790,-130,105],[-510,510,90],[690,400,93],[670,-240,102],[360,-920,92]];
-  const graves=[[-485,-245],[-390,60],[-540,150],[-350,235],[330,-290],[470,-430],[490,80],[-450,-105]];
+  // User photos, 14 Nov: the standing stones form a grass/leaf-covered group
+  // beside the church, rather than a ring around the lion. Illustrative positions.
+  const graves=[[550,-660],[650,-600],[770,-550],[560,-490],[670,-410],[770,-300],[610,-140],[760,-100]];
   const benches=[[-500,125],[320,380]];
   let church=null,site=null,lionArt=null;
   // Fixed-camera photographic Style-2 church asset. Keep procedural art for offline/missing files.
@@ -320,9 +322,9 @@
     ctx.restore();
   }
   function drawRoad(ctx,path,pathIndex=0){
-    // Only the existing KIRCHHOF WEST route previews large stone slabs.
-    // All other routes retain cobbles; default V3 remains unchanged.
-    const surface=globalThis.DenkmalTerrain?.level4SeamfixEnabled&&pathIndex===3?'flagstone':'slabs';
+    // The side passage has large stone plates in the user's walk-through;
+    // entrances retain small cobbles. Reuse the existing lichen-slab material.
+    const surface=pathIndex===3?'flagstone':'slabs';
     if(globalThis.DenkmalTerrain?.drawRoad)return globalThis.DenkmalTerrain.drawRoad(ctx,path,{surface,groundLevel:4});
     ctx.save();ctx.lineJoin='round';ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#444b4088';ctx.lineWidth=80;ctx.stroke();ctx.strokeStyle=globalThis.TD2Style2Materials?.stone||'#999586';ctx.lineWidth=69;ctx.stroke();ctx.restore();
   }
