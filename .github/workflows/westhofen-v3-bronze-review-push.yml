@@ -2,7 +2,7 @@ name: Westhofen V3 bronze review raster push
 
 on:
   push:
-    branches: ['art/westhofen-v3-bronze-review-20261114']
+    branches: ['art/westhofen-v3-bronze-review-20261114', 'art/westhofen-v3b-bronze-redo-20261114']
   workflow_dispatch:
 
 permissions:
