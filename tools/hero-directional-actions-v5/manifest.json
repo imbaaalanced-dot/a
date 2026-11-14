@@ -2,13 +2,13 @@
   "status": "candidate-staged",
   "runtime_active": false,
   "android_4gb_qa": "not-tested",
-  "visual_canvas_qa": "marcel-down approved; others pending",
-  "format": "WebP lossless RGBA 768x768, rows attack=2/hit=4/death=5",
+  "visual_canvas_qa": "marcel-down user-approved; others pixel-gates-passed, canvas QA pending",
+  "format": "WebP lossless RGBA 768x768 exact=true, rows attack=2/hit=4/death=5",
   "files": [
     {
       "atlas": "kim-down-actions-v5b.webp",
-      "sha256": "841ef2b4eb9fa6a2027f13106bc138866890ddd2fbf1180552644f3dc9fb4d89",
-      "compressed_bytes": 209388,
+      "sha256": "c860ca090f65601804d16926f58ba1fe609dc0a31b3c6268cf4cb278778b2b42",
+      "compressed_bytes": 211874,
       "rows": {
         "attack": 2,
         "hit": 4,
@@ -27,8 +27,8 @@
     },
     {
       "atlas": "kim-right-actions-v5b.webp",
-      "sha256": "29ae7398558140167f3417814d69b59d59cc217c308cf7c40727118c5826f799",
-      "compressed_bytes": 252686,
+      "sha256": "61719ad1d2195de3f88810e219889b1095a541532f1ec4ceda1fca4d0115b7ea",
+      "compressed_bytes": 254512,
       "rows": {
         "attack": 2,
         "hit": 4,
@@ -47,8 +47,8 @@
     },
     {
       "atlas": "kim-up-actions-v5b.webp",
-      "sha256": "f9ddd4d7b05ead8ad9f87c02d7be8ff6265a7b863ea0b7e1e1a7142e8f7513f0",
-      "compressed_bytes": 177680,
+      "sha256": "d7592c8cff801cd73597747b9285582fa46bf06be457f019c932c72f7208e984",
+      "compressed_bytes": 178452,
       "rows": {
         "attack": 2,
         "hit": 4,
@@ -67,8 +67,8 @@
     },
     {
       "atlas": "marcel-down-actions-v5b.webp",
-      "sha256": "e1c7413a7311e42880e30c7e25eaf9b9461484bf29ba1973b9eb75f414c88f81",
-      "compressed_bytes": 247654,
+      "sha256": "0f603568770a93b7682598b2787c1022ac1a21acd2ff4d10a6abe011e585c779",
+      "compressed_bytes": 249540,
       "rows": {
         "attack": 2,
         "hit": 4,
@@ -87,8 +87,8 @@
     },
     {
       "atlas": "marcel-left-actions-v5b.webp",
-      "sha256": "19b7a70f269d483567b5d13c17177f7ad33df7603d6226cc4c1433635fd551b0",
-      "compressed_bytes": 201252,
+      "sha256": "029bc174894469a4a25a5cbd9baedc77aed0a280c8e5b44eec2e5d0ae2083e0a",
+      "compressed_bytes": 202062,
       "rows": {
         "attack": 2,
         "hit": 4,
@@ -107,8 +107,8 @@
     },
     {
       "atlas": "marcel-up-actions-v5b.webp",
-      "sha256": "2f826fa782d793ac24d48a464e2fc616e89814c62898d20cbde6fee05c5a310c",
-      "compressed_bytes": 236422,
+      "sha256": "d0f4931952eed03ef1af1cc5aa210969544fdd0722da999960992a87e200082e",
+      "compressed_bytes": 237530,
       "rows": {
         "attack": 2,
         "hit": 4,
