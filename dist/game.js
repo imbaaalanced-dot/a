@@ -242,15 +242,22 @@
     const scaled=(magnitude-.08)/.92,nx=moveIntent.x/magnitude,ny=moveIntent.y/magnitude;
     return {x:nx*amount*scaled,y:ny*amount*.68*scaled};
   }
+  function openingCameraBias(){
+    // Establish the Ender Dorfkirche on tall phones, then return smoothly to
+    // the normal hero camera before the first wave reaches the monument.
+    if(!game||game.level!==4||!portraitLayout()||game.intermission<=0)return {x:0,y:0};
+    const reveal=clamp(game.intermission/2.25,0,1);
+    return {x:-270*reveal,y:-400*reveal};
+  }
   function updateCamera(dt=0){
     if(!game)return;
-    const vw=W/zoom,vh=H/(zoom*viewDepth),focusY=portraitLayout()?.43:.5,targetLead=cameraLead();
+    const vw=W/zoom,vh=H/(zoom*viewDepth),focusY=portraitLayout()?.43:.5,targetLead=cameraLead(),opening=openingCameraBias();
     const alpha=dt>0?1-Math.exp(-dt*(mobileRender?9:11)):1;
     cameraLeadState.x+=(targetLead.x-cameraLeadState.x)*alpha;
     cameraLeadState.y+=(targetLead.y-cameraLeadState.y)*alpha;
     const lead=cameraLeadState;
-    camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x+lead.x-vw*.5,0,WORLD_W-vw);
-    camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y-vh*focusY,0,WORLD_H-vh);
+    camera.x=vw>WORLD_W?(WORLD_W-vw)/2:clamp(game.hero.x+lead.x+opening.x-vw*.5,0,WORLD_W-vw);
+    camera.y=vh>WORLD_H?(WORLD_H-vh)/2:clamp(game.hero.y+lead.y+opening.y-vh*focusY,0,WORLD_H-vh);
   }
   function screenToWorld(x,y){const rect=canvas.getBoundingClientRect();return {x:(x-rect.left)*W/rect.width/zoom+camera.x,y:(y-rect.top)*H/rect.height/(zoom*viewDepth)+camera.y};}
   function resize(pauseOnResize=true){
@@ -1366,6 +1373,6 @@
   atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({getCharacter:()=>selectedCharacter,openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);
-  globalThis.DenkmalTestHooks={startPortalRun,enterPortal,launchWave,getPortalRun:()=>portalRun,portalHit,projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,towerTarget,startGame,spawnEnemy,endWave,update,getState:()=>state,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,toggleDeveloperMode,getDeveloperMode:()=>developerMode,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks,qualityTier:()=>qualityTier,medFX,advanceQualityMonitor,setGraphicsPreference,graphicsPreference:()=>graphicsMode};
+  globalThis.DenkmalTestHooks={startPortalRun,enterPortal,launchWave,getPortalRun:()=>portalRun,portalHit,projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,getView:()=>({camera:{...camera},zoom,viewDepth,width:W,height:H}),towerTarget,startGame,spawnEnemy,endWave,update,getState:()=>state,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,toggleDeveloperMode,getDeveloperMode:()=>developerMode,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks,qualityTier:()=>qualityTier,medFX,advanceQualityMonitor,setGraphicsPreference,graphicsPreference:()=>graphicsMode};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);
 })();
