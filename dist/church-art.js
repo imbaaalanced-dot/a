@@ -289,15 +289,52 @@
     if(globalThis.DenkmalTerrain?.drawGround)globalThis.DenkmalTerrain.drawGround(ctx,x,y,w,h,4);
     else{ctx.fillStyle=globalThis.TD2Style2Materials?.terrain||'#3c4b37';ctx.fillRect(x,y,w,h);}
   }
+  // Three bounded 2x sprites; weathering is baked once, never per frame.
+  // Illustrative surfaces retain the existing grave shapes, positions and size.
+  const graveSprites=new Map();
+  function graveSprite(index){
+    const variant=index%3;
+    if(graveSprites.has(variant))return graveSprites.get(variant);
+    const c=document.createElement('canvas');c.width=96;c.height=144;
+    const g=c.getContext('2d'),rnd=seeded(1879+variant*131);
+    g.scale(2,2);g.translate(24,59);
+    g.fillStyle='#10201955';g.beginPath();g.ellipse(4,6,21,6,-.12,0,7);g.fill();
+    // Recessed side face and low foot; light consistently comes from upper left.
+    polygon(g,[[12,-34],[17,-31],[17,1],[12,4]],'#3c4037');
+    polygon(g,[[-17,0],[13,0],[18,4],[15,7],[-18,7]],'#4a4f3e');
+    g.beginPath();g.moveTo(-16,2);g.lineTo(-16,-30);
+    g.quadraticCurveTo(-15,-51,0,-52);
+    g.quadraticCurveTo(16,-50,16,-30);g.lineTo(16,2);g.closePath();
+    const stone=g.createLinearGradient(-16,-45,17,0);
+    stone.addColorStop(0,['#878674','#7f806e','#737c6d'][variant]);
+    stone.addColorStop(.48,'#686d5d');stone.addColorStop(1,'#4b5346');
+    g.fillStyle=stone;g.fill();
+    g.save();g.clip();
+    for(let i=0;i<170;i++){
+      g.fillStyle=['#c7b99728','#293c3038','#a9a78c30'][i%3];
+      const x=-17+rnd()*35,y=-53+rnd()*57;
+      g.fillRect(x,y,.4+rnd()*1.6,.3+rnd()*1.2);
+    }
+    // Fine mineral veins, rather than invented names or dates.
+    g.strokeStyle='#34423755';g.lineWidth=.65;g.beginPath();
+    g.moveTo(-9,-35);g.lineTo(-6,-28);g.lineTo(-8,-22);
+    g.moveTo(11,-20);g.lineTo(6,-15);g.lineTo(7,-7);g.stroke();
+    for(let i=0;i<36;i++){
+      const x=-16+rnd()*32,y=-9+rnd()*13;
+      g.fillStyle=['#43573b99','#69764a88','#7c805157'][i%3];
+      g.beginPath();g.ellipse(x,y,.6+rnd()*2,.4+rnd()*1.1,0,0,7);g.fill();
+    }
+    g.restore();
+    g.strokeStyle='#a29c7d55';g.lineWidth=.7;g.beginPath();
+    g.moveTo(-15,-29);g.quadraticCurveTo(-14,-49,0,-51);g.stroke();
+    graveSprites.set(variant,c);return c;
+  }
   function drawGrave(ctx,x,y,index){
-    ctx.save();ctx.translate(x,y);
-    ctx.fillStyle='#17241e66';ctx.beginPath();ctx.ellipse(5,8,25,9,0,0,7);ctx.fill();
-    ctx.fillStyle=['#9c9983','#a9a790','#898f80'][index%3];ctx.beginPath();
-    ctx.moveTo(-16,2);ctx.lineTo(-16,-30);ctx.quadraticCurveTo(-15,-51,0,-52);
-    ctx.quadraticCurveTo(16,-50,16,-30);ctx.lineTo(16,2);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='#cec8a6aa';ctx.lineWidth=1.5;ctx.stroke();
-    ctx.strokeStyle='#555c5166';ctx.beginPath();ctx.moveTo(-8,-18);ctx.lineTo(9,-18);ctx.moveTo(-7,-12);ctx.lineTo(6,-12);ctx.stroke();
-    ctx.restore();
+    const sprite=graveSprite(index);
+    const paint=()=>ctx.drawImage(sprite,x-24,y-59,48,72);
+    // Grave faces are standing objects, like the church and hero sprites.
+    if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x,y},paint);
+    else paint();
   }
   function drawBench(ctx,x,y){
     ctx.save();ctx.translate(x,y);ctx.fillStyle='#2b342d88';ctx.fillRect(-39,-11,86,24);
