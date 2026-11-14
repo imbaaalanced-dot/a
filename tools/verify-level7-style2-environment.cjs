@@ -34,7 +34,7 @@ const server=http.createServer((req,res)=>{
         if(!environmentReady||!KirchendeArt.ready('environment'))throw Error('shared environment atlas failed to load');
         if(!groundReady||!DenkmalTerrain.groundImage?.naturalWidth)throw Error('shared Style-2 ground texture failed to load');
         // Validate the actual V3 preview decoder, not merely that a network request was sent.
-        const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview1';
+        const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview2';
         if(!DenkmalAssets.levelAssets[7].includes(memorialUrl))throw Error('level 7 preload manifest did not select V3 preview');
         const memorial=await DenkmalAssets.load(memorialUrl);
         if(!memorial||memorial.naturalWidth!==768||memorial.naturalHeight!==512)throw Error('V3 preview SVG did not decode to 768x512');
