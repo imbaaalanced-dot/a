@@ -48,9 +48,22 @@
 <path d="M260 306 L547 304 L547 390 L260 399 Z" fill="url(#stone)" stroke="#454d45" stroke-width="4"/>
 <path d="M241 287 L260 306 L260 399 L239 381 Z" fill="url(#stoneSide)" stroke="#4a4f45" stroke-width="3"/>
 <path d="M239 382 L260 399 L547 390 L531 412 L246 414 L223 393 Z" fill="url(#stone)" stroke="#51534a" stroke-width="4"/>
-<rect x="298" y="321" width="215" height="59" rx="2" fill="#515850" stroke="#b0a795" stroke-width="5"/>
-<rect x="306" y="329" width="198" height="43" rx="1" fill="#535a52" stroke="#71796f" stroke-width="2"/>
-<path d="M315 336 L484 336" stroke="#898b7e" stroke-width="1" opacity=".45"/>
+<path d="M296 319 L515 319 L515 382 L296 382 Z" fill="#5a5f52" stroke="#8e8672" stroke-width="2"/>
+<path d="M296 319 L515 319 L511 323 L300 323 Z" fill="#6b6f5d"/>
+<path d="M296 319 L300 323 L300 378 L296 382 Z" fill="#4c5147"/>
+<path d="M302 324 L509 324 L509 377 L302 377 Z" fill="#4e5349" stroke="#3a423c" stroke-width="1.5"/>
+<path d="M306 328 L505 328 L505 373 L306 373 Z" fill="#494e45"/>
+<path d="M306 328 L505 328 L505 340 L306 352 Z" fill="#565b4e" opacity=".8"/>
+<path d="M306 358 L505 350 L505 373 L306 373 Z" fill="#3f443d" opacity=".85"/>
+<path d="M310 333 C340 330 380 332 420 330 C450 329 470 331 501 330 L501 342 C468 343 428 341 396 343 C360 345 330 342 310 344 Z" fill="#585d4f"/>
+<path d="M311 347 C344 345 386 347 420 346 C452 345 472 347 500 346 L500 357 C468 358 430 356 398 358 C362 360 332 357 311 359 Z" fill="#4f5447"/>
+<path d="M312 362 C342 360 384 362 420 361 C452 360 474 362 499 361 L499 369 C466 370 430 368 396 370 C362 371 332 369 312 370 Z" fill="#454a41"/>
+<path d="M316 335 h14 M338 337 h10 M357 334 h16 M382 336 h12 M404 334 h14 M428 337 h10 M448 335 h12 M470 337 h14 M492 334 h8 M320 349 h12 M346 351 h14 M372 348 h10 M392 351 h16 M418 349 h12 M442 352 h10 M464 349 h12 M486 351 h10 M322 364 h14 M350 366 h10 M374 363 h12 M398 366 h14 M424 364 h10 M448 366 h12 M472 364 h10 M494 366 h5" stroke="#7a7d6b" stroke-width="1" opacity=".5"/>
+<path d="M310 344 L501 342 M311 359 L500 357 M312 370 L499 369" stroke="#2e352f" stroke-width="1.4" opacity=".7"/>
+<path d="M297 330 l7 2 l-4 5 M509 331 l-6 3 l5 5 M299 374 l6 -3 l4 4 M507 373 l-7 -1 l-2 6" stroke="#303e35" stroke-width="1.6" opacity=".7"/>
+<path d="M355 325 l14 1 l-3 4 M445 326 l-11 2 l5 4" stroke="#3a423c" stroke-width="1.2" opacity=".6"/>
+<path d="M303 369 q8 -3 14 1 M312 372 q7 -2 12 1 M497 368 q-9 -3 -15 1" fill="#5d6d4e" stroke="none" opacity=".55"/>
+<path d="M300 323 L511 323" stroke="#9a9280" stroke-width="1.4" opacity=".55"/>
 <path d="M279 310 V393 M523 309 V388" stroke="#454d46" stroke-width="2" opacity=".5"/>
 <path d="M279 346 h12 M512 347 h11" stroke="#b2aa95" stroke-width="1.5" opacity=".5"/>
 </g><g id="empty-bowl-pedestal-82"><path d="M82 354 L131 354 L140 369 L77 369 Z" fill="url(#stoneTop)" stroke="#4e554b" stroke-width="3"/><path d="M77 369 h63 v46 h-63 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/><path d="M70 411 h78 l10 13 h-98 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/></g><g id="empty-bowl-pedestal-623"><path d="M623 354 L672 354 L681 369 L618 369 Z" fill="url(#stoneTop)" stroke="#4e554b" stroke-width="3"/><path d="M618 369 h63 v46 h-63 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/><path d="M611 411 h78 l10 13 h-98 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/></g></g><g id="altar-weathering-v3" data-part="altar-weathering" fill="none" stroke-linecap="round" stroke-linejoin="round">

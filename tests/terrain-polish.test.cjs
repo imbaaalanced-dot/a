@@ -3,8 +3,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 let canvases=0,patterns=0;
 function context(){
- const calls={fills:0,strokes:0,images:0,dashes:[],strokeColors:[]};
- const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;calls.strokeColors.push(this.strokeStyle);},drawImage(){calls.images++;},
+ const calls={fills:0,strokes:0,images:0,dashes:[],strokeColors:[],strokeWidths:[]};
+ const out={calls,fill(){calls.fills++;},stroke(){calls.strokes++;calls.strokeColors.push(this.strokeStyle);calls.strokeWidths.push(this.lineWidth);},drawImage(){calls.images++;},
  setLineDash(value){calls.dashes.push(value);},
  createPattern(){patterns++;return {pattern:true};},
  createRadialGradient(){return {addColorStop(){}}},createLinearGradient(){return {addColorStop(){}}}};
@@ -34,6 +34,13 @@ const slabBefore=ctx.calls.strokes;g.drawRoad(ctx,road,{surface:'slabs'});
 assert.equal(ctx.calls.strokes-slabBefore,9,'stone road does not increase per-frame stroke count');
 const stoneShoulders=ctx.calls.strokeColors.slice(-9,-1);
 assert.notDeepEqual(stoneShoulders,earthShoulders,'stone and earth use different Style-2 shoulder colors');
+for(const surface of ['slabs','flagstone']){
+ const before=ctx.calls.strokes;g.drawRoad(ctx,road,{surface,groundLevel:4});
+ assert.equal(ctx.calls.strokes-before,9,'churchyard retains its draw-call budget');
+ const widths=ctx.calls.strokeWidths.slice(-9);
+ assert.ok(Math.max(...widths)<=116,'churchyard shoulders stay within the narrower moss margin');
+ assert.equal(widths.at(-1),72,'walkable-looking paving keeps its original visible width');
+}
 const warmRoadPatterns=patterns;
 g.drawRoad(ctx,road,{surface:'slabs'});
 assert.equal(patterns,warmRoadPatterns,'the paved approach reuses its texture');
