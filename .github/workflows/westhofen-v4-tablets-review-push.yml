@@ -1,0 +1,88 @@
+name: Westhofen V4 tablets review raster push
+
+on:
+  push:
+    branches: ['art/westhofen-v4-tablets-review-20261115']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: westhofen-v4-tablets-review-push
+  cancel-in-progress: false
+
+jobs:
+  rasterize-and-push:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rasterizer dependencies
+        run: python -m pip install 'CairoSVG>=2.7,<3' 'Pillow>=11,<14'
+      - name: Validate V4 tablets source
+        run: python tests/westhofen-v4-tablets-source.test.py
+      - name: Rasterize V4 tablets and build review sheets
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          import io
+          import cairosvg
+          from PIL import Image, ImageDraw
+
+          ROOT = Path(".")
+          OUT = ROOT / "build/westhofen-v4-tablets"
+          OUT.mkdir(parents=True, exist_ok=True)
+
+          def img(source, w=768, h=512):
+              png = cairosvg.svg2png(url=str(source), output_width=w, output_height=h)
+              return Image.open(io.BytesIO(png)).convert("RGBA")
+
+          new = img(ROOT / "docs/graphics/westhofen-v4-tablets/westhofen-composite-v4-tablets.svg")
+          old = img(ROOT / "dist/assets/westhofen/westhofen-memorial-style2-v3-preview.svg")
+
+          panel = Image.new("RGB", (1576, 1160), "#1a2320")
+          d = ImageDraw.Draw(panel)
+          d.text((18, 14), "WESTHOFEN V4 SIDE-TABLETS - REVIEW ONLY / NOT APPROVED / NOT RUNTIME", fill="#eee2bf")
+          for col, (name, source) in enumerate((("CURRENT LIVE (preview5)", old), ("V4 TABLETS CANDIDATE", new))):
+              x = 20 + col * 778
+              d.text((x, 44), name, fill="#eee0ba")
+              for row, bg in enumerate(("#d8d6cc", "#202a27")):
+                  c = Image.new("RGBA", (768, 512), bg)
+                  c.alpha_composite(source)
+                  panel.paste(c.convert("RGB"), (x, 66 + row * 528))
+          panel.save(OUT / "westhofen-v4-tablets-full-review.jpg", "JPEG", quality=82, optimize=True)
+
+          # Tablet close-ups at 4x: left tablet x85..155, right tablet x652..722, y155..310
+          crop_panel = Image.new("RGB", (1480, 640), "#1a2320")
+          cd = ImageDraw.Draw(crop_panel)
+          cd.text((18, 12), "SIDE TABLETS AT 4X - worn grouped inscription lines, no text; patina and moss", fill="#eee2bf")
+          boxes = ((80, 158, "LEFT TABLET"), (647, 725, "RIGHT TABLET"))
+          for row, (x0, x1, label) in enumerate(boxes):
+              for col, (name, source) in enumerate((("CURRENT", old), ("V4 CANDIDATE", new))):
+                  crop = source.crop((x0 - 6, 150, x1 + 6, 315)).resize((580, 280), Image.Resampling.LANCZOS)
+                  x = 18 + col * 735
+                  crop_panel.paste(crop, (x, 55 + row * 290))
+                  cd.text((x, 42 + row * 290), name + " - " + label, fill="#eee0ba")
+          crop_panel.save(OUT / "westhofen-v4-tablets-closeup-review.jpg", "JPEG", quality=85, optimize=True)
+          print("review rasters written")
+          EOF
+      - name: Publish review rasters on this branch
+        run: |
+          mkdir -p docs/graphics/westhofen-v4-tablets/review-20261115
+          cp build/westhofen-v4-tablets/* docs/graphics/westhofen-v4-tablets/review-20261115/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/graphics/westhofen-v4-tablets/review-20261115
+          if git diff --cached --quiet; then
+            echo 'Review rasters unchanged.'
+            exit 0
+          fi
+          git commit -m 'review(westhofen-v4): publish side-tablets review rasters (review only, not runtime)'
+          git push
