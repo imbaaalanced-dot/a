@@ -48,7 +48,7 @@ const server=http.createServer((req,res)=>{
     if(TD2GroundV3.enabled&&TD2GroundV3.loadedCount!==9)
       throw Error(`V3 material count ${TD2GroundV3.loadedCount} / 9`);
     // Dedicated isolated test context: developer unlock avoids writing regular campaign progress.
-    if(!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
+    if(typeof DenkmalTestHooks.getDeveloperMode==='function'&&!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
     if(lvl===3)await KirchendeArt?.load?.(true);
     DenkmalTestHooks.startGame(lvl);DenkmalTestHooks.launchWave();
     await new Promise(r=>setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(r)),750));
