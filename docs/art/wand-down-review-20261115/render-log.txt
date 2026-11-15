@@ -1,5 +1,6 @@
-local server up: http://127.0.0.1:45531
+local server up: http://127.0.0.1:44577
 chromium launched
+PAGEERROR: size is not defined
 TIMEOUT waiting for title on reference-512-light.png url= /originals/marcel-der-beschuetzer-reference-20261115.png state= {"title":"","imgs":[]}
 RENDER-FAILED: page.waitForFunction: Timeout 45000ms exceeded.
     at shot (/home/runner/work/a/a/tools/render-wand-down-acceptance.cjs:50:18)
