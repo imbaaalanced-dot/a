@@ -1,3 +1,4 @@
+# Re-Run CI 2026-11-15 – Browser-Checks erneut auslösen
 name: TD2 Kirchende site layout QA
 on:
   pull_request:
