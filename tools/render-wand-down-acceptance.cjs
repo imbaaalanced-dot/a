@@ -42,7 +42,7 @@ const server=http.createServer((req,res)=>{
       +'const c=document.getElementById("c").getContext("2d");c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";'
       +'c.fillStyle="'+bg+'";c.fillRect(0,0,'+size+','+size+');'
       +'const s=Math.min('+size+'/img.width,'+size+'/img.height)*0.92;'
-      +'c.drawImage(img,(size-img.width*s)/2,(size-img.height*s)/2,img.width*s,img.height*s);'
+      +'c.drawImage(img,('+size+'-img.width*s)/2,('+size+'-img.height*s)/2,img.width*s,img.height*s);'
       +'document.title="ready";};img.onerror=()=>{document.title="error:"+img.src};</script>';
     await page.setContent(html,{waitUntil:'domcontentloaded'});
     let ready=false;
