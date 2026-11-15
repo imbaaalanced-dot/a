@@ -1,0 +1,158 @@
+{
+  "chromium": "151.0.7922.34",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "name": "desktop-1649",
+      "open": true,
+      "panel": {
+        "x": 1395,
+        "y": 60,
+        "width": 244,
+        "height": 227.28125,
+        "right": 1639,
+        "bottom": 287.28125,
+        "scrollHeight": 225,
+        "clientHeight": 225
+      },
+      "gridColumns": 2,
+      "buttonIds": [
+        "inventoryBtn",
+        "heroBtn",
+        "speedBtn",
+        "menuPauseBtn",
+        "soundBtn",
+        "graphicsBtn",
+        "zoomBtn",
+        "telemetryBtn",
+        "fullscreenBtn"
+      ],
+      "minBtnHeight": 38,
+      "visibleBtnCount": 9,
+      "tower": [
+        "bow",
+        "cannon",
+        "mage",
+        "rift",
+        "barracks"
+      ],
+      "touchingToolbar": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "desktop-1280",
+      "open": true,
+      "panel": {
+        "x": 1026,
+        "y": 60,
+        "width": 244,
+        "height": 227.28125,
+        "right": 1270,
+        "bottom": 287.28125,
+        "scrollHeight": 225,
+        "clientHeight": 225
+      },
+      "gridColumns": 2,
+      "buttonIds": [
+        "inventoryBtn",
+        "heroBtn",
+        "speedBtn",
+        "menuPauseBtn",
+        "soundBtn",
+        "graphicsBtn",
+        "zoomBtn",
+        "telemetryBtn",
+        "fullscreenBtn"
+      ],
+      "minBtnHeight": 38,
+      "visibleBtnCount": 9,
+      "tower": [
+        "bow",
+        "cannon",
+        "mage",
+        "rift",
+        "barracks"
+      ],
+      "touchingToolbar": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "portrait-412",
+      "open": true,
+      "panel": {
+        "x": 124,
+        "y": 66,
+        "width": 278,
+        "height": 276,
+        "right": 402,
+        "bottom": 342,
+        "scrollHeight": 274,
+        "clientHeight": 274
+      },
+      "gridColumns": 2,
+      "buttonIds": [
+        "inventoryBtn",
+        "heroBtn",
+        "speedBtn",
+        "menuPauseBtn",
+        "soundBtn",
+        "graphicsBtn",
+        "zoomBtn",
+        "telemetryBtn",
+        "fullscreenBtn"
+      ],
+      "minBtnHeight": 48,
+      "visibleBtnCount": 9,
+      "tower": [
+        "bow",
+        "cannon",
+        "mage",
+        "rift",
+        "barracks"
+      ],
+      "touchingToolbar": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "portrait-360",
+      "open": true,
+      "panel": {
+        "x": 72,
+        "y": 66,
+        "width": 278,
+        "height": 276,
+        "right": 350,
+        "bottom": 342,
+        "scrollHeight": 274,
+        "clientHeight": 274
+      },
+      "gridColumns": 2,
+      "buttonIds": [
+        "inventoryBtn",
+        "heroBtn",
+        "speedBtn",
+        "menuPauseBtn",
+        "soundBtn",
+        "graphicsBtn",
+        "zoomBtn",
+        "telemetryBtn",
+        "fullscreenBtn"
+      ],
+      "minBtnHeight": 48,
+      "visibleBtnCount": 9,
+      "tower": [
+        "bow",
+        "cannon",
+        "mage",
+        "rift",
+        "barracks"
+      ],
+      "touchingToolbar": false,
+      "errors": [],
+      "failed": []
+    }
+  ]
+}

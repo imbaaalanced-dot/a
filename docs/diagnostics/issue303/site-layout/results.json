@@ -1,0 +1,133 @@
+{
+  "chromium": "151.0.7922.34",
+  "physicalAndroidTested": false,
+  "foliage": {
+    "metrics": [
+      {
+        "variant": 0,
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          18,
+          36,
+          237,
+          223
+        ],
+        "visible": 32444
+      },
+      {
+        "variant": 1,
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          45,
+          17,
+          210,
+          242
+        ],
+        "visible": 29481
+      },
+      {
+        "variant": 2,
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          16,
+          49,
+          239,
+          210
+        ],
+        "visible": 28418
+      },
+      {
+        "variant": 3,
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          16,
+          203,
+          243
+        ],
+        "visible": 28016
+      },
+      {
+        "variant": 4,
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          43,
+          226,
+          216
+        ],
+        "visible": 27196
+      }
+    ],
+    "decodedBytes": 1310720
+  },
+  "results": [
+    {
+      "mobile": false,
+      "level": 3,
+      "slots": 12,
+      "visible": 1024000,
+      "width": 1280,
+      "height": 800,
+      "viewportWidth": 1280,
+      "viewportHeight": 800,
+      "churchBounds": null,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "mobile": false,
+      "level": 4,
+      "slots": 14,
+      "visible": 1024000,
+      "width": 1280,
+      "height": 800,
+      "viewportWidth": 1280,
+      "viewportHeight": 800,
+      "churchBounds": {
+        "left": 296.79999999999995,
+        "right": 692,
+        "top": 102.24800000000005,
+        "bottom": 365.88800000000003
+      },
+      "errors": [],
+      "failed": []
+    },
+    {
+      "mobile": true,
+      "level": 3,
+      "slots": 12,
+      "visible": 161343,
+      "width": 273,
+      "height": 591,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "churchBounds": null,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "mobile": true,
+      "level": 4,
+      "slots": 14,
+      "visible": 161343,
+      "width": 273,
+      "height": 591,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "churchBounds": {
+        "left": 20.200000000000003,
+        "right": 369.8,
+        "top": 144.78800000000004,
+        "bottom": 378.00800000000004
+      },
+      "errors": [],
+      "failed": []
+    }
+  ]
+}

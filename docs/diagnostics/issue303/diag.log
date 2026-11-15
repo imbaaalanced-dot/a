@@ -5,25 +5,19 @@
 {"chromium":"151.0.7922.34","scenarios":14,"physicalAndroidTested":false}
 === EXIT ground-late-load: 0
 === RUN reference-ground-v3: node tools/verify-reference-ground-v3-browser.cjs
-page.evaluate: TypeError: DenkmalTestHooks.getDeveloperMode is not a function
-    at eval (eval at evaluate (:311:30), <anonymous>:7:26)
+page.evaluate: Error: incorrect active level: 1
+    at eval (eval at evaluate (:311:30), <anonymous>:12:32)
     at async <anonymous>:337:30
     at /home/runner/work/a/a/tools/verify-reference-ground-v3-browser.cjs:45:28 {
   log: []
 }
 === EXIT reference-ground-v3: 1
 === RUN level4-seamfix: node tools/verify-level4-seamfix-browser.cjs
-page.evaluate: TypeError: DenkmalTestHooks.getDeveloperMode is not a function
-    at eval (eval at evaluate (:311:30), <anonymous>:3:26)
-    at async <anonymous>:337:30
-    at /home/runner/work/a/a/tools/verify-level4-seamfix-browser.cjs:44:27 {
-  log: []
-}
-=== EXIT level4-seamfix: 1
+Level 4 seamfix: four desktop/touch gameplay scenes with correct asset loading, route materials and no browser errors
+=== EXIT level4-seamfix: 0
 === RUN site-layout: env TD2_FOREST_QA=1 node tools/verify-kirchende-site-layout.cjs
-ReferenceError: levels is not defined
-    at /home/runner/work/a/a/tools/verify-kirchende-site-layout.cjs:18:55
-=== EXIT site-layout: 1
+4 Chromium scenes passed: levels 3/4, desktop/touch, nonempty canvases, no JS/HTTP errors.
+=== EXIT site-layout: 0
 === RUN tower-hud: node tools/verify-tower-hud-browser.cjs
 TD2 tower shop and HUD browser QA passed [{"name":"desktop-1649","touch":false,"errors":[],"failed":[]},{"name":"desktop-1280","touch":false,"errors":[],"failed":[]},{"name":"desktop-900","touch":false,"errors":[],"failed":[]},{"name":"mobile-412","touch":true,"errors":[],"failed":[]},{"name":"mobile-360","touch":true,"errors":[],"failed":[]}]
 === EXIT tower-hud: 0
@@ -31,20 +25,15 @@ TD2 tower shop and HUD browser QA passed [{"name":"desktop-1649","touch":false,"
 Touch drag/menu/modal guards and separate pad selection passed: levels 3/4 at 360/412px, no essence spent, no JS/HTTP errors.
 === EXIT touch-guards: 0
 === RUN level4-perf: node tools/measure-level4-performance.cjs
-page.evaluate: Error: compact menu stylesheet not loaded
-    at eval (eval at evaluate (:311:30), <anonymous>:3:24)
-    at UtilityScript.evaluate (<anonymous>:313:16)
-    at UtilityScript.<anonymous> (<anonymous>:1:44)
-    at /home/runner/work/a/a/tools/measure-level4-performance.cjs:42:18 {
-  log: []
-}
-=== EXIT level4-perf: 1
+LEVEL4_ISOLATED_PERF {"device":"desktop-1649x890-high","graphics":"high","cssProfile":"baseline","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":1649,"height":890},"qualityTier":"high","pageVisibility":"visible","pageHasFocus":true,"rafSamples":263,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":2,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":1.2,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]}
+LEVEL4_ISOLATED_PERF {"device":"desktop-1649x890-high","graphics":"high","cssProfile":"compact","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":1649,"height":890},"qualityTier":"high","pageVisibility":"visible","pageHasFocus":true,"rafSamples":266,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":1.1,"telemetrySamples":9,"memoryMB":11,"jsErrors":[],"failedResourceRequests":[]}
+LEVEL4_ISOLATED_PERF {"device":"portrait-412x915-auto","graphics":"auto","cssProfile":"baseline","menuOpen":true,"level":4,"wave":61,"enemies":7,"canvas":{"width":288,"height":641},"qualityTier":"low","pageVisibility":"visible","pageHasFocus":true,"rafSamples":267,"rafMedianMs":16.7,"rafP95Ms":16.7,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.7,"simMsMedian":0.1,"drawMsMedian":1,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]}
+LEVEL4_ISOLATED_PERF {"device":"portrait-412x915-auto","graphics":"auto","cssProfile":"compact","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":288,"height":641},"qualityTier":"low","pageVisibility":"visible","pageHasFocus":true,"rafSamples":266,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":0.9,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]}
+LEVEL4_ISOLATED_REPORT {"browser":"151.0.7922.34","host":"GitHub Actions/Linux/SwiftShader","physicalAndroidTested":false,"note":"Short sequential samples in fresh contexts. Hardware and runner scheduling are not comparable to the user PC.","results":[{"device":"desktop-1649x890-high","graphics":"high","cssProfile":"baseline","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":1649,"height":890},"qualityTier":"high","pageVisibility":"visible","pageHasFocus":true,"rafSamples":263,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":2,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":1.2,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]},{"device":"desktop-1649x890-high","graphics":"high","cssProfile":"compact","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":1649,"height":890},"qualityTier":"high","pageVisibility":"visible","pageHasFocus":true,"rafSamples":266,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":1.1,"telemetrySamples":9,"memoryMB":11,"jsErrors":[],"failedResourceRequests":[]},{"device":"portrait-412x915-auto","graphics":"auto","cssProfile":"baseline","menuOpen":true,"level":4,"wave":61,"enemies":7,"canvas":{"width":288,"height":641},"qualityTier":"low","pageVisibility":"visible","pageHasFocus":true,"rafSamples":267,"rafMedianMs":16.7,"rafP95Ms":16.7,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.7,"simMsMedian":0.1,"drawMsMedian":1,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]},{"device":"portrait-412x915-auto","graphics":"auto","cssProfile":"compact","menuOpen":true,"level":4,"wave":61,"enemies":6,"canvas":{"width":288,"height":641},"qualityTier":"low","pageVisibility":"visible","pageHasFocus":true,"rafSamples":266,"rafMedianMs":16.7,"rafP95Ms":16.8,"rafOver50ms":0,"drawFpsMedian":60,"gameDrawP95Ms":16.8,"simMsMedian":0.1,"drawMsMedian":0.9,"telemetrySamples":9,"memoryMB":10,"jsErrors":[],"failedResourceRequests":[]}]}
+=== EXIT level4-perf: 0
 === RUN level4-menu: node tools/verify-level4-options-menu.cjs
-page.evaluate: ReferenceError: DenkmalTestHooks is not defined
-    at eval (eval at evaluate (:311:30), <anonymous>:1:6)
-    at UtilityScript.evaluate (<anonymous>:313:16)
-    at UtilityScript.<anonymous> (<anonymous>:1:44)
-    at /home/runner/work/a/a/tools/verify-level4-options-menu.cjs:34:16 {
-  log: []
-}
-=== EXIT level4-menu: 1
+LEVEL4_MENU_PASS {"name":"desktop-1649","panel":{"x":1395,"y":60,"width":244,"height":227.28125,"right":1639,"bottom":287.28125,"scrollHeight":225,"clientHeight":225},"buttonIds":["inventoryBtn","heroBtn","speedBtn","menuPauseBtn","soundBtn","graphicsBtn","zoomBtn","telemetryBtn","fullscreenBtn"]}
+LEVEL4_MENU_PASS {"name":"desktop-1280","panel":{"x":1026,"y":60,"width":244,"height":227.28125,"right":1270,"bottom":287.28125,"scrollHeight":225,"clientHeight":225},"buttonIds":["inventoryBtn","heroBtn","speedBtn","menuPauseBtn","soundBtn","graphicsBtn","zoomBtn","telemetryBtn","fullscreenBtn"]}
+LEVEL4_MENU_PASS {"name":"portrait-412","panel":{"x":124,"y":66,"width":278,"height":276,"right":402,"bottom":342,"scrollHeight":274,"clientHeight":274},"buttonIds":["inventoryBtn","heroBtn","speedBtn","menuPauseBtn","soundBtn","graphicsBtn","zoomBtn","telemetryBtn","fullscreenBtn"]}
+LEVEL4_MENU_PASS {"name":"portrait-360","panel":{"x":72,"y":66,"width":278,"height":276,"right":350,"bottom":342,"scrollHeight":274,"clientHeight":274},"buttonIds":["inventoryBtn","heroBtn","speedBtn","menuPauseBtn","soundBtn","graphicsBtn","zoomBtn","telemetryBtn","fullscreenBtn"]}
+=== EXIT level4-menu: 0
