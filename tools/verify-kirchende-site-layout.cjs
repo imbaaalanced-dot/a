@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'../dist'),out=process.env.TD2_SITE_QA_OUT||'/tmp/td2-site-layout';
+const levels=[3,4],forestQA=!!process.env.TD2_FOREST_QA;
 const types={'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'};
 const server=http.createServer((req,res)=>{
  const name=new URL(req.url,'http://localhost').pathname.replace(/^\/v4-style2\//,'/');
@@ -24,7 +25,6 @@ const server=http.createServer((req,res)=>{
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const state=await page.evaluate(async level=>{
     const h=DenkmalTestHooks;
-    if(!h.getDeveloperMode())h.toggleDeveloperMode();
     await KirchendeArt.load();await DenkmalTerrain.load();
     h.startGame(level);HeroSaga?.continueStory?.();
     await new Promise(r=>setTimeout(r,600));
