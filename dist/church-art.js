@@ -13,7 +13,8 @@
   let church=null,site=null,lionArt=null;
   // Fixed-camera photographic Style-2 church asset. Keep procedural art for offline/missing files.
   // The painted building stays on the same southern footprint as Alpha 7.
-  const churchSpriteFrame={x:-520,y:-1100,w:760,h:760};
+  // The approved reference is 3:2; retain its proportions and the old ground anchor.
+  const churchSpriteFrame={x:-520,y:-847,w:760,h:507};
   let churchSprite=null,churchSpriteReady=false,churchSpriteFailed=false;
   if(typeof Image==='function'){
     const sprite=new Image();
@@ -23,7 +24,7 @@
       }else churchSpriteFailed=true;
     };
     sprite.onerror=()=>{churchSpriteFailed=true;};
-    sprite.src='assets/church-ende-style2.webp?v=style2a1';
+    sprite.src='assets/church-ende-reference-20261114.webp?v=1';
   }
   // The original lion-ende-style2.webp is an opaque placeholder and remains unused.
   // Level 4 lazily requests a separate transparent, photo-derived 1879 WebP.
