@@ -1,0 +1,6 @@
+local server up: http://127.0.0.1:45695
+chromium launched
+warm-up dist/index.html: reached (status ignored, review-only rasters)
+RENDER-FAILED: page.waitForFunction: Timeout 20000ms exceeded.
+    at shot (/home/runner/work/a/a/tools/render-wand-down-acceptance.cjs:49:16)
+    at async /home/runner/work/a/a/tools/render-wand-down-acceptance.cjs:56:3
