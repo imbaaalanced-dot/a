@@ -25,10 +25,10 @@ assert.match(closeRule,/min-height:48px/,'the menu close button remains an acces
 const landscape=css.split('@media (pointer:coarse) and (orientation:landscape)')[1]||'';
 assert.match(landscape,/\.touch-context\{bottom:calc\(var\(--hud-safe-bottom,12px\) \+ 82px\)/,'landscape menu must sit above ability buttons');
 
-let playing=true,allowBuild=true,builds=0,spent=0;
+let playing=true,allowBuild=true,capacityAvailable=true,builds=0,spent=0;
 const hud=sandbox.DenkmalTouchContext.create(root,{
   isPlaying:()=>playing,
-  canBuild:()=>allowBuild,
+  canBuild:()=>allowBuild&&capacityAvailable,
   build:(slot,kind)=>{builds++;spent+=kind==='bow'?25:35;return true;},
 });
 const slot={x:120,y:180};
@@ -47,6 +47,11 @@ hud.openBuild(slot,types);
 allowBuild=false;
 choices.children[0].click();
 assert.equal(builds,1,'a stale palette cannot buy when funds changed');
+hud.openBuild(slot,types);
+capacityAvailable=false;
+choices.children[0].click();
+assert.equal(builds,1,'a stale palette cannot buy after the tower limit is reached');
+capacityAvailable=true;
 hud.openBuild(slot,types);
 playing=false;
 choices.children[0].click();
