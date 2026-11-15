@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'../dist'),out=process.env.TD2_SITE_QA_OUT||'/tmp/td2-site-layout';
+const levels=[3,4],forestQA=true;
 const types={'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'};
 const server=http.createServer((req,res)=>{
  const name=new URL(req.url,'http://localhost').pathname.replace(/^\/v4-style2\//,'/');
@@ -13,7 +14,7 @@ const server=http.createServer((req,res)=>{
 (async()=>{
  fs.mkdirSync(out,{recursive:true});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_PATH||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
- const results=[];
+ const results=[];let foliage=null;
  try{
   for(const mobile of [false,true])for(const level of levels){
    const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1280,height:800},hasTouch:mobile,isMobile:mobile,deviceScaleFactor:1});
@@ -24,7 +25,6 @@ const server=http.createServer((req,res)=>{
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const state=await page.evaluate(async level=>{
     const h=DenkmalTestHooks;
-    if(!h.getDeveloperMode())h.toggleDeveloperMode();
     await KirchendeArt.load();await DenkmalTerrain.load();
     h.startGame(level);HeroSaga?.continueStory?.();
     await new Promise(r=>setTimeout(r,600));
