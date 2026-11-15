@@ -1,0 +1,36 @@
+{
+  "chromium": "156.0.8078.79",
+  "physicalAndroidTested": false,
+  "results": [
+    {
+      "name": "desktop-1649",
+      "touch": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "desktop-1280",
+      "touch": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "desktop-900",
+      "touch": false,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "mobile-412",
+      "touch": true,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "name": "mobile-360",
+      "touch": true,
+      "errors": [],
+      "failed": []
+    }
+  ]
+}
