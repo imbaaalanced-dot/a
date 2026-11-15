@@ -35,6 +35,7 @@ jobs:
           TD2_LEVEL4_PERF_OUT: /tmp/issue303/level4-perf
           TD2_LEVEL4_MENU_OUT: /tmp/issue303/level4-menu
         run: |
+          mkdir -p /tmp/issue303
           set +e
           run_one() {
             name="$1"; shift
