@@ -1,0 +1,50 @@
+=== RUN cold-start: node tools/verify-game-cold-start-browser.cjs
+{"chromium":"151.0.7922.34","menuStartupScenarios":4,"physicalAndroidTested":false}
+=== EXIT cold-start: 0
+=== RUN ground-late-load: node tools/verify-ground-late-load-browser.cjs
+{"chromium":"151.0.7922.34","scenarios":14,"physicalAndroidTested":false}
+=== EXIT ground-late-load: 0
+=== RUN reference-ground-v3: node tools/verify-reference-ground-v3-browser.cjs
+page.evaluate: TypeError: DenkmalTestHooks.getDeveloperMode is not a function
+    at eval (eval at evaluate (:311:30), <anonymous>:7:26)
+    at async <anonymous>:337:30
+    at /home/runner/work/a/a/tools/verify-reference-ground-v3-browser.cjs:45:28 {
+  log: []
+}
+=== EXIT reference-ground-v3: 1
+=== RUN level4-seamfix: node tools/verify-level4-seamfix-browser.cjs
+page.evaluate: TypeError: DenkmalTestHooks.getDeveloperMode is not a function
+    at eval (eval at evaluate (:311:30), <anonymous>:3:26)
+    at async <anonymous>:337:30
+    at /home/runner/work/a/a/tools/verify-level4-seamfix-browser.cjs:44:27 {
+  log: []
+}
+=== EXIT level4-seamfix: 1
+=== RUN site-layout: env TD2_FOREST_QA=1 node tools/verify-kirchende-site-layout.cjs
+ReferenceError: levels is not defined
+    at /home/runner/work/a/a/tools/verify-kirchende-site-layout.cjs:18:55
+=== EXIT site-layout: 1
+=== RUN tower-hud: node tools/verify-tower-hud-browser.cjs
+TD2 tower shop and HUD browser QA passed [{"name":"desktop-1649","touch":false,"errors":[],"failed":[]},{"name":"desktop-1280","touch":false,"errors":[],"failed":[]},{"name":"desktop-900","touch":false,"errors":[],"failed":[]},{"name":"mobile-412","touch":true,"errors":[],"failed":[]},{"name":"mobile-360","touch":true,"errors":[],"failed":[]}]
+=== EXIT tower-hud: 0
+=== RUN touch-guards: node tools/verify-touch-guards-browser.cjs
+Touch drag/menu/modal guards and separate pad selection passed: levels 3/4 at 360/412px, no essence spent, no JS/HTTP errors.
+=== EXIT touch-guards: 0
+=== RUN level4-perf: node tools/measure-level4-performance.cjs
+page.evaluate: Error: compact menu stylesheet not loaded
+    at eval (eval at evaluate (:311:30), <anonymous>:3:24)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at /home/runner/work/a/a/tools/measure-level4-performance.cjs:42:18 {
+  log: []
+}
+=== EXIT level4-perf: 1
+=== RUN level4-menu: node tools/verify-level4-options-menu.cjs
+page.evaluate: ReferenceError: DenkmalTestHooks is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:6)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at /home/runner/work/a/a/tools/verify-level4-options-menu.cjs:34:16 {
+  log: []
+}
+=== EXIT level4-menu: 1
