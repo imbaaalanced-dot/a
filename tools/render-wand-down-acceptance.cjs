@@ -72,7 +72,7 @@ const server=http.createServer((req,res)=>{
     // sequence strip: six frames side by side at game size, rendered in the same page
     const strip='<!doctype html><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:#202a27}</style>'
       +'<canvas id="c" width="812" height="144" style="display:block"></canvas><script>(()=>{'
-      +'const frames=["'+Array.from({length:6},(_,i)=>'/source-art/hero/actions-v5/marcel/down/'+action+'/0'+i+'.png').join('","')+'"];'
+      +'const frames=["'+Array.from({length:6},(_,i)=>base+'/source-art/hero/actions-v5/marcel/down/'+action+'/0'+i+'.png').join('","')+'"];'
       +'const c=document.getElementById("c").getContext("2d");c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";'
       +'c.fillStyle="#202a27";c.fillRect(0,0,812,144);'
       +'let done=0;frames.forEach((f,i)=>{const img=new Image();img.onload=()=>{c.drawImage(img,10+i*134,8,128,128);if(++done===frames.length)document.title="ready";};'
