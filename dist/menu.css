@@ -364,7 +364,10 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen .menu-help{max-width:800px;margin-inline:auto;opacity:.78}
 #startScreen .menu-footer{font-size:10px;letter-spacing:.06em;opacity:.88}
 #startScreen .menu-version{color:#dbc394;white-space:nowrap}
-#startScreen .menu-masthead .menu-version{padding:7px 10px;border:1px solid #b99b634d;border-radius:5px;background:#0d171ccc;font:700 10px/1.4 Inter,system-ui;letter-spacing:.12em;color:#e1cfaa}
+#startScreen .menu-masthead .menu-version-top{display:inline-flex;align-items:center;flex:0 0 auto;margin-left:auto;padding:5px 8px;border:1px solid #b99b634d;border-radius:5px;background:#0d171ccc;font:700 clamp(9px,2.8vw,10px)/1.3 Inter,system-ui;letter-spacing:.1em;color:#e1cfaa}
+#startScreen .menu-masthead{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+#startScreen .menu-wordmark{min-width:0}
+#startScreen .menu-command:focus-visible,#startScreen .map-card:focus-visible,#startScreen .menu-back:focus-visible{outline:3px solid #9ce9ee;outline-offset:3px}
 #startScreen .menu-hero-figure{
   position:relative;isolation:isolate;overflow:hidden;max-width:800px;
   height:clamp(178px,27vh,270px);margin:0 auto 11px;border:1px solid #c9ac7266;
