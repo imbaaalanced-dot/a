@@ -28,7 +28,7 @@ const server=http.createServer((req,res)=>{
   page.on('requestfailed',r=>console.log('REQFAIL:',r.url().replace(base,''),'->',JSON.stringify(r.failure())));
   page.on('response',r=>{if(r.url().startsWith(base+'/')&&r.status()>=400)console.log('BADSTATUS:',r.url().replace(base,''),'->',r.status());});
   const errors=[];
-  page.on('pageerror',e=>errors.push('pageerror: '+e.message));
+  page.on('pageerror',e=>{console.log('PAGEERROR:',e.message);errors.push('pageerror: '+e.message);});
   page.on('console',m=>{if(m.type()==='error')errors.push('console: '+m.text());});
   const shots=[];
   async function pageState(){
@@ -41,7 +41,7 @@ const server=http.createServer((req,res)=>{
       +'<script>const img=new Image();img.src="'+url+'";img.onload=()=>{'
       +'const c=document.getElementById("c").getContext("2d");c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";'
       +'c.fillStyle="'+bg+'";c.fillRect(0,0,'+size+','+size+');'
-      +'const s=Math.min(size/img.width,size/img.height)*0.92;'
+      +'const s=Math.min('+size+'/img.width,'+size+'/img.height)*0.92;'
       +'c.drawImage(img,(size-img.width*s)/2,(size-img.height*s)/2,img.width*s,img.height*s);'
       +'document.title="ready";};img.onerror=()=>{document.title="error:"+img.src};</script>';
     await page.setContent(html,{waitUntil:'domcontentloaded'});
