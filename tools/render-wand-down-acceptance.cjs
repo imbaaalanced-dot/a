@@ -38,12 +38,12 @@ const server=http.createServer((req,res)=>{
   async function shot(file,url,size,bg,label){
     const html='<!doctype html><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:'+bg+'}</style>'
       +'<canvas id="c" width="'+size+'" height="'+size+'" style="display:block"></canvas>'
-      +'<script>const img=new Image();img.src="'+url+'";img.onload=()=>{'
+      +'<script>(()=>{const img=new Image();img.src="'+url+'";img.onload=()=>{'
       +'const c=document.getElementById("c").getContext("2d");c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";'
       +'c.fillStyle="'+bg+'";c.fillRect(0,0,'+size+','+size+');'
       +'const s=Math.min('+size+'/img.width,'+size+'/img.height)*0.92;'
       +'c.drawImage(img,('+size+'-img.width*s)/2,('+size+'-img.height*s)/2,img.width*s,img.height*s);'
-      +'document.title="ready";};img.onerror=()=>{document.title="error:"+img.src};</script>';
+      +'document.title="ready";};img.onerror=()=>{document.title="error:"+img.src};})();</script>';
     await page.setContent(html,{waitUntil:'domcontentloaded'});
     let ready=false;
     try{
@@ -71,12 +71,12 @@ const server=http.createServer((req,res)=>{
     }
     // sequence strip: six frames side by side at game size, rendered in the same page
     const strip='<!doctype html><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:#202a27}</style>'
-      +'<canvas id="c" width="812" height="144" style="display:block"></canvas><script>'
+      +'<canvas id="c" width="812" height="144" style="display:block"></canvas><script>(()=>{'
       +'const frames=["'+Array.from({length:6},(_,i)=>'/source-art/hero/actions-v5/marcel/down/'+action+'/0'+i+'.png').join('","')+'"];'
       +'const c=document.getElementById("c").getContext("2d");c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";'
       +'c.fillStyle="#202a27";c.fillRect(0,0,812,144);'
       +'let done=0;frames.forEach((f,i)=>{const img=new Image();img.onload=()=>{c.drawImage(img,10+i*134,8,128,128);if(++done===frames.length)document.title="ready";};'
-      +'img.onerror=()=>{document.title="error:"+f};img.src=f;});'
+      +'img.onerror=()=>{document.title="error:"+f};img.src=f;})})();'
       +'</script>';
     await page.setContent(strip,{waitUntil:'domcontentloaded'});
     try{
