@@ -11,7 +11,7 @@ function create(index){
   {rx:1,ry:.85,leaves:720,dark:false},
   {rx:.75,ry:1.03,leaves:740,dark:false},
   {rx:1.02,ry:.73,leaves:465,dark:false},
-  {rx:.69,ry:1.12,leaves:550,dark:true},
+  {rx:.69,ry:1.08,leaves:550,dark:true},
   {rx:.90,ry:.79,leaves:390,dark:false}
  ];
  const profile=profiles[index%profiles.length];
