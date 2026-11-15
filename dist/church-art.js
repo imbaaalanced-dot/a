@@ -26,6 +26,21 @@
     sprite.onerror=()=>{churchSpriteFailed=true;};
     sprite.src='assets/church-ende-reference-20261114.webp?v=1';
   }
+  const graveAtlasFrame=512;
+  const graveSpriteSizes=[[112,132],[112,132],[132,116],[105,132]];
+  let graveAtlas=null,graveAtlasRequested=false,graveAtlasReady=false,graveAtlasFailed=false;
+  function requestGraveAtlas(){
+    if(graveAtlasRequested||graveAtlasFailed||typeof Image!=='function')return;
+    graveAtlasRequested=true;
+    const candidate=new Image();
+    candidate.onload=()=>{
+      if(candidate.naturalWidth===1024&&candidate.naturalHeight===1024){
+        graveAtlas=candidate;graveAtlasReady=true;
+      }else graveAtlasFailed=true;
+    };
+    candidate.onerror=()=>{graveAtlasFailed=true;};
+    candidate.src='assets/level4/graves-style2-20261114.png?v=1';
+  }
   // The original lion-ende-style2.webp is an opaque placeholder and remains unused.
   // Level 4 lazily requests a separate transparent, photo-derived 1879 WebP.
   // The cached Canvas lion remains the fallback during loading and after failures.
@@ -293,6 +308,13 @@
   function drawGrave(ctx,x,y,index){
     ctx.save();ctx.translate(x,y);
     ctx.fillStyle='#17241e66';ctx.beginPath();ctx.ellipse(5,8,25,9,0,0,7);ctx.fill();
+    if(graveAtlasReady&&graveAtlas){
+      const frame=index%4,sx=(frame%2)*graveAtlasFrame,sy=Math.floor(frame/2)*graveAtlasFrame;
+      const [w,h]=graveSpriteSizes[frame];
+      const paint=()=>ctx.drawImage(graveAtlas,sx,sy,graveAtlasFrame,graveAtlasFrame,-w/2,-h+8,w,h);
+      if(globalThis.Style2Phase6)globalThis.Style2Phase6.upright(ctx,{x:0,y:8},paint);else paint();
+      ctx.restore();return;
+    }
     ctx.fillStyle=['#9c9983','#a9a790','#898f80'][index%3];ctx.beginPath();
     ctx.moveTo(-16,2);ctx.lineTo(-16,-30);ctx.quadraticCurveTo(-15,-51,0,-52);
     ctx.quadraticCurveTo(16,-50,16,-30);ctx.lineTo(16,2);ctx.closePath();ctx.fill();
@@ -306,6 +328,7 @@
     ctx.fillStyle='#484e44';ctx.fillRect(-34,11,7,12);ctx.fillRect(27,11,7,12);ctx.restore();
   }
   function drawBackdrop(ctx,center){
+    requestGraveAtlas();
     const usingSprite=churchSpriteReady&&!!churchSprite;
     if(!usingSprite&&!church)church=createChurch();
     ctx.save();ctx.translate(center.x,center.y);
@@ -536,5 +559,5 @@
     }
     ctx.restore();
   }
-  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get lionSpriteReady(){return !!lionSprite;},get lionSpriteFailed(){return lionSpriteFailed;},get churchSpriteFailed(){return churchSpriteFailed;}};
+  globalThis.DenkmalChurch={drawGround,drawBackdrop,drawRoad,drawSite,drawCanopies,drawLion,churchFrame,churchSpriteFrame,graveAtlasFrame,trees,graves,get churchSpriteReady(){return churchSpriteReady;},get graveAtlasReady(){return graveAtlasReady;},get graveAtlasFailed(){return graveAtlasFailed;},get lionSpriteReady(){return !!lionSprite;},get lionSpriteFailed(){return lionSpriteFailed;},get churchSpriteFailed(){return churchSpriteFailed;}};
 })();
