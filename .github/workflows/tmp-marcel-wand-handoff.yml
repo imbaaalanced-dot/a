@@ -1,0 +1,50 @@
+name: Temporary binary handoff for Marcel wand reference
+on:
+  push:
+    branches: [art/marcel-wand-reference-20261115]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Decode payload and verify checksum
+        run: |
+          set -euxo pipefail
+          ls -la .handoff/marcel-wand/
+          mkdir -p originals
+          base64 -d .handoff/marcel-wand/ref.b64.txt > originals/marcel-der-beschuetzer-reference-20261115.png
+          sha256sum -c .handoff/marcel-wand/sha256.txt
+      - name: Commit decoded reference and remove handoff payloads
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add originals
+          git rm -r -q .handoff
+          git rm -q .github/workflows/tmp-marcel-wand-handoff.yml
+          git commit -m "art(reference): decode Marcel wand reference PNG from temporary handoff"
+          git push
+      - name: Diagnose on failure
+        if: failure()
+        run: |
+          set +e
+          {
+            echo "=== runner context ==="
+            echo "GITHUB_REF=$GITHUB_REF SHA=$GITHUB_SHA"
+            echo "=== git status ==="
+            git status --short
+            echo "=== sha256 verbose ==="
+            sha256sum -c .handoff/marcel-wand/sha256.txt
+            echo "=== ls handoff ==="
+            ls -la .handoff/marcel-wand/ || true
+          } > failure-diagnosis.txt 2>&1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add failure-diagnosis.txt
+          git commit -m "chore(handoff): write failure diagnosis" || exit 0
+          git push || exit 0
