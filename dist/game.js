@@ -696,7 +696,7 @@
     if(game.selectedTower==='barracks')globalThis.DenkmalBarracks?.preload();game.essence-=spec.cost;game.towers.push({...p,r:18,damage:spec.damage,fireRate:spec.rate,fireCd:.1,range:spec.range,kind:game.selectedTower,level:1,spent:spec.cost,recruitCd:0,targetMode:'first'});spark(p.x,p.y,'#d9b66b',18);showToast(spec.name.toUpperCase()+' ERRICHTET');tone(150,.12);updateUI();
   }
   function buildTower(){buildTowerAt(towerPosition());}
-  function nearbyTower(){let best=null,bd=92;for(const t of game.towers){const d=dist(game.hero,t);if(d<bd){bd=d;best=t}}return best}
+  function nearbyTower(){let best=null,bd=8464;for(const t of game.towers){const dx=game.hero.x-t.x,dy=game.hero.y-t.y,d=dx*dx+dy*dy;if(d<bd){bd=d;best=t}}return best}
   function cycleTargetMode(t=nearbyTower()){
     if(state!=='playing')return;
     if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');
@@ -756,7 +756,7 @@
   function update(dt){
     if(state!=='playing'||tutorialPending||tutorialActive)return;if(inPortal()&&portalTick(dt))return;if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return;}if(lowFX()&&game.particles.length>90)game.particles.splice(0,game.particles.length-90);else if(medFX()&&game.particles.length>170)game.particles.splice(0,game.particles.length-170);time+=dt;routeTick++;game.elapsed+=dt;const h=game.hero,m=game.monument,heroStats=saga.stats(h);
     h.fireCd-=dt;h.dodgeCd-=dt;h.invuln-=dt;if(h.dodge>0)h.dodge-=dt;
-    let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);facing={x:dx/(Math.hypot(dx,dy)||1),y:dy/(Math.hypot(dx,dy)||1)};}let sp=heroStats.speed*(inPortal()?1+.05*(portalRun.perkRanks.step||0):1);if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};{const nx=clamp(h.x+dx*sp*dt,26,WORLD_W-26),ny=clamp(h.y+dy*sp*dt,26,WORLD_H-26);
+    let dx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0)+touch.x,dy=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0)+touch.y;const len=Math.hypot(dx,dy);if(len>0){dx/=Math.max(1,len);dy/=Math.max(1,len);const fl=Math.hypot(dx,dy)||1;facing={x:dx/fl,y:dy/fl};}let sp=heroStats.speed*(inPortal()?1+.05*(portalRun.perkRanks.step||0):1);if(h.dodge>0){dx=h.dodgeX;dy=h.dodgeY;sp*=3.2;}const motion=Math.hypot(dx,dy);moveIntent=motion>0?{x:dx,y:dy}:{x:0,y:0};{const nx=clamp(h.x+dx*sp*dt,26,WORLD_W-26),ny=clamp(h.y+dy*sp*dt,26,WORLD_H-26);
       if(!churchBlocks(nx,h.y,h.r))h.x=nx;
       if(!churchBlocks(h.x,ny,h.r))h.y=ny;
     }updateCamera(dt);saga.update(dt,len>0||h.dodge>0,facing);
@@ -778,12 +778,12 @@
       const route=campaign.levels[game.level].paths[e.gateIndex]||campaign.levels[game.level].paths[0];
       // Aggro starts before melee contact, but pursuers stay near the route.
       // The corridor check prevents archers shooting through maze corners.
-      const heroDistance=dist(e,h);
+      const hdx=e.x-h.x,hdy=e.y-h.y,heroDistance2=hdx*hdx+hdy*hdy;
       const segment=Math.max(1,Math.min(Number.isFinite(e.waypoint)?e.waypoint:1,route.length-1));
       const heroOnLane=game.level===1||route.length<2||campaign.pathDistance(h,[route[segment-1],route[segment]])<=(e.attackRange?74:82);
       const aggroRange=e.attackRange?195:(e.type==='runner'||e.type==='rootrunner'?160:135);
       const routeHeroTarget=!e.focusMonument&&e.type!=='uprooted'&&heroPursuers<3&&
-        heroDistance<=aggroRange&&heroOnLane;
+        heroDistance2<=aggroRange*aggroRange&&heroOnLane;
       if(routeHeroTarget)heroPursuers++;
       const defender=globalThis.DenkmalBarracks?.aggroTarget(game,e);
       if(defender){
@@ -794,7 +794,7 @@
         continue;
       }
       if(game.level!==1&&e.waypoint<route.length&&!routeHeroTarget){const speed=e.speed;e.speed*=speedMul;campaign.advance(e,dt,route);e.speed=speed;continue;}
-      const targetObj=game.level!==1?(routeHeroTarget?h:m):(e.focusMonument?m:(heroDistance<dist(e,m)*.82?h:m));
+      const targetObj=game.level!==1?(routeHeroTarget?h:m):(e.focusMonument?m:(heroDistance2<((e.x-m.x)*(e.x-m.x)+(e.y-m.y)*(e.y-m.y))*.6724?h:m));
       e.targetX=targetObj.x;e.targetY=targetObj.y;
       const d=dist(e,targetObj)||1,attackRange=e.attackRange||e.r+targetObj.r;
       if(game.level===1&&e.type==='archer'&&targetObj===h&&d<92){const step=Math.min(e.speed*speedMul*.7*dt,92-d);e.x-=(targetObj.x-e.x)/d*step;e.y-=(targetObj.y-e.y)/d*step;}
@@ -802,7 +802,7 @@
       if(d<=attackRange+.5&&e.type==='uprooted'){const result=kirchende.tickBoss(e,dt);if(result.attackDamage){m.hp-=result.attackDamage;e.attackAnim=.22;shake=Math.max(shake,3);spark(m.x,m.y,'#b58d60',20);}if(result.phaseChanged)showWaveBanner(`DER ENTWURZELTE · PHASE ${bossPhaseLabel(e.phase)}`);if(e.interrupted){showToast('LADEANGRIFF UNTERBROCHEN');e.interrupted=false;}}
       else if(d<=attackRange+.5&&e.attackCd<=0){
         if(targetObj===m&&e.type==='sapper'){m.hp-=e.damage*1.65;retireEnemy(e);spark(m.x,m.y,'#e66f52',22);tone(72,.12,.07);continue;}
-        if(targetObj===h&&h.invuln<=0)saga.damage(e.damage*.72*(inPortal()&&game.towers.some(t=>dist(t,h)<=t.range*perkStats().towerRange)?1-perkStats().cover:1));else if(targetObj===m)m.hp-=e.damage;e.attackCd=e.attackCooldown||.85;e.attackAnim=.22;if(e.type==='boss'){shake=Math.max(shake,3);if(!reducedMotion)hitStop=Math.max(hitStop,.045);}spark(targetObj.x,targetObj.y,e.type==='archer'?'#d7c28a':'#b7533d',8);tone(e.type==='archer'?210:95,.05,.04);
+        if(targetObj===h&&h.invuln<=0)saga.damage(e.damage*.72*(inPortal()&&game.towers.some(t=>{const cx=t.x-h.x,cy=t.y-h.y,cr=t.range*perkStats().towerRange;return cx*cx+cy*cy<=cr*cr})?1-perkStats().cover:1));else if(targetObj===m)m.hp-=e.damage;e.attackCd=e.attackCooldown||.85;e.attackAnim=.22;if(e.type==='boss'){shake=Math.max(shake,3);if(!reducedMotion)hitStop=Math.max(hitStop,.045);}spark(targetObj.x,targetObj.y,e.type==='archer'?'#d7c28a':'#b7533d',8);tone(e.type==='archer'?210:95,.05,.04);
       }
     }
     compactKeep(game.enemies,e=>!e.dead);
@@ -825,34 +825,36 @@
           const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;
           shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
         }
-        towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*(dist(t,h)<=h.r*6?1+perkStats().circle:1):1);
+        towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*((t.x-h.x)*(t.x-h.x)+(t.y-h.y)*(t.y-h.y)<=h.r*h.r*36?1+perkStats().circle:1):1);
       }
     }
     for(const b of game.bullets){
       if(b.boomerang)moveBoomerang(b,dt);
       else{b.prevX=b.x;b.prevY=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;}
       const minX=Math.min(b.prevX,b.x),maxX=Math.max(b.prevX,b.x),minY=Math.min(b.prevY,b.y),maxY=Math.max(b.prevY,b.y);
+      const segDx=b.x-b.prevX,segDy=b.y-b.prevY,segLen2=segDx*segDx+segDy*segDy||1;
       let hitOrder=game.enemies;if(b.pierce){pierceScratch.length=0;for(const pe of game.enemies)pierceScratch.push(pe);pierceScratch.sort((a,c)=>segmentProjection(a,b)-segmentProjection(c,b));hitOrder=pierceScratch;}
       const hitSet=b.boomerang?(b.collisionPhase==='out'?b.hitOut:b.hitBack):b.hitTargets;
       for(const e of hitOrder){
         if(e.dead||(e.flying&&!globalThis.FlightEnemies?.canHit(b,e))||hitSet?.has(e))continue;
-        const radius=e.r+b.r;
-        if(e.x<minX-radius||e.x>maxX+radius||e.y<minY-radius||e.y>maxY+radius||segmentDistance(e,b)>=radius)continue;
+        const radius=e.r+b.r,radius2=radius*radius;
+        if(e.x<minX-radius||e.x>maxX+radius||e.y<minY-radius||e.y>maxY+radius)continue;
+        {const st=clamp(((e.x-b.prevX)*segDx+(e.y-b.prevY)*segDy)/segLen2,0,1),ex=e.x-(b.prevX+st*segDx),ey=e.y-(b.prevY+st*segDy);if(ex*ex+ey*ey>=radius2)continue;}
         const synergy=projectileSynergy(b,e);
         const shotDamage=b.boomerang?b.damage:b.damage;
         const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,towerShot:!b.heroShot,fixedDamage:!!b.boomerang});
         if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));
         if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}
         fx.burst(game,{...b,x:e.x,y:e.y,heroCharacter:b.heroShot?game.hero.character:null},true,audioOn,lowFX());
-        if(synergy.splash){for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))&&dist(e,other)<synergy.splash)hurtEnemy(other,b.damage*synergy.splashFactor);}spark(e.x,e.y,b.color,18);}
-        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))&&dist(e,other)<108&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}
+        if(synergy.splash){const splash2=synergy.splash*synergy.splash;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const ox=e.x-other.x,oy=e.y-other.y;if(ox*ox+oy*oy<splash2)hurtEnemy(other,b.damage*synergy.splashFactor);}}spark(e.x,e.y,b.color,18);}
+        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const ox=e.x-other.x,oy=e.y-other.y;if(ox*ox+oy*oy<11664&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}}
         if(b.boomerang){hitSet.add(e);continue;}
         if(b.pierce){(b.hitTargets||(b.hitTargets=new Set())).add(e);if(b.hitTargets.size>=b.pierce){b.life=0;break;}}
         else{b.life=0;break;}
       }
     }
     compactKeep(game.bullets,b=>b.life>0);
-    for(const l of game.loot){l.life-=dt;const d=dist(l,h);if(d<170){l.x+=(h.x-l.x)*dt*7;l.y+=(h.y-l.y)*dt*7}if(l.life>0&&d<20){game.essence+=4;l.life=0;tone(l.kind==='item'?760:640,.04,.03)}}compactKeep(game.loot,l=>l.life>0);
+    for(const l of game.loot){l.life-=dt;const ldx=l.x-h.x,ldy=l.y-h.y,d2=ldx*ldx+ldy*ldy;if(d2<28900){l.x+=(h.x-l.x)*dt*7;l.y+=(h.y-l.y)*dt*7}if(l.life>0&&d2<400){game.essence+=4;l.life=0;tone(l.kind==='item'?760:640,.04,.03)}}compactKeep(game.loot,l=>l.life>0);
     for(const p of game.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}compactKeep(game.particles,p=>p.life>0);for(const d of game.deathFx)d.life-=dt;compactKeep(game.deathFx,d=>d.life>0);fx.updateDamage?.(game,dt);
     if(h.hp<=0||m.hp<=0)gameOver();else if(game.waveSpawned>=game.waveTotal&&game.enemies.length===0)endWave();hudClock+=dt;if(hudClock>=.12||state!=='playing'){updateUI();hudClock=0;}
   }
