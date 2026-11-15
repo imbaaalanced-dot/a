@@ -1,0 +1,96 @@
+name: TD2 wand down acceptance rasters (Chromium, review only)
+
+on:
+  push:
+    branches: ['art/wand-down-acceptance-20261115']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-wand-down-acceptance
+  cancel-in-progress: false
+
+jobs:
+  chromium-acceptance:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Pillow for chroma and raster steps
+        run: python -m pip install --quiet 'Pillow>=11,<14'
+      - name: Candidate integrity gate (SHA-256 manifest, review only)
+        run: python tools/verify-wand-down-acceptance.py
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Render reference and 18 frames in actual Chromium
+        env:
+          TD2_WAND_ACCEPT_OUT: /tmp/td2-wand-acceptance
+        run: node tools/render-wand-down-acceptance.cjs
+      - name: Assemble acceptance sheets and sequence GIFs
+        env:
+          TD2_WAND_ACCEPT_OUT: /tmp/td2-wand-acceptance
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          import os
+          src = Path(os.environ['TD2_WAND_ACCEPT_OUT'])
+          out = Path('build/wand-down-acceptance'); out.mkdir(parents=True, exist_ok=True)
+          REF = 'reference-512-dark.png'
+          panel = Image.new('RGB', (3120, 1750), '#1a2320')
+          d = ImageDraw.Draw(panel)
+          d.text((20, 16), 'DENKMAL TD2 - MARCEL "DOWN" WAND CANDIDATES - ACTUAL CHROMIUM RENDERS - REVIEW ONLY / NOT RUNTIME / art_approval=manual-required', fill='#eee2bf')
+          # Reference on the left, full size
+          ref = Image.open(src / REF).convert('RGB')
+          panel.paste(ref, (24, 60))
+          d.text((24, 48), 'REFERENCE 15.11.2026 (Zauberstab, Kristallspitze, blaues Glow)', fill='#eee0ba')
+          for col, action in enumerate(('attack', 'hit', 'death')):
+              x0 = 24 + col * 1024
+              d.text((x0, 48), action.upper() + ' - 6 frames @512px (light bg) / @128px (dark bg)', fill='#eee0ba')
+              for i in range(6):
+                  big = Image.open(src / f'{action}-0{i}-512-light.png').convert('RGB'); big.thumbnail((500, 500), Image.Resampling.LANCZOS)
+                  panel.paste(big, (x0 + (i % 3) * 508, 60 + (i // 3) * 512 + (i // 3) * 10))
+                  d.text((x0 + (i % 3) * 508, 60 + (i // 3) * 512 + (i // 3) * 10 + 478), f'{action}/0{i}', fill='#e4d6b9')
+                  small = Image.open(src / f'{action}-0{i}-128-dark.png').convert('RGB')
+                  panel.paste(small, (x0 + i * 130, 1150))
+                  d.text((x0 + i * 130, 1286), f'0{i}', fill='#e4d6b9')
+          panel.save(out / 'wand-down-review-fullsheet.jpg', 'JPEG', quality=85, optimize=True)
+          # Sequence GIFs at game size for frame-by-frame visual acceptance
+          for action in ('attack', 'hit', 'death'):
+              frames = [Image.open(src / f'{action}-0{i}-128-dark.png').convert('RGB').resize((256, 256), Image.Resampling.LANCZOS) for i in range(6)]
+              frames[0].save(out / f'{action}-sequence.gif', save_all=True, append_images=frames[1:], duration=220, loop=0, optimize=True)
+          print('wand acceptance rasters written')
+          PY
+      - name: Publish acceptance rasters on this branch (review only, not main)
+        run: |
+          mkdir -p docs/art/wand-down-review-20261115
+          cp build/wand-down-acceptance/* docs/art/wand-down-review-20261115/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/art/wand-down-review-20261115
+          if git diff --cached --quiet; then
+            echo 'Acceptance rasters unchanged.'
+            exit 0
+          fi
+          git commit -m 'review(wand-down): publish actual-Chromium acceptance rasters (review only, not runtime)'
+          git push
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: td2-wand-down-acceptance-rasters
+          path: build/wand-down-acceptance/
+          retention-days: 14
+          if-no-files-found: warn
