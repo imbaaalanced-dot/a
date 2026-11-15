@@ -38,7 +38,9 @@ jobs:
       - name: Render reference and 18 frames in actual Chromium
         env:
           TD2_WAND_ACCEPT_OUT: /tmp/td2-wand-acceptance
-        run: node tools/render-wand-down-acceptance.cjs
+        run: |
+          set -o pipefail
+          node tools/render-wand-down-acceptance.cjs 2>&1 | tee /tmp/wand-render.log
       - name: Assemble acceptance sheets and sequence GIFs
         env:
           TD2_WAND_ACCEPT_OUT: /tmp/td2-wand-acceptance
@@ -75,9 +77,11 @@ jobs:
           print('wand acceptance rasters written')
           PY
       - name: Publish acceptance rasters on this branch (review only, not main)
+        if: always()
         run: |
           mkdir -p docs/art/wand-down-review-20261115
-          cp build/wand-down-acceptance/* docs/art/wand-down-review-20261115/
+          if compgen -G 'build/wand-down-acceptance/*' >/dev/null; then cp build/wand-down-acceptance/* docs/art/wand-down-review-20261115/; fi
+          if [ -f /tmp/wand-render.log ]; then cp /tmp/wand-render.log docs/art/wand-down-review-20261115/render-log.txt; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/art/wand-down-review-20261115

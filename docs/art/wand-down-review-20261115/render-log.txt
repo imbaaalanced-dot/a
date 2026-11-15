@@ -1,0 +1,45 @@
+local server up: http://127.0.0.1:44957
+chromium launched
+rendered reference-512-light.png reference
+rendered reference-512-dark.png reference
+rendered reference-128-dark.png reference
+rendered attack-00-512-light.png candidate
+rendered attack-00-128-dark.png candidate
+rendered attack-01-512-light.png candidate
+rendered attack-01-128-dark.png candidate
+rendered attack-02-512-light.png candidate
+rendered attack-02-128-dark.png candidate
+rendered attack-03-512-light.png candidate
+rendered attack-03-128-dark.png candidate
+rendered attack-04-512-light.png candidate
+rendered attack-04-128-dark.png candidate
+rendered attack-05-512-light.png candidate
+rendered attack-05-128-dark.png candidate
+rendered attack-sequence-128-strip.png candidate-strip
+rendered hit-00-512-light.png candidate
+rendered hit-00-128-dark.png candidate
+rendered hit-01-512-light.png candidate
+rendered hit-01-128-dark.png candidate
+rendered hit-02-512-light.png candidate
+rendered hit-02-128-dark.png candidate
+rendered hit-03-512-light.png candidate
+rendered hit-03-128-dark.png candidate
+rendered hit-04-512-light.png candidate
+rendered hit-04-128-dark.png candidate
+rendered hit-05-512-light.png candidate
+rendered hit-05-128-dark.png candidate
+rendered hit-sequence-128-strip.png candidate-strip
+rendered death-00-512-light.png candidate
+rendered death-00-128-dark.png candidate
+rendered death-01-512-light.png candidate
+rendered death-01-128-dark.png candidate
+rendered death-02-512-light.png candidate
+rendered death-02-128-dark.png candidate
+rendered death-03-512-light.png candidate
+rendered death-03-128-dark.png candidate
+rendered death-04-512-light.png candidate
+rendered death-04-128-dark.png candidate
+rendered death-05-512-light.png candidate
+rendered death-05-128-dark.png candidate
+rendered death-sequence-128-strip.png candidate-strip
+{"shots":42,"note":"actual Chromium renders, review only"}
