@@ -2,8 +2,8 @@
  * Produces screenshots (not canvas dumps) so the acceptance evidence comes from a real
  * browser render at 512px full and 128px game size on light and dark backgrounds.
  * Review only - no runtime files are touched.
- * v2: warm-up page errors no longer abort the acceptance (main runtime is broken
- * separately, tracked in #303); per-shot progress logging for remote diagnosis. */
+ * v3: no game warm-up at all (main runtime is broken separately, tracked in #303, and
+ * must not influence review-only rasters); network diagnostics on failure; 45s timeouts. */
 'use strict';
 const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
@@ -25,17 +25,16 @@ const server=http.createServer((req,res)=>{
   console.log('chromium launched');
   const context=await browser.newContext({viewport:{width:760,height:760},deviceScaleFactor:1,reducedMotion:'reduce'});
   const page=await context.newPage();
+  page.on('requestfailed',r=>console.log('REQFAIL:',r.url().replace(base,''),'->',JSON.stringify(r.failure())));
+  page.on('response',r=>{if(r.url().startsWith(base+'/')&&r.status()>=400)console.log('BADSTATUS:',r.url().replace(base,''),'->',r.status());});
   const errors=[];
   page.on('pageerror',e=>errors.push('pageerror: '+e.message));
   page.on('console',m=>{if(m.type()==='error')errors.push('console: '+m.text());});
-  try{
-    await page.goto(base+'/dist/index.html',{waitUntil:'domcontentloaded',timeout:15000}); // warm-up only
-    console.log('warm-up dist/index.html: reached (status ignored, review-only rasters)');
-  }catch(e){
-    console.log('warm-up dist/index.html skipped:',e.message.split('\n')[0]);
-  }
-  errors.length=0; // warm-up errors belong to the runtime (#303), not to the acceptance rasters
   const shots=[];
+  async function pageState(){
+    try{ return JSON.stringify(await page.evaluate(()=>({title:document.title,imgs:[...document.images].map(i=>({src:i.src.split('/').slice(-2).join('/'),complete:i.complete,w:i.naturalWidth}))}))); }
+    catch(e){ return 'pageState unavailable: '+e.message; }
+  }
   async function shot(file,url,size,bg,label){
     const html='<!doctype html><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:'+bg+'}</style>'
       +'<canvas id="c" width="'+size+'" height="'+size+'" style="display:block"></canvas>'
@@ -46,7 +45,14 @@ const server=http.createServer((req,res)=>{
       +'c.drawImage(img,(size-img.width*s)/2,(size-img.height*s)/2,img.width*s,img.height*s);'
       +'document.title="ready";};img.onerror=()=>{document.title="error:"+img.src};</script>';
     await page.setContent(html,{waitUntil:'domcontentloaded'});
-    await page.waitForFunction(()=>document.title.startsWith('ready')||document.title.startsWith('error'),null,{timeout:20000});
+    let ready=false;
+    try{
+      await page.waitForFunction(()=>document.title.startsWith('ready')||document.title.startsWith('error'),null,{timeout:45000});
+      ready=true;
+    }catch(e){
+      console.log('TIMEOUT waiting for title on',file,'url=',url.replace(base,''),'state=',await pageState());
+      throw e;
+    }
     if(!(await page.title()).startsWith('ready')) throw new Error('image failed to load: '+url);
     await page.locator('#c').screenshot({path:path.join(out,file)});
     shots.push(file);
@@ -73,7 +79,12 @@ const server=http.createServer((req,res)=>{
       +'img.onerror=()=>{document.title="error:"+f};img.src=f;});'
       +'</script>';
     await page.setContent(strip,{waitUntil:'domcontentloaded'});
-    await page.waitForFunction(()=>document.title.startsWith('ready')||document.title.startsWith('error'),null,{timeout:20000});
+    try{
+      await page.waitForFunction(()=>document.title.startsWith('ready')||document.title.startsWith('error'),null,{timeout:45000});
+    }catch(e){
+      console.log('TIMEOUT waiting for strip',action,'state=',await pageState());
+      throw e;
+    }
     if((await page.title()).startsWith('error')) throw new Error('strip image failed to load: '+(await page.title()));
     await page.locator('#c').screenshot({path:path.join(out,action+'-sequence-128-strip.png')});
     shots.push(action+'-sequence-128-strip.png');
