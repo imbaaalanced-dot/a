@@ -1,0 +1,89 @@
+name: Westhofen V4 stone-frame review raster push
+
+on:
+  push:
+    branches: ['art/westhofen-v4-stoneframe-20261114']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: westhofen-v4-stoneframe-review-push
+  cancel-in-progress: false
+
+jobs:
+  rasterize-and-push:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rasterizer dependencies
+        run: python -m pip install 'CairoSVG>=2.7,<3' 'Pillow>=11,<14'
+      - name: Validate V4 stone-frame source
+        run: python tests/westhofen-v4-stoneframe-source.test.py
+      - name: Rasterize V4 frame and build pillar review sheets
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          import io
+          import cairosvg
+          from PIL import Image, ImageDraw
+
+          ROOT = Path(".")
+          OUT = ROOT / "build/westhofen-v4-frame"
+          OUT.mkdir(parents=True, exist_ok=True)
+
+          def img(source, w=768, h=512):
+              png = cairosvg.svg2png(url=str(source), output_width=w, output_height=h)
+              return Image.open(io.BytesIO(png)).convert("RGBA")
+
+          new = img(ROOT / "docs/graphics/westhofen-v4-stoneframe/westhofen-composite-v4-frame.svg")
+          old = img(ROOT / "dist/assets/westhofen/westhofen-memorial-style2-v3-preview.svg")
+
+          # Full-view comparison sheet
+          panel = Image.new("RGB", (1576, 1160), "#1a2320")
+          d = ImageDraw.Draw(panel)
+          d.text((18, 14), "WESTHOFEN V4 STONE-FRAME - REVIEW ONLY / NOT APPROVED / NOT RUNTIME", fill="#eee2bf")
+          for col, (name, source) in enumerate((("CURRENT LIVE (preview2)", old), ("V4 STONE-FRAME CANDIDATE", new))):
+              x = 20 + col * 778
+              d.text((x, 44), name, fill="#eee0ba")
+              for row, bg in enumerate(("#d8d6cc", "#202a27")):
+                  c = Image.new("RGBA", (768, 512), bg)
+                  c.alpha_composite(source)
+                  panel.paste(c.convert("RGB"), (x, 66 + row * 528))
+          panel.save(OUT / "westhofen-v4-frame-full-review.jpg", "JPEG", quality=82, optimize=True)
+
+          # Pillar close-ups (left pair and right pair at 2x)
+          crop_panel = Image.new("RGB", (1200, 560), "#1a2320")
+          cd = ImageDraw.Draw(crop_panel)
+          cd.text((18, 14), "PILLAR CROPS AT 2X - LEFT GROUP x40..250, RIGHT GROUP x515..725", fill="#eee2bf")
+          boxes = ((40, 250, "LEFT PILLARS"), (515, 725, "RIGHT PILLARS"))
+          for row, (x0, x1, label) in enumerate(boxes):
+              for col, (name, source) in enumerate((("CURRENT", old), ("V4 CANDIDATE", new))):
+                  crop = source.crop((x0 - 10, 90, x1 + 10, 360)).resize(((x1 - x0 + 20) * 2, 540), Image.Resampling.LANCZOS)
+                  x = 20 + col * 590
+                  crop_panel.paste(crop, (x, 50 + row * 260))
+                  cd.text((x, 40 + row * 260), name + " - " + label, fill="#eee0ba")
+          crop_panel.save(OUT / "westhofen-v4-frame-pillars-review.jpg", "JPEG", quality=82, optimize=True)
+          print("review rasters written")
+          EOF
+      - name: Publish review rasters on this branch
+        run: |
+          mkdir -p docs/graphics/westhofen-v4-stoneframe/review-20261114
+          cp build/westhofen-v4-frame/* docs/graphics/westhofen-v4-stoneframe/review-20261114/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/graphics/westhofen-v4-stoneframe/review-20261114
+          if git diff --cached --quiet; then
+            echo 'Review rasters unchanged.'
+            exit 0
+          fi
+          git commit -m 'review(westhofen-v4): publish stone-frame review rasters (review only, not runtime)'
+          git push
