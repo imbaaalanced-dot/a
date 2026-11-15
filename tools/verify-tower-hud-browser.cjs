@@ -5,7 +5,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
 const root=path.join(__dirname,'../dist'),out=process.env.TD2_TOWER_HUD_OUT||'/tmp/td2-tower-hud';
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json'};
 const server=http.createServer((req,res)=>{
- let file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
+ let file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/v4-alpha9\//,''));
  if(!file.startsWith(root+path.sep)&&file!==root){res.writeHead(403).end();return;}
  if(fs.existsSync(file)&&fs.statSync(file).isDirectory())file=path.join(file,'index.html');
  fs.readFile(file,(err,data)=>{res.writeHead(err?404:200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});res.end(err?'missing':data);});
@@ -32,7 +32,7 @@ function checkRect(r,w,h,label){
    page.on('pageerror',e=>errors.push(e.message));
    page.on('response',r=>{if(r.status()>=400&&(r.url().includes('game.js')||r.url().includes('combat-hud-layout-v3.css')))failed.push(r.url());});
    await page.addInitScript(()=>localStorage.setItem('td2-v4-intro-tutorial','done'));
-   await page.goto('http://127.0.0.1:'+server.address().port+'/index.html',{waitUntil:'domcontentloaded'});
+   await page.goto('http://127.0.0.1:'+server.address().port+'/v4-alpha9/index.html',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>!document.getElementById('td2Loading'),null,{timeout:45000});
    await page.evaluate(()=>{DenkmalTestHooks.startGame(7);HeroSaga.continueStory()});
    await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing',null,{timeout:20000});

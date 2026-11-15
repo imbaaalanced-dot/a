@@ -7,7 +7,7 @@ const root=path.resolve(__dirname,'../dist');
 const output=process.env.TD2_LEVEL4_MENU_OUT||'/tmp/td2-level4-menu';
 const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.png':'image/png','.woff2':'font/woff2','.json':'application/json','.svg':'image/svg+xml'};
 const server=http.createServer((req,res)=>{
- let file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
+ let file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/v4-alpha9\//,''));
  if(!file.startsWith(root+path.sep)&&file!==root){res.writeHead(403).end();return;}
  if(fs.existsSync(file)&&fs.statSync(file).isDirectory())file=path.join(file,'index.html');
  fs.readFile(file,(error,bytes)=>{res.writeHead(error?404:200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});res.end(error?'missing':bytes);});
@@ -29,7 +29,7 @@ const server=http.createServer((req,res)=>{
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400&&/level4-options-menu-compact\.css|game\.js/.test(r.url()))failed.push(r.url());});
     await page.addInitScript(()=>localStorage.setItem('td2-v4-intro-tutorial','done'));
-    await page.goto('http://127.0.0.1:'+server.address().port+'/index.html',{waitUntil:'domcontentloaded'});
+    await page.goto('http://127.0.0.1:'+server.address().port+'/v4-alpha9/index.html',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!document.getElementById('td2Loading'),null,{timeout:45000});
     await page.evaluate(()=>{DenkmalTestHooks.startGame(4);HeroSaga.continueStory();});
     await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing',null,{timeout:15000});
