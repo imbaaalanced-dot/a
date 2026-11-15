@@ -28,18 +28,15 @@ vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),s
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 source=source.replace('lootModel,drawMonument,drawEnemy,','lootModel,completeLevel,drawMonument,drawEnemy,');
 vm.runInContext(source,sandbox);
-assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),true,'developer mode starts enabled without a saved choice');
-assert.equal(element('menuDeveloperBtn')['aria-pressed'],'true');
-element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
-assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'disabled');
-vm.runInContext(source,sandbox);
-assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),false,'explicitly disabled mode survives a reload');
-assert.equal(element('menuDeveloperBtn')['aria-pressed'],'false');
 const t=sandbox.test,saga=sandbox.HeroSaga;
+assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode,undefined,'developer state is not exposed to normal runtime or tests');
+assert.equal(sandbox.DenkmalTestHooks.toggleDeveloperMode,undefined,'no developer-mode toggle remains');
+assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),null,'legacy developer storage is ignored');
+assert.equal(t.game.developerRun,undefined,'normal runs do not carry a developer bypass flag');
 if(process.env.TEST_MOBILE==='1'){
   sandbox.innerWidth=720;sandbox.innerHeight=1600;sandbox.devicePixelRatio=2;
   t.resize(false);
@@ -95,58 +92,29 @@ check('Kirchende waits for the monument image and ignores a cancelled level load
   }finally{delete sandbox.KirchendeArt;}
 });
 check('Level 1 monument uses the new sprite with undistorted gameplay proportions',()=>{draws.length=0;t.drawMonument(t.game.monument);const sprite=draws.find(d=>d[0].src?.endsWith('monument-level1-style2.webp'));assert.ok(sprite,'generated Level 1 monument sprite should render');assert.equal(sprite.length,5);assert.deepEqual(sprite.slice(1),[-96,-112,192,218]);});
-check('Level 4 portrait opening reveals the church and releases the camera before combat',()=>{
-  const width=sandbox.innerWidth,height=sandbox.innerHeight;
-  sandbox.innerWidth=390;sandbox.innerHeight=844;t.game.level=4;t.game.intermission=5;t.resize(false);
-  assert.deepEqual({...t.openingCameraBias()},{x:-280,y:-460},'portrait preparation starts with the church establishing shot');
-  t.game.intermission=1.125;assert.deepEqual({...t.openingCameraBias()},{x:-140,y:-230},'camera bias fades continuously');
-  sandbox.innerWidth=1280;sandbox.innerHeight=800;t.game.intermission=5;t.resize(false);
-  assert.deepEqual({...t.openingCameraBias()},{x:0,y:-340},'landscape preparation clears the church tower from the top HUD');
-  t.game.intermission=0;assert.deepEqual({...t.openingCameraBias()},{x:0,y:0},'combat uses the normal hero camera');
-  sandbox.innerWidth=width;sandbox.innerHeight=height;t.resize(false);
-});
 check('2x speed stays locked in campaign level 1 and works in level 2 and endless',()=>{const hooks=sandbox.DenkmalTestHooks;assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.simulationStepsPerFrame(),1);assert.equal(hooks.toggleSpeed(),false);t.game.level=2;assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);assert.equal(hooks.simulationStepsPerFrame(),2);assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);t.game.level=1;t.game.mode='endless';assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.simulationStepsPerFrame(),2);t.startGame(1);assert.equal(hooks.getSpeedMultiplier(),1);assert.equal(hooks.toggleSpeed(),false);});
-check('Legacy developer preference cannot activate 3x speed or override level locks',()=>{
+check('Legacy developer flags cannot unlock cards or enable 3x speed',()=>{
   const hooks=sandbox.DenkmalTestHooks;
   assert.equal(listeners['td2:developer-mode'],undefined);
   assert.equal(sandbox.localStorage.getItem('td2_developer_mode_enabled'),'true');
+  t.mainMenu();
   assert.equal(element('level7Btn').disabled,true);
-  t.game.level=2;
+  t.startGame(7);assert.equal(t.state,'start','legacy global cannot bypass a campaign lock');
+  t.startGame(1);saga.continueStory();t.game.level=2;
   for(let i=0;i<8;i++){
     hooks.toggleSpeed();
     assert.equal(hooks.getSpeedMultiplier(),i%2===0?2:1);
     assert.ok(hooks.simulationStepsPerFrame()<=2);
   }
 });
-check('Developer mode opens all maps and 3x without changing progression or loot',()=>{
-  const hooks=sandbox.DenkmalTestHooks;
+check('Removed developer mode leaves normal level locks and campaign progress intact',()=>{
   t.mainMenu();
-  assert.equal(hooks.getDeveloperMode(),false,'legacy setting does not silently reenable developer mode');
   assert.equal(element('level7Btn').disabled,true);
-  const flags=JSON.stringify([sandbox.DenkmalLevels.unlocked,sandbox.DenkmalLevels.level4Completed,sandbox.DenkmalLevels.level5Completed,sandbox.DenkmalLevels.level6Completed,sandbox.DenkmalLevels.level7Completed]);
-  const profile=JSON.stringify(t.lootModel.profile);
-  element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
-  assert.equal(hooks.getDeveloperMode(),true);assert.equal(element('menuDeveloperBtn')['aria-pressed'],'true');
-  assert.equal(element('menuDeveloperToast').hidden,false);
-  assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'enabled');
-  for(const id of ['level2Btn','level3Btn','level4Btn','level5Btn','level6Btn','level7Btn','endless1Btn','endlessBtn','endless3Btn','endless4Btn','endless5Btn','endless6Btn','endless7Btn'])assert.equal(element(id).disabled,false,id);
-  t.startGame(7);assert.equal(t.game.level,7);assert.equal(t.game.developerRun,true);
-  assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),2);
-  assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),3);assert.equal(hooks.simulationStepsPerFrame(),3);
-  assert.equal(hooks.toggleSpeed(),true);assert.equal(hooks.getSpeedMultiplier(),1);
-  const originalClaim=t.lootModel.claimEnemy;
-  try{
-    t.lootModel.claimEnemy=()=>{throw Error('developer runs must not persist drops');};
-    t.hurtEnemy({x:400,y:400,r:16,hp:1,maxHp:1,type:'wraith',armor:0,dead:false,hitKick:0},10);
-  }finally{t.lootModel.claimEnemy=originalClaim;}
-  t.completeLevel();
-  assert.equal(JSON.stringify(t.lootModel.profile),profile,'test run did not change loot');
-  assert.equal(JSON.stringify([sandbox.DenkmalLevels.unlocked,sandbox.DenkmalLevels.level4Completed,sandbox.DenkmalLevels.level5Completed,sandbox.DenkmalLevels.level6Completed,sandbox.DenkmalLevels.level7Completed]),flags,'test run did not change campaign flags');
-  assert.match(element('levelSaveNote').textContent,/DEVELOPER-TESTLAUF/);
-  t.mainMenu();element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
-  assert.equal(hooks.getDeveloperMode(),false);assert.equal(element('level7Btn').disabled,true);
-  assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'disabled');
-  t.startGame(7);assert.equal(t.state,'start','normal launch lock restored');
+  assert.equal(sandbox.DenkmalTestHooks.toggleDeveloperMode,undefined);
+  assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),null);
+  t.startGame(7);assert.equal(t.state,'start','locked level 7 cannot start without progression');
+  t.startGame(1);assert.equal(t.game.level,1);
+  assert.equal(t.game.developerRun,undefined);
 });
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
 check('Start resources and clean restart',()=>{assert.equal(t.game.essence,70);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);});
