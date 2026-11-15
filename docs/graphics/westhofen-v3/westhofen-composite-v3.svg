@@ -29,48 +29,62 @@
 <path d="M279 310 V393 M523 309 V388" stroke="#454d46" stroke-width="2" opacity=".5"/>
 <path d="M279 346 h12 M512 347 h11" stroke="#b2aa95" stroke-width="1.5" opacity=".5"/>
 </g><g id="empty-bowl-pedestal-82"><path d="M82 354 L131 354 L140 369 L77 369 Z" fill="url(#stoneTop)" stroke="#4e554b" stroke-width="3"/><path d="M77 369 h63 v46 h-63 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/><path d="M70 411 h78 l10 13 h-98 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/></g><g id="empty-bowl-pedestal-623"><path d="M623 354 L672 354 L681 369 L618 369 Z" fill="url(#stoneTop)" stroke="#4e554b" stroke-width="3"/><path d="M618 369 h63 v46 h-63 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/><path d="M611 411 h78 l10 13 h-98 Z" fill="url(#stone)" stroke="#4b5249" stroke-width="3"/></g></g><g id="bronze-emblem-v3" data-part="bronze-emblem" stroke-linejoin="round">
-<path d="M278 249 L500 249 L515 258 L279 258 Z" fill="url(#metalLight)" stroke="#3e4e49" stroke-width="4"/>
-<!-- The crosswise sword behind the shield/helmet: real motif, not added fantasy weapon -->
+<!-- Crosswise sword behind the round shield: blade to the right, hilt left -->
 <g id="horizontal-sword-v3">
-<path d="M280 228 L496 220 Q517 219 528 229 Q510 238 494 238 L280 240 Z" fill="url(#metalLight)" stroke="#40514b" stroke-width="3.5"/>
-<path d="M309 226 L505 226" fill="none" stroke="#ced0bc" stroke-width="2.7" opacity=".8"/>
-<path d="M281 216 L283 246" stroke="#304a41" stroke-width="6"/>
-<path d="M265 214 Q279 213 288 220 L288 237 Q277 244 265 241 Z" fill="url(#bronze)" stroke="#30443c" stroke-width="3"/>
-<path d="M238 225 L269 224 L269 234 L238 233 Z" fill="#62766b" stroke="#30483f" stroke-width="3"/>
-<path d="M250 224 L254 234 M259 224 L264 234" stroke="#aab4a3" stroke-width="2.3"/>
-<path d="M240 224 Q225 217 225 229 Q228 238 240 233 Z" fill="#a1a99b" stroke="#384c42" stroke-width="3"/>
-<path d="M283 216 L277 207 M285 244 L278 253" stroke="#9baca0" stroke-width="5" stroke-linecap="round"/>
+<path d="M292 258 L512 250 Q524 250 526 257 Q522 264 510 263 L292 266 Z" fill="url(#metalLight)" stroke="#3c4a44" stroke-width="3.5"/>
+<path d="M298 259 L512 253" fill="none" stroke="#d3d2bd" stroke-width="2.4" opacity=".85"/>
+<path d="M298 265 L514 260" fill="none" stroke="#39504a" stroke-width="2.6" opacity=".7"/>
+<path d="M286 244 L292 276" stroke="#41524a" stroke-width="9" stroke-linecap="round"/>
+<path d="M286 246 L291 274" stroke="#9fada0" stroke-width="3" opacity=".8"/>
+<path d="M258 254 L288 253 L288 267 L258 266 Z" fill="#63746a" stroke="#30423a" stroke-width="3"/>
+<path d="M262 254 L266 266 M270 254 L274 266" stroke="#a9b3a3" stroke-width="2.2"/>
+<circle cx="251" cy="260" r="10" fill="url(#bronzeWarm)" stroke="#2f4038" stroke-width="3"/>
+<circle cx="247" cy="255" r="2.6" fill="#cfc9b4" opacity=".8"/>
 </g>
-<!-- The original shield is a wide round/oval relief, not a small heraldic kite -->
-<g id="oval-shield-v3">
-<path d="M259 248 C269 218 323 208 384 209 C450 205 504 221 514 247 C509 282 449 307 386 310 C318 311 266 282 259 248 Z" fill="url(#shield)" stroke="#30433b" stroke-width="6"/>
-<path d="M266 246 C319 220 450 220 505 246" fill="none" stroke="#b8bcae" stroke-width="5" opacity=".83"/>
-<path d="M268 253 C304 286 349 302 387 301 C436 300 475 286 506 255" fill="none" stroke="#2c453b" stroke-width="3.5" opacity=".8"/>
-<path d="M288 250 C305 266 317 272 338 280 L352 270 M479 250 C462 264 449 275 432 283 L417 271" fill="none" stroke="#324c42" stroke-width="7" opacity=".77"/>
-<path d="M364 249 L386 296 L407 250" fill="none" stroke="#94a99a" stroke-width="4.8" opacity=".7"/>
-<path d="M386 241 L386 300" fill="none" stroke="#354b42" stroke-width="3.5"/>
-<g fill="#b6b3a2" stroke="#53665b" stroke-width="1.4"><circle cx="276" cy="246" r="4"/><circle cx="300" cy="236" r="4"/><circle cx="328" cy="229" r="4"/><circle cx="354" cy="226" r="4"/><circle cx="418" cy="226" r="4"/><circle cx="446" cy="230" r="4"/><circle cx="472" cy="238" r="4"/><circle cx="500" cy="247" r="4"/></g>
-</g>
-<!-- Real flügelhelm: comparatively upright wings; helmet in front of shield -->
+<!-- Upright layered-feather wings attached at the helmet sides, each about one helmet width -->
 <g id="curved-feather-wing-left-v3">
-<path d="M350 199 C325 181 296 156 272 132 C253 113 247 100 255 88 C265 76 281 79 297 94 C319 115 331 152 355 195 Z" fill="url(#bronze)" stroke="#334d43" stroke-width="5"/>
-<path d="M258 89 C275 84 297 108 312 133 C328 155 341 181 351 194" fill="none" stroke="#b5bbac" stroke-width="4.2" opacity=".78"/>
-<path d="M258 98 C280 99 292 111 303 124 M267 111 C287 115 302 126 316 140 M279 126 C298 132 312 146 326 162 M292 143 C311 151 324 164 337 180 M309 160 C325 168 338 182 348 193" fill="none" stroke="#2a463c" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M269 96 C288 117 311 148 342 190" fill="none" stroke="#8ea698" stroke-width="2.4" opacity=".75"/>
+<path d="M352 156 C322 148 288 132 262 112 C240 95 232 78 242 66 C252 55 268 60 282 72 C304 92 322 118 358 148 Z" fill="#22312b" stroke="#1e2a25" stroke-width="3" opacity=".92"/>
+<path d="M350 152 C324 140 296 120 274 100 C258 85 250 70 258 62 C266 54 280 60 292 72 C310 90 328 116 356 144 Z" fill="url(#wingFeather)" stroke="#28362e" stroke-width="3"/>
+<path d="M264 66 C276 64 292 78 304 94" fill="none" stroke="#b7c0af" stroke-width="3.4" opacity=".8"/>
+<path d="M270 78 C288 82 302 96 314 112 M278 92 C294 96 308 110 320 128 M288 108 C302 112 316 126 330 142 M298 122 C312 128 326 140 338 152" fill="none" stroke="#1f3229" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M296 74 C310 92 326 116 346 142" fill="none" stroke="#9db39f" stroke-width="2.2" opacity=".7"/>
+<path d="M306 86 C318 102 330 120 344 140" fill="none" stroke="#2c3f35" stroke-width="2.4"/>
 </g>
 <g id="curved-feather-wing-right-v3">
-<path d="M420 194 C443 176 460 147 470 118 C478 91 490 82 499 90 C510 99 504 117 494 135 C480 162 454 186 423 204 Z" fill="url(#bronze)" stroke="#344d43" stroke-width="5"/>
-<path d="M498 92 C484 92 473 117 465 140 C456 162 441 186 425 200" fill="none" stroke="#bbc1ae" stroke-width="4.2" opacity=".79"/>
-<path d="M493 105 C478 105 468 116 462 128 M487 122 C471 126 459 135 452 146 M479 140 C464 143 452 156 443 166 M466 159 C454 164 442 173 432 183 M450 178 C441 182 432 190 425 199" fill="none" stroke="#2b463e" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M491 107 C471 140 456 173 425 196" fill="none" stroke="#8ba89c" stroke-width="2.4" opacity=".74"/>
+<path d="M416 156 C446 148 480 132 506 112 C528 95 536 78 526 66 C516 55 500 60 486 72 C464 92 446 118 410 148 Z" fill="#22312b" stroke="#1e2a25" stroke-width="3" opacity=".92"/>
+<path d="M418 152 C444 140 472 120 494 100 C510 85 518 70 510 62 C502 54 488 60 476 72 C458 90 440 116 412 144 Z" fill="url(#wingFeather)" stroke="#28362e" stroke-width="3"/>
+<path d="M504 66 C492 64 476 78 464 94" fill="none" stroke="#b7c0af" stroke-width="3.4" opacity=".8"/>
+<path d="M498 78 C480 82 466 96 454 112 M490 92 C474 96 460 110 448 128 M480 108 C466 112 452 126 438 142 M470 122 C456 128 442 140 430 152" fill="none" stroke="#1f3229" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M472 74 C458 92 442 116 422 142" fill="none" stroke="#9db39f" stroke-width="2.2" opacity=".7"/>
+<path d="M462 86 C450 102 438 120 424 140" fill="none" stroke="#2c3f35" stroke-width="2.4"/>
 </g>
+<!-- Round-topped helmet with nasal guard and eye slit, in front of sword and wings -->
 <g id="metal-helmet-v3">
-<path d="M339 210 C331 178 338 152 359 145 Q388 130 416 146 C435 164 438 187 431 213 L431 248 C427 258 420 262 417 252 L415 216 Q385 209 355 216 L353 252 C351 263 343 259 340 247 Z" fill="url(#bronze)" stroke="#30483e" stroke-width="5"/>
-<path d="M357 210 Q386 204 415 212 Q421 228 412 248 Q389 255 359 249 Z" fill="url(#deep)" stroke="#3d584d" stroke-width="4"/>
-<path d="M359 217 Q387 210 413 215" fill="none" stroke="#182522" stroke-width="7"/>
-<path d="M384 142 Q391 168 385 199" fill="none" stroke="#b3c1b0" stroke-width="3.4"/>
-<path d="M353 189 Q386 181 419 194" fill="none" stroke="#bdc4b2" stroke-width="5" opacity=".7"/>
-<path d="M344 211 Q387 200 427 213" fill="none" stroke="#c2c0ad" stroke-width="8"/>
-<path d="M347 216 L352 221 L357 215 L362 220 L367 214 L372 219 L377 213 L382 218 L388 213 L393 218 L398 213 L404 220 L410 214 L416 222" fill="none" stroke="#425e50" stroke-width="2.8"/>
-<path d="M344 232 Q339 247 349 252 M427 231 Q433 247 422 251" fill="none" stroke="#a7b3a4" stroke-width="3.3" opacity=".72"/>
-</g><path d="M338 256 Q386 265 431 254" stroke="#b6ae9e" stroke-width="2.5" opacity=".4" fill="none"/></g></svg>
+<path d="M332 168 C332 122 352 92 384 92 C416 92 436 122 436 168 L442 224 Q384 240 326 224 Z" fill="url(#bronze)" stroke="#1e2b26" stroke-width="4.5"/>
+<path d="M344 150 C352 122 366 108 384 108 C402 108 416 122 424 150" fill="none" stroke="#c6c3ab" stroke-width="4" opacity=".75"/>
+<path d="M338 158 C346 148 362 142 384 142 C406 142 422 148 430 158" fill="none" stroke="#8fa093" stroke-width="4" opacity=".85"/>
+<path d="M330 166 Q384 176 438 166 L442 224 Q384 240 326 224 Z" fill="#1a2722" opacity=".55"/>
+<path d="M352 150 L416 150 L414 162 L354 162 Z" fill="#141d19" stroke="#0d1512" stroke-width="2"/>
+<path d="M356 152 L360 160 M368 152 L370 160 M398 152 L396 160 M410 152 L406 160" stroke="#6e8276" stroke-width="1.8" opacity=".7"/>
+<path d="M377 160 L391 160 L389 206 Q384 214 379 206 Z" fill="url(#bronzeWarm)" stroke="#243530" stroke-width="3"/>
+<path d="M381 162 L382 200" stroke="#cdb98c" stroke-width="2.4" opacity=".7"/>
+<path d="M336 176 L342 218 M432 176 L426 218" stroke="#16211c" stroke-width="4" opacity=".6"/>
+<path d="M384 96 L384 142" stroke="#7d8f80" stroke-width="2.6" opacity=".6"/>
+<path d="M366 222 Q384 228 402 222" fill="none" stroke="#0f1713" stroke-width="3.5" opacity=".8"/>
+</g>
+<!-- Round domed shield with raised rim, central boss and rivets, overlapping the helmet base -->
+<g id="oval-shield-v3">
+<circle cx="384" cy="268" r="82" fill="url(#shieldDome)" stroke="#223029" stroke-width="6"/>
+<circle cx="384" cy="268" r="74" fill="none" stroke="#26362e" stroke-width="7" opacity=".9"/>
+<circle cx="384" cy="268" r="70" fill="none" stroke="#9fae9d" stroke-width="3" opacity=".55"/>
+<path d="M318 232 C334 214 358 204 384 204" fill="none" stroke="#c3c8b2" stroke-width="4.5" opacity=".7"/>
+<circle cx="384" cy="264" r="23" fill="url(#boss)" stroke="#1f2d26" stroke-width="3.5"/>
+<circle cx="384" cy="264" r="10" fill="none" stroke="#2c3c33" stroke-width="2.5" opacity=".7"/>
+<path d="M374 252 Q380 247 386 250" fill="none" stroke="#e4dcc0" stroke-width="2.6" opacity=".85"/>
+<g fill="#b6b3a2" stroke="#4d5f53" stroke-width="1.6">
+<circle cx="384" cy="206" r="4.5"/><circle cx="418" cy="214" r="4.5"/><circle cx="444" cy="236" r="4.5"/><circle cx="458" cy="268" r="4.5"/><circle cx="444" cy="300" r="4.5"/><circle cx="418" cy="322" r="4.5"/><circle cx="384" cy="330" r="4.5"/><circle cx="350" cy="322" r="4.5"/><circle cx="324" cy="300" r="4.5"/><circle cx="310" cy="268" r="4.5"/><circle cx="324" cy="236" r="4.5"/><circle cx="350" cy="214" r="4.5"/>
+</g>
+<path d="M338 296 C356 312 372 318 384 318" fill="none" stroke="#141f1a" stroke-width="4" opacity=".6"/>
+</g>
+<path d="M304 336 Q384 348 464 336 Q384 352 304 336 Z" fill="#000" opacity=".18"/>
+<path d="M338 256 Q386 265 431 254" stroke="#b6ae9e" stroke-width="2.5" opacity=".4" fill="none"/></g></svg>
