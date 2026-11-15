@@ -137,3 +137,8 @@ assert.ok(level.gates[0].x>c.x+f.right+48);
 assert.ok(level.gates[0].y<c.y+f.top);
 for(const i of [1,2])assert.ok(level.gates[i].y>c.y+400);
 for(const p of level.paths[0])if(p.y<c.y+f.bottom)assert.ok(p.x>c.x+f.right+48,'northern access stays east of church');
+
+// Grave-Atlas-Regressionen (ans Dateiende verschoben, damit der Merge mit main konfliktfrei bleibt)
+const graveAtlas=fs.readFileSync(path.join(root,'assets/level4/graves-style2-20261114.png'));
+assert.deepEqual(Array.from(graveAtlas.subarray(1,4)),[80,78,71],'grave atlas is a real PNG');
+assert.match(lionSource,/requestGraveAtlas\(\)/,'grave atlas is loaded lazily with its procedural fallback retained');
