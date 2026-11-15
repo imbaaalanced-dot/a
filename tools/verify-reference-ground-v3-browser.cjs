@@ -50,11 +50,11 @@ const server=http.createServer((req,res)=>{
     // The /v4-style2/ preview path gates level starts inside a fresh isolated
     // browser context without writing regular campaign progress.
     if(lvl===3)await KirchendeArt?.load?.(true);
-    const pre={lvl,state:DenkmalTestHooks.getState(),monumentReady:globalThis.KirchendeArt?.ready?.('monument'),envReady:globalThis.KirchendeArt?.ready?.('environment'),groundV3:globalThis.TD2GroundV3?.loadedCount};
+    const pre={lvl,state:DenkmalTestHooks.getState(),devKey:localStorage.getItem('td2-developer-mode-v2'),gameBefore:DenkmalTestHooks.getGame()?.level,gameMode:DenkmalTestHooks.getGame()?.mode,path:location.pathname};
     DenkmalTestHooks.startGame(lvl);DenkmalTestHooks.launchWave();
     await new Promise(r=>setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(r)),750));
     const game=DenkmalTestHooks.getGame();
-    if(game?.level!==lvl)throw Error('incorrect active level: '+game?.level+' pre='+JSON.stringify(pre));
+    if(game?.level!==lvl)throw Error('incorrect active level: '+game?.level+' pre='+JSON.stringify(pre)+' post={state:'+DenkmalTestHooks.getState()+',mode:'+game?.mode+',wave:'+game?.wave+'}');
     const canvas=document.querySelector('#game'),{width,height}=canvas;
     let visible=0;const pixels=canvas.getContext('2d').getImageData(0,0,width,height).data;
     for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)visible++;
