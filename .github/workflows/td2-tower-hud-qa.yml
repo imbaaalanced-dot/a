@@ -8,6 +8,7 @@ on:
       - 'dist/combat-hud-layout-v3.css'
       - 'tests/tower-shop-hud.test.cjs'
       - 'tools/verify-tower-hud-browser.cjs'
+      - 'tools/verify-touch-guards-browser.cjs'
       - '.github/workflows/td2-tower-hud-qa.yml'
   workflow_dispatch:
 permissions:
@@ -36,6 +37,10 @@ jobs:
         env:
           TD2_TOWER_HUD_OUT: /tmp/td2-tower-hud-qa
         run: timeout 270s node tools/verify-tower-hud-browser.cjs
+      - name: Touch drag, menu dismissal, pause and pad selection
+        env:
+          TD2_TOUCH_GUARDS_OUT: /tmp/td2-tower-hud-qa/touch-guards
+        run: timeout 270s node tools/verify-touch-guards-browser.cjs
       - name: Assemble browser screenshot review for visual QA
         env:
           TD2_TOWER_HUD_OUT: /tmp/td2-tower-hud-qa
