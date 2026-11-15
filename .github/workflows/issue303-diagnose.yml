@@ -1,0 +1,76 @@
+name: Issue 303 QA diagnose (log push)
+
+on:
+  push:
+    branches: ['diag/issue303-qa-20261115']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: issue303-diagnose
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Run browser QA scripts and capture full output
+        env:
+          TD2_COLD_START_OUT: /tmp/issue303/cold-start
+          TD2_SITE_QA_OUT: /tmp/issue303/site-layout
+          TD2_LEVEL4_PERF_OUT: /tmp/issue303/level4-perf
+          TD2_LEVEL4_MENU_OUT: /tmp/issue303/level4-menu
+        run: |
+          set +e
+          run_one() {
+            name="$1"; shift
+            echo "=== RUN $name: $*" | tee -a /tmp/issue303/diag.log
+            "$@" > /tmp/issue303/last.log 2>&1
+            code=$?
+            cat /tmp/issue303/last.log | tee -a /tmp/issue303/diag.log
+            echo "=== EXIT $name: $code" | tee -a /tmp/issue303/diag.log
+          }
+          export -f run_one
+          run_one cold-start node tools/verify-game-cold-start-browser.cjs
+          run_one ground-late-load node tools/verify-ground-late-load-browser.cjs
+          run_one reference-ground-v3 node tools/verify-reference-ground-v3-browser.cjs
+          run_one level4-seamfix node tools/verify-level4-seamfix-browser.cjs
+          run_one site-layout env TD2_FOREST_QA=1 node tools/verify-kirchende-site-layout.cjs
+          run_one tower-hud node tools/verify-tower-hud-browser.cjs
+          run_one touch-guards node tools/verify-touch-guards-browser.cjs
+          run_one level4-perf node tools/measure-level4-performance.cjs
+          run_one level4-menu node tools/verify-level4-options-menu.cjs
+          exit 0
+      - name: Publish diagnostics on this branch
+        run: |
+          mkdir -p docs/diagnostics/issue303
+          cp /tmp/issue303/diag.log docs/diagnostics/issue303/
+          for d in cold-start site-layout level4-perf level4-menu; do
+            if [ -d "/tmp/issue303/$d" ]; then
+              mkdir -p "docs/diagnostics/issue303/$d"
+              find "/tmp/issue303/$d" -name '*.json' -exec cp {} "docs/diagnostics/issue303/$d/" \;
+            fi
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/diagnostics/issue303
+          if git diff --cached --quiet; then
+            echo 'Diagnostics unchanged.'
+            exit 0
+          fi
+          git commit -m 'diag(issue303): publish browser QA failure logs and results'
+          git push
