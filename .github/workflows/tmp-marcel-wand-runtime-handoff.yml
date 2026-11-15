@@ -1,0 +1,49 @@
+name: Temporary binary handoff for Marcel wand-down runtime atlas
+on:
+  push:
+    branches: [art/marcel-wand-down-runtime-materialize-20261115]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Decode payload and verify checksum
+        run: |
+          set -euxo pipefail
+          ls -la .handoff/marcel-wand-runtime/
+          cat .handoff/marcel-wand-runtime/atlas-part-00 .handoff/marcel-wand-runtime/atlas-part-01 .handoff/marcel-wand-runtime/atlas-part-02 .handoff/marcel-wand-runtime/atlas-part-03 | base64 -d > dist/assets/hero/marcel-down-actions-v5b.webp
+          sha256sum -c .handoff/marcel-wand-runtime/sha256.txt
+      - name: Commit runtime atlas and remove handoff payloads
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/assets/hero/marcel-down-actions-v5b.webp
+          git rm -r -q .handoff
+          git rm -q .github/workflows/tmp-marcel-wand-runtime-handoff.yml
+          git commit -m "art(Style 2): materialize Marcel wand-down runtime atlas (approved candidates #299)"
+          git push
+      - name: Diagnose on failure
+        if: failure()
+        run: |
+          set +e
+          {
+            echo "=== runner context ==="
+            echo "GITHUB_REF=$GITHUB_REF SHA=$GITHUB_SHA"
+            echo "=== git status ==="
+            git status --short
+            echo "=== sha256 verbose ==="
+            sha256sum -c .handoff/marcel-wand-runtime/sha256.txt
+            echo "=== ls handoff ==="
+            ls -la .handoff/marcel-wand-runtime/ || true
+          } > failure-diagnosis.txt 2>&1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add failure-diagnosis.txt
+          git commit -m "chore(handoff): write failure diagnosis" || exit 0
+          git push || exit 0
