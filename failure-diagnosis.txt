@@ -1,0 +1,76 @@
+=== runner context ===
+GITHUB_REF=refs/heads/art/marcel-wand-down-candidates-20261115 SHA=a3dd4be7832ed9c8871f7b8fd1ae2d9f88e39bdd
+=== git status ===
+ M source-art/hero/actions-v5/marcel/down/attack/00.png
+ M source-art/hero/actions-v5/marcel/down/attack/01.png
+ M source-art/hero/actions-v5/marcel/down/attack/02.png
+ M source-art/hero/actions-v5/marcel/down/attack/03.png
+ M source-art/hero/actions-v5/marcel/down/attack/04.png
+ M source-art/hero/actions-v5/marcel/down/attack/05.png
+ M source-art/hero/actions-v5/marcel/down/marcel-attack-down-concept-3x2.png
+ M source-art/hero/actions-v5/marcel/down/marcel-attack-down-preview-6x1.png
+?? failure-diagnosis.txt
+?? source-art/hero/actions-v5/marcel/down/death/
+?? source-art/hero/actions-v5/marcel/down/hit/
+?? source-art/hero/actions-v5/marcel/down/marcel-death-down-concept-3x2.png
+?? source-art/hero/actions-v5/marcel/down/marcel-death-down-preview-6x1.png
+?? source-art/hero/actions-v5/marcel/down/marcel-hit-down-concept-3x2.png
+?? source-art/hero/actions-v5/marcel/down/marcel-hit-down-preview-6x1.png
+=== sha256 verbose ===
+source-art/hero/actions-v5/marcel/down/attack/00.png: OK
+source-art/hero/actions-v5/marcel/down/attack/01.png: OK
+source-art/hero/actions-v5/marcel/down/attack/02.png: OK
+source-art/hero/actions-v5/marcel/down/attack/03.png: OK
+source-art/hero/actions-v5/marcel/down/attack/04.png: OK
+source-art/hero/actions-v5/marcel/down/attack/05.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-attack-down-concept-3x2.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-attack-down-preview-6x1.png: FAILED
+source-art/hero/actions-v5/marcel/down/hit/00.png: OK
+source-art/hero/actions-v5/marcel/down/hit/01.png: OK
+source-art/hero/actions-v5/marcel/down/hit/02.png: OK
+source-art/hero/actions-v5/marcel/down/hit/03.png: OK
+source-art/hero/actions-v5/marcel/down/hit/04.png: OK
+source-art/hero/actions-v5/marcel/down/hit/05.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-hit-down-concept-3x2.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-hit-down-preview-6x1.png: FAILED
+source-art/hero/actions-v5/marcel/down/death/00.png: OK
+source-art/hero/actions-v5/marcel/down/death/01.png: OK
+source-art/hero/actions-v5/marcel/down/death/02.png: OK
+source-art/hero/actions-v5/marcel/down/death/03.png: OK
+source-art/hero/actions-v5/marcel/down/death/04.png: OK
+source-art/hero/actions-v5/marcel/down/death/05.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-death-down-concept-3x2.png: OK
+source-art/hero/actions-v5/marcel/down/marcel-death-down-preview-6x1.png: FAILED
+sha256sum: WARNING: 3 computed checksums did NOT match
+=== ls handoff ===
+total 3492
+drwxr-xr-x 2 runner runner   4096 Nov 15 15:59 .
+drwxr-xr-x 3 runner runner   4096 Nov 15 15:59 ..
+-rw-r--r-- 1 runner runner  16815 Nov 15 15:59 attack-0.b64.txt
+-rw-r--r-- 1 runner runner  17800 Nov 15 15:59 attack-1.b64.txt
+-rw-r--r-- 1 runner runner  16308 Nov 15 15:59 attack-2.b64.txt
+-rw-r--r-- 1 runner runner  15242 Nov 15 15:59 attack-3.b64.txt
+-rw-r--r-- 1 runner runner  24588 Nov 15 15:59 attack-4.b64.txt
+-rw-r--r-- 1 runner runner  14156 Nov 15 15:59 attack-5.b64.txt
+-rw-r--r-- 1 runner runner  63987 Nov 15 15:59 attack-preview.b64.txt
+-rw-r--r-- 1 runner runner 602063 Nov 15 15:59 attack-sheet-a.b64.txt
+-rw-r--r-- 1 runner runner 602035 Nov 15 15:59 attack-sheet-b.b64.txt
+-rw-r--r-- 1 runner runner  14395 Nov 15 15:59 death-0.b64.txt
+-rw-r--r-- 1 runner runner  10537 Nov 15 15:59 death-1.b64.txt
+-rw-r--r-- 1 runner runner  12454 Nov 15 15:59 death-2.b64.txt
+-rw-r--r-- 1 runner runner  12430 Nov 15 15:59 death-3.b64.txt
+-rw-r--r-- 1 runner runner  12466 Nov 15 15:59 death-4.b64.txt
+-rw-r--r-- 1 runner runner  12365 Nov 15 15:59 death-5.b64.txt
+-rw-r--r-- 1 runner runner  63987 Nov 15 15:59 death-preview.b64.txt
+-rw-r--r-- 1 runner runner 414029 Nov 15 15:59 death-sheet-a.b64.txt
+-rw-r--r-- 1 runner runner 413884 Nov 15 15:59 death-sheet-b.b64.txt
+-rw-r--r-- 1 runner runner  16815 Nov 15 15:59 hit-0.b64.txt
+-rw-r--r-- 1 runner runner  18079 Nov 15 15:59 hit-1.b64.txt
+-rw-r--r-- 1 runner runner  16872 Nov 15 15:59 hit-2.b64.txt
+-rw-r--r-- 1 runner runner  15218 Nov 15 15:59 hit-3.b64.txt
+-rw-r--r-- 1 runner runner  12588 Nov 15 15:59 hit-4.b64.txt
+-rw-r--r-- 1 runner runner  11040 Nov 15 15:59 hit-5.b64.txt
+-rw-r--r-- 1 runner runner  63987 Nov 15 15:59 hit-preview.b64.txt
+-rw-r--r-- 1 runner runner 502579 Nov 15 15:59 hit-sheet-a.b64.txt
+-rw-r--r-- 1 runner runner 502519 Nov 15 15:59 hit-sheet-b.b64.txt
+-rw-r--r-- 1 runner runner   2950 Nov 15 15:59 sha256.txt
