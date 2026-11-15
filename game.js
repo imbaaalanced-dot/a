@@ -1234,11 +1234,16 @@
   $('mobileNextWaveBtn').onclick=launchWave;
   $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;$('menuPauseBtn').onclick=pauseGame;
   // V4 alpha.4 touch: tapping the playfield closes an open HUD menu; long-press menus stay off the canvas.
-  canvas.addEventListener('pointerdown',e=>{if(document.querySelector('.modal:not(.hidden)'))return;const menu=$('hudMenu');if(menu?.open&&!menu.contains(e.target)){menu.open=false;}});
+  let tapDown=null;
+  canvas.addEventListener('pointerdown',e=>{
+    tapDown=null;
+    if(document.querySelector('.modal:not(.hidden)'))return;
+    const menu=$('hudMenu');
+    if(menu?.open&&!menu.contains(e.target)){menu.open=false;return;}
+    tapDown=e.pointerType==='mouse'?null:{x:e.clientX,y:e.clientY};
+  });
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   // HUD 2.0: first tap opens a contextual choice. Never spend essence on a single canvas tap.
-  let tapDown=null;
-  canvas.addEventListener('pointerdown',e=>{tapDown=e.pointerType==='mouse'?null:{x:e.clientX,y:e.clientY};});
   canvas.addEventListener('pointerup',e=>{
     if(e.pointerType==='mouse'||state!=='playing'||!tapDown)return;
     if(Math.hypot(e.clientX-tapDown.x,e.clientY-tapDown.y)>14){tapDown=null;return;}
