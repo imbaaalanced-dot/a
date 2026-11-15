@@ -16,7 +16,7 @@ const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeigh
 sandbox.window=sandbox;
 let armoryOptions;
 sandbox.DenkmalLootUI={create(_model,options){armoryOptions=options;return {render(){},close(){},closeDetail(){return false}};}};
-vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
+vm.createContext(sandbox);sandbox.localStorage.setItem('td2-developer-mode-v2','disabled');vm.runInContext(fs.readFileSync(path.join(root,'equipment-catalog.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'loot.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'persisted-state.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'levels.js'),'utf8'),sandbox);vm.runInContext(fs.readFileSync(path.join(root,'hero-saga.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-phase6.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'style2-markers.js'),'utf8'),sandbox);
