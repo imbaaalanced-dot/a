@@ -1,0 +1,376 @@
+{
+  "version": 1,
+  "source_sha256": "c59b8ef7fa7d04d8cb931630be1880da0c9a1c52ad79e08c0bd2eecaef32c812",
+  "source_size": [
+    2000,
+    1200
+  ],
+  "status": "opt-in integrated; Android not verified",
+  "excluded": {
+    "mage:3": "ground vortex, not a flying projectile",
+    "rift:2": "standing Rift tower",
+    "rift:3": "standing Tesla/Rift construction"
+  },
+  "assets": [
+    {
+      "id": "projectile_bow_lv1",
+      "kind": "bow",
+      "level": 1,
+      "source_rectangle": [
+        0,
+        0,
+        462,
+        400
+      ],
+      "source_object_bbox": [
+        28,
+        118,
+        413,
+        254
+      ],
+      "master": "projectiles/projectile_bow_lv1.png",
+      "runtime": "runtime-webp/projectiles/projectile_bow_lv1.webp",
+      "sha256_png": "457325bce8ae9bc24bf82a66851cd2a9063c9a0aa7d25c9e523084a67b555d96",
+      "sha256_webp": "45f6840f1ca62c1eae0b82a28f7b4a98ae6376b2197754aff0fcbf16ea7d3b68",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_bow_lv2",
+      "kind": "bow",
+      "level": 2,
+      "source_rectangle": [
+        0,
+        400,
+        462,
+        800
+      ],
+      "source_object_bbox": [
+        35,
+        80,
+        414,
+        266
+      ],
+      "master": "projectiles/projectile_bow_lv2.png",
+      "runtime": "runtime-webp/projectiles/projectile_bow_lv2.webp",
+      "sha256_png": "e0c55f544ba479c8a4175e4b7a4ab9f30b653768e9bd760a765e3fbfad82c0d3",
+      "sha256_webp": "1a7f23c78fb0a94f6bd4e590f0ac1c19e01a6757894621037d07407c92276cd3",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_bow_lv3",
+      "kind": "bow",
+      "level": 3,
+      "source_rectangle": [
+        0,
+        800,
+        462,
+        1200
+      ],
+      "source_object_bbox": [
+        11,
+        42,
+        442,
+        300
+      ],
+      "master": "projectiles/projectile_bow_lv3.png",
+      "runtime": "runtime-webp/projectiles/projectile_bow_lv3.webp",
+      "sha256_png": "9867493349b1729ae83e4dd9f593796186c946d3a025e5ed5460237828e644fe",
+      "sha256_webp": "e66eb06d559faf7a0d692bebf1afcc83bf4f3819f46064be7ae4de64b1478220",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_cannon_lv1",
+      "kind": "cannon",
+      "level": 1,
+      "source_rectangle": [
+        462,
+        0,
+        800,
+        400
+      ],
+      "source_object_bbox": [
+        56,
+        73,
+        274,
+        295
+      ],
+      "master": "projectiles/projectile_cannon_lv1.png",
+      "runtime": "runtime-webp/projectiles/projectile_cannon_lv1.webp",
+      "sha256_png": "a01e01dc680e9969f4f48417b816da8ba4c81a23ea50283a8bfecaf55a69bd89",
+      "sha256_webp": "172d1fd50a73ed6431cdb5eb3572e25373bd3e937747fb5fb2838818759f08fd",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_cannon_lv2",
+      "kind": "cannon",
+      "level": 2,
+      "source_rectangle": [
+        462,
+        400,
+        800,
+        800
+      ],
+      "source_object_bbox": [
+        50,
+        70,
+        274,
+        294
+      ],
+      "master": "projectiles/projectile_cannon_lv2.png",
+      "runtime": "runtime-webp/projectiles/projectile_cannon_lv2.webp",
+      "sha256_png": "8898b872c0eb2f03d37ad7aa9d41ae844364aa11083173085213cf9f0cc947e0",
+      "sha256_webp": "17467a1b4c100c489c04febe47cd66a9bed3a8ed89e7b59a56ddd7826775b05c",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_cannon_lv3",
+      "kind": "cannon",
+      "level": 3,
+      "source_rectangle": [
+        462,
+        800,
+        800,
+        1200
+      ],
+      "source_object_bbox": [
+        24,
+        0,
+        264,
+        352
+      ],
+      "master": "projectiles/projectile_cannon_lv3.png",
+      "runtime": "runtime-webp/projectiles/projectile_cannon_lv3.webp",
+      "sha256_png": "5ec2c570c345e7561f65be39d95512677288c0b5624bceeb07c8d54edce913c2",
+      "sha256_webp": "7ebe0474e4e7eb0419c54fc4a3273a7fc98df1a04914bd235a8d1e66aedc9d0f",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_mage_lv1",
+      "kind": "mage",
+      "level": 1,
+      "source_rectangle": [
+        800,
+        0,
+        1200,
+        400
+      ],
+      "source_object_bbox": [
+        141,
+        98,
+        247,
+        255
+      ],
+      "master": "projectiles/projectile_mage_lv1.png",
+      "runtime": "runtime-webp/projectiles/projectile_mage_lv1.webp",
+      "sha256_png": "73ff60a3b2cfc2f67b975236ce4351e43156916e827a5e2d55628762e9723480",
+      "sha256_webp": "006b33b72bf4ff06d3f20c1cba3d944865f8089287e566dedb7504494b3f94ba",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_mage_lv2",
+      "kind": "mage",
+      "level": 2,
+      "source_rectangle": [
+        800,
+        400,
+        1200,
+        800
+      ],
+      "source_object_bbox": [
+        98,
+        0,
+        303,
+        357
+      ],
+      "master": "projectiles/projectile_mage_lv2.png",
+      "runtime": "runtime-webp/projectiles/projectile_mage_lv2.webp",
+      "sha256_png": "3fce877468b7c3339bbb6e5de893df6d9cc620ae11e654f1370c0ac365384d7f",
+      "sha256_webp": "df0eebd769a251ab87221cd40a9eac582946923664cc6b1c53b87ed5f45929cc",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_rift_lv1",
+      "kind": "rift",
+      "level": 1,
+      "source_rectangle": [
+        1200,
+        0,
+        1600,
+        300
+      ],
+      "source_object_bbox": [
+        114,
+        101,
+        259,
+        260
+      ],
+      "master": "projectiles/projectile_rift_lv1.png",
+      "runtime": "runtime-webp/projectiles/projectile_rift_lv1.webp",
+      "sha256_png": "0dfa4b9022bc18e49cb85fb3595b1291efc62b8cde89c48c515ce9dd034fbb45",
+      "sha256_webp": "d04b808b10e206cb99f7cbf8029f6136fe70d98e295a8241706683027e9eb2c5",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_boomerang_lv1",
+      "kind": "boomerang",
+      "level": 1,
+      "source_rectangle": [
+        1600,
+        0,
+        2000,
+        400
+      ],
+      "source_object_bbox": [
+        66,
+        85,
+        308,
+        341
+      ],
+      "master": "projectiles/projectile_boomerang_lv1.png",
+      "runtime": "runtime-webp/projectiles/projectile_boomerang_lv1.webp",
+      "sha256_png": "6c6813c1a075c96ed43b500b85d1b1fa1a5bd131352f0edfb9736750044eb73d",
+      "sha256_webp": "087508f35b6f409814072c5ab81f8e5bbe0072557e7acc9943718d282b44845f",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_boomerang_lv2",
+      "kind": "boomerang",
+      "level": 2,
+      "source_rectangle": [
+        1600,
+        400,
+        2000,
+        800
+      ],
+      "source_object_bbox": [
+        69,
+        109,
+        326,
+        338
+      ],
+      "master": "projectiles/projectile_boomerang_lv2.png",
+      "runtime": "runtime-webp/projectiles/projectile_boomerang_lv2.webp",
+      "sha256_png": "cfe717a4314e4ab86a3f1fee5a45af28e32e80d2f3c8caa7335ff237c4f27e19",
+      "sha256_webp": "09c4e948fa1a2353a670ae514a2166bf4d8a9e3e5d03ccb9c8ce752be4bccfce",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    },
+    {
+      "id": "projectile_boomerang_lv3",
+      "kind": "boomerang",
+      "level": 3,
+      "source_rectangle": [
+        1600,
+        800,
+        2000,
+        1200
+      ],
+      "source_object_bbox": [
+        30,
+        34,
+        383,
+        353
+      ],
+      "master": "projectiles/projectile_boomerang_lv3.png",
+      "runtime": "runtime-webp/projectiles/projectile_boomerang_lv3.webp",
+      "sha256_png": "b0eeff1ced1278c37b2b4a5e05f256e3f0b845b6a503d5ec8d292c5df0697164",
+      "sha256_webp": "2d1aa1162655819b7b1ba43aba32ebe721ff55d36bf4f5ba5366d9aa91338ad4",
+      "canvas": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_border_max": 0
+    }
+  ]
+}

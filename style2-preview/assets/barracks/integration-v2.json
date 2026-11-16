@@ -1,0 +1,36 @@
+{
+  "status": "integrated-in-draft-runtime-visual-acceptance-pending",
+  "source": "User ZIP denkmal-td2-kaserne-grafikpaket-v1.zip; original atlas copied byte-for-byte",
+  "supplement": {
+    "source": "Built-in image generation, 2026-11-10; reference original atlas; second pass background extraction",
+    "grid": [
+      8,
+      3
+    ],
+    "cell": 128,
+    "file": "states-v1.webp",
+    "rows": [
+      "schwertmiliz",
+      "speertraeger",
+      "hellebardier"
+    ],
+    "columns": [
+      "idle A",
+      "idle B",
+      "hit recoil",
+      "hit recovery",
+      "death collapse",
+      "death fallen",
+      "recruit step",
+      "recruit ready"
+    ],
+    "timing": "idle 2fps; hit .18s; death .65s; recruit .4s",
+    "processing": "Pillow LANCZOS resize 2048x768 to 1024x384, WebP quality 88 method 6; no hand drawn replacements",
+    "prompt": "Create one production sprite sheet supplement for Denkmal TD2, using supplied atlas as strict character reference. Transparent RGBA. Exactly 8 columns and 3 rows, equal square cells. Rows sword militia, spear infantry, elite halberdier; columns idle A/B, hit A/B, death A/B, recruit A/B. Preserve isometric dark fantasy style, equipment, camera and bottom-center pivot. Remove brown background completely; preserve all 24 poses and exact grid. No text or opaque background."
+  },
+  "decodedRGBABytes": 3932160,
+  "sha256": {
+    "kasernen-atlas-96px.webp": "42ecbfd833afad7b84904cd14aec9ebcfb25f8c4dfef6e9b2b10463ad7466726",
+    "states-v1.webp": "54336faf97045f0e4bd261c0a456bcc7c68ea0394f84e2b90059362a2b02195d"
+  }
+}

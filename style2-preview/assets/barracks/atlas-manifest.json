@@ -1,0 +1,161 @@
+{
+  "format": "denkmal-td2-barracks-atlas-v1",
+  "status": "production-candidate-not-integrated",
+  "license_origin": "user_requested_generated_art",
+  "atlas_coordinates": "top-left zero-based, n_px cell, 8 columns x 8 rows",
+  "sizes": {
+    "small": {
+      "filename": "kasernen-atlas-48px.webp",
+      "cell": 48,
+      "dimensions": [
+        384,
+        384
+      ]
+    },
+    "high": {
+      "filename": "kasernen-atlas-96px.webp",
+      "cell": 96,
+      "dimensions": [
+        768,
+        768
+      ]
+    }
+  },
+  "units": {
+    "schwertmiliz": {
+      "walk": {
+        "frames": 8,
+        "row": 0,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "frame_count": 8
+        }
+      },
+      "attack": {
+        "frames": 6,
+        "row": 1,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "frame_count": 6
+        }
+      }
+    },
+    "speertraeger": {
+      "walk": {
+        "frames": 8,
+        "row": 2,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "frame_count": 8
+        }
+      },
+      "attack": {
+        "frames": 6,
+        "row": 3,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "frame_count": 6
+        }
+      }
+    },
+    "hellebardier": {
+      "walk": {
+        "frames": 8,
+        "row": 4,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "frame_count": 8
+        }
+      },
+      "attack": {
+        "frames": 8,
+        "row": 5,
+        "coordinates_px": {
+          "columns": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "frame_count": 8
+        }
+      }
+    }
+  },
+  "buildings": {
+    "level1": {
+      "row": 6,
+      "first_column": 0,
+      "col_span": 2,
+      "row_span": 2,
+      "master": "level1_holzbaracke.png"
+    },
+    "level2": {
+      "row": 6,
+      "first_column": 2,
+      "col_span": 2,
+      "row_span": 2,
+      "master": "level2_steingarnison.png"
+    },
+    "level3": {
+      "row": 6,
+      "first_column": 4,
+      "col_span": 2,
+      "row_span": 2,
+      "master": "level3_ordensfestung.png"
+    }
+  },
+  "note": "Place each unit by single foot anchor. Only one of idle/walk/attack per update/render. Missing standalone hit/death/stand/spawn animation frames. Lane balance provisional.",
+  "sha256": {
+    "kasernen-atlas-48px.webp": "5ca673fc2d88bad82c0d3665b4cfd463f3020b14c7d67c2359fb59e29d2f06f9",
+    "kasernen-atlas-96px.webp": "42ecbfd833afad7b84904cd14aec9ebcfb25f8c4dfef6e9b2b10463ad7466726",
+    "level1_holzbaracke.png": "c2cf00366868a93719dc3b2bccb81adf09ff424a881ee78262fbc5452b15abf5",
+    "level2_steingarnison.png": "dc3f6098cea02f8bb65c137aa031f7e914507ebd60873dc38dbbc4ff3ae7dd0a",
+    "level3_ordensfestung.png": "41e2f703a69f682ca7013dba7bb548b4006f763d83f31f7aaa81740163cce7c1"
+  }
+}
