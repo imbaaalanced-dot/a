@@ -43,7 +43,7 @@ def run():
             if not name.endswith('.webp'):
                 continue
             filename = name.rsplit('/', 1)[-1]
-            if filename not in SHA256 or not (name == BASE + '/' + filename or name.endswith('/' + BASE + '/' + filename)):
+            if filename not in SHA256 or not (name == BASE + '/' + filename or name == BASE.removeprefix('dist/') + '/' + filename or name.endswith('/' + BASE + '/' + filename)):
                 continue
             if filename in items:
                 raise SystemExit(f'Duplicate sprite: {filename}')
