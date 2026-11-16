@@ -7,8 +7,8 @@
   ],
   "format": "WEBP",
   "source": "AI-generated material families based on photo/reference research; not an original photograph",
-  "defaultActive": false,
-  "optInParam": "td2GroundV3=1",
+  "defaultActive": true,
+  "optOutParam": "td2GroundV3=0",
   "photoAccuracy": "material approximation, no historically measured paving or routing",
   "materials": {
     "forest_moss_roots": {
