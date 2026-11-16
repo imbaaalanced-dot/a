@@ -1,0 +1,66 @@
+name: TD2 V6 one-time tower binary import
+
+on:
+  push:
+    branches:
+      - feature/td2-v6-tower-candidates-20261116
+    paths:
+      - .github/workflows/v6-tower-binary-import.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v6-one-time-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.repository == 'imbaaalanced-dot/a' && github.ref == 'refs/heads/feature/td2-v6-tower-candidates-20261116'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/td2-v6-tower-candidates-20261116
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download exactly the pinned 12-file archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import urllib.request
+          from pathlib import Path
+
+          endpoint = ('https://api.firestorage.ai/dev/file/shares/-D0GKPLbkBEO'
+                      '/files/01a1e3e65cc371949335f87b3d313e62/download')
+          expected = '29042f0d58f5fd9316fe4662eedc1726cd15ecf44aa58ad2f2115e129bc8ba28'
+          request = urllib.request.Request(
+              endpoint, method='POST', data=b'',
+              headers={'Accept': 'application/json', 'User-Agent': 'DenkmalTD2-V6-Asset-Importer/1.0'})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              download = json.load(response)
+          url = download.get('downloadUrl')
+          if not isinstance(url, str) or not url.startswith('https://'):
+              raise RuntimeError('Could not obtain an HTTPS download link')
+          with urllib.request.urlopen(url, timeout=90) as response:
+              data = response.read(400000)
+          actual = hashlib.sha256(data).hexdigest()
+          if actual != expected:
+              raise RuntimeError('Unexpected asset archive digest; aborting')
+          Path('/tmp/td2-v6-towerassets.zip').write_bytes(data)
+          print('Verified ZIP SHA-256; 12 WebP file import can proceed')
+          PY
+      - name: Import, test and push only the verified WebP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python3 tools/import-v6-tower-webps.py /tmp/td2-v6-towerassets.zip --push
