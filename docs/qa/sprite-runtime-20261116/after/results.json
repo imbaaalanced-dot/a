@@ -1,0 +1,1134 @@
+{
+  "browser": "156.0.8078.79",
+  "expectViolet": false,
+  "fixture": "controlled wave state and animation clock; no natural wave playthrough",
+  "physicalAndroid": false,
+  "reducedMotion": false,
+  "combatEffects": "isolated cases: no injected combat effects; moving cases: real automatic hero attack against a controlled runner",
+  "results": [
+    {
+      "touch": false,
+      "wave": 14,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 15,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 16,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 14,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 15,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 16,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 14,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 15,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 16,
+      "graphics": "high",
+      "qualityTier": "high",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 14,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 15,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 16,
+      "graphics": "low",
+      "qualityTier": "low",
+      "state": "playing",
+      "hero": "marcel",
+      "direction": "down",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ]
+        }
+      ],
+      "violetPixels": 0,
+      "particles": 0,
+      "enemies": 0,
+      "towers": 0
+    }
+  ],
+  "movingResults": [
+    {
+      "touch": false,
+      "wave": 14,
+      "graphics": "high",
+      "qualityTier": "high",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            80,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            80,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        }
+      ],
+      "particles": 6,
+      "enemies": 1,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 15,
+      "graphics": "high",
+      "qualityTier": "high",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            640,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            0,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            0,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            80,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            80,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        }
+      ],
+      "particles": 5,
+      "enemies": 1,
+      "towers": 0
+    },
+    {
+      "touch": false,
+      "wave": 16,
+      "graphics": "high",
+      "qualityTier": "high",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            640,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            80,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        }
+      ],
+      "particles": 3,
+      "enemies": 1,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 14,
+      "graphics": "auto",
+      "qualityTier": "low",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            0,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            128,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            128,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 14
+        }
+      ],
+      "particles": 0,
+      "enemies": 1,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 15,
+      "graphics": "auto",
+      "qualityTier": "low",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            128,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            128,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            40,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            80,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            80,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 15
+        }
+      ],
+      "particles": 0,
+      "enemies": 1,
+      "towers": 0
+    },
+    {
+      "touch": true,
+      "wave": 16,
+      "graphics": "auto",
+      "qualityTier": "low",
+      "draws": [
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            256,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            80,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            256,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            120,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116",
+          "crop": [
+            512,
+            256,
+            128,
+            128
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            200,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": "down",
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112",
+          "crop": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        },
+        {
+          "url": "http://127.0.0.1:41307/assets/hero/marcel-staff-fx-v2-40.png?v=stafffx2",
+          "crop": [
+            160,
+            0,
+            40,
+            40
+          ],
+          "moving": true,
+          "attackDirection": null,
+          "wave": 16
+        }
+      ],
+      "particles": 0,
+      "enemies": 1,
+      "towers": 0
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "tool": "image_gen.imagegen",
+  "date": "2026-11-16",
+  "operation": "targeted purple matte removal from active down attack frame 4; source used was extracted from original runtime atlas, not the unapproved newer wand candidates",
+  "source_rect": [
+    512,
+    256,
+    128,
+    128
+  ],
+  "export": "python3 tools/export-marcel-down-alpha-repair.py",
+  "runtime_grid": [
+    6,
+    6,
+    128
+  ],
+  "pivot": [
+    64,
+    116
+  ],
+  "physical_android": "pending",
+  "files": [
+    {
+      "path": "dist/assets/hero/marcel-down-actions-v5b.webp",
+      "sha256": "9357895750b9fb367b0197ca3b839e9a237f75a83475d5739589b407be311d1c",
+      "bytes": 148952
+    },
+    {
+      "path": "source-art/hero/repairs/20261116/marcel-down-attack-frame4-generated.png",
+      "sha256": "4e474f534cde7a1f680391aac50d6f33c5d612664bd983819b3df44822401c87",
+      "bytes": 879739
+    },
+    {
+      "path": "dist/assets/hero/marcel-down-actions-v5b-alpha-repair.webp",
+      "sha256": "37f1c97c33dd1f851e0eba097ce388babb97906b9f12b65050982c4d7960447f",
+      "bytes": 149894
+    }
+  ]
+}
