@@ -43,7 +43,7 @@ Priorität: **Style-2-Integration → Android-Performance → Menü/HUD → Held
 ## Game Development Studio
 - Nur bei Bedarf für Asset-Produktion/Paketprüfung, Renderdiagnose, visuelle Vergleiche und Performance-Messung verwenden.
 - Keine komplette Pipeline für kleine Änderungen.
-- Vor **jeder** lokalen schreibenden oder ausführenden CLI-Aktion konkrete Freigabe für den jeweiligen Befehl einholen.
+- Lokale Entwicklungs-, Diagnose-, Schreib- und Testbefehle innerhalb des beauftragten Arbeitsumfangs ohne zusätzliche Einzelfreigabe ausführen. Die Schutzregeln für Merge, Release, das Löschen von Branches/PRs und irreversible Datenänderungen gelten weiterhin; technische Sandbox-Berechtigungen bleiben davon unberührt.
 - Hardware-, GPU- und Grafikprüfungen nur als bestanden melden, wenn tatsächlich nachgewiesen.
 
 ## Tests und GitHub
