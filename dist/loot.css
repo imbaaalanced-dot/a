@@ -223,3 +223,25 @@
 @media(prefers-reduced-motion:reduce){
   #inventoryScreen .loot-detail-actions .loot-action{transition:none}
 }
+
+/* Beta P0: fixed close control independent of any inventory scroll area.
+   The detail sheet/backdrop use z-index 11/10; this exit stays reachable. */
+#inventoryScreen .loot-fixed-close{
+  position:fixed;
+  top:max(12px,env(safe-area-inset-top));
+  right:max(12px,env(safe-area-inset-right));
+  z-index:30;
+  min-width:112px;
+  min-height:48px;
+  padding:10px 13px;
+  border-color:#c7a66a;
+  background:#182329f5;
+  color:#fbe7bb;
+  box-shadow:0 6px 22px #000a;
+  font-weight:700;
+}
+#inventoryScreen .loot-header{padding-right:132px}
+@media(max-width:760px){
+  #inventoryScreen .loot-header{padding-right:122px}
+  #inventoryScreen .loot-fixed-close{min-width:108px}
+}
