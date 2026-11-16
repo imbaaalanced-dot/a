@@ -25,7 +25,7 @@ const server=http.createServer((req,res)=>{
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const state=await page.evaluate(async level=>{
     const h=DenkmalTestHooks;
-    if(!h.getDeveloperMode())h.toggleDeveloperMode();
+    if(typeof h.getDeveloperMode==='function'&&!h.getDeveloperMode())h.toggleDeveloperMode();
     await KirchendeArt.load();await DenkmalTerrain.load();
     h.startGame(level);HeroSaga?.continueStory?.();
     await new Promise(r=>setTimeout(r,600));

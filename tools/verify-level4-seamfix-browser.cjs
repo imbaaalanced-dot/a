@@ -43,7 +43,7 @@ const server=http.createServer((req,res)=>{
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const scene=await page.evaluate(async()=>{
     if(!await DenkmalTerrain.load())throw Error('Level 4 ground failed to load');
-    if(!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
+    if(typeof DenkmalTestHooks.getDeveloperMode==='function'&&!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
     const used=[];
     const realDraw=DenkmalTerrain.drawRoad;
     DenkmalTerrain.drawRoad=function(ctx,route,options){
