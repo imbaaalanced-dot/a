@@ -74,6 +74,46 @@
     if(u.hp<=0)return 'death';if(u.aliveTime<.4)return 'recruit';if(u.hitTime>0)return 'hit';
     return u.mode==='attack'?'attack':u.mode==='walk'?'walk':'idle';
   }
+  // The Style-2 action atlas uses opaque VP8 pixels (unlike the RGBA original).
+  // Remove only edge-connected, near-neutral dark matte from each 96 px frame.
+  // Cache lazily per image+frame to keep one sprite blit per ally and bounded RAM.
+  const unitTiles=new WeakMap();
+  function unitCutout(img,frame,row){
+    if(typeof document==='undefined'||!document.createElement)return null;
+    let tiles=unitTiles.get(img);
+    if(!tiles){tiles=new Map();unitTiles.set(img,tiles);}
+    const key=row*8+frame;
+    if(tiles.has(key))return tiles.get(key);
+    try{
+      const size=96,canvas=document.createElement('canvas');
+      canvas.width=canvas.height=size;
+      const context=canvas.getContext('2d',{willReadFrequently:true});
+      if(!context?.drawImage||!context.getImageData||!context.putImageData)return null;
+      context.drawImage(img,frame*size,row*size,size,size,0,0,size,size);
+      const pixels=context.getImageData(0,0,size,size),rgba=pixels.data;
+      const total=size*size,seen=new Uint8Array(total),queue=new Uint16Array(total);
+      let head=0,tail=0;
+      const isMatte=i=>{
+        const off=i*4,r=rgba[off],g=rgba[off+1],b=rgba[off+2];
+        return rgba[off+3]===255&&Math.max(r,g,b)<122&&Math.max(r,g,b)-Math.min(r,g,b)<38;
+      };
+      const enter=i=>{if(!seen[i]&&isMatte(i)){seen[i]=1;queue[tail++]=i;}};
+      for(let x=0;x<size;x++){enter(x);enter((size-1)*size+x);}
+      for(let y=1;y<size-1;y++){enter(y*size);enter(y*size+size-1);}
+      // Original transparent atlas or frame without a substantial dark border:
+      // draw it natively and never modify alpha or color.
+      if(tail<12){tiles.set(key,null);return null;}
+      while(head<tail){
+        const i=queue[head++],x=i%size,y=(i/size)|0;
+        rgba[i*4]=rgba[i*4+1]=rgba[i*4+2]=rgba[i*4+3]=0;
+        if(x)enter(i-1);if(x<size-1)enter(i+1);
+        if(y)enter(i-size);if(y<size-1)enter(i+size);
+      }
+      context.putImageData(pixels,0,0);
+      tiles.set(key,canvas);
+      return canvas;
+    }catch(_error){return null;} // Canvas blocked: preserve the original sprite rather than losing the unit.
+  }
   function drawUnit(ctx,u){
     if(!ctx||!u)return false;
     let img=atlas();if(!img)return true; // Never stack a canvas placeholder over art.
@@ -94,7 +134,10 @@
     if(state==='recruit')ctx.globalAlpha*=Math.min(1,u.aliveTime/.4);
     if(state==='hit'&&!authored)ctx.translate(-3*(u.hitTime/.18),0);
     if(state==='idle'&&!authored)ctx.translate(0,Math.sin(u.aliveTime*2)*.4);
-    ctx.drawImage(img,frame*cell,row*cell,cell,cell,-28,top,56,56);ctx.restore();
+    const cutout=authored?null:unitCutout(img,frame,row);
+    if(cutout)ctx.drawImage(cutout,-28,top,56,56);
+    else ctx.drawImage(img,frame*cell,row*cell,cell,cell,-28,top,56,56);
+    ctx.restore();
     if(u.hp>0){ctx.save();ctx.fillStyle='#211b1b';ctx.fillRect(u.x-15,u.y-54,30,3);ctx.fillStyle='#7acaae';ctx.fillRect(u.x-15,u.y-54,30*(u.hp/u.maxHp),3);ctx.restore();}
     return true;
   }
