@@ -1,4 +1,5 @@
 name: TD2 V6 one-time tower binary import
+# Import retry: accept verified compact assets/ ZIP layout.
 
 on:
   push:
