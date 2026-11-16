@@ -51,6 +51,7 @@ const expectedVersions = new Map([
   ['style2-impact-atlas.js', 'reference-refresh-1'],
   ['style2-impact-atlas-v4.js', 'style2-v4a1'],
   ['style2-user-towers-v4.js', 'style2-v4a1'],
+  ['style2-v6-towers.js', 'v6-candidates-20261116'],
   ['enemy-animations.js', 'v410a1'],
   ['style2-markers.js', 'markers2'],
   ['ground-v3.js','late-ground-20261113'],
