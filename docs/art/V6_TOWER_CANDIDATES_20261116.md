@@ -1,45 +1,45 @@
-# TD2 V6 tower sprites — draft integration
+# TD2 V6 – Turm-Sprite-Integration
 
-This branch adds an **opt-in** Canvas override after `style2-user-towers-v4.js`. Default behavior is identical to V4.
+## Stand
 
-- Enable only after importing binaries: `?td2V6Towers=1`
-- Disable / rollback: remove the flag (or use `?td2V6Towers=0`)
-- Mappings: `bow→bogen`, `cannon→kanone`, `rift→riftlanze`, `mage→eis`; each uses tiers L1–L3
-- All images are 256×256 RGBA WebP with foot pivot 0.9531; Canvas display size 112
-- Existing projectile handling, hero canonical references and savegames unchanged
-- Fallback to V4 during load or on errors, with bounded decode cache
+**Alle zwölf WebP-Dateien liegen im Entwicklungsbranch.** Der einmalige SHA-256-geprüfte Import über GitHub Actions war erfolgreich (Asset-Commit `5d411e4a7f5ea3956ef5cbed664d30243705b6b1`).
 
-## Blocker before merge
+Der Canvas-Renderer `dist/style2-v6-towers.js` wird nach `style2-user-towers-v4.js` geladen. Standardmäßig bleibt die bestehende V4-Darstellung aktiv.
 
-The 12 binary WebPs have been generated in the conversation artifact `TD2_V6_Turmpatch_20261116.zip`. They are **not yet present in this repository branch**. Import their exact paths before enabling the renderer or releasing this PR:
+- Aktivieren: `?td2V6Towers=1`
+- Deaktivieren / Rollback: Parameter entfernen oder `?td2V6Towers=0`
+- Mapping: `bow→bogen`, `cannon→kanone`, `rift→riftlanze`, `mage→eis`
+- Jeweils L1–L3, 256 × 256 Pixel, RGBA WebP; Bodenanker 0.9531, Canvas-Anzeigegröße 112
+- Kein Austausch der Helden-Assets, der Geschosse, der Spielstände oder von V4-Quelldateien
+- Während Lade-/Dekodierfehlern: automatischer Rückfall auf V4; begrenzter Bildcache
+
+## Eingebundene Dateien
 
 ```text
 dist/assets/style2-v6-candidates/tuerme/upgrade_stufen/
-  bogen_l1.webp  bogen_l2.webp  bogen_l3.webp
+  bogen_l1.webp bogen_l2.webp bogen_l3.webp
   kanone_l1.webp kanone_l2.webp kanone_l3.webp
   riftlanze_l1.webp riftlanze_l2.webp riftlanze_l3.webp
   eis_l1.webp eis_l2.webp eis_l3.webp
 ```
 
-The ZIP also contains `tools/install-into-repo.py`, a local installer that avoids overwriting existing files.
+Gesamtgröße aller zwölf WebPs: 246.788 Bytes (gerundet 247 KB).
 
-## Import the 12 generated WebPs
-
-Download `TD2_V6_Turmpatch_20261116.zip` from the ChatGPT conversation onto your development device, and check out the exact PR branch:
+## Tests
 
 ```bash
-git switch feature/td2-v6-tower-candidates-20261116
-python3 tools/import-v6-tower-webps.py /path/to/TD2_V6_Turmpatch_20261116.zip --push
+node tests/v6-towers.test.cjs
+node tests/v6-tower-assets.test.cjs
+node tests/cache-busting.test.cjs
 ```
 
-The importer refuses `main`, validates every sprite with its fixed SHA-256 checksum, preserves all existing assets, runs both focused V6 tests, and (only with `--push`) commits and pushes the twelve files to the current PR branch. You need a Git-authenticated development checkout to run `--push`. No other images are replaced.
+Der abgeschlossene GitHub-Importjob hat den ZIP-Digest, alle zwölf Bild-Prüfsummen und die beiden V6-Node-Tests bestätigt. Die Dateien wurden zusätzlich lokal per Pillow als 256×256-RGBA-WebPs dekodiert.
 
-CI enforces that **all twelve files must be in the PR** before this can merge. It intentionally fails while they are absent.
+## Vor Freigabe offen
 
-## Verification
+- CI des letzten Repository-Commits abschließen und auf weitere Regressionen prüfen.
+- Aktive Darstellung mit `?td2V6Towers=1` im Desktop-Chromium und im mobilen Hochformat visuell abnehmen.
+- Physisches Android-Gerät (4 GB RAM) getrennt prüfen.
+- Kein Merge und kein Release ohne ausdrückliche Freigabe.
 
-- Local equivalent renderer: `node tests/v6-towers.test.cjs` — passed
-- Local 12 WebP decode / alpha / size checks — passed
-- Integration in actual browser build, CI and physical Android — not yet verified
-
-Do not merge until all 12 files exist in this PR and browser gameplay has been checked with the URL flag.
+`tools/import-v6-tower-webps.py` bleibt zur reproduzierbaren, SHA-256-gesicherten Wiederherstellung des Assetpakets im Repository. Der temporäre Übertragungsworkflow wird nach erfolgreichem Import entfernt.
