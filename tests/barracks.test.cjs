@@ -75,3 +75,11 @@ console.log('Barracks: 500 seeded nearest-target cases and range boundaries pass
  assert.equal(allocations,1,'cutout allocated only once per atlas and level');
 }
 console.log('Barracks building background alpha cutout and caching passed.');
+
+// Beta #330: barracks rank markers must be drawn after the barracks sprite,
+// matching the shared one-to-three-star presentation of the other towers.
+{
+ const gameSource=readFileSync(path.join(__dirname,'../dist/game.js'),'utf8');
+ assert.match(gameSource,/if\(t\.kind==='barracks'&&globalThis\.DenkmalBarracks\?\.drawTower\(ctx,t\)\)\{\s*globalThis\.DenkmalTerrain\?\.drawStars\(ctx,t\.x,t\.y,t\.level,lowFX\(\)\);\s*return;\s*\}/,
+   'barracks paint path draws stars for its current level, not an early return');
+}
