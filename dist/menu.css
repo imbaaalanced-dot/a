@@ -443,3 +443,26 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen .menu-developer-toast[hidden]{display:none}
 #startScreen .menu-developer-toast strong{font:700 clamp(25px,7vw,38px)/1.2 Georgia,serif;letter-spacing:.15em}
 #startScreen .menu-developer-toast span{font:700 12px/1.4 system-ui;letter-spacing:.12em}
+
+/* Beta #330: both existing hero portraits remain visible, including a 360px
+   high desktop preview. This changes layout only; art approval remains open. */
+#startScreen[data-menu-panel="home"] .menu-hero-figure{position:relative;isolation:isolate;}
+#startScreen .menu-hero-figure .hero-menu-banner,
+#startScreen .menu-hero-figure .hero-menu-companion{
+  position:absolute;top:0;bottom:0;width:44%;height:100%;
+  max-width:none;min-height:0;object-fit:contain;object-position:center bottom;
+  margin:0;padding:0;border:0;pointer-events:none;
+  filter:drop-shadow(0 7px 10px #000c);
+}
+#startScreen .menu-hero-figure .hero-menu-banner{right:7%;left:auto;}
+#startScreen .menu-hero-figure .hero-menu-companion{left:7%;right:auto;}
+#startScreen .menu-hero-figure #menuHeroCaption{position:absolute;bottom:10px;left:14px;z-index:2;}
+@media (max-height:430px) and (orientation:landscape){
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{
+    display:block;height:clamp(64px,20dvh,86px);
+    width:100%;max-width:720px;margin:0 auto 4px;overflow:hidden;
+  }
+  #startScreen .menu-hero-figure #menuHeroCaption{
+    left:10px;bottom:4px;font-size:10px;padding:0;
+  }
+}
