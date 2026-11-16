@@ -37,7 +37,7 @@
         $(id).tabIndex=activeTab===tab?0:-1;
       }
       $('lootDetailBackdrop').hidden=!mobile||!detailOpen;
-      for(const id of ['lootEquipmentPanel','lootBagPanel','lootForgePanel','lootEquipmentTab','lootBagTab','lootForgeTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
+      for(const id of ['lootEquipmentPanel','lootBagPanel','lootForgePanel','lootEquipmentTab','lootBagTab','lootForgeTab','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
     }
     function closeDetail(){
       if(!selected)return false;
@@ -240,7 +240,7 @@
     $('lootRecoveryBtn').onclick=()=>download(model.exportRecovery(),'Denkmal-TD-Rohsicherung.json');
     $('lootImportBtn').onclick=()=>{if(editable())$('lootImportFile').click();};
     $('lootImportFile').onchange=async e=>{const file=e.target.files?.[0],token=generation;e.target.value='';if(!file||!editable())return;try{if(file.size>15000000)throw Error('Datei ist zu groß.');const text=await file.text();if(token!==generation||!editable())return;const p=model.validateImport(text);pending={message:`Sicherung mit ${p.owned.length} Gegenständen übernehmen? Sie ersetzt deine aktuelle Sammlung. Exportiere diese bei Bedarf zuerst.`,run:()=>{const ok=model.importJSON(text);if(ok)onImport();return ok;}};notice='';}catch{notice='Import abgelehnt: beschädigte Datei oder falsches Spielstandformat.';}render();$('lootConfirm').scrollIntoView({block:'nearest'});};
-    $('inventoryClose').onclick=onClose;
+    $('inventoryClose').onclick=()=>{if(selected)closeDetail();onClose();};
     return {render,closeDetail,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
   }
   globalThis.DenkmalLootUI={create};
