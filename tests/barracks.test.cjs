@@ -119,3 +119,10 @@ console.log('Barracks building background alpha cutout and caching passed.');
  assert.equal(calls.at(-1).length,9,'already transparent source uses the original atlas crop');
 }
 console.log('Barracks Style-2 unit matte removal, per-frame cache and native-alpha fallback passed.');
+
+// Barracks artwork must not skip the common 1–3-star upgrade indicator.
+{
+ const gameSource=readFileSync(path.join(__dirname,'../dist/game.js'),'utf8');
+ assert.match(gameSource,/if\(t\.kind==='barracks'&&globalThis\.DenkmalBarracks\?\.drawTower\(ctx,t\)\)\{[\s\S]*?globalThis\.DenkmalTerrain\?\.drawStars\(ctx,t\.x,t\.y,t\.level,lowFX\(\)\);[\s\S]*?return;\s*\}/,
+   'barracks rank stars must draw after the building for the actual upgrade level');
+}
