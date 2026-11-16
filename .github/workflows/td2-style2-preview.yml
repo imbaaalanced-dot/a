@@ -1,0 +1,43 @@
+name: TD2 Style 2 isolated branch preview
+on:
+  push:
+    branches:
+      - feature/td2-all-levels-style2-art-20261116
+    paths:
+      - 'dist/**'
+      - '.github/workflows/td2-style2-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: td2-style2-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check preview files
+        run: |
+          test -s dist/index.html
+          test -s dist/kirchende-art.js
+          test -s dist/assets/kirchende/monument-style2-pilot.webp
+          node --check dist/kirchende-art.js
+      - name: Publish only isolated style2-preview directory
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-preview origin/gh-pages
+          mkdir -p /tmp/td2-preview/style2-preview
+          find /tmp/td2-preview/style2-preview -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -a dist/. /tmp/td2-preview/style2-preview/
+          touch /tmp/td2-preview/.nojekyll
+          cd /tmp/td2-preview
+          git add style2-preview .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish TD2 Style2 preview ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
