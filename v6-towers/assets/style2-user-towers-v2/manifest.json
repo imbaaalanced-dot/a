@@ -1,0 +1,63 @@
+{
+  "name": "td2-style2-cleanup-pass2",
+  "version": "2.0.0",
+  "inherits": "../style2-user-towers-v1/manifest.json",
+  "runtime_cache_key": "cleanup-2",
+  "assets": [
+    {
+      "id": "tower_cannon_lv1",
+      "type": "tower",
+      "kind": "cannon",
+      "level": 1,
+      "master_size": [
+        512,
+        512
+      ],
+      "pivot": [
+        256,
+        488
+      ],
+      "alpha_bbox_export": [
+        105,
+        272,
+        417,
+        487
+      ],
+      "png_path": "towers/tower_cannon_lv1.png",
+      "webp_path": "runtime-webp/towers/tower_cannon_lv1.webp",
+      "sha256_png": "d7a5abe0a325948fb1a0cd7f4371217e288060c94ee86352676c5c98757ee520",
+      "sha256_webp": "ce594de272718e655caefa490fce72f9ccc2548c199d1c0e3c3308f3ddc2fbf6",
+      "source_generated_sha256": "7e6d7edf720217804f48ef89459c0c80852a4ae94fd2b02bedc5b423bc0c1aa3",
+      "original_sha256": "915faa6c68c584b5892e2ec03b977be3b475976275b297aa767508bcb6a03ad4",
+      "export_note": "Imagegen edit; proportional normalization to original alpha>16 footprint. No color-key filtering."
+    },
+    {
+      "id": "projectile_mage_lv2",
+      "type": "projectile",
+      "kind": "mage",
+      "level": 2,
+      "master_size": [
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "alpha_bbox_export": [
+        61,
+        78,
+        177,
+        178
+      ],
+      "png_path": "projectiles/projectile_mage_lv2.png",
+      "webp_path": "runtime-webp/projectiles/projectile_mage_lv2.webp",
+      "sha256_png": "78cd5e287e9a8f03c46a40d77ba3d1954259dbf0050daf911cb8160f2c8a15fe",
+      "sha256_webp": "70f52a7b51d7b6329b6e74693e818197c78eeed2c7c7c468b876eee6d074df32",
+      "source_generated_sha256": "01e37abea22d969ae7729e5d3847154b1399b98a87f096c8bed9224d38f5484f",
+      "original_sha256": "ca963d5842f1bee52ca086f33b945f4673a00374bc464bd364750e6283ab70e8",
+      "export_note": "Imagegen edit; proportional normalization to original alpha>16 footprint. No color-key filtering."
+    }
+  ],
+  "status": "Versioned imagegen cleanup overrides; opt-in only. Android test pending."
+}

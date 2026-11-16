@@ -1,0 +1,44 @@
+/* V5 Style 2 refinement: mobile-safe hierarchy; no extra runtime images or effects. */
+#startScreen .menu-command,
+#startScreen .td2-mode-button,
+#startScreen .td2-dock-button {
+  transition: border-color .14s ease, background-color .14s ease, filter .14s ease;
+}
+#startScreen :is(.menu-command,.td2-mode-button,.td2-dock-button):focus-visible {
+  outline: 3px solid #f1d398 !important;
+  outline-offset: 3px;
+}
+#startScreen .td2-mode-button {
+  border-color: #987848 !important;
+  background: linear-gradient(160deg,#303027f5,#11191cf5) !important;
+}
+#startScreen .td2-mode-button.td2-mode-primary {
+  border-color: #d3a75f !important;
+  background: linear-gradient(160deg,#403322f5,#1b1e1cf5) !important;
+}
+#startScreen .td2-mode-icon { box-shadow: inset 0 1px #e6c78726,0 3px 9px #0007; }
+#startScreen .td2-dock-button { border-color:#826b46 !important; }
+@media (pointer:coarse) {
+  .compact-hud { backdrop-filter:none; border-color:#b89d6866; background:#0d191bed; }
+  .compact-hud-values { gap:clamp(3px,1.2vw,8px); grid-template-columns:minmax(0,1.25fr) minmax(0,1.35fr) minmax(0,.65fr) minmax(0,.55fr); }
+  .compact-hud-values small { font-size:clamp(8px,2vw,10px); letter-spacing:0; }
+  .compact-hud-values b { font-size:clamp(9px,2.5vw,13px); overflow:hidden; text-overflow:ellipsis; }
+  .compact-hud-bars>span { height:4px; }
+  .hud-menu-panel { overflow-y:auto; overscroll-behavior:contain; max-height:min(60dvh,420px); }
+  .hud-menu-panel button { min-height:44px; }
+  .touch-context { max-height:calc(100dvh - var(--hud-safe-top,12px) - var(--hud-safe-bottom,12px) - 120px); overflow-y:auto; }
+}
+@media (pointer:coarse) and (max-width:380px) {
+  .compact-hud { padding:6px 7px; }
+  .compact-hud-values { gap:3px; }
+  .compact-hud-values small { font-size:8px; }
+  .compact-hud-values b { font-size:10px; }
+}
+@media (orientation:portrait) and (max-width:800px) {
+  #startScreen .td2-mode-stack { gap:clamp(8px,1.4dvh,13px); }
+  #startScreen .td2-mode-button { border-radius:12px !important; }
+  #startScreen .td2-dock-button { border-radius:11px !important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #startScreen :is(.menu-command,.td2-mode-button,.td2-dock-button) { transition:none; }
+}
