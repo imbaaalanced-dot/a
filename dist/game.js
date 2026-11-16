@@ -1339,6 +1339,20 @@
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
+    const companion=$('menuHeroCompanion');
+    const otherCharacter=kim?'marcel':'kim';
+    const companionUrl=globalThis.TD2CanonicalHeroArt?.[otherCharacter]?.portrait||
+      (kim?'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1':'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1');
+    // The other existing hero stays visible while character selection changes.
+    const selectedAtCall=selectedCharacter;
+    if(globalThis.DenkmalAssets){
+      globalThis.DenkmalAssets.load(companionUrl).then(async img=>{
+        if(!img||selectedCharacter!==selectedAtCall)return;
+        try{await img.decode?.();}catch{return;}
+        if(selectedCharacter===selectedAtCall)companion.src=companionUrl;
+      });
+    }else companion.src=companionUrl;
+    companion.alt=otherCharacter==='kim'?'Kim · Die Treffsichere':'Marcel · Der Beschützer';
     const banner=$('menuHeroBanner');
     const bannerUrl=portraitUrl;
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
