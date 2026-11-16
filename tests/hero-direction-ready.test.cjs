@@ -35,7 +35,7 @@ const drain=async()=>{for(let i=0;i<8;i++){await new Promise(r=>setImmediate(r))
   // The approved, independently painted direction sheets must be active and
   // their atlas files must exist on disk. Nothing else may be declared.
   const approved={
-    marcel:{down:'marcel-down-actions-v5b.webp',left:'marcel-left-actions-v5b.webp',up:'marcel-up-actions-v5b.webp'},
+    marcel:{down:'marcel-down-actions-v5b-alpha-repair.webp',left:'marcel-left-actions-v5b.webp',up:'marcel-up-actions-v5b.webp'},
     kim:{down:'kim-down-actions-v5b.webp',right:'kim-right-actions-v5b.webp',up:'kim-up-actions-v5b.webp'}
   };
   for(const actor of ['marcel','kim']){

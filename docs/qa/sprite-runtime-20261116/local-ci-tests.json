@@ -1,0 +1,470 @@
+[
+  {
+    "command": "node tests/ansturm-legacy-links.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/loot-ui.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/menu-navigation.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/menu-navigation.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/startup-loading.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/alpha8-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/alpha8-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/main-menu.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portrait-home-v1.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/intro-tutorial.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/preloader.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/asset-manager.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/level67-single-image-owner.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/menu-v3b-preload.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/mobile-frame-pacing.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/mobile-fps-render-budget.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/adaptive-mobile-resolution.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/cpu-render-profiling.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/cache-busting.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/level4-seamfix-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/kirchende-site-layout.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/kirchende-building-decoration.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/ground-late-load.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/terrain-polish.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/kirchende-loading.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/kirchende-memorial-pilot.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-kirchende.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-cannon.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-towers.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/elemental-sprites.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-user-towers.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-reference-refresh.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-default.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-adapter-regression.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-cache-pressure.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-manager-pressure.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-impact-pass4.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-impact-atlas.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/v2-expansion.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-review-page.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/enemy-animations.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/flight-enemies.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/goethestrasse.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/goethestrasse-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/level5.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hohensyburg-text-free-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hohensyburg-sprite248.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/level5-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/level5-preview.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-maps.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-phase6.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-ground.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-markers.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-ambience.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-level4-reference.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/style2-church-sprite.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/canonical-hero-art-v5.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/pixel-marcel-atlas.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portrait-hud.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hero-style2-v5.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hero-sprites-v5b.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hero-action-pivot-contract.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/hero-direction-ready.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/canonical-style2-runtime.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portal-run.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portal-perks.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portal-storage.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/portal-gameplay.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/portal-gameplay.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/campaign-balance.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/loot.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/equipment-catalog.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/equipment-migration.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/boss-loot.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/equipment-effects.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/simulation-work.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/simulation-equivalence.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/ansturm-source-parity.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/game.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/barracks.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/barracks-matchups.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/barracks-campaign-runs.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/game.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/combat-fx.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/v4-alpha4.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/v4-alpha5.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/v4-alpha5.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/level4.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "TEST_MOBILE=1 node tests/level4.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/v3.1-features.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/hero-sprites-v5b.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/marcel-down-violet-matte.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/active-hero-atlas-alpha.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/hero-direction-candidate-gate.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/hero-direction-packer.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/hero-attack-sheet-intake.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-pilot-staging.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-pilot-runtime-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/kirchende-memorial-pilot.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-v2-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/v2-expansion-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/alpha8-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/alpha9-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/alpha9-user-towers.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-cleanup-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-cleanup-pass3.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-reference-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/enemy-animation-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-enemy-boss-audit.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/barracks-assets.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/style2-active-atlas-pilot-v5.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/directional-actions-v410.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/map-polish-v410.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "node tests/v410-balance.test.cjs",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/v410-source-extraction.test.py",
+    "exitCode": 0
+  },
+  {
+    "command": "python tests/v410-directional-assets.test.py",
+    "exitCode": 0
+  }
+]
