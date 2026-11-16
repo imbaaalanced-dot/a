@@ -955,7 +955,10 @@
     drawTowerBody(t);ctx.restore();
   }
   function drawTowerBody(t){
-    if(t.kind==='barracks'&&globalThis.DenkmalBarracks?.drawTower(ctx,t))return;
+    if(t.kind==='barracks'&&globalThis.DenkmalBarracks?.drawTower(ctx,t)){
+      globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());
+      return;
+    }
     shadow(t.x,t.y,24);
     runeAnchor(t.x,t.y+4,30,(t.x+t.y)*.01);
     if(globalThis.UserStyle2Towers?.drawTower?.(ctx,t.kind,t.x,t.y,t.level)){
