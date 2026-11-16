@@ -65,7 +65,7 @@ console.log('Campaign, unlocked-map endless menu, channel and mobile target chec
 
 /* Beta #330: show both current hero portraits without approving new art. */
 assert.match(html,/id="menuHeroCompanion"/,'second hero is available in menu markup');
-assert.match(css, /#startScreen \[data-menu-panel="home"\] \.menu-hero-figure/,'duo is scoped to home menu');
+assert.ok(css.includes('#startScreen[data-menu-panel="home"] .menu-hero-figure'),'duo is scoped to home menu');
 assert.ok(css.includes('display:block;height:clamp(64px,20dvh,86px)'), 'compact landscape portrait stage stays visible');
 assert.ok(game.includes("otherCharacter=kim?'marcel':'kim'"),'companion selection always targets the opposite hero');
 assert.ok(game.includes("companion.src=companionUrl"),'secondary hero updates on character switch');
