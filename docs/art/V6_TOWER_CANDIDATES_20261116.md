@@ -23,6 +23,19 @@ dist/assets/style2-v6-candidates/tuerme/upgrade_stufen/
 
 The ZIP also contains `tools/install-into-repo.py`, a local installer that avoids overwriting existing files.
 
+## Import the 12 generated WebPs
+
+Download `TD2_V6_Turmpatch_20261116.zip` from the ChatGPT conversation onto your development device, and check out the exact PR branch:
+
+```bash
+git switch feature/td2-v6-tower-candidates-20261116
+python3 tools/import-v6-tower-webps.py /path/to/TD2_V6_Turmpatch_20261116.zip --push
+```
+
+The importer refuses `main`, validates every sprite with its fixed SHA-256 checksum, preserves all existing assets, runs both focused V6 tests, and (only with `--push`) commits and pushes the twelve files to the current PR branch. You need a Git-authenticated development checkout to run `--push`. No other images are replaced.
+
+CI enforces that **all twelve files must be in the PR** before this can merge. It intentionally fails while they are absent.
+
 ## Verification
 
 - Local equivalent renderer: `node tests/v6-towers.test.cjs` — passed
