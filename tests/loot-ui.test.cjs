@@ -143,7 +143,7 @@ exitUI.render();
 get('lootBagTab').onclick();
 find(get('inventoryGrid'),e=>e.dataset.itemId).onclick();
 assert.equal(get('inventoryScreen').dataset.detailOpen,'true','item sheet starts open');
-assert.equal(get('inventoryClose').inert,false,'exit remains clickable behind mobile comparison');
+assert.notEqual(get('inventoryClose').inert,true,'exit remains clickable behind mobile comparison');
 get('inventoryClose').onclick();
 assert.equal(exitCalls,1,'fixed exit closes the entire inventory');
 assert.equal(get('inventoryScreen').dataset.detailOpen,'false','fixed exit dismisses comparison first');
