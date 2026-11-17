@@ -1,8 +1,10 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  // Opt-in artwork pilot: preserves the verified photographic sprite by default.
-  const pilot=/(?:^|[?&])td2KirchendeMemorialPilot=1(?:&|$)/.test(globalThis.location?.search||'');
+  // Style-2 monument is the current integration candidate; photo remains selectable.
+  // ?td2KirchendeMemorialLegacy=1 restores the previous photographic version.
+  const legacy=/(?:^|[?&])td2KirchendeMemorialLegacy=1(?:&|$)/.test(globalThis.location?.search||'');
+  const pilot=!legacy;
   const assets={monument:pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};
   // The opt-in plaque WebP shows unverified candles and has fringe artifacts.
   // Retain the file for later review but never request it in the game.
@@ -38,7 +40,7 @@
   function load(enabled=true){
     if(!enabled)return Promise.resolve([]);if(loading)return loading;
     loading=Promise.all(Object.keys(assets).map(loadOne)).then(async results=>{
-      // An optional preview must never block Level 3 if its art is missing.
+      // The Style-2 sprite must never block Level 3 if its art is missing.
       // Fetch the original image only after a pilot failure: avoid double decode.
       if(pilot&&!ready('monument')&&assets.monument!=='monument-photo-v2.webp'){
         assets.monument='monument-photo-v2.webp';
