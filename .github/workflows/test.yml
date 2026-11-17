@@ -92,6 +92,7 @@ jobs:
       - name: Portrait HUD and hero/loot navigation regression
         run: |
           node tests/canonical-hero-art-v5.test.cjs
+          node tests/hero-runtime-visibility.test.cjs
           node tests/pixel-marcel-atlas.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
@@ -140,6 +141,11 @@ jobs:
           TEST_MOBILE=1 node tests/level4.test.cjs
       - name: v3.1 + v3.2 feature regression suite
         run: node tests/v3.1-features.test.cjs
+
+      - name: V6 tower candidate asset gate
+        run: |
+          node tests/v6-towers.test.cjs
+          node tests/v6-tower-assets.test.cjs
 
       - name: Verify hero image decoding
         run: |
