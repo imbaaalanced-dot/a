@@ -14,6 +14,12 @@
 - WebP decode/alpha and size budget: `python tests/kirchende-memorial-pilot.test.py` in existing CI.
 - No workflow publishes to GitHub Pages, no automatic release.
 
+## Reviewed screenshot evidence (17 Nov 2026)
+- GitHub Actions `TD2 Kirchende memorial pilot Chromium QA`, run `44026497720`, artifact `level3-kirchende-memorial-chromium`: desktop/touch-portrait Style-2 and photo-legacy captures, plus 64px/128px crops.
+- **Visually confirmed**: the default Style-2 monument and the photographic legacy option render as different, recognizable monument images; the new version uses darker masonry and a prominent front inscription. The stone platform and background are present in both asset previews.
+- **Not confirmed by these screenshots**: whether the stylized helmet, lettering, masonry profile and plaque match dated site references. A readable inscription in generated art is not evidence that the wording or geometry is authentic.
+- **Release gate**: screenshots validate rendering only. Compare against original site photographs before marking Level 3 historically accepted; keep Level 7 Westhofen explicitly provisional.
+
 ## Still requiring human evidence
 - **Historical fidelity**: compare Level 3 helmet silhouette/plaque, Level 4 church/lion, Level 5 Hohensyburg bronze/stone, Level 6 Goethestraße, Level 7 Westhofen with dated reference photos. Screenshots prove drawing but cannot establish architectural accuracy; Westhofen V3 is explicitly provisional.
 - **Level 1/2**: current material/road/clearance unit audit is not a substitute for touch-portrait visual review.
