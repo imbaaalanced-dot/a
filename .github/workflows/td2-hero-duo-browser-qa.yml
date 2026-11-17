@@ -1,0 +1,43 @@
+name: TD2 hero duo real-browser visibility QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/verify-hero-duo-browser.cjs'
+      - '.github/workflows/td2-hero-duo-browser-qa.yml'
+      - 'dist/menu.css'
+      - 'dist/index.html'
+      - 'dist/hero-saga.js'
+      - 'dist/canonical-hero-art-v5.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hero-duo-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static hero asset, cache key and menu smoke
+        run: |
+          node tests/hero-runtime-visibility.test.cjs
+          node tests/canonical-hero-art-v5.test.cjs
+          node tests/menu-navigation.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Capture both hero menus and gameplay Canvas paints
+        env:
+          TD2_HERO_DUO_QA_OUT: /tmp/td2-hero-duo-qa
+        run: timeout 300s node tools/verify-hero-duo-browser.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-hero-duo-desktop-mobile-screenshots
+          path: /tmp/td2-hero-duo-qa/
+          if-no-files-found: warn
+          retention-days: 14

@@ -12,8 +12,8 @@ vm.runInNewContext(source('canonical-hero-art-v5.js'), sandbox);
 const art = sandbox.TD2CanonicalHeroArt;
 assert.ok(Object.isFrozen(art));
 for (const [actor, expected] of Object.entries({
-  marcel: 'marcel-guardian-style2.webp',
-  kim: 'kim-marksman-style2.webp'
+  marcel: 'marcel-guardian-v6.webp',
+  kim: 'kim-marksman-v6.webp'
 })) {
   const entry = art[actor];
   assert.ok(Object.isFrozen(entry), `${actor} art map must not be mutable`);

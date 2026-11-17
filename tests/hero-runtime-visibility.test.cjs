@@ -11,10 +11,10 @@ const source=name=>fs.readFileSync(path.join(root,name),'utf8');
 const html=source('index.html'),css=source('menu.css');
 const nativeDuo=html.match(/<figure class="menu-hero-figure"[\s\S]*?<\/figure>/)?.[0];
 assert.ok(nativeDuo,'home menu must include a native two-hero figure');
-assert.match(nativeDuo,/id="menuHeroBanner"[^>]*marcel-guardian-style2\.webp/);
-assert.match(nativeDuo,/id="menuHeroCompanion"[^>]*kim-marksman-style2\.webp/);
-assert.match(html,/menu\.css\?v=hero-native-duo-20261117/);
-assert.match(html,/hero-saga\.js\?v=walk-guard-20261117/);
+assert.match(nativeDuo,/id="menuHeroBanner"[^>]*marcel-guardian-v6\.webp/);
+assert.match(nativeDuo,/id="menuHeroCompanion"[^>]*kim-marksman-v6\.webp/);
+assert.match(html,/menu\.css\?v=hero-caption-right-20261117/);
+assert.match(html,/hero-saga\.js\?v=portrait-v6-clean-20261117/);
 
 const visibilityPatch=css.split('/* Hero visibility:')[1];
 assert.ok(visibilityPatch,'native duo visibility override is present');
@@ -29,6 +29,15 @@ for(const file of ['canonical-hero-art-v5.js','directional-hero-assets-v5.js'])
   vm.runInNewContext(source(file),mapping,{filename:file});
 for(const actor of ['marcel','kim']){
   const canonical=mapping.TD2CanonicalHeroArt[actor];
+  // Prior *-style2.webp were opaque VP8 images: the black rectangle was
+  // encoded in the file, not a bad CSS path. V6 must retain an alpha-capable
+  // VP8X header so the menu background remains visible behind both figures.
+  const portrait=fs.readFileSync(path.join(root,canonical.portrait.split('?')[0]));
+  assert.equal(portrait.toString('ascii',0,4),'RIFF',actor+' portrait has RIFF container');
+  assert.equal(portrait.toString('ascii',8,12),'WEBP',actor+' portrait is WebP');
+  assert.equal(portrait.toString('ascii',12,16),'VP8X',actor+' portrait supports alpha extension');
+  assert.ok((portrait[20]&0x10)!==0,actor+' portrait has alpha flag');
+  assert.ok(portrait.length<180000,actor+' portrait stays mobile-lightweight');
   for(const key of ['portrait','walk','actions'])
     assert.ok(fs.existsSync(path.join(root,canonical[key].split('?')[0])),actor+' missing '+key);
   const sides=mapping.TD2HeroSideAssets[actor];

@@ -39,7 +39,7 @@
     kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-v5b.webp?v=v5b-alpha-20261112'
   };
   const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
-    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
+    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
   let activeWalkActor=null,activeWalkImage=null,walkRetryAt=0;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;

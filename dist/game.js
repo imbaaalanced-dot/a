@@ -1368,7 +1368,7 @@
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
     const portraitUrl=globalThis.TD2CanonicalHeroArt?.[selectedCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
+      (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
     globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
@@ -1376,7 +1376,7 @@
     const companion=$('menuHeroCompanion');
     const otherCharacter=kim?'marcel':'kim';
     const companionUrl=globalThis.TD2CanonicalHeroArt?.[otherCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1':'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1');
+      (kim?'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117');
     // The other existing hero stays visible while character selection changes.
     const selectedAtCall=selectedCharacter;
     if(globalThis.DenkmalAssets){
