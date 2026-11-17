@@ -1,66 +1,110 @@
-# DENKMAL TD2 – FAST DEVELOPMENT MODE 2.1
+# DENKMAL TD2 – Agentenleitfaden 3.0
 
-## Projekt
-- Repository: `imbaaalanced-dot/a`; Basis: aktueller geprüfter `main`.
-- Plattform: mobile Browser, Android mit 4 GB RAM.
-- Grafikstil: Style 2, isometrische 2.5D Dark Fantasy.
-- Rolle: Lead-Entwicklung, Art Direction, QA und Release-Vorbereitung.
-- Grundsatz: **Weniger reden, mehr entwickeln.**
+Dieser Leitfaden regelt, wie autonome Agenten und KI-Assistenten an Denkmal TD2 arbeiten.
+Er ersetzt die bisherige AGENTS.md („Fast Development Mode 2.1") vollständig.
 
-## Arbeitsmodus
-- Sofort die kleinste wirksame, sichere Aufgabe bearbeiten; nur betroffene Dateien und Abhängigkeiten prüfen.
-- Bestehende Tests, Grafiken und Ergebnisse wiederverwenden; keine redundanten Voll-Audits, unnötigen Refactorings oder Zwischenberichte.
-- Unabhängige Arbeiten bei Bedarf parallelisieren. Bei geringem Risiko ohne Rückfragen handeln.
-- Bei „Weiter“ die letzte sichere, offene Aufgabe fortsetzen.
-- Nur belegte Ergebnisse melden; keine Tests, Leistungswerte oder Integrationen erfinden.
+## 1. Projekt-Snapshot
 
-## Standardablauf
-**Umsetzen → Prüfen → PR erstellen**
-1. Relevanten Code prüfen, von verifiziertem `main` einen **neuen Entwicklungsbranch** erstellen und die Änderung implementieren.
-2. Vorhandene betroffene Tests und notwendige Regressionen ausführen, Fehler beheben und verpflichtende CI-Checks prüfen.
-3. Commit und Pull Request erstellen; unvollständige Änderungen als Draft-PR. Status knapp melden.
+| Eigenschaft | Wert |
+| --- | --- |
+| Repository | `imbaaalanced-dot/a` (Default-Branch: `main`) |
+| Spiel | Browser-Tower-Defense im Denkmal-Setting, statische App, kein Build-Step am Root |
+| Grafikstil | Style 2 – isometrische 2.5D Dark Fantasy |
+| Zielplattform | Mobile Browser, Android, 4 GB RAM, Hochformat, Touch |
+| Veröffentlichung | GitHub Pages aus `dist/` (https://imbaaalanced-dot.github.io/a/) |
+| Team | Solo-Entwicklung (imbaaalanced-dot); externe PRs werden nicht angenommen |
+| Rolle des Agenten | Umsetzung, Art Direction, QA, Release-Vorbereitung |
 
-**Nie direkt auf `main` entwickeln.** Bestehende PRs nicht ungefragt verändern. Merge, Release, Löschen von Branches/PRs und irreversible Datenänderungen nur mit ausdrücklicher, zielbezogener Freigabe. Branch-Schutz niemals umgehen.
+Wichtig: Aktuelle Stände und offene PRs **vor jeder Arbeit auf GitHub prüfen**. Keine Annahmen über bereits gemergte Features.
 
-## Style-2-Grafiken
-- Verbindliche Referenzen für Marcel und Kim verwenden; Originale erhalten.
-- Vor Neugenerierung vorhandene Animationen prüfen; Gegner, Bosse, Türme, Gebäude, Levelumgebungen und historische Denkmäler konsistent gestalten.
-- Nur betroffene Assets auf Perspektive, Alpha, Auflösung, Pivot, Insets, Framefolge, Atlas, Ladepfade und Speicherbedarf prüfen.
-- Optimierte, vom Loader unterstützte Runtime-Assets verwenden; doppelte oder unbenutzte Dateien nicht blind löschen.
-- Status: **Generiert → Technisch geprüft → Integriert → Im Spiel geprüft**. Integration erst nach nachgewiesenem Runtime-Laden und visueller Prüfung behaupten.
+## 2. Repo-Landkarte
 
-## Performance
-- FPS bei Gegnerwellen, Canvas, RAM, Caching, KI, Projektilen, Kollisionen, Touch, Flackern und langen Sitzungen gezielt verbessern.
-- Vorher-/Nachher-Messwerte erfassen, soweit möglich; keine unbelegten FPS-/RAM-Versprechen.
-- Desktop-Chromium, mobile Emulation und physische Android-Tests getrennt ausweisen.
+- `dist/` – lauffähiges Spiel und veröffentlichter Build. Der Loader erwartet Assets hier und in `dist/assets/`.
+- `dist/ansturm/`, `dist/td2-ansturm-tutorial/` – Ansturm-Modus und Tutorial.
+- `tests/` – Node-Tests (`game.test.cjs`), Mobile-Suite (`TEST_MOBILE=1`), Python-Asset-Tests (`assets.test.py`).
+- `docs/` – Level-Dokumentation, Style-2-Pässe, QA- und Abnahmeprotokolle, Performance-Benchmarks. **Historische Dokumente können überholt sein.**
+- `docs/STYLE2_*.md` – verbindliche Style-2-Referenzen und Abnahmestände.
+- `ansturm-alpha1-5/` – separater npm-Testbereich.
+- `tools/`, `source-art/`, `originals/` – Werkzeuge und Original-Referenzen (Originale niemals überschreiben).
 
-## Gameplay und UI
-Priorität: **Style-2-Integration → Android-Performance → Menü/HUD → Heldenanimationen → Gegner/Bosse → Kampagne/Ansturm → Inventar/Loot/Upgrades**.
-- Kampagne maximal 2× Geschwindigkeit; Developer-Modus nicht erneut einführen.
-- Ansturm: Denkmal zentral, Gegner von Kartenrändern; keine Spawnportale oder spielbaren Helden.
-- Spielstände, Freischaltungen und historische Referenzen bewahren.
+Schnellstart zum lokalen Prüfen:
+```bash
+python3 -m http.server 8777 --directory dist
+node tests/game.test.cjs
+TEST_MOBILE=1 node tests/game.test.cjs
+npm test --prefix ansturm-alpha1-5
+python3 tests/assets.test.py
+```
 
-## Game Development Studio
-- Nur bei Bedarf für Asset-Produktion/Paketprüfung, Renderdiagnose, visuelle Vergleiche und Performance-Messung verwenden.
-- Keine komplette Pipeline für kleine Änderungen.
-- Lokale Entwicklungs-, Diagnose-, Schreib- und Testbefehle innerhalb des beauftragten Arbeitsumfangs ohne zusätzliche Einzelfreigabe ausführen. Die Schutzregeln für Merge, Release, das Löschen von Branches/PRs und irreversible Datenänderungen gelten weiterhin; technische Sandbox-Berechtigungen bleiben davon unberührt.
-- Hardware-, GPU- und Grafikprüfungen nur als bestanden melden, wenn tatsächlich nachgewiesen.
+## 3. Verhaltensgrundsätze
 
-## Tests und GitHub
-- Testbefehle aus dem realen Repository ermitteln; relevante JavaScript-/Asset-/Regressionstests ausführen.
-- Chromium-Smoke-Tests bei UI-/Runtime-Änderungen; echte Android-4-GB-Abnahme bleibt offen, bis sie durchgeführt wurde.
-- Fehlgeschlagene Pflichtchecks beheben, nicht ignorieren.
-- Änderungen an Spielständen, grundlegender Architektur oder größeren Gameplay-Systemen zusätzlich abnehmen lassen.
-- CI, Merge, Deployment und veröffentlichte HTTPS-Vorschau unabhängig verifizieren; ein Merge beweist keine Veröffentlichung.
+1. **Kleinste wirksame Änderung.** Nur betroffene Dateien und direkte Abhängigkeiten anfassen. Keine Voll-Audits, kein Re-Launch von Refactorings ohne Auftrag.
+2. **Nur Belegtes behaupten.** Keine erfundenen Testergebnisse, FPS-, RAM- oder Integrationsaussagen. Offen heißt offen.
+3. **Vorhandenes wiederverwenden.** Bestehende Tests, Assets, Dokumente und Ergebnisse nutzen, bevor Neues entsteht.
+4. **Ohne Rückfragen handeln, wenn das Risiko gering ist.** Bei hohem Risiko oder Schutzzonen (Abschnitt 8) vorher fragen.
+5. **Datenintegrität bewahren.** Spielstände, Freischaltungen und historische Referenzen dürfen nie verloren gehen oder stillschweigend geändert werden.
 
-## Kommunikation
-Kurz, technisch, ergebnisorientiert; keine langen Einleitungen, mehrfachen Bestätigungen oder spekulativen Statusmeldungen. Bei Blockern Ursache, Auswirkung und einen nächsten Schritt nennen.
+## 4. Arbeitszyklus
 
-**Abschlussformat:**
-- **Änderung:** Umsetzung/offen
-- **Test:** bestanden/fehlgeschlagen/offen
-- **PR/Commit:** tatsächliche Referenz
-- **Merge/Release:** bestätigter Status
-- **Nächstes:** eine konkrete Aufgabe
+```
+Stand prüfen → Branch → umsetzen → testen → PR → (Freigabe) → Merge → Release verifizieren
+```
 
-**Ziel:** Denkmal TD2 schnell, stabil, grafisch einheitlich und performant weiterentwickeln, ohne Qualität, Datenintegrität oder Branch-Schutz zu opfern.
+1. **Branch:** Von aktuell verifiziertem `main` einen thematischen Branch erstellen (`feature/…`, `fix/…`, `assets/…`). Nie direkt auf `main` arbeiten.
+2. **Umsetzen:** Änderung implementieren, klein und testbar halten.
+3. **Testen:** Betroffene Tests aus Abschnitt 2 ausführen; fehlgeschlagene Pflichtchecks beheben, nicht ignorieren. CI (test.yml) muss grün sein.
+4. **PR:** Commit + Pull Request mit knapper, fachlicher Beschreibung. Unvollständige Arbeit als Draft-PR.
+5. **Merge/Release:** Nur mit ausdrücklicher Freigabe (Abschnitt 8). Nach Merge die veröffentlichte HTTPS-Vorschau unabhängig verifizieren – ein Merge beweist keine Veröffentlichung.
+
+Bei „Weiter": die letzte sichere, offene Aufgabe fortführen.
+
+## 5. Grafik und Assets (Style 2)
+
+- Verbindliche Referenzen für Marcel und Kim verwenden; Originale unter `originals/` bleiben unangetastet.
+- Vor jeder Neugenerierung prüfen, ob bereits eine brauchbare Animation/Asset existiert.
+- Konsistenz sichern über: Perspektive, Alpha, Auflösung, Pivot, Insets, Framefolge, Atlas, Ladepfade, Speicherbedarf.
+- Nur loader-unterstützte, optimierte Runtime-Assets integrieren; doppelte oder unbenutzte Dateien nicht blind löschen.
+- Asset-Statuskette: **Generiert → Technisch geprüft → Integriert → Im Spiel geprüft.** „Integriert" erst nach nachgewiesenem Runtime-Laden und visueller Prüfung im Spiel behaupten.
+- Ansturm-Regeln: Denkmal zentral, Gegner von Kartenrändern; keine Spawnportale, keine spielbaren Helden im Ansturm.
+
+## 6. Teststufen und Abnahme
+
+| Stufe | Was | Aussagekraft |
+| --- | --- | --- |
+| 1 | Node-/Python-Tests (`node tests/game.test.cjs` etc.) | Logik und Assets – **keine** Browser-/Android-Abnahme |
+| 2 | Chromium-Smoke-Test (Desktop) | UI/Runtime-Grundfunktion |
+| 3 | Mobile-Emulation (`TEST_MOBILE=1`) | Layout/Touch-Indikatoren |
+| 4 | Physisches Android-Gerät, 4 GB RAM | Einzige echte Abnahme für Performance und Touch |
+
+Jede Stufe getrennt ausweisen. Stufe 4 gilt als offen, bis sie tatsächlich durchgeführt und dokumentiert wurde. Änderungen an Spielständen, Kernarchitektur oder großen Gameplay-Systemen zusätzlich beim Nutzer abnehmen lassen.
+
+## 7. Performance-Regeln
+
+- Primärziele: FPS bei großen Gegnerwellen, RAM-Peaks, Grafik-Caching, Flackern, lange Sitzungen, Touch-Reaktivität.
+- Vorher-/Nachher-Messwerte erfassen, wo möglich; keine unbelegten Versprechen.
+- Worst-Case-Szenarien (viele Gegner, viele Projektile) bei Balancing-Änderungen immer mitdenken.
+- Kampagne: maximal 2× Geschwindigkeit; den Developer-Modus nicht erneut einführen.
+
+## 8. Schutzzonen – nur mit ausdrücklicher Freigabe
+
+- Merge von PRs, Releases/Veröffentlichungen.
+- Löschen von Branches, PRs, Assets oder Original-Referenzen.
+- Irreversible Datenänderungen (inkl. Spielstände/Migrationsformate).
+- Änderungen an bestehenden PRs anderer (hier: des Nutzers).
+- Umgehung von Branch-Schutz oder CI-Pflichtchecks.
+
+Alles andere im beauftragten Arbeitsumfeld (lokale Befehle, Tests, Diagnose, Sandbox-Berechtigungen) ohne zusätzliche Einzelfreigabe.
+
+## 9. Berichtsformat
+
+Kurz, technisch, ergebnisorientiert. Keine langen Einleitungen, keine mehrfachen Bestätigungen, keine Spekulation. Bei Blockern: Ursache, Auswirkung, ein nächster Schritt.
+
+```
+Änderung:    umgesetzt / offen
+Test:        Stufe 1 bestanden / Stufe 2–4 offen / fehlgeschlagen (Grund)
+PR/Commit:   tatsächliche Referenz
+Merge/Release: bestätigter Status
+Nächstes:    eine konkrete Aufgabe
+```
+
+**Ziel:** Denkmal TD2 schnell, stabil, grafisch einheitlich und performant weiterentwickeln – ohne Qualität, Datenintegrität oder Branch-Schutz zu opfern.
