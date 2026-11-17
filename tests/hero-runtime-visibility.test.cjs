@@ -29,6 +29,15 @@ for(const file of ['canonical-hero-art-v5.js','directional-hero-assets-v5.js'])
   vm.runInNewContext(source(file),mapping,{filename:file});
 for(const actor of ['marcel','kim']){
   const canonical=mapping.TD2CanonicalHeroArt[actor];
+  // Prior *-style2.webp were opaque VP8 images: the black rectangle was
+  // encoded in the file, not a bad CSS path. V6 must retain an alpha-capable
+  // VP8X header so the menu background remains visible behind both figures.
+  const portrait=fs.readFileSync(path.join(root,canonical.portrait.split('?')[0]));
+  assert.equal(portrait.toString('ascii',0,4),'RIFF',actor+' portrait has RIFF container');
+  assert.equal(portrait.toString('ascii',8,12),'WEBP',actor+' portrait is WebP');
+  assert.equal(portrait.toString('ascii',12,16),'VP8X',actor+' portrait supports alpha extension');
+  assert.ok((portrait[20]&0x10)!==0,actor+' portrait has alpha flag');
+  assert.ok(portrait.length<180000,actor+' portrait stays mobile-lightweight');
   for(const key of ['portrait','walk','actions'])
     assert.ok(fs.existsSync(path.join(root,canonical[key].split('?')[0])),actor+' missing '+key);
   const sides=mapping.TD2HeroSideAssets[actor];
