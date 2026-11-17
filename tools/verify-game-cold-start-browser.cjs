@@ -53,8 +53,22 @@ const server=http.createServer((req,res)=>{
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
    await page.screenshot({path:path.join(output,name+'-pending.png')});release();
-   if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
-   else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
+   try{
+    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9,null,{timeout:30000});
+    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1,null,{timeout:30000});
+   }catch(error){
+    const diagnostic=await page.evaluate(()=>({
+      loaded:globalThis.TD2GroundV3?.loadedCount??null,
+      revision:globalThis.TD2GroundV3?.revision??null,
+      enabled:globalThis.TD2GroundV3?.enabled??null,
+      requests:performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).map(r=>({name:r.name.split('/').pop(),duration:Math.round(r.duration),transferSize:r.transferSize})),
+      state:globalThis.DenkmalTestHooks?.getState?.()??null,
+      activeLevel:globalThis.Style2Maps?.stats?.().activeLevel??null
+    })).catch(e=>({diagnosticError:String(e)}));
+    console.error('Ground materials did not settle: '+JSON.stringify({mobile,fail,requested,diagnostic,errors,failed}));
+    await page.screenshot({path:path.join(output,name+'-material-timeout.png')}).catch(()=>{});
+    throw error;
+   }
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    const after=await snapshot();assert.equal(after.state,'playing');assert.equal(after.level,1);
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
