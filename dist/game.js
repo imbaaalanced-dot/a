@@ -1375,8 +1375,10 @@
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     const companion=$('menuHeroCompanion');
     const otherCharacter=kim?'marcel':'kim';
-    const companionUrl=globalThis.TD2CanonicalHeroArt?.[otherCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117');
+    // Menu-only illustration: do not change HUD/armory portrait or game atlases.
+    const menuMarcelPortrait='assets/menu/v6/marcel-wand-menu-portrait-20261117.avif?v=wand-menu-v6-20261117';
+    const companionUrl=otherCharacter==='marcel'?menuMarcelPortrait:
+      (globalThis.TD2CanonicalHeroArt?.kim?.portrait||'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117');
     // The other existing hero stays visible while character selection changes.
     const selectedAtCall=selectedCharacter;
     if(globalThis.DenkmalAssets){
@@ -1388,7 +1390,7 @@
     }else companion.src=companionUrl;
     companion.alt=otherCharacter==='kim'?'Kim · Die Treffsichere':'Marcel · Der Beschützer';
     const banner=$('menuHeroBanner');
-    const bannerUrl=portraitUrl;
+    const bannerUrl=kim?portraitUrl:menuMarcelPortrait;
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{
       if(!img||selectedCharacter!==(kim?'kim':'marcel'))return;
       try{await img.decode?.();}catch{return;}
