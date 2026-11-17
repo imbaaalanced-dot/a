@@ -26,3 +26,14 @@ export const ENEMY = {
  siege:{hp:135,speed:.035,dps:18,gold:35,color:'#a76c58'},
  boss:{hp:400,speed:.035,dps:18,gold:125,color:'#9b5ac8'}
 };
+
+// Spieltempo (#330): normaler Ansturm-Modus max. 2x, Ansturm-Entwicklermodus
+// (URL ?dev oder localStorage 'ansturm-developer-speed'='enabled') bis 5x.
+// Das Tempo wirkt nur auf den Fixschritt-Akkumulator (1/30-s-Ticks, Deckel 10)
+// und bleibt damit deterministisch und unabhaengig von der Render-Bildrate.
+export const SPEED_LIMITS={normal:2,developer:5};
+export function nextSpeed(current,developerMode){
+  const limit=developerMode?SPEED_LIMITS.developer:SPEED_LIMITS.normal;
+  const value=Number.isFinite(current)&&current>=1?Math.floor(current):1;
+  return value>=limit?1:value+1;
+}
