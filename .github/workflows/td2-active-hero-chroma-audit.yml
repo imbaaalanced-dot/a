@@ -1,0 +1,36 @@
+name: TD2 active hero chroma audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/audit-active-hero-chroma.py'
+      - '.github/workflows/td2-active-hero-chroma-audit.yml'
+      - 'dist/canonical-hero-art-v5.js'
+      - 'dist/directional-hero-assets-v5.js'
+      - 'dist/assets/hero/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hero-chroma-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image decoder
+        run: python -m pip install --disable-pip-version-check Pillow
+      - name: Audit active hero frames without modifying artwork
+        run: python tools/audit-active-hero-chroma.py --out /tmp/td2-active-hero-chroma.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-active-hero-chroma-report
+          path: /tmp/td2-active-hero-chroma.json
+          if-no-files-found: warn
+          retention-days: 14
