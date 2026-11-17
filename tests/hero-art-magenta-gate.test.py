@@ -1,0 +1,63 @@
+"""Beta #330 P0 gate: runtime-referenced hero/menu art must contain no hot-pink color-key residue.
+
+Scans every RGBA image that dist code actually references under the hero/menu surface
+(hero atlases, v5-avatars portraits, directional hero sheets) and asserts zero pixels
+with the magenta key signature (alpha visible, r>180, b>120, g<90). Test fixtures and
+workflow-pinned legacy files (v5 avatars, alpha8 sheets) are not runtime-referenced
+and stay out of scope.
+"""
+import os
+import re
+from pathlib import Path
+
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
+DIST = ROOT / 'dist'
+REF = re.compile(r"assets/[A-Za-z0-9_./-]+\.(?:webp|png)")
+SCOPE = ('/hero/', '/menu/', 'directional-v410/marcel', 'directional-v410/kim', '-v5b', '-v6')
+
+refs = set()
+for dirpath, _dirs, files in os.walk(DIST):
+    for name in files:
+        if not name.lower().endswith(('.js', '.css', '.html')):
+            continue
+        text = open(os.path.join(dirpath, name), encoding='utf-8', errors='replace').read()
+        for match in REF.finditer(text):
+            candidate = Path(dirpath) / match.group(0)
+            if not candidate.exists():
+                candidate = DIST / match.group(0)
+            if candidate.exists():
+                refs.add(candidate)
+
+scanned = 0
+flagged = []
+for path in sorted(refs):
+    rel = str(path.relative_to(DIST))
+    if not any(key in rel for key in SCOPE):
+        continue
+    if path.suffix.lower() not in ('.webp', '.png'):
+        continue
+    with Image.open(path) as image:
+        image.load()
+        if image.mode != 'RGBA':
+            continue
+        width, height = image.size
+        if width * height > 4_000_000:
+            continue
+        pixels = image.load()
+        hot = sum(
+            1
+            for y in range(height)
+            for x in range(width)
+            if (lambda r, g, b, a: a > 16 and r > 180 and b > 120 and g < 90)(*pixels[x, y])
+        )
+    scanned += 1
+    if hot:
+        flagged.append((rel, hot))
+
+assert scanned >= 10, f'expected to scan the active hero/menu surface, got {scanned} images'
+for rel, hot in flagged:
+    print(f'HOT-PINK: {rel}: {hot} px')
+assert not flagged, 'magenta color-key residue in runtime hero art (see #330 P0)'
+print(f'Hero art magenta gate: {scanned} runtime-referenced images clean')
