@@ -61,7 +61,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','late-ground-20261113'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','late-ground-20261113'],
-  ['game.js', 'portrait-v6-clean-20261117'],
+  ['game.js', 'wand-menu-refined-20261117'],
   ['barracks.js','beta-barracks-matte-20261116'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
