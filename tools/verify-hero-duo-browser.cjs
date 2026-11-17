@@ -80,12 +80,20 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
               visible:r.width>10&&r.height>10&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth&&
                 style.display!=='none'&&style.visibility==='visible'&&Number(style.opacity)>.9&&parent.display!=='none'};
           };
+          const bounds=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};
           return {banner:details('menuHeroBanner'),companion:details('menuHeroCompanion'),
+            figure:bounds(document.querySelector('#startScreen .menu-hero-figure')),
+            caption:bounds(document.getElementById('menuHeroCaption')),
             panel:document.getElementById('startScreen').dataset.menuPanel};
         });
         assert.equal(menu.panel,'home',name+' returns to home panel');
         assert.ok(menu.banner.visible&&menu.companion.visible,name+' both original hero portraits rendered '+JSON.stringify(menu));
         assert.ok(menu.banner.naturalWidth>0&&menu.companion.naturalWidth>0,name+' both portrait files decode');
+        assert.ok(menu.caption.x+menu.caption.width/2>menu.figure.x+menu.figure.width/2,
+          name+' active-hero caption sits on the selected right figure '+JSON.stringify(menu));
+        assert.ok(menu.caption.bottom<=menu.figure.bottom+1,name+' caption stays inside hero frame');
+        if(config.name==='landscape-844')
+          assert.ok(menu.figure.height>=80,name+' landscape hero frame has a readable height');
         assert.deepEqual(failed,[],name+' menu hero asset responses');
         await page.screenshot({path:path.join(out,name+'-menu.png'),animations:'disabled'});
 
