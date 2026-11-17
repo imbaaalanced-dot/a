@@ -1,0 +1,21 @@
+name: TD2 Marcel staff art-review guard
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/art/beta/marcel-staff-v6-*'
+      - 'tools/verify-beta-marcel-art-review.cjs'
+      - '.github/workflows/td2-beta-marcel-art-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  art-review-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Review thumbnail integrity (NOT art approval)
+        run: node tools/verify-beta-marcel-art-review.cjs

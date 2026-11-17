@@ -1,0 +1,28 @@
+'use strict';
+/* A review gate, not an automated artistic approval or runtime asset swap. */
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..');
+const rel='docs/art/beta/marcel-staff-v6-preview-64.webp';
+const data=fs.readFileSync(path.join(root,rel));
+assert.equal(data.toString('ascii',0,4),'RIFF','review thumb must be RIFF');
+assert.equal(data.toString('ascii',8,12),'WEBP','review thumb must be WebP');
+assert.equal(data.toString('ascii',12,16),'VP8X','review thumb must contain VP8X/alpha');
+assert.ok(data[20]&0x10,'transparent alpha flag required');
+const dimension=(p)=>data[p]+(data[p+1]<<8)+(data[p+2]<<16)+1;
+assert.equal(dimension(24),64,'review thumb width');
+assert.equal(dimension(27),96,'review thumb height');
+assert.ok(data.length<5000,'review thumb should stay tiny');
+const sha=crypto.createHash('sha256').update(data).digest('hex');
+assert.equal(sha,'c64f6122fd25041583675ef4fd2a1a26ac4b04478aa50b18b94692ebda5a595b','preview integrity');
+const doc=fs.readFileSync(path.join(root,'docs/art/beta/marcel-staff-v6-review-20261117.md'),'utf8');
+assert.match(doc,/art_approval=manual-required/);
+assert.match(doc,/NOT APPROVED/);
+assert.match(doc,/NO RUNTIME CHANGE/);
+assert.match(doc,/Android 4 GB/);
+const canonical=fs.readFileSync(path.join(root,'dist/canonical-hero-art-v5.js'),'utf8');
+assert.match(canonical,/marcel-guardian-v6\.webp/,'existing runtime portrait not silently changed');
+assert.match(canonical,/kim-marksman-v6\.webp/,'Kim is unchanged');
+console.log('Marcel crystal-staff review thumbnail, SHA, alpha, dimensions and no-runtime-change gate passed (ART APPROVAL STILL OPEN)');
