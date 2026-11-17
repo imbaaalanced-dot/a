@@ -32,7 +32,12 @@ let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.repla
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 source=source.replace('lootModel,drawMonument,drawEnemy,','lootModel,completeLevel,drawMonument,drawEnemy,');
 vm.runInContext(source,sandbox);
-assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),true,'developer mode starts enabled without a saved choice');
+assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),false,'a new player starts in normal campaign mode');
+assert.equal(element('menuDeveloperBtn')['aria-pressed'],'false');
+element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
+assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'enabled');
+vm.runInContext(source,sandbox);
+assert.equal(sandbox.DenkmalTestHooks.getDeveloperMode(),true,'explicitly enabled developer mode survives a reload');
 assert.equal(element('menuDeveloperBtn')['aria-pressed'],'true');
 element('menuOptionsBtn').onclick();element('menuDeveloperBtn').onclick();
 assert.equal(sandbox.localStorage.getItem('td2-developer-mode-v2'),'disabled');
@@ -139,6 +144,10 @@ check('Developer mode opens all maps and 3x without changing progression or loot
     t.lootModel.claimEnemy=()=>{throw Error('developer runs must not persist drops');};
     t.hurtEnemy({x:400,y:400,r:16,hp:1,maxHp:1,type:'wraith',armor:0,dead:false,hitKick:0},10);
   }finally{t.lootModel.claimEnemy=originalClaim;}
+  t.spawnEnemy('boss');
+  const devBoss=t.game.enemies.at(-1);
+  t.hurtEnemy(devBoss,1e7,{fixedDamage:true});
+  assert.equal(JSON.stringify(t.lootModel.profile),profile,'developer boss kill must not grant permanent loot');
   t.completeLevel();
   assert.equal(JSON.stringify(t.lootModel.profile),profile,'test run did not change loot');
   assert.equal(JSON.stringify([sandbox.DenkmalLevels.unlocked,sandbox.DenkmalLevels.level4Completed,sandbox.DenkmalLevels.level5Completed,sandbox.DenkmalLevels.level6Completed,sandbox.DenkmalLevels.level7Completed]),flags,'test run did not change campaign flags');
