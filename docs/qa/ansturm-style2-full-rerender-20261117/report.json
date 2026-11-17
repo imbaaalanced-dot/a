@@ -1,0 +1,984 @@
+{
+  "exe": "/home/appuser/.cache/ms-playwright/chromium_headless_shell-1148/chrome-linux/headless_shell",
+  "base": "http://127.0.0.1:44299",
+  "runs": [
+    {
+      "mode": "desktop",
+      "state": {
+        "txt": "Welle 2 · 5 Gegner",
+        "wave": "2",
+        "gold": "32"
+      },
+      "errors": [],
+      "failed": [],
+      "webpStatuses": [
+        {
+          "name": "memorial-yard-v3.webp",
+          "status": 200
+        },
+        {
+          "name": "crest-v3.webp",
+          "status": 200
+        },
+        {
+          "name": "ui-slate.webp",
+          "status": 200
+        },
+        {
+          "name": "arena-stone-v1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_1.webp",
+          "status": 200
+        },
+        {
+          "name": "monument.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_3.webp",
+          "status": 200
+        },
+        {
+          "name": "build_pad.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_2.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_armored.webp",
+          "status": 200
+        },
+        {
+          "name": "research_shrine.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_runner.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_normal.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_cultist.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_shieldbearer.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_bomber.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_gargoyle.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_stonebreaker.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_shieldwarden.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_siege.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_stormlord.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_colossus.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_attack.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_tempo.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_hp.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_regen.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_range.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_multishot.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_gold.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_explosion.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_tesla.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_frost.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_shield.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_fire.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_pierce.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_lightning.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_bolt.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_blast.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_ice.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_fire.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_lance.webp",
+          "status": 200
+        }
+      ],
+      "webpCount": 59,
+      "webpOk": 59,
+      "resources": [
+        {
+          "name": "memorial-yard-v3.webp",
+          "bytes": 157212
+        },
+        {
+          "name": "crest-v3.webp",
+          "bytes": 56604
+        },
+        {
+          "name": "ui-slate.webp",
+          "bytes": 37602
+        },
+        {
+          "name": "arena-stone-v1.webp",
+          "bytes": 111176
+        },
+        {
+          "name": "weapon_multishot_2.webp",
+          "bytes": 10816
+        },
+        {
+          "name": "weapon_multishot_1.webp",
+          "bytes": 10858
+        },
+        {
+          "name": "weapon_multishot_3.webp",
+          "bytes": 22568
+        },
+        {
+          "name": "weapon_tesla_1.webp",
+          "bytes": 19244
+        },
+        {
+          "name": "weapon_tesla_2.webp",
+          "bytes": 17240
+        },
+        {
+          "name": "weapon_tesla_3.webp",
+          "bytes": 22788
+        },
+        {
+          "name": "weapon_explosion_1.webp",
+          "bytes": 23978
+        },
+        {
+          "name": "weapon_explosion_2.webp",
+          "bytes": 25478
+        },
+        {
+          "name": "weapon_explosion_3.webp",
+          "bytes": 26624
+        },
+        {
+          "name": "weapon_frost_2.webp",
+          "bytes": 24760
+        },
+        {
+          "name": "weapon_frost_1.webp",
+          "bytes": 20082
+        },
+        {
+          "name": "weapon_frost_3.webp",
+          "bytes": 31478
+        },
+        {
+          "name": "weapon_shield_1.webp",
+          "bytes": 24124
+        },
+        {
+          "name": "weapon_shield_2.webp",
+          "bytes": 19086
+        },
+        {
+          "name": "weapon_shield_3.webp",
+          "bytes": 18186
+        },
+        {
+          "name": "weapon_fire_1.webp",
+          "bytes": 23934
+        },
+        {
+          "name": "weapon_fire_2.webp",
+          "bytes": 14654
+        },
+        {
+          "name": "weapon_fire_3.webp",
+          "bytes": 26930
+        },
+        {
+          "name": "weapon_pierce_1.webp",
+          "bytes": 10352
+        },
+        {
+          "name": "weapon_pierce_2.webp",
+          "bytes": 8104
+        },
+        {
+          "name": "monument.webp",
+          "bytes": 42146
+        },
+        {
+          "name": "weapon_pierce_3.webp",
+          "bytes": 19100
+        },
+        {
+          "name": "build_pad.webp",
+          "bytes": 68078
+        },
+        {
+          "name": "enemy_normal.webp",
+          "bytes": 21252
+        },
+        {
+          "name": "research_shrine.webp",
+          "bytes": 36084
+        },
+        {
+          "name": "enemy_armored.webp",
+          "bytes": 25768
+        },
+        {
+          "name": "enemy_runner.webp",
+          "bytes": 11570
+        },
+        {
+          "name": "enemy_cultist.webp",
+          "bytes": 21592
+        },
+        {
+          "name": "enemy_bomber.webp",
+          "bytes": 22078
+        },
+        {
+          "name": "enemy_shieldbearer.webp",
+          "bytes": 13248
+        },
+        {
+          "name": "enemy_gargoyle.webp",
+          "bytes": 27492
+        },
+        {
+          "name": "boss_stonebreaker.webp",
+          "bytes": 27618
+        },
+        {
+          "name": "enemy_siege.webp",
+          "bytes": 17948
+        },
+        {
+          "name": "boss_shieldwarden.webp",
+          "bytes": 36962
+        },
+        {
+          "name": "boss_stormlord.webp",
+          "bytes": 30598
+        },
+        {
+          "name": "boss_colossus.webp",
+          "bytes": 25052
+        },
+        {
+          "name": "icon_attack.webp",
+          "bytes": 4866
+        },
+        {
+          "name": "icon_tempo.webp",
+          "bytes": 11104
+        },
+        {
+          "name": "icon_hp.webp",
+          "bytes": 10700
+        },
+        {
+          "name": "icon_regen.webp",
+          "bytes": 9388
+        },
+        {
+          "name": "icon_range.webp",
+          "bytes": 8672
+        },
+        {
+          "name": "icon_gold.webp",
+          "bytes": 8240
+        },
+        {
+          "name": "icon_multishot.webp",
+          "bytes": 4160
+        },
+        {
+          "name": "icon_tesla.webp",
+          "bytes": 7418
+        },
+        {
+          "name": "icon_explosion.webp",
+          "bytes": 7582
+        },
+        {
+          "name": "icon_frost.webp",
+          "bytes": 8108
+        },
+        {
+          "name": "icon_shield.webp",
+          "bytes": 8000
+        },
+        {
+          "name": "icon_fire.webp",
+          "bytes": 8226
+        },
+        {
+          "name": "icon_pierce.webp",
+          "bytes": 3066
+        },
+        {
+          "name": "effect_bolt.webp",
+          "bytes": 8224
+        },
+        {
+          "name": "effect_lightning.webp",
+          "bytes": 6774
+        },
+        {
+          "name": "effect_blast.webp",
+          "bytes": 18154
+        },
+        {
+          "name": "effect_ice.webp",
+          "bytes": 18232
+        },
+        {
+          "name": "effect_fire.webp",
+          "bytes": 7076
+        },
+        {
+          "name": "effect_lance.webp",
+          "bytes": 7902
+        }
+      ]
+    },
+    {
+      "mode": "mobile",
+      "state": {
+        "txt": "Welle 2 · 7 Gegner",
+        "wave": "2",
+        "gold": "32"
+      },
+      "errors": [],
+      "failed": [],
+      "webpStatuses": [
+        {
+          "name": "crest-v3.webp",
+          "status": 200
+        },
+        {
+          "name": "memorial-yard-v3.webp",
+          "status": 200
+        },
+        {
+          "name": "ui-slate.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_1.webp",
+          "status": 200
+        },
+        {
+          "name": "arena-stone-v1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_multishot_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_tesla_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_explosion_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_frost_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_shield_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_fire_3.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_1.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_2.webp",
+          "status": 200
+        },
+        {
+          "name": "weapon_pierce_3.webp",
+          "status": 200
+        },
+        {
+          "name": "monument.webp",
+          "status": 200
+        },
+        {
+          "name": "build_pad.webp",
+          "status": 200
+        },
+        {
+          "name": "research_shrine.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_runner.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_normal.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_armored.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_cultist.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_shieldbearer.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_bomber.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_gargoyle.webp",
+          "status": 200
+        },
+        {
+          "name": "enemy_siege.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_stormlord.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_stonebreaker.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_colossus.webp",
+          "status": 200
+        },
+        {
+          "name": "boss_shieldwarden.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_tempo.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_attack.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_regen.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_hp.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_range.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_gold.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_multishot.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_explosion.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_tesla.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_frost.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_fire.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_shield.webp",
+          "status": 200
+        },
+        {
+          "name": "icon_pierce.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_bolt.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_blast.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_fire.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_ice.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_lightning.webp",
+          "status": 200
+        },
+        {
+          "name": "effect_lance.webp",
+          "status": 200
+        }
+      ],
+      "webpCount": 59,
+      "webpOk": 59,
+      "resources": [
+        {
+          "name": "crest-v3.webp",
+          "bytes": 56604
+        },
+        {
+          "name": "memorial-yard-v3.webp",
+          "bytes": 157212
+        },
+        {
+          "name": "ui-slate.webp",
+          "bytes": 37602
+        },
+        {
+          "name": "weapon_multishot_1.webp",
+          "bytes": 10858
+        },
+        {
+          "name": "arena-stone-v1.webp",
+          "bytes": 111176
+        },
+        {
+          "name": "weapon_multishot_2.webp",
+          "bytes": 10816
+        },
+        {
+          "name": "weapon_multishot_3.webp",
+          "bytes": 22568
+        },
+        {
+          "name": "weapon_tesla_1.webp",
+          "bytes": 19244
+        },
+        {
+          "name": "weapon_tesla_2.webp",
+          "bytes": 17240
+        },
+        {
+          "name": "weapon_tesla_3.webp",
+          "bytes": 22788
+        },
+        {
+          "name": "weapon_explosion_1.webp",
+          "bytes": 23978
+        },
+        {
+          "name": "weapon_explosion_2.webp",
+          "bytes": 25478
+        },
+        {
+          "name": "weapon_explosion_3.webp",
+          "bytes": 26624
+        },
+        {
+          "name": "weapon_frost_1.webp",
+          "bytes": 20082
+        },
+        {
+          "name": "weapon_frost_2.webp",
+          "bytes": 24760
+        },
+        {
+          "name": "weapon_frost_3.webp",
+          "bytes": 31478
+        },
+        {
+          "name": "weapon_shield_1.webp",
+          "bytes": 24124
+        },
+        {
+          "name": "weapon_shield_2.webp",
+          "bytes": 19086
+        },
+        {
+          "name": "weapon_shield_3.webp",
+          "bytes": 18186
+        },
+        {
+          "name": "weapon_fire_1.webp",
+          "bytes": 23934
+        },
+        {
+          "name": "weapon_fire_2.webp",
+          "bytes": 14654
+        },
+        {
+          "name": "weapon_fire_3.webp",
+          "bytes": 26930
+        },
+        {
+          "name": "weapon_pierce_1.webp",
+          "bytes": 10352
+        },
+        {
+          "name": "weapon_pierce_2.webp",
+          "bytes": 8104
+        },
+        {
+          "name": "weapon_pierce_3.webp",
+          "bytes": 19100
+        },
+        {
+          "name": "monument.webp",
+          "bytes": 42146
+        },
+        {
+          "name": "build_pad.webp",
+          "bytes": 68078
+        },
+        {
+          "name": "research_shrine.webp",
+          "bytes": 36084
+        },
+        {
+          "name": "enemy_normal.webp",
+          "bytes": 21252
+        },
+        {
+          "name": "enemy_runner.webp",
+          "bytes": 11570
+        },
+        {
+          "name": "enemy_armored.webp",
+          "bytes": 25768
+        },
+        {
+          "name": "enemy_cultist.webp",
+          "bytes": 21592
+        },
+        {
+          "name": "enemy_shieldbearer.webp",
+          "bytes": 13248
+        },
+        {
+          "name": "enemy_bomber.webp",
+          "bytes": 22078
+        },
+        {
+          "name": "enemy_gargoyle.webp",
+          "bytes": 27492
+        },
+        {
+          "name": "enemy_siege.webp",
+          "bytes": 17948
+        },
+        {
+          "name": "boss_stonebreaker.webp",
+          "bytes": 27618
+        },
+        {
+          "name": "boss_stormlord.webp",
+          "bytes": 30598
+        },
+        {
+          "name": "boss_shieldwarden.webp",
+          "bytes": 36962
+        },
+        {
+          "name": "boss_colossus.webp",
+          "bytes": 25052
+        },
+        {
+          "name": "icon_tempo.webp",
+          "bytes": 11104
+        },
+        {
+          "name": "icon_attack.webp",
+          "bytes": 4866
+        },
+        {
+          "name": "icon_hp.webp",
+          "bytes": 10700
+        },
+        {
+          "name": "icon_gold.webp",
+          "bytes": 8240
+        },
+        {
+          "name": "icon_regen.webp",
+          "bytes": 9388
+        },
+        {
+          "name": "icon_range.webp",
+          "bytes": 8672
+        },
+        {
+          "name": "icon_multishot.webp",
+          "bytes": 4160
+        },
+        {
+          "name": "icon_explosion.webp",
+          "bytes": 7582
+        },
+        {
+          "name": "icon_tesla.webp",
+          "bytes": 7418
+        },
+        {
+          "name": "icon_frost.webp",
+          "bytes": 8108
+        },
+        {
+          "name": "icon_shield.webp",
+          "bytes": 8000
+        },
+        {
+          "name": "icon_pierce.webp",
+          "bytes": 3066
+        },
+        {
+          "name": "icon_fire.webp",
+          "bytes": 8226
+        },
+        {
+          "name": "effect_bolt.webp",
+          "bytes": 8224
+        },
+        {
+          "name": "effect_lightning.webp",
+          "bytes": 6774
+        },
+        {
+          "name": "effect_fire.webp",
+          "bytes": 7076
+        },
+        {
+          "name": "effect_ice.webp",
+          "bytes": 18232
+        },
+        {
+          "name": "effect_blast.webp",
+          "bytes": 18154
+        },
+        {
+          "name": "effect_lance.webp",
+          "bytes": 7902
+        }
+      ]
+    }
+  ],
+  "kind": "Stufe 2 Chromium headless (playwright-core, chromium headless shell 1148), Loopback-Server 127.0.0.1; Canvas-Screenshots + Request-/Fehler-Logging; kein physisches Android",
+  "note": "Alle 59 webp-Requests mit HTTP 200, 0 pageerrors, 0 requestfailed; Spiel lief bis Welle 2 mit Gegnern auf Desktop (1280x800) und Mobile (412x915, Touch). Visuell: Denkmal mit türkisem Runenlicht, Waffen-Sprites im Ring, Gegner mit roten Akzenten, Shop-Icons, Intro-Szene + Crest – keine Magenta-Reste, keine fehlenden/clipped Sprites."
+}
