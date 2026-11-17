@@ -46,3 +46,15 @@ Evidence: Chromium Action [#44026497720](https://github.com/imbaaalanced-dot/a/a
 | Release / merge | All safety-critical runtime checks plus required human visual and device evidence | **Blocked** |
 
 No landmark artwork was modified by this review. Keep PR in Draft and retain photographic fallback; do not equate the automated pass with historical or physical-device acceptance.
+
+## Source-backed landmark identification (17 Nov 2026)
+Do not collapse the following two distinct physical memorials into one level or reuse one memorial's inscription/model for the other:
+
+1. **Kirchende across the road from the Ender Dorfkirche (Level 3 candidate):** World War I memorial at the former Hülfiskirchhof, commissioned after a design by Regierungsbaumeister Dengler of Dortmund and inaugurated **9 October 1927**, according to the local church archive/lagerbuch transcription. Wikimedia Commons identifies the memorial opposite the church and has dated photos from **13 November 2022**. This is the appropriate starting reference to verify the `monument-style2-pilot.webp` silhouette, faces, helmet and inscription; the current in-game text `UNSERN HELDEN` is **not authenticated** by these sources.
+   - https://www.kdwupper.de/historischer_friedhof_herdecke_kirchende.html
+   - https://commons.wikimedia.org/wiki/File:Herdecke,_Kirchender_Dorfweg,_Kriegerdenkmal_gegen%C3%BCber_der_Kirche.jpg
+2. **Ender Dorfkirche churchyard (Level 4 church/lion candidate):** separate memorial with the reclining **sleeping lion**, erected **1879** for the dead of the 1864, 1866 and 1870–71 wars; the site account gives the dedication date **31 August 1879**. This must not be used as the reference for the opposite-side 1927 monument.
+   - https://www.kdwupper.de/historischer_friedhof_herdecke_kirchende.html
+   - https://www.herdecke.de/ (official heritage register: Kirchender Dorfweg 42, Ehrenmal „Schlafender Löwe“)
+
+**Acceptance consequence:** before treating L3 art as historically final, inspect the specifically identified **opposite-church 1927** image from front and oblique side, then compare its footprint, side relief, top profile, materials and inscription with the rendered Level 3 sprite. Keep the current legacy fallback enabled until that comparison is approved. Do not swap the L4 lion into L3.
