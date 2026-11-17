@@ -92,6 +92,7 @@ jobs:
       - name: Portrait HUD and hero/loot navigation regression
         run: |
           node tests/canonical-hero-art-v5.test.cjs
+          node tests/hero-runtime-visibility.test.cjs
           node tests/pixel-marcel-atlas.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
