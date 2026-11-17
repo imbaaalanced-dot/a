@@ -52,7 +52,9 @@ const server=http.createServer((req,res)=>{
     console.error('Cold-start material timeout diagnostics:',JSON.stringify(diagnostics));
     throw error;
    }
-   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   // Wait for the renderer to consume the material revision without relying on rAF in the test runner.
+   if(!fail)await page.waitForFunction(expected=>Style2Maps.stats().builds>=expected,moving.maps.builds+1,{polling:200,timeout:15000});
+   else await page.waitForTimeout(200);
    const after=await snapshot();assert.equal(after.state,'playing');assert.equal(after.level,1);
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
    await page.waitForTimeout(600);const warm=await snapshot();assert.equal(warm.maps.builds,after.maps.builds);assert.equal(requested,9,'failed downloads never cause a request loop');
