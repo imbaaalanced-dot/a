@@ -68,7 +68,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.doesNotMatch(html,/src="style2-towers\.js/,'legacy tower renderer must be absent from production page');
 assert.ok(html.indexOf('style2-user-towers.js')<html.indexOf('game.js?v='),
   'canonical tower renderer loaded before main game');
-assert.match(html,/combat-fx\.js\?v=v5-projectile-canonical1/);
+assert.match(html,/combat-fx\.js\?v=save-restore-20261117/);
 const gameCode=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameCode,/UserStyle2Towers\?\.drawTower/,'canonical tower renderer integrated');
 assert.match(gameCode,/location\?\.pathname\?\.includes\('\/v4-style2-towers\/'\)/,'test-only campaign preview path');
