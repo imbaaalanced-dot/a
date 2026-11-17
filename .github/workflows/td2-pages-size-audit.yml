@@ -37,7 +37,7 @@ jobs:
           cat /tmp/td2-gh-pages-audit.md >> "${GITHUB_STEP_SUMMARY}"
           sed -n '1,80p' /tmp/td2-gh-pages-audit.md
       - name: Upload reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: td2-pages-size-audit
           path: |

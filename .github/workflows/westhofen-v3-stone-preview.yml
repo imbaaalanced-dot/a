@@ -25,7 +25,7 @@ jobs:
         run: python tests/westhofen-v3-stone-source.test.py
       - name: Export transparent 768x512 WebP and compare 64/128px graphics
         run: python tools/export-westhofen-v3-stone.py --out build/westhofen-v3-stone
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: westhofen-v3-stone-review-only
