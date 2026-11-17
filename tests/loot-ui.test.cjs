@@ -59,6 +59,10 @@ assert.equal(document.activeElement.dataset.itemId,item.id,'focus returns to cli
 assert.equal(get('lootDetail').getAttribute('role'),'region');
 const disposable=addItem('Recycling','boots',{speed:.1});ui.render();
 find(get('inventoryGrid'),e=>e.dataset.itemId===disposable.id).onclick();actions()[2].onclick();
+assert.equal(ui.dismiss(),true,'Back/Escape cancels destructive confirmation first');
+assert.equal(get('lootConfirm').hidden,true,'dismissal hides confirmation');
+assert.equal(get('inventoryScreen').dataset.detailOpen,'true','underlying item sheet stays open');
+actions()[2].onclick();
 get('lootConfirm').children.find(e=>e.tagName==='button'&&e.textContent==='BESTÄTIGEN').onclick();
 assert.equal(get('inventoryScreen').dataset.detailOpen,'false','recycling closes the removed item sheet');
 const forge=addItem('Schmiedestab','weapon',{damage:20,haste:.1});ui.render();find(get('inventoryGrid'),e=>e.dataset.itemId===forge.id).onclick();
