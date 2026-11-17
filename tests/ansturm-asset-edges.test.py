@@ -10,12 +10,13 @@ ROOT=Path(__file__).resolve().parent.parent
 SOURCE=ROOT/'dist/ansturm/assets'
 MIRROR=ROOT/'ansturm-alpha1-5/assets'
 FIXED={'enemy_gargoyle.webp','boss_stormlord.webp','icon_tesla.webp'}
+FIXED_VERSION='v6-style2full1'
 ALL=sorted(p for p in SOURCE.glob('*.webp') if p.name.startswith(('enemy_','boss_','icon_','weapon_','effect_')))
 assert len(ALL)>=50,'asset inventory unexpectedly shrank'
 for manifest in [ROOT/'dist/ansturm/asset-manifest.js',ROOT/'ansturm-alpha1-5/asset-manifest.js']:
     content=manifest.read_text()
     for asset in FIXED:
-        assert f'assets/{asset}?v=v5-style2a1' in content, f'{manifest}: no cache-busting version for {asset}'
+        assert f'assets/{asset}?v={FIXED_VERSION}' in content, f'{manifest}: no cache-busting version for {asset}'
 
 risks=[]
 for file in ALL:
