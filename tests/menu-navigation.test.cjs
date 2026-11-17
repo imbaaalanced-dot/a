@@ -68,7 +68,7 @@ assert.match(element('heroHudPortrait').style.backgroundImage,/kim-marksman-v6/)
 element('collectionBtn').onclick();
 assert.equal(t.state,'inventory');
 armoryOptions.onSelectHero('marcel');
-assert.match(element('menuHeroBanner').src,/marcel-guardian-v6/,'armory selection uses the existing menu hero handler');
+assert.match(element('menuHeroBanner').src,/marcel-wand-menu-portrait-20261117\\.avif/,'armory selection uses the existing menu hero handler');
 assert.equal(JSON.parse(sandbox.localStorage.getItem('denkmal-preferences-v1')).data.character,'marcel');
 armoryOptions.onSelectHero('kim');
 assert.match(element('menuHeroBanner').src,/kim-marksman-v6/);
@@ -83,7 +83,7 @@ assert.match(element('menuHeroBanner').src,/kim-marksman-v6/,'armory callback ca
 element('chooseMarcel').onclick();
 assert.equal(sandbox.test.game.hero.character,'kim','cannot switch heroes mid combat');
 sandbox.test.mainMenu();element('chooseMarcel').onclick();
-assert.match(element('menuHeroBanner').src,/marcel-guardian-v6/);
+assert.match(element('menuHeroBanner').src,/marcel-wand-menu-portrait-20261117\\.avif/);
 saga.openCharacter();
 assert.equal(element('characterTitle').textContent,'MARCEL');
 assert.match(element('characterPortrait').src,/marcel-guardian-v6/);
@@ -101,7 +101,7 @@ element('menuZoomBtn').onclick();
 assert.equal(element('menuZoomBtn').textContent,element('zoomBtn').textContent);
 const invalidPrefs=JSON.parse(sandbox.localStorage.getItem('denkmal-preferences-v1'));
 invalidPrefs.data.character='unknown';sandbox.localStorage.setItem('denkmal-preferences-v1',JSON.stringify(invalidPrefs));vm.runInContext(source,sandbox);
-assert.match(element('menuHeroBanner').src,/marcel-guardian-v6/,'invalid saved hero falls back to Marcel');
+assert.match(element('menuHeroBanner').src,/marcel-wand-menu-portrait-20261117\\.avif/,'invalid saved hero falls back to Marcel');
 sandbox.localStorage.getItem=()=>{throw Error('storage blocked')};sandbox.localStorage.setItem=()=>{throw Error('storage blocked')};
 vm.runInContext(source,sandbox);element('chooseKim').onclick();
 assert.match(element('menuHeroBanner').src,/kim-marksman-v6/,'hero switch works without storage');
