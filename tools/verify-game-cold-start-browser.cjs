@@ -31,7 +31,7 @@ const server=http.createServer((req,res)=>{
    await page.locator('#tutorialSkip').waitFor({state:'visible',timeout:10000});
    await page.locator('#tutorialSkip').click();
    try{
-    await page.waitForFunction(()=>globalThis.DenkmalTestHooks?.getState?.()==='playing'&&globalThis.Style2Maps?.stats?.().activeLevel===1,{timeout:30000});
+    await page.waitForFunction(()=>globalThis.DenkmalTestHooks?.getState?.()==='playing'&&globalThis.Style2Maps?.stats?.().activeLevel===1,null,{timeout:30000});
    }catch(error){
     const diagnostic=await page.evaluate(()=>({
       state:globalThis.DenkmalTestHooks?.getState?.()??null,
