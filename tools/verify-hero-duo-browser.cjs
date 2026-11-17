@@ -20,7 +20,7 @@ const configs=[
   {name:'landscape-844',width:844,height:390,touch:true},
   {name:'desktop-1280',width:1280,height:800,touch:false}
 ];
-const suffix=actor=>actor==='kim'?'kim-marksman-style2.webp':'marcel-guardian-style2.webp';
+const suffix=actor=>actor==='kim'?'kim-marksman-v6.webp':'marcel-guardian-v6.webp';
 const pathPart=(actor,kind)=>actor+'-'+kind;
 (async()=>{
   fs.mkdirSync(out,{recursive:true});
@@ -66,7 +66,7 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
           const banner=document.getElementById('menuHeroBanner');
           const companion=document.getElementById('menuHeroCompanion');
           const other=actor==='kim'?'marcel':'kim';
-          const expected=id=>id==='kim'?'kim-marksman-style2.webp':'marcel-guardian-style2.webp';
+          const expected=id=>id==='kim'?'kim-marksman-v6.webp':'marcel-guardian-v6.webp';
           return banner?.src.includes(expected(actor))&&companion?.src.includes(expected(other))&&banner.naturalWidth>0&&companion.naturalWidth>0;
         },actor,{timeout:20000});
         const menu=await page.evaluate(()=>{
