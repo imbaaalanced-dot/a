@@ -35,7 +35,7 @@ for(const point of [{x:1536,y:1536},{x:10,y:3000}]){
   assert.ok(Math.abs(foot.y-point.y*p.depth)<1e-8,'foot stays on ground');
   assert.ok(Math.abs(foot.y-top.y-100)<1e-8,'standing height stays undistorted');
  });
- assert.deepEqual(matrix,before,'sprite transform cannot affect subsequent ground draws');
+ for(let i=0;i<matrix.length;i++)assert.ok(Math.abs(matrix[i]-before[i])<1e-9,'sprite transform cannot affect subsequent ground draws');
 }
 console.log('Upright sprites retain foot position and height, then restore world transform.');
 // Camera motion reuses a single atlas, and only the visible source rectangle is copied.

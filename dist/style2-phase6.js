@@ -6,9 +6,11 @@ const depth=.82;
 const project=(p,c,z)=>({x:(p.x-c.x)*z,y:(p.y-c.y)*z*depth});
 const unproject=(p,c,z)=>({x:p.x/z+c.x,y:p.y/(z*depth)+c.y});
 function upright(ctx,point,paint){
- ctx.save();
+ // Hot path: called once per visible actor per frame. Avoid save()/restore()
+ // state-stack churn by applying the exact inverse transform; residual float
+ // drift (<1e-9 px) is reset by draw()'s own save/restore each frame.
  try{ctx.translate(point.x,point.y);ctx.scale(1,1/depth);ctx.translate(-point.x,-point.y);return paint();}
- finally{ctx.restore();}
+ finally{ctx.translate(point.x,point.y);ctx.scale(1,depth);ctx.translate(-point.x,-point.y);}
 }
 let active=0,cache=null;
 let environment=null,environmentReady=false;

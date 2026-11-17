@@ -144,9 +144,14 @@
     {let w=0;for(let i=0;i<list.length;i++){if(list[i].life>0)list[w++]=list[i];}list.length=w;game.damageTexts=list;}
   }
   function drawDamage(ctx,game){
+    // Hot path: once per damage text per frame. Avoid save()/restore()
+    // state-stack churn; restore only the fields this function sets.
+    const prevAlpha=ctx.globalAlpha,prevAlign=ctx.textAlign,prevFont=ctx.font,prevWidth=ctx.lineWidth,prevStroke=ctx.strokeStyle,prevFill=ctx.fillStyle;
     for(const d of game?.damageTexts||[]){const t=Math.max(0,d.life/d.maxLife);const pop=Math.min(1,(d.maxLife-d.life)*12);const scale=.6+.4*pop;
-    ctx.save();ctx.globalAlpha=Math.min(1,t*1.4);ctx.textAlign='center';ctx.font=d.crit?'800 18px sans-serif':'700 13px sans-serif';ctx.lineWidth=3;ctx.strokeStyle='#111a1dcc';ctx.fillStyle=d.crit?'#fff1a6':'#f3dfb1';
-    ctx.translate(d.x,d.y);ctx.scale(scale,scale);ctx.strokeText(String(d.amount),0,0);ctx.fillText(String(d.amount),0,0);ctx.restore();}
+    ctx.globalAlpha=Math.min(1,t*1.4);ctx.textAlign='center';ctx.font=d.crit?'800 18px sans-serif':'700 13px sans-serif';ctx.lineWidth=3;ctx.strokeStyle='#111a1dcc';ctx.fillStyle=d.crit?'#fff1a6':'#f3dfb1';
+    ctx.translate(d.x,d.y);ctx.scale(scale,scale);ctx.strokeText(String(d.amount),0,0);ctx.fillText(String(d.amount),0,0);
+    ctx.scale(1/scale,1/scale);ctx.translate(-d.x,-d.y);}
+    ctx.globalAlpha=prevAlpha;ctx.textAlign=prevAlign;ctx.font=prevFont;ctx.lineWidth=prevWidth;ctx.strokeStyle=prevStroke;ctx.fillStyle=prevFill;
   }
   const getContext=()=>audio,getMaster=()=>master;
   function draw(ctx,b,reduced,heroCharacter=null) {
@@ -169,29 +174,39 @@
     ctx.restore();
   }
   function drawParticle(ctx,p){
+    // Hot path: called per particle per frame. Avoid save()/restore()
+    // state-stack churn; restore only the fields each branch sets.
     if(!p)return false;
     if(staffImpacts.has(p)&&drawStaffFrame(ctx,p.x,p.y,2,1-Math.max(0,p.life/p.max),0,36))return true;
     if(p.userStyle2Impact&&globalThis.UserStyle2Towers?.drawImpact?.(ctx,p))return true;
     const t=Math.max(0,Math.min(1,p.life/p.max));
     if(p.ring){
       const progress=1-t;
-      ctx.save();ctx.globalAlpha=t*.75;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(1,3.2*t);
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r+progress*(p.max>.25?52:34),0,Math.PI*2);ctx.stroke();ctx.restore();
+      const prevAlpha=ctx.globalAlpha,prevStroke=ctx.strokeStyle,prevWidth=ctx.lineWidth;
+      ctx.globalAlpha=t*.75;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(1,3.2*t);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r+progress*(p.max>.25?52:34),0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=prevAlpha;ctx.strokeStyle=prevStroke;ctx.lineWidth=prevWidth;
       return true;
     }
     if(p.flash){
-      ctx.save();ctx.globalAlpha=t;ctx.fillStyle=p.color;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r*(.5+.5*t),0,Math.PI*2);ctx.fill();ctx.restore();
+      const prevAlpha=ctx.globalAlpha,prevFill=ctx.fillStyle;
+      ctx.globalAlpha=t;ctx.fillStyle=p.color;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*(.5+.5*t),0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=prevAlpha;ctx.fillStyle=prevFill;
       return true;
     }
     if(p.bolt){
-      ctx.save();ctx.globalAlpha=t;ctx.strokeStyle=p.color;ctx.lineWidth=p.r;ctx.lineCap='round';
-      ctx.beginPath();ctx.moveTo(p.x-p.vx*.05,p.y-p.vy*.05);ctx.lineTo(p.x+p.vx*.05,p.y+p.vy*.05);ctx.stroke();ctx.restore();
+      const prevAlpha=ctx.globalAlpha,prevStroke=ctx.strokeStyle,prevWidth=ctx.lineWidth,prevCap=ctx.lineCap;
+      ctx.globalAlpha=t;ctx.strokeStyle=p.color;ctx.lineWidth=p.r;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(p.x-p.vx*.05,p.y-p.vy*.05);ctx.lineTo(p.x+p.vx*.05,p.y+p.vy*.05);ctx.stroke();
+      ctx.globalAlpha=prevAlpha;ctx.strokeStyle=prevStroke;ctx.lineWidth=prevWidth;ctx.lineCap=prevCap;
       return true;
     }
     if(p.muzzle){
-      ctx.save();ctx.globalAlpha=t;ctx.strokeStyle=p.color;ctx.lineWidth=p.r;
-      ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.05,p.y-p.vy*.05);ctx.stroke();ctx.restore();
+      const prevAlpha=ctx.globalAlpha,prevStroke=ctx.strokeStyle,prevWidth=ctx.lineWidth;
+      ctx.globalAlpha=t;ctx.strokeStyle=p.color;ctx.lineWidth=p.r;
+      ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.05,p.y-p.vy*.05);ctx.stroke();
+      ctx.globalAlpha=prevAlpha;ctx.strokeStyle=prevStroke;ctx.lineWidth=prevWidth;
       return true;
     }
     return false;

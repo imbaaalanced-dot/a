@@ -93,6 +93,7 @@ jobs:
         run: |
           node tests/canonical-hero-art-v5.test.cjs
           node tests/hero-runtime-visibility.test.cjs
+          node tests/marcel-wand-ingame-gate.test.cjs
           node tests/pixel-marcel-atlas.test.cjs
           node tests/portrait-hud.test.cjs
           node tests/hero-style2-v5.test.cjs
@@ -162,6 +163,7 @@ jobs:
           python tests/style2-pilot-staging.test.py
           python tests/style2-pilot-runtime-assets.test.py
           python tests/assets.test.py
+          python tests/hero-art-magenta-gate.test.py
           python tests/kirchende-memorial-pilot.test.py
           python tests/style2-v2-assets.test.py
           python tests/v2-expansion-assets.test.py
