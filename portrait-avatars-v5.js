@@ -18,8 +18,8 @@
   stage.appendChild(art);
 
   const sources=[
-    {name:'marcel',path:globalThis.TD2CanonicalHeroArt?.marcel?.portrait||'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1'},
-    {name:'kim',path:globalThis.TD2CanonicalHeroArt?.kim?.portrait||'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1'}
+    {name:'marcel',path:globalThis.TD2CanonicalHeroArt?.marcel?.portrait||'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117'},
+    {name:'kim',path:globalThis.TD2CanonicalHeroArt?.kim?.portrait||'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117'}
   ];
   let successful=0;
   let failed=false;
