@@ -540,6 +540,10 @@
     if(lootUI?.dismiss?.()){armInventoryBack();return;}
     closeInventory(false);
   });
+  // Clicking the empty modal backdrop closes it; taps on inventory content do not.
+  $('inventoryScreen').addEventListener('click',e=>{
+    if(state==='inventory'&&e.target===$('inventoryScreen'))closeInventory();
+  });
   function renderInventory(){if(state==='inventory')lootUI?.render();}
   function openInventory(){
     if(!['start','playing','paused'].includes(state))return;
