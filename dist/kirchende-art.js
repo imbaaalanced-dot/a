@@ -1,7 +1,7 @@
 /* Kirchende scenery and sprites. Nothing is loaded before selecting Level 3. */
 (() => {
   'use strict';
-  // Style-2 monument is the default on this art branch; keep a reversible photo fallback.
+  // Style-2 monument is the current integration candidate; photo remains selectable.
   // ?td2KirchendeMemorialLegacy=1 restores the previous photographic version.
   const legacy=/(?:^|[?&])td2KirchendeMemorialLegacy=1(?:&|$)/.test(globalThis.location?.search||'');
   const pilot=!legacy;

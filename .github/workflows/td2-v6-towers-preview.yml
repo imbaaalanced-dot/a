@@ -1,0 +1,57 @@
+name: TD2 V6 tower Android preview (isolated)
+
+on:
+  push:
+    branches: [feature/td2-v6-tower-candidates-20261116]
+    paths:
+      - .github/workflows/td2-v6-towers-preview.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v6-tower-preview
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: github.repository == 'imbaaalanced-dot/a' && github.ref == 'refs/heads/feature/td2-v6-tower-candidates-20261116'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/td2-v6-tower-candidates-20261116
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check all V6 art and fallback integration before preview
+        run: |
+          set -euo pipefail
+          node tests/v6-towers.test.cjs
+          node tests/v6-tower-assets.test.cjs
+          node tests/cache-busting.test.cjs
+          node tests/game.test.cjs
+          TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Publish only isolated v6-towers preview path
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin gh-pages
+          git worktree add /tmp/td2-v6-pages origin/gh-pages
+          mkdir -p /tmp/td2-v6-pages/v6-towers
+          cp -a dist/. /tmp/td2-v6-pages/v6-towers/
+          touch /tmp/td2-v6-pages/.nojekyll
+          cd /tmp/td2-v6-pages
+          git add v6-towers .nojekyll
+          if git diff --cached --quiet; then
+            echo 'The isolated V6 preview is already current.'
+            exit 0
+          fi
+          git commit -m "Publish isolated V6 tower test preview ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+          echo 'Preview (opt-in): https://imbaaalanced-dot.github.io/a/v6-towers/?td2V6Towers=1'

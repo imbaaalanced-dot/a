@@ -512,15 +512,49 @@
     setTimeout(()=>{if(levelLoadRequest===request&&assetLevel===level)globalThis.DenkmalAssets?.next(level);},1800);
     if(level===1){const storyShown=saga.chapter(1);if(!storyShown)queueIntroTutorial();}else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
   }
+  // A temporary same-page history entry makes Android/WebView Back dismiss the
+  // inventory instead of accidentally leaving the game. No persistent state changes.
+  const inventoryHistoryKey='__td2InventoryOverlay';
+  let inventoryHistoryEntry=null,inventoryHistorySerial=0;
+  function armInventoryBack(){
+    try{
+      if(typeof globalThis.history?.pushState!=='function')return;
+      const previous=globalThis.history.state;
+      const current=previous&&typeof previous==='object'&&!Array.isArray(previous)?{...previous}:{};
+      const entry=++inventoryHistorySerial;
+      globalThis.history.pushState({...current,[inventoryHistoryKey]:entry},'');
+      inventoryHistoryEntry=entry;
+    }catch{inventoryHistoryEntry=null;}
+  }
+  function releaseInventoryBack(){
+    const entry=inventoryHistoryEntry;
+    inventoryHistoryEntry=null;
+    try{if(entry!==null&&globalThis.history?.state?.[inventoryHistoryKey]===entry)globalThis.history.back();}catch{}
+  }
+  addEventListener('popstate',()=>{
+    if(state!=='inventory'||inventoryHistoryEntry===null)return;
+    if(globalThis.history?.state?.[inventoryHistoryKey]===inventoryHistoryEntry)return;
+    inventoryHistoryEntry=null;
+    // First Back dismisses a destructive confirmation or comparison sheet.
+    // The next Back closes the inventory. No second navigation is allowed.
+    if(lootUI?.dismiss?.()){armInventoryBack();return;}
+    closeInventory(false);
+  });
+  // Clicking the empty modal backdrop closes it; taps on inventory content do not.
+  $('inventoryScreen').addEventListener('click',e=>{
+    if(state==='inventory'&&e.target===$('inventoryScreen'))closeInventory();
+  });
   function renderInventory(){if(state==='inventory')lootUI?.render();}
   function openInventory(){
     if(!['start','playing','paused'].includes(state))return;
     closeHudMenu();inventoryReturn=state;state='inventory';clearInput();saga.stopVoice();
     for(const id of ['startScreen','pauseScreen'])$(id).classList.add('hidden');
-    renderInventory();$('inventoryScreen').classList.remove('hidden');focusModal($('inventoryScreen'));updateUI();
+    renderInventory();$('inventoryScreen').classList.remove('hidden');focusModal($('inventoryScreen'));armInventoryBack();updateUI();
   }
-  function closeInventory(){
-    if(state!=='inventory')return;lootUI?.close();$('inventoryScreen').classList.add('hidden');state=inventoryReturn;last=performance.now();
+  function closeInventory(updateHistory=true){
+    if(state!=='inventory')return;
+    if(updateHistory)releaseInventoryBack();else inventoryHistoryEntry=null;
+    lootUI?.close();$('inventoryScreen').classList.add('hidden');state=inventoryReturn;last=performance.now();
     if(state==='start'){menuStatus();ui.start.classList.remove('hidden');focusModal(ui.start);}else if(state==='paused'){$('pauseScreen').classList.remove('hidden');focusModal($('pauseScreen'));}else focusGame();updateUI();
   }
   function lootFor(){return {kind:'essence'};}
@@ -955,7 +989,10 @@
     drawTowerBody(t);ctx.restore();
   }
   function drawTowerBody(t){
-    if(t.kind==='barracks'&&globalThis.DenkmalBarracks?.drawTower(ctx,t))return;
+    if(t.kind==='barracks'&&globalThis.DenkmalBarracks?.drawTower(ctx,t)){
+      globalThis.DenkmalTerrain?.drawStars(ctx,t.x,t.y,t.level,lowFX());
+      return;
+    }
     shadow(t.x,t.y,24);
     runeAnchor(t.x,t.y+4,30,(t.x+t.y)*.01);
     if(globalThis.UserStyle2Towers?.drawTower?.(ctx,t.kind,t.x,t.y,t.level)){
@@ -1189,7 +1226,7 @@
     if(e.code==='KeyI'&&!e.repeat){e.preventDefault();if(state==='inventory')closeInventory();else openInventory();return;}
     if(e.code==='KeyH'&&!e.repeat){e.preventDefault();if(state==='character')saga.closeCharacter();else saga.openCharacter();return;}
     if(e.code==='Escape'&&state==='start'&&menuPanel!=='home'){e.preventDefault();showMenuPanel('home');return;}
-    if(e.code==='Escape'&&state==='inventory'){if(!lootUI?.closeDetail?.())closeInventory();return;}
+    if((e.code==='Escape'||e.key==='BrowserBack'||e.key==='GoBack')&&state==='inventory'){e.preventDefault();if(!lootUI?.dismiss?.())closeInventory();return;}
     if(e.code==='Escape'&&state==='character'){saga.closeCharacter();return;}
     if(e.code==='Escape'||e.code==='KeyP'){if(!e.repeat){e.preventDefault();state==='paused'?resumeGame():pauseGame();}return;}
     if(state==='playing')keys[e.code]=true;
@@ -1246,7 +1283,7 @@
   $('startBtn').onclick=()=>startGame(1);$('level2Btn').onclick=()=>startGame(2);$('nextLevelBtn').onclick=()=>game.level===7||game.level===6&&style2Preview&&!campaign.level6Completed||game.level===5&&level5Preview?continueEndless():startGame(game.level+1);$('continueEndlessBtn').onclick=continueEndless;$('level3Btn').onclick=()=>startGame(3);$('level4Btn').onclick=()=>startGame(4);$('level5Btn').onclick=()=>startGame(5);$('level6Btn').onclick=()=>startGame(6);$('level7Btn').onclick=()=>startGame(7);$('endless6Btn').onclick=()=>startGame(6,'endless');$('endless7Btn').onclick=()=>startGame(7,'endless');$('endless1Btn').onclick=()=>startGame(1,'endless');$('endlessBtn').onclick=()=>startGame(2,'endless');$('endless3Btn').onclick=()=>startGame(3,'endless');$('endless4Btn').onclick=()=>startGame(4,'endless');$('endless5Btn').onclick=()=>startGame(5,'endless');$('completeMenuBtn').onclick=mainMenu;$('pauseMenuBtn').onclick=mainMenu;$('gameoverMenuBtn').onclick=mainMenu;$('restartBtn').onclick=()=>startGame(game.level,game.mode);$('pauseBtn').onclick=pauseGame;$('speedBtn').onclick=toggleSpeed;$('resumeBtn').onclick=resumeGame;$('dodgeBtn').onclick=()=>{dodge();canvas.focus();};$('buildBtn').onclick=()=>{buildTower();canvas.focus();};
   document.querySelectorAll('.arsenal button').forEach(b=>b.onclick=()=>{if(state==='playing'){selectTower(b.dataset.tower);canvas.focus();}});
   $('mobileNextWaveBtn').onclick=launchWave;
-  $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('inventoryClose').onclick=closeInventory;$('nextWaveBtn').onclick=launchWave;$('menuPauseBtn').onclick=pauseGame;
+  $('upgradeBtn').onclick=()=>{upgradeTower();updateUI();canvas.focus();};$('sellBtn').onclick=()=>{sellTower();updateUI();canvas.focus();};$('targetBtn').onclick=()=>{cycleTargetMode();canvas.focus();};$('inventoryBtn').onclick=openInventory;$('collectionBtn').onclick=openInventory;$('nextWaveBtn').onclick=launchWave;$('menuPauseBtn').onclick=pauseGame;
   // V4 alpha.4 touch: tapping the playfield closes an open HUD menu; long-press menus stay off the canvas.
   let tapDown=null;
   canvas.addEventListener('pointerdown',e=>{
@@ -1331,11 +1368,25 @@
     for(const id of ['marcel','kim'])$('choose'+(id==='kim'?'Kim':'Marcel')).setAttribute('aria-pressed',String(selectedCharacter===id));
     $('heroDisplayName').textContent=kim?'KIM':'MARCEL';
     const portraitUrl=globalThis.TD2CanonicalHeroArt?.[selectedCharacter]?.portrait||
-      (kim?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
+      (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
     globalThis.DenkmalAssets?.load(portraitUrl).then(img=>{
       if(img&&selectedCharacter===(kim?'kim':'marcel'))$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
     });
     if(!globalThis.DenkmalAssets)$('heroHudPortrait').style.backgroundImage=`url('${portraitUrl}')`;
+    const companion=$('menuHeroCompanion');
+    const otherCharacter=kim?'marcel':'kim';
+    const companionUrl=globalThis.TD2CanonicalHeroArt?.[otherCharacter]?.portrait||
+      (kim?'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117');
+    // The other existing hero stays visible while character selection changes.
+    const selectedAtCall=selectedCharacter;
+    if(globalThis.DenkmalAssets){
+      globalThis.DenkmalAssets.load(companionUrl).then(async img=>{
+        if(!img||selectedCharacter!==selectedAtCall)return;
+        try{await img.decode?.();}catch{return;}
+        if(selectedCharacter===selectedAtCall)companion.src=companionUrl;
+      });
+    }else companion.src=companionUrl;
+    companion.alt=otherCharacter==='kim'?'Kim · Die Treffsichere':'Marcel · Der Beschützer';
     const banner=$('menuHeroBanner');
     const bannerUrl=portraitUrl;
     globalThis.DenkmalAssets?.load(bannerUrl).then(async img=>{

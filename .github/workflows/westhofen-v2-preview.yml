@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Install preview rasterizer dependencies
@@ -27,7 +27,7 @@ jobs:
       - name: Export 768x512 RGBA previews and 64/128px inspections
         run: python tools/export-westhofen-v2.py --out build/westhofen-v2
       - name: Upload preview pack, not runtime game assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: westhofen-v2-review-only
           path: build/westhofen-v2/

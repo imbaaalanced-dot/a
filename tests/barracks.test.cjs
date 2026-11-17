@@ -75,3 +75,55 @@ console.log('Barracks: 500 seeded nearest-target cases and range boundaries pass
  assert.equal(allocations,1,'cutout allocated only once per atlas and level');
 }
 console.log('Barracks building background alpha cutout and caching passed.');
+
+// Beta #330: barracks rank markers must be drawn after the barracks sprite,
+// matching the shared one-to-three-star presentation of the other towers.
+{
+ const gameSource=readFileSync(path.join(__dirname,'../dist/game.js'),'utf8');
+ assert.match(gameSource,/if\(t\.kind==='barracks'&&globalThis\.DenkmalBarracks\?\.drawTower\(ctx,t\)\)\{\s*globalThis\.DenkmalTerrain\?\.drawStars\(ctx,t\.x,t\.y,t\.level,lowFX\(\)\);\s*return;\s*\}/,
+   'barracks paint path draws stars for its current level, not an early return');
+}
+
+// Beta #330: the active 96px Style-2 walk/attack atlas has an opaque dark
+// backdrop. Each distinct frame receives a cached, edge-connected cutout.
+{
+ const size=96,pixels=new Uint8ClampedArray(size*size*4);
+ for(let i=0;i<size*size;i++){const p=i*4;pixels[p]=pixels[p+1]=pixels[p+2]=7;pixels[p+3]=255;}
+ for(let y=24;y<85;y++)for(let x=28;x<67;x++){
+   const p=(y*size+x)*4;pixels[p]=151;pixels[p+1]=91;pixels[p+2]=52;
+ }
+ let putCalls=0,canvasCalls=0,output;
+ s.document={createElement(){canvasCalls++;return {width:0,height:0,getContext(){return {
+  drawImage(){},getImageData(){return {data:new Uint8ClampedArray(pixels)};},
+  putImageData(image){putCalls++;output=image.data;}
+ };}};}};
+ const styled={};s.DenkmalAssets={ready:url=>url===b.ATLAS?styled:null};
+ const calls=[],display=new Proxy({drawImage(...args){calls.push(args);}},{
+  get:(o,k)=>o[k]||(()=>{})
+ });
+ const ally=b.makeUnit({level:1,x:0,y:0},paths);ally.aliveTime=2;ally.mode='walk';
+ b.drawUnit(display,ally);
+ assert.equal(calls.at(-1).length,5,'transparent 96px frame uses a single cached-image blit');
+ assert.equal(output[3],0,'dark background at edge becomes fully transparent');
+ assert.deepEqual([...output.slice((50*size+45)*4,(50*size+45)*4+4)],[151,91,52,255],
+  'the center painted militia body is not removed or recolored');
+ b.drawUnit(display,ally);
+ assert.equal(canvasCalls,1,'same walk frame reuses its cached cutout');
+ assert.equal(putCalls,1,'cached frame is not reprocessed on each render');
+ ally.mode='attack';ally.attackAnim=.52;
+ b.drawUnit(display,ally);
+ assert.equal(canvasCalls,2,'attack frame has its own cutout');
+ assert.equal(calls.at(-1).length,5,'attack frame also uses one transparent-image blit');
+ // Already transparent frames must remain pixel-identical and use direct source blit.
+ const transparent=new Uint8ClampedArray(pixels);
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(x<15||x>=size-15||y<15||y>=size-15)transparent[(y*size+x)*4+3]=0;
+ s.document={createElement(){canvasCalls++;return {getContext(){return {
+  drawImage(){},getImageData(){return {data:new Uint8ClampedArray(transparent)};},
+  putImageData(){throw Error('native alpha sheet must not be modified');}
+ };}};}};
+ s.DenkmalAssets={ready:url=>url===b.ATLAS?{}:null};
+ ally.mode='walk';ally.walkClock=0;
+ b.drawUnit(display,ally);
+ assert.equal(calls.at(-1).length,9,'already transparent source uses the original atlas crop');
+}
+console.log('Barracks Style-2 unit matte removal, per-frame cache and native-alpha fallback passed.');

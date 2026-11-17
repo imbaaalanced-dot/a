@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Download original successful Level 7 Chromium evidence
@@ -72,7 +72,7 @@ jobs:
               print('QA_IMAGE_'+name.replace('.jpg','').replace('-','_')+'='+base64.b64encode(content).decode('ascii'))
               print('QA_INFO_'+name+'='+str(len(content)))
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: westhofen-v2-visual-review-montages
           path: /tmp/westhofen-review/

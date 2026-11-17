@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Install rasterizer dependencies
@@ -30,7 +30,7 @@ jobs:
       - name: Rasterize V3 source and compare current V2 at 64/128px
         run: python tools/export-westhofen-v3.py --out build/westhofen-v3
       - name: Upload V3 source review, not runtime assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: westhofen-v3-bronze-review-only
           path: build/westhofen-v3/

@@ -59,6 +59,10 @@ assert.equal(document.activeElement.dataset.itemId,item.id,'focus returns to cli
 assert.equal(get('lootDetail').getAttribute('role'),'region');
 const disposable=addItem('Recycling','boots',{speed:.1});ui.render();
 find(get('inventoryGrid'),e=>e.dataset.itemId===disposable.id).onclick();actions()[2].onclick();
+assert.equal(ui.dismiss(),true,'Back/Escape cancels destructive confirmation first');
+assert.equal(get('lootConfirm').hidden,true,'dismissal hides confirmation');
+assert.equal(get('inventoryScreen').dataset.detailOpen,'true','underlying item sheet stays open');
+actions()[2].onclick();
 get('lootConfirm').children.find(e=>e.tagName==='button'&&e.textContent==='BESTÄTIGEN').onclick();
 assert.equal(get('inventoryScreen').dataset.detailOpen,'false','recycling closes the removed item sheet');
 const forge=addItem('Schmiedestab','weapon',{damage:20,haste:.1});ui.render();find(get('inventoryGrid'),e=>e.dataset.itemId===forge.id).onclick();
@@ -130,3 +134,20 @@ assert.equal(filterModel.exportJSON(),saveBeforeSearch,'Escape cannot recycle an
 get('lootSalvageAllBtn').onclick();
 find(get('lootConfirm'),e=>e.tagName==='button'&&e.textContent==='ABBRECHEN').onclick();
 assert.equal(filterModel.exportJSON(),saveBeforeSearch,'cancelling recycling leaves inventory unchanged');
+
+// Beta #330: exiting must remain possible even when a mobile item sheet is open.
+const exitMarkup=fs.readFileSync(path.join(dist,'index.html'),'utf8');
+const exitStyles=fs.readFileSync(path.join(dist,'loot.css'),'utf8');
+assert.match(exitMarkup,/<section id="inventoryScreen"[^>]*>\s*<button id="inventoryClose"[^>]*loot-fixed-close/, 'exit control is a direct child of the inventory scroller');
+assert.match(exitStyles,/#inventoryScreen \.loot-fixed-close\{[^}]*position:fixed/, 'exit control is fixed to the viewport');
+const exitModel=box.DenkmalLoot.create({storage:{getItem:()=>null,setItem(){}},canManage:()=>true,getHero:()=>hero});
+let exitCalls=0;
+const exitUI=box.DenkmalLootUI.create(exitModel,{editable:()=>true,onClose(){exitCalls++;},onImport(){},getHero:()=>hero});
+exitUI.render();
+get('lootBagTab').onclick();
+find(get('inventoryGrid'),e=>e.dataset.itemId).onclick();
+assert.equal(get('inventoryScreen').dataset.detailOpen,'true','item sheet starts open');
+assert.notEqual(get('inventoryClose').inert,true,'exit remains clickable behind mobile comparison');
+get('inventoryClose').onclick();
+assert.equal(exitCalls,1,'fixed exit closes the entire inventory');
+assert.equal(get('inventoryScreen').dataset.detailOpen,'false','fixed exit dismisses comparison first');

@@ -23,7 +23,7 @@ const server=http.createServer((req,res)=>{
 (async()=>{
  fs.mkdirSync(output,{recursive:true});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
- const browser=await chromium.launch({headless:true,args:[
+ const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_EXECUTABLE||undefined,args:[
   '--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader'
  ]});
  const results=[];
@@ -43,7 +43,6 @@ const server=http.createServer((req,res)=>{
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const scene=await page.evaluate(async()=>{
     if(!await DenkmalTerrain.load())throw Error('Level 4 ground failed to load');
-    if(typeof DenkmalTestHooks.getDeveloperMode==='function'&&!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
     const used=[];
     const realDraw=DenkmalTerrain.drawRoad;
     DenkmalTerrain.drawRoad=function(ctx,route,options){

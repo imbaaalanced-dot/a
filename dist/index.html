@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
   <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
-  <link rel="stylesheet" href="loot.css?v=v5-armory-hub1" />
-  <link rel="stylesheet" href="menu.css?v=v6-menu-flow1" />
+  <link rel="stylesheet" href="loot.css?v=beta-inventory-back-20261117" />
+  <link rel="stylesheet" href="menu.css?v=hero-caption-right-20261117" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
   <link rel="stylesheet" href="style2-ui-polish.css?v=ui-gold2" />
@@ -26,7 +26,7 @@
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
-  <script src="canonical-hero-art-v5.js?v=hero-lock2"></script>
+  <script src="canonical-hero-art-v5.js?v=portrait-v6-clean-20261117"></script>
   <script src="asset-manager.js?v=syburg-clean-runtime1"></script>
   <script src="preloader.js?v=copy-20261110a"></script>
   <main id="app">
@@ -116,7 +116,7 @@
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" class="menu-version menu-version-top">V6 · ALPHA</span></header>
         <div class="menu-content">
-          <figure class="menu-hero-figure"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" width="661" height="1050" alt="Marcel · Der Beschützer" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
+          <figure class="menu-hero-figure" aria-label="Die beiden Denkmalwächter Marcel und Kim"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117" width="661" height="1050" alt="Marcel · Der Beschützer" fetchpriority="high" /><img id="menuHeroCompanion" class="hero-menu-companion" src="assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117" width="661" height="1050" alt="Kim · Die Treffsichere" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
           <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v3.webp" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sieben historische Schauplätze. Eine Aufgabe: Bewahre die Erinnerung.</p>
           <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
@@ -220,8 +220,9 @@
     </section>
 
     <section id="inventoryScreen" class="modal inventory-screen hidden" role="dialog" aria-modal="true" aria-labelledby="inventoryTitle">
+      <button id="inventoryClose" class="loot-action loot-fixed-close" type="button" aria-label="Rüstkammer schließen">✕ SCHLIESSEN</button>
       <div class="loot-shell">
-        <header class="loot-header"><div><p class="eyebrow" id="inventoryMode"></p><h2 id="inventoryTitle">DIE RÜSTKAMMER</h2></div><button id="inventoryClose" class="loot-action">ZURÜCK</button></header>
+        <header class="loot-header"><div><p class="eyebrow" id="inventoryMode"></p><h2 id="inventoryTitle">DIE RÜSTKAMMER</h2></div></header>
         <div class="loot-meta"><span id="lootSaveState" role="status"></span><strong id="forgeEssence"></strong></div>
         <div class="loot-tabs" role="tablist" aria-label="Rüstkammeransicht">
           <button id="lootEquipmentTab" type="button" role="tab" aria-selected="false" aria-controls="lootEquipmentPanel">Ausrüstung</button>
@@ -303,13 +304,14 @@
   <script src="directional-hero-assets-v5.js?v=v5-alpha-repair-20261116"></script>
   <script src="directional-actions-v410.js?v=v5-hero-canonical1"></script>
   <script src="v2-expansion.js?v=building-clearance-20261114"></script>
-  <script src="loot-ui.js?v=copy-20261112-urlfix"></script>
-  <script src="hero-saga.js?v=copy-20261112-urlfix"></script>
+  <script src="loot-ui.js?v=portrait-v6-clean-20261117"></script>
+  <script src="hero-saga.js?v=portrait-v6-clean-20261117"></script>
   <script src="combat-fx.js?v=v5-projectile-canonical1"></script>
   <script src="style2-impact-atlas.js?v=reference-refresh-1"></script>
   <script src="style2-impact-atlas-v4.js?v=style2-v4a1"></script>
   <script src="style2-user-towers.js?v=v5-canonical-art1"></script>
   <script src="style2-user-towers-v4.js?v=style2-v4a1"></script>
+  <script src="style2-v6-towers.js?v=v6-candidates-20261116"></script>
   <script src="enemy-animations.js?v=v410a1"></script>
   <script src="ground-v3.js?v=late-ground-20261113"></script>
   <script src="style2-maps.js?v=cold-start-20261113"></script>
@@ -317,7 +319,7 @@
   <script src="terrain-polish.js?v=late-ground-20261113"></script>
   <script src="forest-crowns.js?v=style2-forest6b"></script>
   <script src="style2-environment-palette.js?v=v5-style2a1"></script>
-  <script src="kirchende-art.js?v=building-clearance-20261114"></script>
+  <script src="kirchende-art.js?v=style2-default-pr329-20261117"></script>
   <script src="church-art.js?v=church-reference-graves-20261114a"></script>
   <script src="style2-level4-reference.js?v=ref4a2"></script>
   <script src="style2-phase6.js?v=alpha9a5"></script>
@@ -335,9 +337,9 @@
   <script src="portal-perks.js?v=portal1"></script>
   <script src="map-polish-v410.js?v=building-clearance-20261114"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
-  <script src="barracks.js?v=td2-barracks5"></script>
-  <script src="game.js?v=touch-menu-dismissal-20261115"></script>
-  <script src="portrait-avatars-v5.js?v=copy-20261112-urlfix"></script>
+  <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
+  <script src="game.js?v=portrait-v6-clean-20261117"></script>
+  <script src="portrait-avatars-v5.js?v=portrait-v6-clean-20261117"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-version-label">
 (function(){

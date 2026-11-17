@@ -1,4 +1,4 @@
-/* Level 3 opt-in monument pilot: lazy files, separate plaque and legacy defaults. */
+/* Level 3 default Style-2 monument, photo legacy, lazy loading and fallback. */
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 (async()=>{
@@ -9,7 +9,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   ok(){this.complete=true;this.naturalWidth=this.src.includes('opferplatte')?470:261;this.naturalHeight=this.src.includes('opferplatte')?248:425;this.onload();}
   fail(){this.complete=true;this.onerror();}
  }
- const context={Image:FakeImage,location:{search:'?td2KirchendeMemorialPilot=1'},Math,
+ const context={Image:FakeImage,location:{search:''},Math,
    setTimeout(){return 1;},clearTimeout(){},
    document:{createElement(tag){assert.equal(tag,'canvas');return {width:0,height:0,getContext(){
      const gradient={addColorStop(){}};
@@ -37,11 +37,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const count=loaded.length;await art.load();assert.equal(loaded.length,count,'loaded images reused');
  const normalImages=[];
  class NormalImage extends FakeImage{constructor(){super();normalImages.push(this);}}
- const normal={Image:NormalImage,location:{search:''},Math,setTimeout(){return 1;},clearTimeout(){}};
+ const normal={Image:NormalImage,location:{search:'?td2KirchendeMemorialLegacy=1'},Math,setTimeout(){return 1;},clearTimeout(){}};
  vm.createContext(normal);vm.runInContext(source,normal);
  const normalLoading=normal.KirchendeArt.load();
- assert.ok(normalImages.some(i=>i.src?.includes('monument-photo-v2.webp')),'normal level keeps photographic monument');
- assert.ok(!normalImages.some(i=>i.src?.includes('style2-pilot.webp')),'normal level never loads pilot files');
+ assert.ok(normalImages.some(i=>i.src?.includes('monument-photo-v2.webp')),'explicit legacy toggle selects photographic monument');
+ assert.ok(!normalImages.some(i=>i.src?.includes('style2-pilot.webp')),'legacy photo mode never loads pilot art');
  normalImages.forEach(i=>i.ok());await normalLoading;
  // Missing preview asset: return to the known photographic sprite without blocking the level.
  const failedImages=[];
@@ -51,7 +51,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
    ok(){this.complete=true;this.naturalWidth=512;this.naturalHeight=768;this.onload();}
    fail(){this.complete=true;this.onerror();}
  }
- const fallbackCtx={Image:FailureImage,location:{search:'?td2KirchendeMemorialPilot=1'},Math,setTimeout(){return 1;},clearTimeout(){}};
+ const fallbackCtx={Image:FailureImage,location:{search:''},Math,setTimeout(){return 1;},clearTimeout(){}};
  vm.createContext(fallbackCtx);vm.runInContext(source,fallbackCtx);
  const recovering=fallbackCtx.KirchendeArt.load();
  const broken=failedImages.find(i=>i.src?.includes('monument-style2-pilot.webp'));

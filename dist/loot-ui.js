@@ -37,7 +37,7 @@
         $(id).tabIndex=activeTab===tab?0:-1;
       }
       $('lootDetailBackdrop').hidden=!mobile||!detailOpen;
-      for(const id of ['lootEquipmentPanel','lootBagPanel','lootForgePanel','lootEquipmentTab','lootBagTab','lootForgeTab','inventoryClose','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
+      for(const id of ['lootEquipmentPanel','lootBagPanel','lootForgePanel','lootEquipmentTab','lootBagTab','lootForgeTab','lootExportBtn','lootImportBtn','lootRecoveryBtn','lootPreMigrationBtn'])$(id).inert=mobile&&detailOpen;
     }
     function closeDetail(){
       if(!selected)return false;
@@ -45,6 +45,10 @@
       const card=[...root.querySelectorAll('button')].find(n=>n.dataset.itemId===previous&&n.getClientRects().length);
       (card||$(activeTab==='equipment'?'lootEquipmentTab':activeTab==='forge'?'lootForgeTab':'lootBagTab')).focus({preventScroll:true});
       return true;
+    }
+    function dismiss(){
+      if(pending){pending=null;notice='Änderung abgebrochen.';render();return true;}
+      return closeDetail();
     }
     function showTab(tab){activeTab=tab;closeDetail();syncPanels();}
     const tabs=['equipment','bag','forge'],tabIds={equipment:'lootEquipmentTab',bag:'lootBagTab',forge:'lootForgeTab'};
@@ -58,7 +62,7 @@
     $('lootDetail').onkeydown=e=>{
       if(!selected||!isMobile())return;
       if(e.key==='Escape'){
-        e.preventDefault();e.stopPropagation?.();closeDetail();return;
+        e.preventDefault();e.stopPropagation?.();dismiss();return;
       }
       if(e.key==='Tab'){
         const focusable=[...$('lootDetail').querySelectorAll('button,summary,[tabindex]')].filter(n=>!n.disabled&&n.getClientRects().length);
@@ -108,7 +112,7 @@
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
       $('lootHeroRole').textContent=kim?'DIE TREFFSICHERE':'DER BESCHÜTZER';
       $('lootHeroPortrait').src=globalThis.TD2CanonicalHeroArt?.[getHero()]?.portrait||
-        (kim?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
+        (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
       $('lootHeroPortrait').alt=kim?'Kim die Treffsichere':'Marcel der Beschützer';
       for(const hero of ['marcel','kim']){
         const picker=$('lootSelect'+(hero==='kim'?'Kim':'Marcel'));
@@ -240,8 +244,8 @@
     $('lootRecoveryBtn').onclick=()=>download(model.exportRecovery(),'Denkmal-TD-Rohsicherung.json');
     $('lootImportBtn').onclick=()=>{if(editable())$('lootImportFile').click();};
     $('lootImportFile').onchange=async e=>{const file=e.target.files?.[0],token=generation;e.target.value='';if(!file||!editable())return;try{if(file.size>15000000)throw Error('Datei ist zu groß.');const text=await file.text();if(token!==generation||!editable())return;const p=model.validateImport(text);pending={message:`Sicherung mit ${p.owned.length} Gegenständen übernehmen? Sie ersetzt deine aktuelle Sammlung. Exportiere diese bei Bedarf zuerst.`,run:()=>{const ok=model.importJSON(text);if(ok)onImport();return ok;}};notice='';}catch{notice='Import abgelehnt: beschädigte Datei oder falsches Spielstandformat.';}render();$('lootConfirm').scrollIntoView({block:'nearest'});};
-    $('inventoryClose').onclick=onClose;
-    return {render,closeDetail,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
+    $('inventoryClose').onclick=()=>{if(selected)closeDetail();onClose();};
+    return {render,closeDetail,dismiss,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
   }
   globalThis.DenkmalLootUI={create};
 })();

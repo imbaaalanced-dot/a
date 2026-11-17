@@ -1,43 +1,33 @@
-name: TD2 Style 2 isolated branch preview
+name: TD2 Style-2 monument integration QA
 on:
-  push:
-    branches:
-      - feature/td2-all-levels-style2-art-20261116
+  pull_request:
+    branches: [main]
     paths:
-      - 'dist/**'
+      - 'dist/kirchende-art.js'
+      - 'dist/index.html'
+      - 'dist/assets/kirchende/**'
+      - 'tests/kirchende-*.test.cjs'
+      - 'tests/style2-all-levels-runtime.test.cjs'
+      - 'tools/verify-kirchende-memorial-browser.cjs'
       - '.github/workflows/td2-style2-preview.yml'
   workflow_dispatch:
 permissions:
-  contents: write
-concurrency:
-  group: td2-style2-preview
-  cancel-in-progress: true
+  contents: read
 jobs:
-  preview:
+  integration:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-      - name: Check preview files
+          node-version: '22'
+      - name: Static contracts and fallback regression (no deployment)
         run: |
-          test -s dist/index.html
-          test -s dist/kirchende-art.js
-          test -s dist/assets/kirchende/monument-style2-pilot.webp
           node --check dist/kirchende-art.js
-      - name: Publish only isolated style2-preview directory
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin gh-pages
-          git worktree add /tmp/td2-preview origin/gh-pages
-          mkdir -p /tmp/td2-preview/style2-preview
-          find /tmp/td2-preview/style2-preview -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-          cp -a dist/. /tmp/td2-preview/style2-preview/
-          touch /tmp/td2-preview/.nojekyll
-          cd /tmp/td2-preview
-          git add style2-preview .nojekyll
-          if ! git diff --cached --quiet; then
-            git commit -m "Publish TD2 Style2 preview ${GITHUB_SHA}"
-            git push origin HEAD:gh-pages
-          fi
+          node --check tools/verify-kirchende-memorial-browser.cjs
+          node tests/style2-all-levels-runtime.test.cjs
+          node tests/style2-maps.test.cjs
+          node tests/kirchende-loading.test.cjs
+          node tests/kirchende-memorial-pilot.test.cjs
+          node tests/style2-environment-coherence.test.cjs

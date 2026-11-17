@@ -11,7 +11,7 @@ const output=process.env.TD2_GROUND_V3_OUT||'/tmp/td2-reference-ground-v3';
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css',
  '.webp':'image/webp','.png':'image/png','.json':'application/json','.svg':'image/svg+xml'};
 const server=http.createServer((req,res)=>{
- const pathname=new URL(req.url,'http://localhost').pathname.replace(/^\/v4-style2\//,'/');
+ const pathname=new URL(req.url,'http://localhost').pathname.replace(/^\/v4-alpha9\//,'/');
  const filename=path.resolve(root,'.'+pathname);
  if(!filename.startsWith(root+path.sep)){res.writeHead(403).end();return;}
  fs.readFile(filename,(err,body)=>{
@@ -22,7 +22,7 @@ const server=http.createServer((req,res)=>{
 (async()=>{
  fs.mkdirSync(output,{recursive:true});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
- const browser=await chromium.launch({headless:true,args:[
+ const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_EXECUTABLE||undefined,args:[
   '--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader'
  ]});
  const results=[];
@@ -38,7 +38,7 @@ const server=http.createServer((req,res)=>{
    page.on('pageerror',e=>errors.push(e.message));
    page.on('response',r=>{if(r.status()>=400)failed.push(r.url());});
    page.on('request',r=>requests.push(r.url()));
-   const url=`http://127.0.0.1:${server.address().port}/v4-style2/index.html`+
+   const url=`http://127.0.0.1:${server.address().port}/v4-alpha9/index.html`+
     (active?'':'?td2GroundV3=0');
    await page.goto(url,{waitUntil:'networkidle'});
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
@@ -47,8 +47,6 @@ const server=http.createServer((req,res)=>{
     if(!ready)throw Error('shared terrain did not load');
     if(TD2GroundV3.enabled&&TD2GroundV3.loadedCount!==9)
       throw Error(`V3 material count ${TD2GroundV3.loadedCount} / 9`);
-    // Dedicated isolated test context: developer unlock avoids writing regular campaign progress.
-    if(typeof DenkmalTestHooks.getDeveloperMode==='function'&&!DenkmalTestHooks.getDeveloperMode())DenkmalTestHooks.toggleDeveloperMode();
     if(lvl===3)await KirchendeArt?.load?.(true);
     DenkmalTestHooks.startGame(lvl);DenkmalTestHooks.launchWave();
     await new Promise(r=>setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(r)),750));

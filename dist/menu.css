@@ -443,3 +443,74 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen .menu-developer-toast[hidden]{display:none}
 #startScreen .menu-developer-toast strong{font:700 clamp(25px,7vw,38px)/1.2 Georgia,serif;letter-spacing:.15em}
 #startScreen .menu-developer-toast span{font:700 12px/1.4 system-ui;letter-spacing:.12em}
+
+/* Beta #330: both existing hero portraits remain visible, including a 360px
+   high desktop preview. This changes layout only; art approval remains open. */
+#startScreen[data-menu-panel="home"] .menu-hero-figure{position:relative;isolation:isolate;}
+#startScreen .menu-hero-figure .hero-menu-banner,
+#startScreen .menu-hero-figure .hero-menu-companion{
+  position:absolute;top:0;bottom:0;width:44%;height:100%;
+  max-width:none;min-height:0;object-fit:contain;object-position:center bottom;
+  margin:0;padding:0;border:0;pointer-events:none;
+  filter:drop-shadow(0 7px 10px #000c);
+}
+#startScreen .menu-hero-figure .hero-menu-banner{right:7%;left:auto;}
+#startScreen .menu-hero-figure .hero-menu-companion{left:7%;right:auto;}
+#startScreen .menu-hero-figure #menuHeroCaption{position:absolute;bottom:10px;left:14px;z-index:2;}
+@media (max-height:430px) and (orientation:landscape){
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{
+    display:block;height:clamp(64px,20dvh,86px);
+    width:100%;max-width:720px;margin:0 auto 4px;overflow:hidden;
+  }
+  #startScreen .menu-hero-figure #menuHeroCaption{
+    left:10px;bottom:4px;font-size:10px;padding:0;
+  }
+}
+
+/* Hero visibility: show BOTH real V5 Style-2 portraits on the native home
+   banner. The previous composite-only background hid the individual images.
+   Submenus remain unchanged; buttons stay native and touch-accessible. */
+#startScreen[data-menu-panel="home"] .menu-hero-figure{
+  display:block;
+  width:min(100%,800px);
+  background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-v3.webp");
+  background-position:center,center 45%;
+  background-size:cover,cover;
+}
+#startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-banner,
+#startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-companion{
+  display:block;
+  opacity:1;
+  visibility:visible;
+  width:44%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+}
+@media(max-width:700px){
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{
+    height:clamp(130px,21dvh,185px);
+    background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-mobile-v3.webp");
+  }
+  #startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-banner{right:3%;left:auto;}
+  #startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-companion{left:3%;right:auto;}
+  #startScreen[data-menu-panel="home"] #menuHeroCaption{
+    left:8px;bottom:6px;max-width:100%;
+    font-size:11px;text-shadow:0 2px 6px #000;
+  }
+}
+
+/* Selected hero is the right-hand figure. Keep its caption with the selected
+   portrait instead of placing it over the left-hand companion. */
+#startScreen[data-menu-panel="home"] .menu-hero-figure #menuHeroCaption{
+  left:auto;right:5%;bottom:6px;max-width:46%;text-align:right;
+  white-space:normal;overflow-wrap:normal;
+}
+@media (max-height:430px) and (orientation:landscape){
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{
+    height:clamp(86px,25dvh,112px);
+  }
+  #startScreen[data-menu-panel="home"] .menu-hero-figure #menuHeroCaption{
+    left:auto;right:5%;bottom:3px;
+  }
+}

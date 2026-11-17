@@ -76,7 +76,7 @@ jobs:
           print('WESTHOFEN_V3_GAMEPLAY_CONTACT_BYTES='+str(len(data)))
           PY
       - name: Save actual Chromium gameplay and sprite review images
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: westhofen-v3-level7-chromium-review-only
