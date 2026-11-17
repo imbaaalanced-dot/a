@@ -59,6 +59,49 @@ const server=http.createServer((req,res)=>{
    assert.equal(requests.filter(u=>u.includes('monument-photo-v2.webp')).length,profile.style2?0:1);
    assert.equal(requests.filter(u=>u.includes('opferplatte-style2-pilot.webp')).length,0,'unapproved candle plaque must never download');
    await page.locator('#kirchendePilotQACanvas').screenshot({path:path.join(output,profile.name+'-assets.png')});
+   // Raw decoded source on contrasting checkerboards: dark fringes/triangles
+   // can disappear against the regular dark in-game palette.
+   // These diagnostics are visual evidence, not historical authentication.
+   if(!profile.touch){
+     const rawEvidence=await page.evaluate(()=>{
+       const sprite=KirchendeArt.image('monument');
+       const raw=document.createElement('canvas');
+       raw.width=sprite.naturalWidth;raw.height=sprite.naturalHeight;
+       const src=raw.getContext('2d',{willReadFrequently:true});
+       src.drawImage(sprite,0,0);
+       const rgba=src.getImageData(0,0,raw.width,raw.height).data;
+       let transparent=0,partial=0,opaque=0;
+       for(let i=3;i<rgba.length;i+=4){
+         if(rgba[i]===0)transparent++;
+         else if(rgba[i]===255)opaque++;
+         else partial++;
+       }
+       const preview=(tone)=>{
+         const c=document.createElement('canvas');c.width=320;c.height=400;
+         const q=c.getContext('2d');
+         for(let y=0;y<c.height;y+=20)for(let x=0;x<c.width;x+=20){
+           const even=((x+y)/20)%2===0;
+           q.fillStyle=tone==='light'
+             ?(even?'#e8ede6':'#b9c3ba')
+             :(even?'#39454e':'#101922');
+           q.fillRect(x,y,20,20);
+         }
+         const scale=Math.min(290/sprite.naturalWidth,370/sprite.naturalHeight);
+         const w=sprite.naturalWidth*scale,h=sprite.naturalHeight*scale;
+         q.drawImage(sprite,(c.width-w)/2,(c.height-h)/2,w,h);
+         return c.toDataURL('image/png').split(',')[1];
+       };
+       return {dimensions:{width:raw.width,height:raw.height},
+         alphaPixels:{transparent,partial,opaque},
+         light:preview('light'),dark:preview('dark')};
+     });
+     for(const tone of ['light','dark']){
+       fs.writeFileSync(path.join(output,profile.name+'-raw-'+tone+'.png'),
+         Buffer.from(rawEvidence[tone],'base64'));
+     }
+     state.rawSpriteEvidence={dimensions:rawEvidence.dimensions,alphaPixels:rawEvidence.alphaPixels,
+       lightFile:profile.name+'-raw-light.png',darkFile:profile.name+'-raw-dark.png'};
+   }
    // Real decoded-art previews at the two requested mobile icon sizes.
    for(const size of [64,128]){
      const thumb=await page.evaluate(size=>{
