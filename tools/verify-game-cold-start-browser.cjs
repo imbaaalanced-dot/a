@@ -42,9 +42,10 @@ const server=http.createServer((req,res)=>{
    // Persist the pending snapshot without blocking the deliberate delayed-load scenario.
    fs.writeFileSync(path.join(output,name+'-pending.json'),JSON.stringify({before,moving,requested,heldMaterialRequests:true},null,2));
    release();
+   // Explicit interval polling avoids Chromium rAF throttling while large world canvases render.
    try {
-    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
-    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
+    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9,null,{polling:200,timeout:45000});
+    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1,null,{polling:200,timeout:45000});
    } catch (error) {
     const diagnostics={name,requested,failedRequests:failed,errors,loaded:await snapshot(),resources:await page.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).map(r=>({name:r.name,duration:r.duration,transferSize:r.transferSize})))};
     fs.writeFileSync(path.join(output,name+'-timeout.json'),JSON.stringify(diagnostics,null,2));
