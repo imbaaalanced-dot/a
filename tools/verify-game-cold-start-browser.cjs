@@ -14,6 +14,20 @@ const server=http.createServer((req,res)=>{
  fs.mkdirSync(output,{recursive:true});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
  const results=[];
+ // Capturing the real game Canvas avoids a flaky page-wide compositor readback
+ // under SwiftShader; the gameplay scene itself remains the pixel evidence.
+ async function captureGameCanvas(page,name,stage){
+   const snap=await page.evaluate(()=>{
+     const canvas=document.querySelector('canvas#game');
+     if(!canvas||canvas.width<32||canvas.height<32)throw Error('gameplay canvas missing');
+     return {width:canvas.width,height:canvas.height,
+       png:canvas.toDataURL('image/png').split(',')[1]};
+   });
+   const bytes=Buffer.from(snap.png,'base64');
+   assert.ok(bytes.length>4096,name+' '+stage+' canvas suspiciously blank');
+   fs.writeFileSync(path.join(output,name+'-'+stage+'.png'),bytes);
+   return {width:snap.width,height:snap.height,bytes:bytes.length};
+ }
  try{
   for(const mobile of [false,true])for(const fail of [false,true]){
    const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
@@ -38,7 +52,8 @@ const server=http.createServer((req,res)=>{
    finally{await page.keyboard.up('ArrowRight');}
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
-   await page.screenshot({path:path.join(output,name+'-pending.png')});release();
+   let pendingCapture;try{pendingCapture=await captureGameCanvas(page,name,'pending');}
+   finally{release();}
    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
@@ -46,8 +61,9 @@ const server=http.createServer((req,res)=>{
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
    await page.waitForTimeout(600);const warm=await snapshot();assert.equal(warm.maps.builds,after.maps.builds);assert.equal(requested,9,'failed downloads never cause a request loop');
    assert.deepEqual(errors,[],'material failure must not throw');assert.ok(failed.filter(r=>new URL(r.url).origin===new URL(page.url()).origin).every(r=>r.url.includes('/reference-ground-v3/')),'no unrelated local game asset failure: '+JSON.stringify(failed));
-   await page.screenshot({path:path.join(output,name+'-settled.png')});
-   results.push({touchEmulation:mobile,materialFailure:fail,requested,before,moving,after,warm,errors,failedRequests:failed});await context.close();
+   const settledCapture=await captureGameCanvas(page,name,'settled');
+   results.push({touchEmulation:mobile,materialFailure:fail,requested,before,moving,after,warm,
+     capture:{pending:pendingCapture,settled:settledCapture},errors,failedRequests:failed});await context.close();
   }
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,fontPolicy:'app fallback fonts; external Google Fonts CSS isolated',results},null,2));
   console.log(JSON.stringify({chromium:browser.version(),menuStartupScenarios:results.length,physicalAndroidTested:false}));
