@@ -1,0 +1,45 @@
+name: Hero chroma audit log push
+
+on:
+  push:
+    branches: ['diag/hero-chroma-20261117']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hero-chroma-diag
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Pillow and run audit
+        run: |
+          python -m pip install --quiet 'Pillow>=11,<14'
+          mkdir -p docs/diagnostics/hero-chroma
+          python tools/audit-active-hero-chroma.py --out /tmp/hero-chroma.json
+          cp /tmp/hero-chroma.json docs/diagnostics/hero-chroma/hero-chroma.json
+        env:
+          POETRY_VIRTUALENVS_CREATE: 'false'
+      - name: Publish report on this branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/diagnostics/hero-chroma
+          if git diff --cached --quiet; then
+            echo 'Report unchanged.'
+            exit 0
+          fi
+          git commit -m 'diag(hero-chroma): publish active hero chroma audit report'
+          git push
