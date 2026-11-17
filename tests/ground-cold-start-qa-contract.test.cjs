@@ -10,7 +10,7 @@ assert.match(source,/polling:200,timeout:15000/,'rebuild must use interval polli
 assert.match(source,/Cold-start material timeout diagnostics:/,'late-load stalls must generate structured diagnostics');
 assert.doesNotMatch(source,/new Promise\(resolve=>requestAnimationFrame\(/,'rAF wait can stall SwiftShader on CI');
 const groundSource=fs.readFileSync(path.join(__dirname,'../tools/verify-reference-ground-v3-browser.cjs'),'utf8');
-assert.match(groundSource,/document\\.querySelector\\('#game'\\)/,'every level screenshot must come from the gameplay Canvas');
-assert.match(groundSource,/canvas\\.toDataURL\\('image\\/png'\\)/,'reference ground export must preserve real game pixels');
-assert.doesNotMatch(groundSource,/page\\.screenshot\\(/,'page screenshots may capture tutorial/story overlays, not playable levels');
+assert.ok(groundSource.includes("document.querySelector('canvas#game')"),'level evidence must capture the gameplay Canvas');
+assert.ok(groundSource.includes("canvas.toDataURL('image/png')"),'ground export must preserve actual game pixels');
+assert.ok(!groundSource.includes('page.screenshot('),'page screenshots can show tutorial overlays instead of gameplay');
 console.log('Ground V3 cold-start QA retains Canvas captures, request release, explicit interval polling and diagnostics.');
