@@ -41,20 +41,32 @@ test('tutorial dismissal preserves a manually paused resumed run',()=>{
  h.frame(100);h.frame(1200);assert.equal(h.state().elapsed,0);assert.match(h.el('pause').textContent,/Fortsetzen/);
 });
 
-test('speed cycles 1x, 2x, 3x and back to 1x',()=>{
+test('normal speed cycles between 1x and 2x (#330)',()=>{
  const h=harness();
- for(const expected of [1,2,3,1]){
+ for(const expected of [1,2,1]){
   assert.equal(h.el('speed').textContent,`Tempo: ${expected}×`);
   h.el('speed').onclick();
  }
 });
-test('3x advances three times the simulation time and respects pause and catchup cap',()=>{
+test('2x advances double the simulation time and respects pause and catchup cap (#330)',()=>{
  const h=harness(seeded());h.el('resume').onclick();h.el('pause').onclick();
- h.el('speed').onclick();h.el('speed').onclick();
+ h.el('speed').onclick();
  h.frame(100);const initial=h.state().elapsed;h.frame(200);
- assert.ok(Math.abs(h.state().elapsed-initial-.3)<1e-9);
+ assert.ok(Math.abs(h.state().elapsed-initial-.2)<1e-9);
  h.el('pause').onclick();const paused=h.state().elapsed;h.frame(10000);
  assert.equal(h.state().elapsed,paused);
  h.el('pause').onclick();h.frame(10100);h.frame(60100);
  assert.ok(h.state().elapsed-paused<=.300000001);
+});
+test('developer mode cycles up to 5x while the catchup cap still holds (#330)',()=>{
+ const data=seeded();data.set('ansturm-developer-speed','enabled');
+ const h=harness(data);h.el('resume').onclick();h.el('pause').onclick();
+ for(const expected of [1,2,3,4,5,1]){
+  assert.equal(h.el('speed').textContent,`Tempo: ${expected}× · DEV`);
+  h.el('speed').onclick();
+ }
+ h.el('pause').onclick();const paused=h.state().elapsed;h.frame(10000);
+ assert.equal(h.state().elapsed,paused);
+ h.el('pause').onclick();h.frame(10100);h.frame(60100);
+ assert.ok(h.state().elapsed-paused<=.300000001,'5x catchup bleibt auf den Akkumulator-Deckel begrenzt');
 });
