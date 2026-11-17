@@ -25,21 +25,20 @@ assert.equal(limitContext.targetRenderInterval(),0,'desktop remains uncapped');
 // Shadows are drawn once per visible object: reduce low-tier Canvas path fill count
 // without changing game state or leaking Canvas draw state.
 const ops=[];
-const ctx={
-  save(){ops.push('save');},restore(){ops.push('restore');},
-  beginPath(){ops.push('path');},ellipse(){ops.push('ellipse');},fill(){ops.push('fill');}
-};
+const ctx={fillStyle:'#f3dfb1',save(){ops.push('save');},restore(){ops.push('restore');},beginPath(){ops.push('path');},ellipse(){ops.push('ellipse');},fill(){ops.push('fill');}};
 const shadowContext={ctx,Math,lowFX:()=>true};
 vm.createContext(shadowContext);
 vm.runInContext(takeLine('shadow'),shadowContext);
 shadowContext.shadow(100,200,20);
 assert.equal(ops.filter(op=>op==='fill').length,1,'LOW paints one grounding shadow per enemy');
-assert.deepEqual(ops.filter(op=>op==='save'||op==='restore'),['save','restore']);
+assert.deepEqual(ops.filter(op=>op==='save'||op==='restore'),[],'hot-path shadow avoids save/restore state-stack churn');
+assert.equal(ctx.fillStyle,'#f3dfb1','shadow restores the previous fill style');
 ops.length=0;
 shadowContext.lowFX=()=>false;
 shadowContext.shadow(100,200,20);
 assert.equal(ops.filter(op=>op==='fill').length,2,'HIGH preserves both shadow layers');
-assert.deepEqual(ops.filter(op=>op==='save'||op==='restore'),['save','restore']);
+assert.deepEqual(ops.filter(op=>op==='save'||op==='restore'),[],'hot-path shadow avoids save/restore state-stack churn');
+assert.equal(ctx.fillStyle,'#f3dfb1','shadow restores the previous fill style');
 
 // The immutable level layout must reuse the existing map-polish cache rather than
 // allocating a new shallow copy on every drawn frame.
