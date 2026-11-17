@@ -11,7 +11,7 @@ const source=name=>fs.readFileSync(path.join(root,name),'utf8');
 const html=source('index.html'),css=source('menu.css');
 const nativeDuo=html.match(/<figure class="menu-hero-figure"[\s\S]*?<\/figure>/)?.[0];
 assert.ok(nativeDuo,'home menu must include a native two-hero figure');
-assert.match(nativeDuo,/id="menuHeroBanner"[^>]*marcel-guardian-v6\.webp/);
+assert.match(nativeDuo,/id="menuHeroBanner"[^>]*marcel-wand-menu-portrait-20261117\.avif/);
 assert.match(nativeDuo,/id="menuHeroCompanion"[^>]*kim-marksman-v6\.webp/);
 assert.match(html,/menu\.css\?v=hero-caption-right-20261117/);
 assert.match(html,/hero-saga\.js\?v=portrait-v6-clean-20261117/);
