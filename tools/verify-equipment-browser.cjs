@@ -35,7 +35,40 @@ async function killBoss(page){
    const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:900},isMobile:mobile,hasTouch:mobile,acceptDownloads:true,ignoreHTTPSErrors:true,reducedMotion:'reduce'});await seedContext(context);
    const page=await context.newPage(),errors=[],missing=[];page.setDefaultTimeout(60000);page.setDefaultNavigationTimeout(120000);page.on('pageerror',e=>{errors.push(e.message);console.error('PAGE ERROR',mobile,e.stack||e.message);});page.on('response',r=>{if(r.status()>=400)missing.push(r.url());});
    await page.goto(url.href,{waitUntil:'networkidle'});await waitReady(page);console.log('Loaded',mobile,'stored version',(await saved(page)).version);if(errors.length)throw Error(errors.join('\n'));await page.waitForFunction(()=>!!globalThis.DenkmalTestHooks);
-   await inventory(page,'kim');console.log('Inventory open',mobile);await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));await click(page.locator('#lootEquipAction'));
+   await inventory(page,'kim');console.log('Inventory open',mobile);
+   // Inventory escape hatch must remain a real viewport hit target after scrolling,
+   // including over the mobile sheet. History Back is Android/WebView's return path.
+   const assertExitReachable=async label=>{
+    const hit=await page.evaluate(()=>{
+     const root=document.getElementById('inventoryScreen'),button=document.getElementById('inventoryClose');
+     root.scrollTop=root.scrollHeight;
+     const b=button.getBoundingClientRect(),x=b.left+b.width/2,y=b.top+b.height/2;
+     return {visible:b.width>=44&&b.height>=44&&x>=0&&x<innerWidth&&y>=0&&y<innerHeight,hit:button.contains(document.elementFromPoint(x,y)),position:getComputedStyle(button).position,backdrop:getComputedStyle(root).backdropFilter};
+    });
+    assert.equal(hit.position,'fixed',label+' close must be viewport-fixed');
+    assert.equal(hit.backdrop,'none',label+' scrolling modal must not create a containing block');
+    assert.equal(hit.visible&&hit.hit,true,label+' close must be reachable on '+(mobile?'touch':'desktop'));
+   };
+   await assertExitReachable('scrolled inventory');
+   await page.keyboard.press('Escape');
+   await page.waitForFunction(()=>document.getElementById('inventoryScreen').classList.contains('hidden'));
+   await page.waitForFunction(()=>!history.state?.__td2InventoryOverlay);
+   await inventory(page,'kim');
+   await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));
+   await assertExitReachable('comparison open');
+   await page.evaluate(()=>history.back());
+   await page.waitForFunction(()=>document.getElementById('inventoryScreen').dataset.detailOpen==='false'&&!!history.state?.__td2InventoryOverlay);
+   assert.equal(await page.locator('#inventoryScreen').isVisible(),true,'first Back closes sheet only');
+   await page.evaluate(()=>history.back());
+   await page.waitForFunction(()=>document.getElementById('inventoryScreen').classList.contains('hidden'));
+   await inventory(page,'kim');
+   const scrollPolicy=await page.evaluate(()=>({outer:getComputedStyle(document.getElementById('inventoryScreen')).overscrollBehaviorY,inner:getComputedStyle(document.querySelector('.loot-scroll-area')).overscrollBehaviorY,body:getComputedStyle(document.body).overflow}));
+   assert.deepEqual(scrollPolicy,{outer:'contain',inner:'auto',body:'hidden'},'nested scroll must not trap inventory or move game');
+   if(mobile)await page.touchscreen.tap(3,3);else await page.mouse.click(3,3);
+   await page.waitForFunction(()=>document.getElementById('inventoryScreen').classList.contains('hidden'));
+   await page.waitForFunction(()=>!history.state?.__td2InventoryOverlay);
+   await inventory(page,'kim');
+   await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));await click(page.locator('#lootEquipAction'));
    console.log('Kim equipped',mobile);let state=await saved(page);assert.equal(state.version,4);assert.equal(state.profile.loadouts.kim.weapon,'qa-shared');assert.equal(state.profile.loadouts.marcel.weapon,'fixture-0');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1-pre-v3')).version),2);
    await closeInventory(page);await inventory(page,'marcel');await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));assert.equal(await page.locator('#lootRecycleAction').isDisabled(),true);await click(page.locator('#lootEquipAction'));
    state=await saved(page);assert.equal(state.profile.loadouts.marcel.weapon,'qa-shared');assert.equal(state.profile.owned.length,10);

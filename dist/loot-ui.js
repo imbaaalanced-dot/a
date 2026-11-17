@@ -46,6 +46,10 @@
       (card||$(activeTab==='equipment'?'lootEquipmentTab':activeTab==='forge'?'lootForgeTab':'lootBagTab')).focus({preventScroll:true});
       return true;
     }
+    function dismiss(){
+      if(pending){pending=null;notice='Änderung abgebrochen.';render();return true;}
+      return closeDetail();
+    }
     function showTab(tab){activeTab=tab;closeDetail();syncPanels();}
     const tabs=['equipment','bag','forge'],tabIds={equipment:'lootEquipmentTab',bag:'lootBagTab',forge:'lootForgeTab'};
     for(const tab of tabs)$(tabIds[tab]).onclick=()=>showTab(tab);
@@ -58,7 +62,7 @@
     $('lootDetail').onkeydown=e=>{
       if(!selected||!isMobile())return;
       if(e.key==='Escape'){
-        e.preventDefault();e.stopPropagation?.();closeDetail();return;
+        e.preventDefault();e.stopPropagation?.();dismiss();return;
       }
       if(e.key==='Tab'){
         const focusable=[...$('lootDetail').querySelectorAll('button,summary,[tabindex]')].filter(n=>!n.disabled&&n.getClientRects().length);
@@ -241,7 +245,7 @@
     $('lootImportBtn').onclick=()=>{if(editable())$('lootImportFile').click();};
     $('lootImportFile').onchange=async e=>{const file=e.target.files?.[0],token=generation;e.target.value='';if(!file||!editable())return;try{if(file.size>15000000)throw Error('Datei ist zu groß.');const text=await file.text();if(token!==generation||!editable())return;const p=model.validateImport(text);pending={message:`Sicherung mit ${p.owned.length} Gegenständen übernehmen? Sie ersetzt deine aktuelle Sammlung. Exportiere diese bei Bedarf zuerst.`,run:()=>{const ok=model.importJSON(text);if(ok)onImport();return ok;}};notice='';}catch{notice='Import abgelehnt: beschädigte Datei oder falsches Spielstandformat.';}render();$('lootConfirm').scrollIntoView({block:'nearest'});};
     $('inventoryClose').onclick=()=>{if(selected)closeDetail();onClose();};
-    return {render,closeDetail,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
+    return {render,closeDetail,dismiss,close(){generation++;selected=null;pending=null;notice='';syncPanels();}};
   }
   globalThis.DenkmalLootUI={create};
 })();
