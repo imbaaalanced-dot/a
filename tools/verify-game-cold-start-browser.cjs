@@ -42,8 +42,15 @@ const server=http.createServer((req,res)=>{
    // Persist the pending snapshot without blocking the deliberate delayed-load scenario.
    fs.writeFileSync(path.join(output,name+'-pending.json'),JSON.stringify({before,moving,requested,heldMaterialRequests:true},null,2));
    release();
-   if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
-   else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
+   try {
+    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
+    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
+   } catch (error) {
+    const diagnostics={name,requested,failedRequests:failed,errors,loaded:await snapshot(),resources:await page.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).map(r=>({name:r.name,duration:r.duration,transferSize:r.transferSize})))};
+    fs.writeFileSync(path.join(output,name+'-timeout.json'),JSON.stringify(diagnostics,null,2));
+    console.error('Cold-start material timeout diagnostics:',JSON.stringify(diagnostics));
+    throw error;
+   }
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    const after=await snapshot();assert.equal(after.state,'playing');assert.equal(after.level,1);
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
