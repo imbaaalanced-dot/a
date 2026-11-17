@@ -58,3 +58,9 @@ Do not collapse the following two distinct physical memorials into one level or 
    - https://www.herdecke.de/ (official heritage register: Kirchender Dorfweg 42, Ehrenmal „Schlafender Löwe“)
 
 **Acceptance consequence:** before treating L3 art as historically final, inspect the specifically identified **opposite-church 1927** image from front and oblique side, then compare its footprint, side relief, top profile, materials and inscription with the rendered Level 3 sprite. Keep the current legacy fallback enabled until that comparison is approved. Do not swap the L4 lion into L3.
+
+## Reference-ground gameplay screenshot correction (17 Nov 2026)
+- The earlier `verify-reference-ground-v3-browser.cjs` used `page.screenshot()`. In the inspected artifact this can capture the open introductory dialog rather than unobstructed Level-1 gameplay. Those page images must not be cited as direct gameplay-visibility proof.
+- On this PR branch the script now saves the actual `canvas#game` as PNG for **all 15 desktop/touch scenes (Level 1–7 V3 and one Level-3 opt-out)**, with image dimensions/encoded byte count in results. The existing alpha/JS/HTTP/runtime assertions remain; `tests/ground-cold-start-qa-contract.test.cjs` guards against reintroducing page screenshots.
+- Browser screenshots collected **before** this correction remain valid for their separate material/runtime assertions, not as clean playable-scene screenshots. New captures require a successful run on the new PR head before image QA can be counted complete.
+- These captures are **not** physical Android-4-GB evidence and do not validate historical monument authenticity.
