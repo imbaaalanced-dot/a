@@ -30,7 +30,21 @@ const server=http.createServer((req,res)=>{
    if(await page.locator('#storyContinue').isVisible())await page.locator('#storyContinue').click();
    await page.locator('#tutorialSkip').waitFor({state:'visible',timeout:10000});
    await page.locator('#tutorialSkip').click();
-   await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing'&&Style2Maps.stats().activeLevel===1);
+   try{
+    await page.waitForFunction(()=>globalThis.DenkmalTestHooks?.getState?.()==='playing'&&globalThis.Style2Maps?.stats?.().activeLevel===1,{timeout:30000});
+   }catch(error){
+    const diagnostic=await page.evaluate(()=>({
+      state:globalThis.DenkmalTestHooks?.getState?.()??null,
+      activeLevel:globalThis.Style2Maps?.stats?.().activeLevel??null,
+      loading:!!document.querySelector('#td2Loading'),
+      tutorialVisible:!!document.querySelector('#introTutorial:not(.hidden)'),
+      startVisible:!!document.querySelector('#startScreen:not(.hidden)'),
+      gameVisible:!!document.querySelector('#game'),
+      hero:globalThis.DenkmalTestHooks?.getGame?.()?.hero?.character??null
+    })).catch(e=>({diagnosticError:String(e)}));
+    await page.screenshot({path:path.join(output,`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}-timeout.png`)}).catch(()=>{});
+    throw new Error('Cold-start gameplay readiness timeout: '+JSON.stringify({mobile,fail,requested,diagnostic,errors,failed}),{cause:error});
+   }
    const snapshot=()=>page.evaluate(()=>{const g=DenkmalTestHooks.getGame();return {level:g.level,state:DenkmalTestHooks.getState(),hero:{x:g.hero.x,y:g.hero.y},loaded:TD2GroundV3.loadedCount,revision:TD2GroundV3.revision,maps:Style2Maps.stats()};});
    const before=await snapshot();assert.equal(requested,9,'normal menu startup must request V3 without prewarming');assert.equal(before.loaded,0);
    await page.keyboard.down('ArrowRight');
