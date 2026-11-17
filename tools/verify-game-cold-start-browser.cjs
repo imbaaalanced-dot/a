@@ -38,7 +38,10 @@ const server=http.createServer((req,res)=>{
    finally{await page.keyboard.up('ArrowRight');}
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
-   await page.screenshot({path:path.join(output,name+'-pending.png')});release();
+   // Screenshot waits for pending images; these nine requests are held until release().
+   // Persist the pending snapshot without blocking the deliberate delayed-load scenario.
+   fs.writeFileSync(path.join(output,name+'-pending.json'),JSON.stringify({before,moving,requested,heldMaterialRequests:true},null,2));
+   release();
    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
