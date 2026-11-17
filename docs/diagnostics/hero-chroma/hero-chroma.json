@@ -1,0 +1,321 @@
+{
+  "scope": "currently registered hero runtime WebP atlases only",
+  "assets_checked": 10,
+  "near_magenta_total": 0,
+  "note": "No artwork is modified. Counts locate review candidates, not confirmed errors.",
+  "assets": [
+    {
+      "actor": "marcel",
+      "kind": "walk",
+      "active_asset": "assets/hero/marcel-walk-v5b.webp",
+      "grid": [
+        3,
+        4
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 0,
+      "review_candidates": [],
+      "review_candidate_count": 0,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "marcel",
+      "kind": "actions",
+      "active_asset": "assets/hero/marcel-side-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 0,
+      "review_candidates": [],
+      "review_candidate_count": 0,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "marcel",
+      "kind": "down-actions",
+      "active_asset": "assets/hero/marcel-down-actions-v5b-alpha-repair.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 228,
+      "review_candidates": [
+        {
+          "row": 2,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 94,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "near_magenta": 0,
+          "violet": 84,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 5,
+          "near_magenta": 0,
+          "violet": 18,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "near_magenta": 0,
+          "violet": 13,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 5,
+          "near_magenta": 0,
+          "violet": 9,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 4,
+          "near_magenta": 0,
+          "violet": 4,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 3,
+          "magenta_bounds": null
+        },
+        {
+          "row": 5,
+          "column": 3,
+          "near_magenta": 0,
+          "violet": 3,
+          "magenta_bounds": null
+        }
+      ],
+      "review_candidate_count": 8,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "marcel",
+      "kind": "left-actions",
+      "active_asset": "assets/hero/marcel-left-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 0,
+      "review_candidates": [],
+      "review_candidate_count": 0,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "marcel",
+      "kind": "up-actions",
+      "active_asset": "assets/hero/marcel-up-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 16,
+      "review_candidates": [
+        {
+          "row": 4,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 15,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 0,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        }
+      ],
+      "review_candidate_count": 2,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "kim",
+      "kind": "walk",
+      "active_asset": "assets/hero/kim-walk-v5b.webp",
+      "grid": [
+        3,
+        4
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 0,
+      "review_candidates": [],
+      "review_candidate_count": 0,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "kim",
+      "kind": "actions",
+      "active_asset": "assets/hero/kim-side-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 0,
+      "review_candidates": [],
+      "review_candidate_count": 0,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "kim",
+      "kind": "down-actions",
+      "active_asset": "assets/hero/kim-down-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 13,
+      "review_candidates": [
+        {
+          "row": 2,
+          "column": 3,
+          "near_magenta": 0,
+          "violet": 3,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "near_magenta": 0,
+          "violet": 2,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "near_magenta": 0,
+          "violet": 2,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 4,
+          "near_magenta": 0,
+          "violet": 2,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 5,
+          "near_magenta": 0,
+          "violet": 2,
+          "magenta_bounds": null
+        },
+        {
+          "row": 5,
+          "column": 0,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        },
+        {
+          "row": 5,
+          "column": 3,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        }
+      ],
+      "review_candidate_count": 7,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "kim",
+      "kind": "right-actions",
+      "active_asset": "assets/hero/kim-right-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 4,
+      "review_candidates": [
+        {
+          "row": 2,
+          "column": 0,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        },
+        {
+          "row": 4,
+          "column": 2,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        }
+      ],
+      "review_candidate_count": 4,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    },
+    {
+      "actor": "kim",
+      "kind": "up-actions",
+      "active_asset": "assets/hero/kim-up-actions-v5b.webp",
+      "grid": [
+        6,
+        6
+      ],
+      "near_magenta_total": 0,
+      "violet_total": 4,
+      "review_candidates": [
+        {
+          "row": 4,
+          "column": 3,
+          "near_magenta": 0,
+          "violet": 2,
+          "magenta_bounds": null
+        },
+        {
+          "row": 5,
+          "column": 1,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        },
+        {
+          "row": 5,
+          "column": 5,
+          "near_magenta": 0,
+          "violet": 1,
+          "magenta_bounds": null
+        }
+      ],
+      "review_candidate_count": 3,
+      "interpretation": "pixel-evidence-only; magic colors may be intentional"
+    }
+  ]
+}
