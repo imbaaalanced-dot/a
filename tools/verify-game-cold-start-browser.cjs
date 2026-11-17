@@ -38,10 +38,23 @@ const server=http.createServer((req,res)=>{
    finally{await page.keyboard.up('ArrowRight');}
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
-   await page.screenshot({path:path.join(output,name+'-pending.png')});release();
-   if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
-   else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
-   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   // Screenshot waits for pending images; these nine requests are held until release().
+   // Persist the pending snapshot without blocking the deliberate delayed-load scenario.
+   fs.writeFileSync(path.join(output,name+'-pending.json'),JSON.stringify({before,moving,requested,heldMaterialRequests:true},null,2));
+   release();
+   // Explicit interval polling avoids Chromium rAF throttling while large world canvases render.
+   try {
+    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9,null,{polling:200,timeout:45000});
+    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1,null,{polling:200,timeout:45000});
+   } catch (error) {
+    const diagnostics={name,requested,failedRequests:failed,errors,loaded:await snapshot(),resources:await page.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).map(r=>({name:r.name,duration:r.duration,transferSize:r.transferSize})))};
+    fs.writeFileSync(path.join(output,name+'-timeout.json'),JSON.stringify(diagnostics,null,2));
+    console.error('Cold-start material timeout diagnostics:',JSON.stringify(diagnostics));
+    throw error;
+   }
+   // Wait for the renderer to consume the material revision without relying on rAF in the test runner.
+   if(!fail)await page.waitForFunction(expected=>Style2Maps.stats().builds>=expected,moving.maps.builds+1,{polling:200,timeout:15000});
+   else await page.waitForTimeout(200);
    const after=await snapshot();assert.equal(after.state,'playing');assert.equal(after.level,1);
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
    await page.waitForTimeout(600);const warm=await snapshot();assert.equal(warm.maps.builds,after.maps.builds);assert.equal(requested,9,'failed downloads never cause a request loop');
