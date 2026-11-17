@@ -64,9 +64,19 @@ const server=http.createServer((req,res)=>{
    assert.equal(requestedAssets.length,active?9:0,'V3 requests only in enabled mode, exactly once');
    assert.deepEqual(failed,[],'HTTP failures in game and image requests');
    assert.deepEqual(errors,[],'JavaScript exceptions during gameplay');
-   await page.screenshot({path:path.join(output,
-    `${active?'v3-default':'v3-disabled'}-${mobile?'touch':'desktop'}-level${level}.png`)});
-   results.push({mode:active?'v3-default':'v3-disabled',touchEmulated:mobile,...result,failedRequests:failed,errors});
+   // Capture the actual rendered game pixels; whole-page screenshots can
+   // show a tutorial/story overlay instead of the verified level.
+   const capture=await page.evaluate(()=>{
+    const canvas=document.querySelector('canvas#game');
+    if(!canvas||canvas.width<32||canvas.height<32)throw Error('gameplay canvas missing');
+    return {width:canvas.width,height:canvas.height,
+     base64:canvas.toDataURL('image/png').split(',')[1]};
+   });
+   const bytes=Buffer.from(capture.base64,'base64');
+   assert.ok(bytes.length>4096,'level '+level+' gameplay PNG suspiciously small');
+   fs.writeFileSync(path.join(output,
+    `${active?'v3-default':'v3-disabled'}-${mobile?'touch':'desktop'}-level${level}.png`),bytes);
+   results.push({mode:active?'v3-default':'v3-disabled',touchEmulated:mobile,...result,gameplayCanvasPNG:{width:capture.width,height:capture.height,bytes:bytes.length},failedRequests:failed,errors});
    await context.close();
   }
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({

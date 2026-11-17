@@ -16,6 +16,7 @@ on:
       - 'dist/assets/reference-ground-v3/**'
       - 'tests/reference-ground-v3.test.cjs'
       - 'tests/ground-late-load.test.cjs'
+      - 'tests/ground-cold-start-qa-contract.test.cjs'
       - 'tools/verify-ground-late-load-browser.cjs'
       - 'tools/verify-game-cold-start-browser.cjs'
       - 'tools/verify-reference-ground-v3-browser.cjs'
@@ -39,6 +40,7 @@ jobs:
           node tests/reference-ground-v3.test.cjs
           node tests/cache-busting.test.cjs
           node tests/ground-late-load.test.cjs
+          node tests/ground-cold-start-qa-contract.test.cjs
           node tests/terrain-polish.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-ground.test.cjs

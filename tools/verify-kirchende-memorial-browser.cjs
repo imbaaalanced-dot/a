@@ -1,4 +1,4 @@
-/* Chromium integration check for the actual Level 3 opt-in memorial renderer. */
+/* Chromium integration check for the default Style-2 Level 3 monument and photo fallback. */
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright');
@@ -18,9 +18,10 @@ const server=http.createServer((req,res)=>{
  fs.mkdirSync(output,{recursive:true});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_PATH||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
  const profiles=[
-  {name:'desktop-pilot',width:1280,height:800,touch:false,pilot:true},
-  {name:'portrait-pilot',width:390,height:844,touch:true,pilot:true},
-  {name:'desktop-default',width:1280,height:800,touch:false,pilot:false}
+  {name:'desktop-style2-default',width:1280,height:800,touch:false,style2:true},
+  {name:'portrait-style2-default',width:390,height:844,touch:true,style2:true},
+  {name:'desktop-photo-legacy',width:1280,height:800,touch:false,style2:false},
+  {name:'portrait-photo-legacy',width:390,height:844,touch:true,style2:false}
  ];
  const results=[];
  try{
@@ -31,7 +32,7 @@ const server=http.createServer((req,res)=>{
    page.on('response',response=>{if(response.status()>=400)failed.push(response.url());});
    page.on('request',request=>{if(request.url().includes('/assets/kirchende/'))requests.push(request.url());});
    await page.addInitScript(()=>localStorage.setItem('td2-v4-intro-tutorial','done'));
-   const suffix=profile.pilot?'?td2KirchendeMemorialPilot=1':'';
+   const suffix=profile.style2?'':'?td2KirchendeMemorialLegacy=1';
    await page.goto('http://127.0.0.1:'+server.address().port+'/v4-style2/index.html'+suffix,{waitUntil:'networkidle'});
    await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
    const state=await page.evaluate(async pilot=>{
@@ -51,18 +52,79 @@ const server=http.createServer((req,res)=>{
      if(changed<18000)throw Error('monument test render suspiciously blank: '+changed);
      DenkmalTestHooks.startGame(3);
      return {monumentUrl:art.image('monument').src,plaqueUrl:art.image('plaque')?.src||null,changedPixels:changed,gameLevel:DenkmalTestHooks.getGame()?.level??null};
-   },profile.pilot);
+   },profile.style2);
    assert.equal(state.gameLevel,3,'actual Level 3 did not start: '+JSON.stringify(state));
-   assert.ok(state.monumentUrl.includes(profile.pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp'));
-   assert.equal(requests.filter(u=>u.includes('monument-style2-pilot.webp')).length,profile.pilot?1:0);
+   assert.ok(state.monumentUrl.includes(profile.style2?'monument-style2-pilot.webp':'monument-photo-v2.webp'));
+   assert.equal(requests.filter(u=>u.includes('monument-style2-pilot.webp')).length,profile.style2?1:0);
+   assert.equal(requests.filter(u=>u.includes('monument-photo-v2.webp')).length,profile.style2?0:1);
    assert.equal(requests.filter(u=>u.includes('opferplatte-style2-pilot.webp')).length,0,'unapproved candle plaque must never download');
    await page.locator('#kirchendePilotQACanvas').screenshot({path:path.join(output,profile.name+'-assets.png')});
+   // Raw decoded source on contrasting checkerboards: dark fringes/triangles
+   // can disappear against the regular dark in-game palette.
+   // These diagnostics are visual evidence, not historical authentication.
+   if(!profile.touch){
+     const rawEvidence=await page.evaluate(()=>{
+       const sprite=KirchendeArt.image('monument');
+       const raw=document.createElement('canvas');
+       raw.width=sprite.naturalWidth;raw.height=sprite.naturalHeight;
+       const src=raw.getContext('2d',{willReadFrequently:true});
+       src.drawImage(sprite,0,0);
+       const rgba=src.getImageData(0,0,raw.width,raw.height).data;
+       let transparent=0,partial=0,opaque=0;
+       for(let i=3;i<rgba.length;i+=4){
+         if(rgba[i]===0)transparent++;
+         else if(rgba[i]===255)opaque++;
+         else partial++;
+       }
+       const preview=(tone)=>{
+         const c=document.createElement('canvas');c.width=320;c.height=400;
+         const q=c.getContext('2d');
+         for(let y=0;y<c.height;y+=20)for(let x=0;x<c.width;x+=20){
+           const even=((x+y)/20)%2===0;
+           q.fillStyle=tone==='light'
+             ?(even?'#e8ede6':'#b9c3ba')
+             :(even?'#39454e':'#101922');
+           q.fillRect(x,y,20,20);
+         }
+         const scale=Math.min(290/sprite.naturalWidth,370/sprite.naturalHeight);
+         const w=sprite.naturalWidth*scale,h=sprite.naturalHeight*scale;
+         q.drawImage(sprite,(c.width-w)/2,(c.height-h)/2,w,h);
+         return c.toDataURL('image/png').split(',')[1];
+       };
+       return {dimensions:{width:raw.width,height:raw.height},
+         alphaPixels:{transparent,partial,opaque},
+         light:preview('light'),dark:preview('dark')};
+     });
+     for(const tone of ['light','dark']){
+       fs.writeFileSync(path.join(output,profile.name+'-raw-'+tone+'.png'),
+         Buffer.from(rawEvidence[tone],'base64'));
+     }
+     state.rawSpriteEvidence={dimensions:rawEvidence.dimensions,alphaPixels:rawEvidence.alphaPixels,
+       lightFile:profile.name+'-raw-light.png',darkFile:profile.name+'-raw-dark.png'};
+   }
+   // Real decoded-art previews at the two requested mobile icon sizes.
+   for(const size of [64,128]){
+     const thumb=await page.evaluate(size=>{
+       const sprite=KirchendeArt.image('monument');
+       const c=document.createElement('canvas');c.width=c.height=size;
+       const q=c.getContext('2d',{willReadFrequently:true});
+       q.fillStyle='#25302a';q.fillRect(0,0,size,size);
+       const h=size-8,w=h*sprite.naturalWidth/sprite.naturalHeight;
+       q.drawImage(sprite,(size-w)/2,4,w,h);
+       const rgba=q.getImageData(0,0,size,size).data;
+       let changed=0;
+       for(let i=0;i<rgba.length;i+=4)if(Math.abs(rgba[i]-37)+Math.abs(rgba[i+1]-48)+Math.abs(rgba[i+2]-42)>30)changed++;
+       return {png:c.toDataURL('image/png').split(',')[1],changed};
+     },size);
+     assert.ok(thumb.changed>size*size*.02,profile.name+' '+size+'px monument silhouette visible');
+     fs.writeFileSync(path.join(output,profile.name+'-'+size+'px.png'),Buffer.from(thumb.png,'base64'));
+   }
    await page.locator('#kirchendePilotQACanvas').evaluate(el=>el.remove());
    await page.waitForTimeout(300);
    // The default profile verifies the original image and actual gameplay,
    // but its third full-scene capture can starve SwiftShader on CI. Only
    // the two opt-in targets need an additional encoded gameplay frame.
-   if(profile.pilot){
+   if(profile.style2){
      const gameCanvasData=await page.evaluate(()=>{
        const canvas=document.querySelector('canvas#game');
        if(!canvas||!canvas.width||!canvas.height)throw Error('Level 3 gameplay canvas missing');

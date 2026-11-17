@@ -18,9 +18,13 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
  images[0].decodeOK();assert.equal(await environmentPending,true);
  assert.equal(art.image('environment'),images[0],'decoded shared atlas is reusable by later levels');
  const pending=art.load();const failed=images.find(i=>i.src.includes('monument'));
- assert.ok(failed.src.includes('monument-photo-v2.webp'),'mobile loads the optimized photographic sprite');
+ assert.ok(failed.src.includes('monument-style2-pilot.webp'),'Level 3 selects Style-2 sprite by default');
  assert.equal(art.ready('monument'),false);
- failed.decodeFail();images.filter(i=>i!==failed).forEach(i=>i.decodeOK());await pending;
+ failed.decodeFail();images.filter(i=>i!==failed).forEach(i=>i.decodeOK());
+ await new Promise(resolve=>setImmediate(resolve));
+ const photoFallback=images.find(i=>i.src.includes('monument-photo-v2.webp'));
+ assert.ok(photoFallback,'failed Style-2 sprite requests only the photographic fallback');
+ photoFallback.decodeFail();await pending;
  const warmImages=images.length,retry=art.load();assert.equal(images.length,warmImages+1,'retry downloads only the failed image');
  images.at(-1).decodeOK();await retry;assert.equal(art.ready('monument'),true);
  const calls=[],ctx=new Proxy({globalAlpha:1,drawImage(...args){calls.push(args);}}, {get:(obj,key)=>key in obj?obj[key]:()=>{}});

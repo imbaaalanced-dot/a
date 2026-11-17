@@ -1,0 +1,33 @@
+name: TD2 Style-2 monument integration QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/kirchende-art.js'
+      - 'dist/index.html'
+      - 'dist/assets/kirchende/**'
+      - 'tests/kirchende-*.test.cjs'
+      - 'tests/style2-all-levels-runtime.test.cjs'
+      - 'tools/verify-kirchende-memorial-browser.cjs'
+      - '.github/workflows/td2-style2-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static contracts and fallback regression (no deployment)
+        run: |
+          node --check dist/kirchende-art.js
+          node --check tools/verify-kirchende-memorial-browser.cjs
+          node tests/style2-all-levels-runtime.test.cjs
+          node tests/style2-maps.test.cjs
+          node tests/kirchende-loading.test.cjs
+          node tests/kirchende-memorial-pilot.test.cjs
+          node tests/style2-environment-coherence.test.cjs
