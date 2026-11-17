@@ -499,3 +499,18 @@ a.menu-art-button{text-decoration:none;color:inherit}
     font-size:11px;text-shadow:0 2px 6px #000;
   }
 }
+
+/* Selected hero is the right-hand figure. Keep its caption with the selected
+   portrait instead of placing it over the left-hand companion. */
+#startScreen[data-menu-panel="home"] .menu-hero-figure #menuHeroCaption{
+  left:auto;right:5%;bottom:6px;max-width:46%;text-align:right;
+  white-space:normal;overflow-wrap:normal;
+}
+@media (max-height:430px) and (orientation:landscape){
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{
+    height:clamp(86px,25dvh,112px);
+  }
+  #startScreen[data-menu-panel="home"] .menu-hero-figure #menuHeroCaption{
+    left:auto;right:5%;bottom:3px;
+  }
+}
