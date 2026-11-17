@@ -13,7 +13,19 @@ const server=http.createServer((req,res)=>{
 (async()=>{
  fs.mkdirSync(output,{recursive:true});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true,executablePath:process.env.TD2_CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader']});
- const results=[];
+ const results=[],screenshots=[];
+ // A screenshot is diagnostic evidence, not a material-loading assertion. On
+ // software-rendered CI runners an active Canvas can stall Playwright capture.
+ async function captureEvidence(page,name){
+   try{
+     await page.screenshot({path:path.join(output,name+'.png'),timeout:8000,animations:'allow'});
+     screenshots.push({name,status:'captured'});
+   }catch(error){
+     if(error.name!=='TimeoutError')throw error;
+     screenshots.push({name,status:'timeout',message:'Playwright screenshot exceeded 8s'});
+     console.warn('Visual evidence unavailable for '+name+': screenshot timeout; gameplay assertions continue.');
+   }
+ }
  try{
   for(const mobile of [false,true])for(const fail of [false,true]){
    const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
@@ -38,7 +50,8 @@ const server=http.createServer((req,res)=>{
    finally{await page.keyboard.up('ArrowRight');}
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
-   await page.screenshot({path:path.join(output,name+'-pending.png')});release();
+   try{await captureEvidence(page,name+'-pending');}
+   finally{release();} // Never strand material requests if capturing fails.
    if(fail)await page.waitForFunction(()=>TD2GroundV3.loadedCount===0&&performance.getEntriesByType('resource').filter(r=>r.name.includes('/reference-ground-v3/')).length>=9);
    else await page.waitForFunction(()=>TD2GroundV3.loadedCount===9&&TD2GroundV3.revision===1);
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
@@ -46,10 +59,11 @@ const server=http.createServer((req,res)=>{
    assert.equal(after.maps.builds,moving.maps.builds+(fail?0:1),'only successful late decode rebuilds the tutorial map');
    await page.waitForTimeout(600);const warm=await snapshot();assert.equal(warm.maps.builds,after.maps.builds);assert.equal(requested,9,'failed downloads never cause a request loop');
    assert.deepEqual(errors,[],'material failure must not throw');assert.ok(failed.filter(r=>new URL(r.url).origin===new URL(page.url()).origin).every(r=>r.url.includes('/reference-ground-v3/')),'no unrelated local game asset failure: '+JSON.stringify(failed));
-   await page.screenshot({path:path.join(output,name+'-settled.png')});
+   await captureEvidence(page,name+'-settled');
    results.push({touchEmulation:mobile,materialFailure:fail,requested,before,moving,after,warm,errors,failedRequests:failed});await context.close();
   }
-  fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,fontPolicy:'app fallback fonts; external Google Fonts CSS isolated',results},null,2));
+  fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({chromium:browser.version(),physicalAndroidTested:false,fontPolicy:'app fallback fonts; external Google Fonts CSS isolated',screenshots,visualEvidenceComplete:screenshots.every(s=>s.status==='captured'),results},null,2));
+  if(screenshots.some(s=>s.status!=='captured'))console.warn('Visual QA requires manual follow-up: '+screenshots.filter(s=>s.status!=='captured').length+' screenshots unavailable.');
   console.log(JSON.stringify({chromium:browser.version(),menuStartupScenarios:results.length,physicalAndroidTested:false}));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());
