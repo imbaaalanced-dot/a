@@ -245,3 +245,22 @@
   #inventoryScreen .loot-header{padding-right:122px}
   #inventoryScreen .loot-fixed-close{min-width:108px}
 }
+
+/* Beta P0: keep the escape hatch viewport-anchored on scroll and in the item sheet.
+   A backdrop-filter on the scrolling modal makes fixed descendants scroll with it. */
+#inventoryScreen{
+  backdrop-filter:none;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+}
+#inventoryScreen .loot-scroll-area{
+  overscroll-behavior-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#inventoryScreen .loot-fixed-close{
+  position:fixed;
+  z-index:30;
+  pointer-events:auto;
+  touch-action:manipulation;
+}
