@@ -40,14 +40,21 @@
   };
   const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
     (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-style2.webp?v=style2a1':'assets/menu/v5-avatars/marcel-guardian-style2.webp?v=style2a1');
-  let activeWalkActor=null,activeWalkImage=null;
+  let activeWalkActor=null,activeWalkImage=null,walkRetryAt=0;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;
     if(activeWalkActor!==actor){
-      activeWalkActor=actor;
-      activeWalkImage=new Image();activeWalkImage.decoding='async';
-      activeWalkImage.src=walkPaths[actor];
+      activeWalkActor=actor;activeWalkImage=null;walkRetryAt=0;
       globalThis.TD2DirectionalActions?.preloadHeroSide?.(actor);
+    }
+    // An interrupted download must not leave the hero stuck as an ellipse for
+    // the rest of the run. Retry only after a cooldown, never once per frame.
+    if(!activeWalkImage&&Date.now()>=walkRetryAt){
+      const image=new Image();image.decoding='async';
+      image.onerror=()=>{
+        if(activeWalkImage===image){activeWalkImage=null;walkRetryAt=Date.now()+5000;}
+      };
+      activeWalkImage=image;image.src=walkPaths[actor];
     }
     return activeWalkImage;
   }
@@ -221,9 +228,16 @@
     if(ready(walk)&&walk.naturalWidth%3===0&&walk.naturalHeight%4===0&&walk.naturalWidth>=384&&walk.naturalHeight>=512){
       const width=walk.naturalWidth/3,height=walk.naturalHeight/4;
       const frame=walkTime>0&&!reduced?Math.floor(walkTime*9)%3:1;
-      ctx.save();ctx.translate(x,y);ctx.globalAlpha=opacity;
-      ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
-      ctx.restore();return true;
+      ctx.save();
+      try{
+        ctx.translate(x,y);ctx.globalAlpha=opacity;
+        ctx.drawImage(walk,frame*width,(walkRows[direction]??0)*height,width,height,-size/2,12-size,size,size);
+        return true;
+      }catch{
+        // A decoded-but-undrawable atlas must not corrupt the Canvas stack.
+        if(activeWalkImage===walk){activeWalkImage=null;walkRetryAt=Date.now()+5000;}
+        return false;
+      }finally{ctx.restore();}
     }
     // Keep the actor visually stable while the canonical walk sheet decodes.
     // The caller paints a neutral loading marker; no other hero art is loaded.
