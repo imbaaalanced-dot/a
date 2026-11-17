@@ -65,8 +65,8 @@ for(let i=0;i<500;i++)fx.burst(game,{kind:'rift',level:3,x:20,y:30,vx:10,vy:10,c
 assert.ok(game.particles.length<=fx.MAX_PARTICLES,'existing particle budget applies to new FX');
 assert.ok(game.particles.every(p=>p.max===p.life),'all burst particles begin with valid lifetimes');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-const scripts=[...html.matchAll(/<script\\b[^>]*\\bsrc="([^"]+)"/g)].map(match=>match[1].split('?')[0]);
-const towerRuntimeScripts=scripts.filter(file=>/^style2-user-towers(?:-v\\d+)?\\.js$/.test(file));
+const scripts=[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map(match=>match[1].split('?')[0]);
+const towerRuntimeScripts=scripts.filter(file=>/^style2-user-towers(?:-v\d+)?\.js$/.test(file));
 const registrations=[];
 const runtime={URLSearchParams,location:{search:''},Date};
 Object.defineProperty(runtime,'UserStyle2Towers',{configurable:true,get(){return registrations.at(-1)},set(adapter){registrations.push(adapter)}});
@@ -75,7 +75,7 @@ for(const file of towerRuntimeScripts)vm.runInContext(fs.readFileSync(path.join(
 assert.equal(registrations.length,1,'the main page must initialize a single canonical tower renderer');
 assert.deepEqual(towerRuntimeScripts,['style2-user-towers-v4.js'],'the active production renderer is V4, not a overwritten preview renderer');
 assert.equal(typeof runtime.UserStyle2Towers.drawTower,'function');
-assert.doesNotMatch(html,/src="style2-towers\\.js/,'legacy tower renderer must be absent from production page');
+assert.doesNotMatch(html,/src="style2-towers\.js/,'legacy tower renderer must be absent from production page');
 assert.ok(html.indexOf('style2-user-towers.js')<html.indexOf('game.js?v='),
   'canonical tower renderer loaded before main game');
 assert.match(html,/combat-fx\.js\?v=save-restore-20261117/);
