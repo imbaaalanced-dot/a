@@ -76,8 +76,8 @@ assert.equal(registrations.length,1,'the main page must initialize a single cano
 assert.deepEqual(towerRuntimeScripts,['style2-user-towers-v4.js'],'the active production renderer is V4, not a overwritten preview renderer');
 assert.equal(typeof runtime.UserStyle2Towers.drawTower,'function');
 assert.doesNotMatch(html,/src="style2-towers\.js/,'legacy tower renderer must be absent from production page');
-assert.ok(html.indexOf('style2-user-towers.js')<html.indexOf('game.js?v='),
-  'canonical tower renderer loaded before main game');
+assert.ok(html.indexOf('style2-user-towers-v4.js')<html.indexOf('game.js?v='),
+  'active V4 tower renderer loads before the main game');
 assert.match(html,/combat-fx\.js\?v=save-restore-20261117/);
 const gameCode=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameCode,/UserStyle2Towers\?\.drawTower/,'canonical tower renderer integrated');
