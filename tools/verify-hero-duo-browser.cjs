@@ -66,7 +66,7 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
           const banner=document.getElementById('menuHeroBanner');
           const companion=document.getElementById('menuHeroCompanion');
           const other=actor==='kim'?'marcel':'kim';
-          const expected=id=>id==='kim'?'kim-marksman-v6.webp':'marcel-wand-menu-portrait-20261117.avif';
+          const expected=id=>id==='kim'?'kim-marksman-v6.webp':'marcel-wand-menu-portrait-20261117-refined.webp';
           return banner?.src.includes(expected(actor))&&companion?.src.includes(expected(other))&&banner.naturalWidth>0&&companion.naturalWidth>0;
         },actor,{timeout:20000});
         const menu=await page.evaluate(()=>{
@@ -97,9 +97,9 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
         assert.deepEqual(failed,[],name+' menu hero asset responses');
         // The staff illustration is menu-only; canonical HUD and game sprites remain unchanged.
         const wandMenuImage=actor==='marcel'?menu.banner:menu.companion;
-        assert.ok(wandMenuImage.src.includes('marcel-wand-menu-portrait-20261117.avif'),name+' Marcel menu staff image');
-        assert.equal(wandMenuImage.naturalWidth,448,name+' AVIF decodes at export width');
-        assert.equal(wandMenuImage.naturalHeight,672,name+' AVIF decodes at export height');
+        assert.ok(wandMenuImage.src.includes('marcel-wand-menu-portrait-20261117-refined.webp'),name+' Marcel menu staff image');
+        assert.equal(wandMenuImage.naturalWidth,384,name+' WebP decodes at export width');
+        assert.equal(wandMenuImage.naturalHeight,576,name+' AVIF decodes at export height');
         await page.screenshot({path:path.join(out,name+'-menu.png'),animations:'disabled'});
 
         await page.evaluate(()=>{DenkmalTestHooks.startGame(1);HeroSaga.continueStory();});

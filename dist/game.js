@@ -1376,7 +1376,7 @@
     const companion=$('menuHeroCompanion');
     const otherCharacter=kim?'marcel':'kim';
     // Menu-only illustration: do not change HUD/armory portrait or game atlases.
-    const menuMarcelPortrait='assets/menu/v6/marcel-wand-menu-portrait-20261117.avif?v=wand-menu-v6-20261117';
+    const menuMarcelPortrait='assets/menu/v6/marcel-wand-menu-portrait-20261117-refined.webp?v=wand-menu-refined-20261117';
     const companionUrl=otherCharacter==='marcel'?menuMarcelPortrait:
       (globalThis.TD2CanonicalHeroArt?.kim?.portrait||'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117');
     // The other existing hero stays visible while character selection changes.
