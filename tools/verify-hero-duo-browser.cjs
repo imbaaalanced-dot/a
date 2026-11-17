@@ -4,7 +4,7 @@ const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../dist');
 const out=process.env.TD2_HERO_DUO_QA_OUT||'/tmp/td2-hero-duo-qa';
-const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'};
+const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.webp':'image/webp','.avif':'image/avif','.png':'image/png','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'};
 const server=http.createServer((request,response)=>{
   const pathname=decodeURIComponent(new URL(request.url,'http://localhost').pathname);
   let file=path.resolve(root,'.'+pathname);
@@ -35,7 +35,7 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
         const page=await context.newPage(),errors=[],failed=[];
         page.on('pageerror',e=>errors.push(e.message));
         page.on('response',response=>{
-          if(response.status()>=400 && /\/assets\/(?:hero\/|menu\/v5-avatars\/)/.test(response.url()))
+          if(response.status()>=400 && /\/assets\/(?:hero\/|menu\/(?:v5-avatars|v6)\/)/.test(response.url()))
             failed.push({status:response.status(),url:response.url()});
         });
         await page.addInitScript(()=>{
@@ -66,7 +66,7 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
           const banner=document.getElementById('menuHeroBanner');
           const companion=document.getElementById('menuHeroCompanion');
           const other=actor==='kim'?'marcel':'kim';
-          const expected=id=>id==='kim'?'kim-marksman-v6.webp':'marcel-guardian-v6.webp';
+          const expected=id=>id==='kim'?'kim-marksman-v6.webp':'marcel-wand-menu-portrait-20261117.avif';
           return banner?.src.includes(expected(actor))&&companion?.src.includes(expected(other))&&banner.naturalWidth>0&&companion.naturalWidth>0;
         },actor,{timeout:20000});
         const menu=await page.evaluate(()=>{
@@ -95,6 +95,11 @@ const pathPart=(actor,kind)=>actor+'-'+kind;
         if(config.name==='landscape-844')
           assert.ok(menu.figure.height>=80,name+' landscape hero frame has a readable height');
         assert.deepEqual(failed,[],name+' menu hero asset responses');
+        // The staff illustration is menu-only; canonical HUD and game sprites remain unchanged.
+        const wandMenuImage=actor==='marcel'?menu.banner:menu.companion;
+        assert.ok(wandMenuImage.src.includes('marcel-wand-menu-portrait-20261117.avif'),name+' Marcel menu staff image');
+        assert.equal(wandMenuImage.naturalWidth,448,name+' AVIF decodes at export width');
+        assert.equal(wandMenuImage.naturalHeight,672,name+' AVIF decodes at export height');
         await page.screenshot({path:path.join(out,name+'-menu.png'),animations:'disabled'});
 
         await page.evaluate(()=>{DenkmalTestHooks.startGame(1);HeroSaga.continueStory();});
