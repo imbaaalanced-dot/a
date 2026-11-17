@@ -62,6 +62,12 @@ async function killBoss(page){
    await page.evaluate(()=>history.back());
    await page.waitForFunction(()=>document.getElementById('inventoryScreen').classList.contains('hidden'));
    await inventory(page,'kim');
+   const scrollPolicy=await page.evaluate(()=>({outer:getComputedStyle(document.getElementById('inventoryScreen')).overscrollBehaviorY,inner:getComputedStyle(document.querySelector('.loot-scroll-area')).overscrollBehaviorY,body:getComputedStyle(document.body).overflow}));
+   assert.deepEqual(scrollPolicy,{outer:'contain',inner:'auto',body:'hidden'},'nested scroll must not trap inventory or move game');
+   if(mobile)await page.touchscreen.tap(3,3);else await page.mouse.click(3,3);
+   await page.waitForFunction(()=>document.getElementById('inventoryScreen').classList.contains('hidden'));
+   await page.waitForFunction(()=>!history.state?.__td2InventoryOverlay);
+   await inventory(page,'kim');
    await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));await click(page.locator('#lootEquipAction'));
    console.log('Kim equipped',mobile);let state=await saved(page);assert.equal(state.version,4);assert.equal(state.profile.loadouts.kim.weapon,'qa-shared');assert.equal(state.profile.loadouts.marcel.weapon,'fixture-0');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1-pre-v3')).version),2);
    await closeInventory(page);await inventory(page,'marcel');await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));assert.equal(await page.locator('#lootRecycleAction').isDisabled(),true);await click(page.locator('#lootEquipAction'));
