@@ -57,7 +57,7 @@ Crest 60 KB – alle im mobilen Rahmen).
 - **Generiert:** 62/62 via Imagegen.
 - **Technisch geprüft:** `python tests/ansturm-asset-edges.test.py` → 52 geprüft, 52 sauber eingerückt, 0 Edge-Risk; Mirror byte-gleich; `node tests/ansturm-source-parity.test.cjs`, `ansturm-legacy-links`, `ansturm-integration`, `ansturm-no-portals`, `npm test --prefix ansturm-alpha1-5` (83/83), `node tests/game.test.cjs` (Desktop + `TEST_MOBILE=1`), `tests/cache-busting.test.cjs`, `tests/assets-headers.test.py`, `tests/assets.test.py` – alle grün. Loopback-Smoke (`python3 -m http.server 8777 --directory dist`): `/ansturm/`, Manifest und WebPs liefern HTTP 200.
 - **Integriert:** Manifest/Loader/CSS/HTML aktualisiert, Parity gehalten – Runtime-Laden lokal per HTTP 200 nachgewiesen.
-- **Im Spiel geprüft (visuell im Browser/Android): OFFEN.** Kontaktbögen (Figuren, Icons, Waffen/Effekte, Hintergründe/Menü) wurden lokal per Pixel-/Sichtprüfung freigegeben; echte Browser- und Android-Abnahme steht noch aus.
+- **Im Spiel geprüft:** Stufe 2 (Chromium headless, Desktop 1280×800 + Mobile 412×915 Touch) bestanden – siehe `docs/qa/ansturm-style2-full-rerender-20261117/`: 59/59 WebP-Requests mit HTTP 200, 0 Page-Errors, 0 fehlgeschlagene Requests, Spiel bis Welle 2 mit Gegnern; Screenshots zeigen Denkmal mit türkisem Runenlicht, Waffen-Ring, Gegner mit roten Akzenten, Shop-Icons, Intro-Szene + Crest ohne Magenta-Reste/clipped Sprites. Stufe 3 (Mobile-Emulation im echten Browser) und Stufe 4 (physisches Android 4 GB) bleiben offen.
 
 ## Nächste Schritte
 
