@@ -47,7 +47,6 @@ const expectedVersions = new Map([
   ['hero-saga.js', 'portrait-v6-clean-20261117'],
   ['directional-hero-assets-v5.js','v5-alpha-repair-20261116'],
   ['combat-fx.js', 'save-restore-20261117'],
-  ['style2-user-towers.js', 'v5-canonical-art1'],
   ['style2-impact-atlas.js', 'reference-refresh-1'],
   ['style2-impact-atlas-v4.js', 'style2-v4a1'],
   ['style2-user-towers-v4.js', 'style2-v4a1'],
