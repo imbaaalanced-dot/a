@@ -7,6 +7,9 @@ on:
       - '.github/workflows/td2-hero-duo-browser-qa.yml'
       - 'dist/menu.css'
       - 'dist/index.html'
+      - 'dist/game.js'
+      - 'dist/assets/menu/v6/**'
+      - 'tests/marcel-menu-wand.test.cjs'
       - 'dist/hero-saga.js'
       - 'dist/canonical-hero-art-v5.js'
   workflow_dispatch:
@@ -26,6 +29,8 @@ jobs:
           node tests/hero-runtime-visibility.test.cjs
           node tests/canonical-hero-art-v5.test.cjs
           node tests/menu-navigation.test.cjs
+          node tests/marcel-menu-wand.test.cjs
+          node tests/cache-busting.test.cjs
       - name: Install Chromium
         run: |
           npm install --no-save --package-lock=false playwright@1.62.1
