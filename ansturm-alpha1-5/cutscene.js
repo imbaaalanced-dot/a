@@ -34,7 +34,7 @@ function playClip(video,src){
     video.addEventListener('ended',finish,{once:true});
     video.addEventListener('error',finish,{once:true}); // Clip fehlt: weiter ohne Abbruch
     video.src=src;
-    video.play().catch(finish); // Autoplay blockiert:uellen weiter
+    video.play().catch(finish); // Autoplay blockiert: Clip ueberspringen
   });
 }
 
