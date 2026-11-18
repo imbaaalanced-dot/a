@@ -22,6 +22,8 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+new 
    await page.mouse.move(200,200);await page.mouse.down();await page.mouse.up();
    const unlocked=await page.waitForFunction(()=>{const fx=globalThis.DenkmalCombatFX;const ctx=fx?.getContext?.();return ctx?ctx.state:'none';},{timeout:8000}).then(h=>h.jsonValue());
    assert.strictEqual(unlocked,'running','AudioContext must reach state running after first pointer gesture');
+   await page.locator('#menuOptionsBtn').click();
+   await page.locator('#menuSoundBtn').waitFor({state:'visible',timeout:8000});
    const sound={label:await page.locator('#menuSoundBtn').innerText(),aria:await page.locator('#menuSoundBtn').getAttribute('aria-pressed')};
    assert.match(sound.label,/TON: AN/,'sound must default to on');assert.strictEqual(sound.aria,'true','sound button must default to pressed');
    const gainOn=await page.evaluate(()=>globalThis.DenkmalCombatFX.getMaster().gain.value);
