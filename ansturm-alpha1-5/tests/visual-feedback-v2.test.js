@@ -8,7 +8,7 @@ const deployedApp=readFileSync(new URL('../../dist/ansturm/app.js',import.meta.u
 test('Ansturm 2.0 visuals ship identically in source and dist',()=>{
  assert.equal(src,deployed);
  assert.equal(app,deployedApp);
- assert.match(app,/render\.js\?v=walk2b1/);
+ assert.match(app,/render\.js\?v=attack2b2/);
 });
 test('all four boss special phases have readable combat tells',()=>{
  for(const phase of ['warning','charge','haste','vulnerable','recovery'])assert.ok(src.includes("bossPhase==='"+phase+"'"),phase);
