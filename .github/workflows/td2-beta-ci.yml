@@ -35,6 +35,10 @@ jobs:
           node tests/menu-navigation.test.cjs
           node tests/main-menu.test.cjs
           node tests/portrait-home-v1.test.cjs
+      - name: Audio unlock wiring regression
+        run: |
+          node tests/audio-unlock.test.cjs
+          TEST_MOBILE=1 node tests/audio-unlock.test.cjs
   beta-asset-gates:
     name: Beta asset gates
     runs-on: ubuntu-latest
@@ -77,6 +81,9 @@ jobs:
       - name: Fullscreen and portrait view regression
         timeout-minutes: 8
         run: timeout 420s node tools/verify-browser-fullscreen.cjs
+      - name: Audio unlock after first user gesture and mute toggle
+        timeout-minutes: 8
+        run: timeout 420s node tools/verify-audio-unlock-browser.cjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:

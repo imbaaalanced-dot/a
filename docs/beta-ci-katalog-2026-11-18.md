@@ -22,7 +22,7 @@ geforderten Prüfkategorien sind in ein **eigenes Workflow-Set** überführt —
 | Mobil-Hochformat | `beta-unit-and-mobile` + `beta-browser-gates` | `tests/portrait-home-v1.test.cjs`, mobile Viewports (412×915, Touch) in `verify-browser-fullscreen.cjs` | vorhanden |
 | FPS/RAM Android 4 GB | anteilig | `TEST_MOBILE`-Budgets (Decode-/Render-Budgets in den Tests); physisches 4-GB-Gerät bleibt **separate, auszuweisende Aufgabe** und ist in CI nicht ersetzbar | CI-Näherung, physische Abnahme offen |
 | keine JS-/404-Fehler | Job `beta-browser-gates` | `tools/verify-game-cold-start-browser.cjs` (fängt `pageerror`, `requestfailed` ab), `verify-browser-fullscreen.cjs` (fängt Responses ≥ 400 ab) | vorhanden |
-| Audio unlock | — | `dist/game.js` unlocked Audio per `pointerdown`/`keydown` (`fx.unlock()`), im Cold-StartQA indirekt mitgedeckt; kein eigener automatisierter Assert auf hörbare Wiedergabe | **Lücke**: dedizierter Gatestub empfohlen (z. B. `AudioContext.state==='running'` nach Touch im Browser-QA) |
+| Audio unlock | `beta-browser-gates`, Step „Audio unlock after first user gesture and mute toggle“ | `tools/verify-audio-unlock-browser.cjs`: kein `AudioContext` vor der ersten Geste, danach `state==='running'`, Desktop+Touch; Mute-Toggle `menuSoundBtn` (Gain 0 ↔ 0,65) | vorhanden |
 | Menüfunktion | `beta-unit-and-mobile` | `tests/menu-navigation.test.cjs`, `tests/main-menu.test.cjs`, Browser-QA klickt Options-/Fullscreen-Menü | vorhanden |
 | Heldenatlanten | `beta-asset-gates` | `tests/hero-runtime-visibility.test.cjs`, `tests/marcel-menu-wand.test.cjs`, Magenta-Gate | vorhanden |
 
@@ -38,7 +38,7 @@ Artifacts: Cold-Start-Pixelevidence (`/tmp/td2-beta-cold-start`) wird bei jedem 
 
 ## Offene Punkte
 
-1. Audio-Unlock-Gate ergänzen (siehe Lücke oben), bevor die Beta-Abnahme finalisiert wird.
+1. ~~Audio-Unlock-Gate~~ ergänzt am 18.11.2026: `tools/verify-audio-unlock-browser.cjs` im Job `beta-browser-gates` (Kampagne, Desktop + Touch; Ansturm erzeugt seinen AudioContext bewusst erst im Klickkontext von `tone()`, kein globales Unlock-Event nötig).
 2. Physische Android-4-GB-Abnahme (FPS/RAM) bleibt außerhalb von CI und ist je Release gesondert zu dokumentieren.
 3. Nach Beta-Schnitt: Prüfsummen-/404-Systematik prüfen, ob `td2-beta-ci.yml` zusätzlich auf Push-Läufe zum Beta-Branch erweitert wird.
 
