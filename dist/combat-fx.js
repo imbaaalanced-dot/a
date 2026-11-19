@@ -155,12 +155,17 @@
     ctx.globalAlpha=prevAlpha;ctx.textAlign=prevAlign;ctx.font=prevFont;ctx.lineWidth=prevWidth;ctx.strokeStyle=prevStroke;ctx.fillStyle=prevFill;
   }
   const getContext=()=>audio,getMaster=()=>master;
+  let viewZoom=.56;
+  function setViewZoom(zoom){ viewZoom=zoom>0?zoom:.56; }
+  function uiScale(){ return Math.min(1.6,Math.max(1,.56/viewZoom)); }
+
   function draw(ctx,b,reduced,heroCharacter=null) {
     const kind=b.kind||'magic', level=b.level||1, arrow=kind==='bow'||kind==='ballista',heavy=kind==='cannon'||kind==='mortar';
+    const ui=uiScale();
     if(b.heroShot&&heroCharacter==='marcel'&&kind==='wand'&&
        drawStaffFrame(ctx,b.x,b.y,0,(Math.max(0,1.1-b.life)*4)%1,Math.atan2(b.vy,b.vx),30))return;
     ctx.save();ctx.translate(b.x,b.y);ctx.rotate(Math.atan2(b.vy,b.vx));
-    ctx.strokeStyle=b.color;ctx.fillStyle=b.color;ctx.lineWidth=1+level*.45;
+    ctx.strokeStyle=b.color;ctx.fillStyle=b.color;ctx.lineWidth=(1+level*.45)*ui;
     // Motion streak grows with speed so fast shells read as fast.
     const streak=Math.min(26,8+Math.hypot(b.vx||0,b.vy||0)*.03);
     if (!reduced) { ctx.globalAlpha=.45;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(-streak-level*5,0);ctx.stroke();ctx.globalAlpha=1; }
@@ -168,8 +173,8 @@
       ctx.beginPath();ctx.moveTo(-10,0);ctx.lineTo(7,0);ctx.stroke();
       ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(3,-3);ctx.lineTo(3,3);ctx.closePath();ctx.fill();
     } else {
-      if (!heavy) {ctx.shadowBlur=reduced?0:8+level*2;ctx.shadowColor=b.color;}
-      ctx.fillStyle=heavy?'#48443e':b.color;ctx.beginPath();ctx.arc(0,0,heavy?4+level*.5:b.r,0,Math.PI*2);ctx.fill();
+      if (!heavy) {ctx.shadowBlur=reduced?0:(8+level*2)*ui;ctx.shadowColor=b.color;}
+      ctx.fillStyle=heavy?'#48443e':b.color;ctx.beginPath();ctx.arc(0,0,heavy?4+level*.5:b.r*ui,0,Math.PI*2);ctx.fill();
       ctx.fillStyle=heavy?'#b4a18a':'#eaffff';ctx.beginPath();ctx.arc(-1,-1,1.5,0,Math.PI*2);ctx.fill();
     }
     ctx.restore();
@@ -184,7 +189,7 @@
     if(p.ring){
       const progress=1-t;
       const prevAlpha=ctx.globalAlpha,prevStroke=ctx.strokeStyle,prevWidth=ctx.lineWidth;
-      ctx.globalAlpha=t*.75;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(1,3.2*t);
+      ctx.globalAlpha=t*.75;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(uiScale(),3.2*t);
       ctx.beginPath();ctx.arc(p.x,p.y,p.r+progress*(p.max>.25?52:34),0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=prevAlpha;ctx.strokeStyle=prevStroke;ctx.lineWidth=prevWidth;
       return true;
@@ -212,5 +217,5 @@
     }
     return false;
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster};
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster,setViewZoom,uiScale};
 })();
