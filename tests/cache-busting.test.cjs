@@ -44,7 +44,7 @@ const expectedVersions = new Map([
   ['loot-ui.js', 'portrait-v6-clean-20261117'],
   ['v2-expansion-data.js', 'expansion2'],
   ['v2-expansion.js', 'building-clearance-20261114'],
-  ['hero-saga.js', 'portrait-v6-clean-20261117'],
+  ['hero-saga.js', 'voice-saga-20261119'],
   ['directional-hero-assets-v5.js','v5-alpha-repair-20261116'],
   ['combat-fx.js', 'save-restore-20261117'],
   ['style2-impact-atlas.js', 'reference-refresh-1'],
