@@ -51,13 +51,13 @@
     const key = kind + (impact ? ':hit' : ':shot'), now = audio.currentTime;
     if (now - (lastSound.get(key) ?? -1) < .055) return;
     lastSound.set(key, now);
-    const heavy = kind === 'cannon' || kind === 'mortar', arrow = kind === 'bow' || kind === 'ballista';
-    const duration = heavy ? .23 : impact ? .065 : .11;
+    const heavy = kind === 'cannon' || kind === 'mortar', arrow = kind === 'bow' || kind === 'ballista', magic = kind === 'magic' || kind === 'wand';
+    const duration = heavy ? .23 : magic ? .14 : impact ? .065 : .11;
     const osc = audio.createOscillator(), gain = audio.createGain();
-    const frequency = (heavy ? 100 : arrow ? 650 : 460) * (.94 + Math.random() * .12);
-    osc.type = heavy ? 'triangle' : arrow ? 'sine' : 'triangle';
+    const frequency = (heavy ? 100 : arrow ? 650 : magic ? 240 : 460) * (.94 + Math.random() * .12);
+    osc.type = heavy ? 'triangle' : arrow ? 'sine' : magic ? 'sine' : 'triangle';
     osc.frequency.setValueAtTime(frequency * (impact ? .65 : 1), now);
-    osc.frequency.exponentialRampToValueAtTime(heavy ? 28 : arrow ? 170 : 800, now + duration);
+    osc.frequency.exponentialRampToValueAtTime(heavy ? 28 : arrow ? 170 : magic ? 900 : 800, now + duration);
     gain.gain.setValueAtTime(.0001, now);
     gain.gain.exponentialRampToValueAtTime(heavy ? .16 : .045, now + .005);
     gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
@@ -75,6 +75,7 @@
     }
   }
   function burst(game, bullet, impact, enabled, reduced) {
+    sound(bullet.kind, impact, enabled);
     const heavy = bullet.kind === 'cannon' || bullet.kind === 'mortar';
     if (impact) {
       // Expanding shock ring marks the exact hit spot.
