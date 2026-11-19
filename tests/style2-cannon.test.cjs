@@ -75,7 +75,7 @@ assert.ok(game.particles.length<=fx.MAX_PARTICLES,'cannon impacts respect the gl
 assert.ok(game.particles.every(p=>Number.isFinite(p.life)&&p.life===p.max),'particle lifecycle invariant stays intact');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.doesNotMatch(html,/src="style2-cannon\.js/,'legacy cannon renderer is no longer loaded in the production game');
-assert.match(html,/combat-fx\.js\?v=sfx-burst-20261119/);
+assert.match(html,/combat-fx\.js\?v=readable-fx-20261119/);
 const gameplay=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameplay,/UserStyle2Towers\?\.drawTower/,'canonical cannon graphics must be used by gameplay');
 assert.match(gameplay,/location\?\.pathname\?\.includes\('\/v4-style2-cannon\/'\)/,'dedicated test preview must work');
