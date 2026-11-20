@@ -128,7 +128,7 @@ function makeSandbox() {
     assert.doesNotMatch(introSource, /['"]assets\/intro\/[A-Za-z0-9_.-]+\.mp4['"]/, 'asset path stays composed so the static 404 gate treats the video as optional');
     const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
     assert.match(html, /id="levelIntroScreen"/, 'index.html contains the intro overlay');
-    assert.match(html, /<script src="level-intro\.js\?v=levelintro1"><\/script>/, 'module loads before game.js with a cache key');
+    assert.match(html, /<script src="level-intro\.js\?v=levelintro2"><\/script>/, 'module loads before game.js with a cache key');
     assert.match(html, /level-intro\.css\?v=levelintro1/, 'overlay styles load with a cache key');
     assert.match(html, /game\.js\?v=levelintro-volume-20261120/, 'changed game.js bumps its cache key');
     assert.match(html, /id="levelIntroVideo"[^>]*preload="none"[^>]*playsinline/, 'no preload and inline playback for WebView');
