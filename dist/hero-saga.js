@@ -95,7 +95,7 @@
   }
   function speakTts(text) {
     if(!globalThis.speechSynthesis||!globalThis.SpeechSynthesisUtterance)return;
-    const utterance=new SpeechSynthesisUtterance(text);utterance.lang='de-DE';utterance.rate=.92;utterance.pitch=.85;
+    const utterance=new SpeechSynthesisUtterance(text);utterance.lang='de-DE';utterance.volume=globalThis.TD2_AUDIO_VOLUME??1;utterance.rate=.92;utterance.pitch=.85;
     utterance.voice=speechSynthesis.getVoices().find(v=>v.lang.startsWith('de'))||null;
     speechSynthesis.speak(utterance);
   }
@@ -111,7 +111,7 @@
     try{
       const clip=new Audio(VOICE_CLIPS[id]||'');
       let handled=false;
-      clip.onended=()=>{if(currentAudio===clip)currentAudio=null;};
+      clip.volume=globalThis.TD2_AUDIO_VOLUME??1;clip.onended=()=>{if(currentAudio===clip)currentAudio=null;};
       clip.onerror=()=>{if(!handled){handled=true;tts();}};
       const playing=clip.play();
       if(playing&&playing.catch)playing.catch(()=>{if(!handled){handled=true;tts();}});

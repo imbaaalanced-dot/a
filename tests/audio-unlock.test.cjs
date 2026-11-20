@@ -17,7 +17,7 @@ const unlockBody=fx.match(/function unlock\(\) \{[\s\S]*?\n  }/)?.[0]||'';
 assert.ok(unlockBody.includes('audio = new AC();'),
   'AudioContext must be created only inside unlock(), never at module load');
 assert.ok(fx.includes('getContext,getMaster'), 'gate relies on getContext/getMaster exposure');
-assert.ok(fx.includes('master.gain.value = muted ? 0 : .65'), 'mute must toggle master gain between 0 and 0.65');
+assert.ok(fx.includes('master.gain.value = mutedState ? 0 : .65*volumeScale'), 'mute must toggle master gain between 0 and 0.65');
 assert.ok(html.includes('id="menuSoundBtn"') && html.includes('TON: AN'),
   'menu must expose the sound button with a readable label');
 assert.ok(game.includes("if(ac.state==='suspended')void ac.resume();"),

@@ -41,11 +41,13 @@
     try {
       const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
       if (!AC) return;
-      if (!audio) { audio = new AC(); master = audio.createGain(); master.gain.value = .65; master.connect(audio.destination); }
+      if (!audio) { audio = new AC(); master = audio.createGain(); master.gain.value = .65*volumeScale; master.connect(audio.destination); }
       if (audio.state === 'suspended') audio.resume().catch(() => {});
     } catch {}
   }
-  function mute(muted) { if (master) master.gain.value = muted ? 0 : .65; }
+  let volumeScale=1,mutedState=false;
+  function mute(muted) { mutedState=!!muted; if (master) master.gain.value = mutedState ? 0 : .65*volumeScale; }
+  function setVolume(volume) { volumeScale=Math.max(0,Math.min(1,volume)); if (master&&!mutedState) master.gain.value=.65*volumeScale; }
   function sound(kind, impact, enabled) {
     if (!enabled || !audio || audio.state !== 'running' || voices >= 8) return;
     const key = kind + (impact ? ':hit' : ':shot'), now = audio.currentTime;
@@ -217,5 +219,5 @@
     }
     return false;
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster,setViewZoom,uiScale};
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster,setViewZoom,uiScale,setVolume};
 })();
