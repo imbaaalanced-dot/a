@@ -40,7 +40,15 @@ function makeSandbox() {
   const sandbox = { document, listeners, console, Math, Set, Promise };
   sandbox.window = sandbox;
   vm.createContext(sandbox);
-  vm.runInContext(fs.readFileSync(path.join(root, 'level-intro.js'), 'utf8'), sandbox);
+  // Vertragstest prueft das Modul im AUSGELIEFERTEN Zustand (Clip vorhanden).
+  // Der Ship-Schalter wird dafuer nur im Sandbox-Source geflippt; die echte
+  // Produktions-Konstante pint tests/level-intro-clip-availability.test.cjs
+  // gegen den tatsaechlichen Dateibestand.
+  const shippedSource = fs.readFileSync(path.join(root, 'level-intro.js'), 'utf8')
+    .replace('const CLIP_SHIPPED = false;', 'const CLIP_SHIPPED = true;')
+    .replace('const CLIP_SHIPPED = true;', 'const CLIP_SHIPPED = true;');
+  assert.ok(shippedSource.includes('const CLIP_SHIPPED = true;'), 'sandbox must exercise the shipped mode');
+  vm.runInContext(shippedSource, sandbox);
   const apiState = { value: 'playing', sound: true, toasts: [] };
   const api = {
     getState: () => apiState.value,
