@@ -9,7 +9,11 @@
 
 ![Titelgrafik von Denkmal TD2 mit Kim und Marcel](dist/assets/loading/kim-marcel-loading-v5.webp)
 
-> Das Bild zeigt die Titelgrafik. Ein echter Gameplay-Screenshot unter `docs/screenshot.png` steht noch aus.
+![Gameplay-Screenshot: Kapitel 1 mit Kaserne, Held und Baupause-HUD](docs/screenshot.png)
+
+> Das zweite Bild ist ein echter Gameplay-Screenshot (Kapitel 1, Bauphase),
+> unverändert aus der automatisierten Chromium-QA des Repos übernommen und
+> auf 1280 px Breite skaliert – kein Werbemotiv.
 
 ## Features
 
