@@ -122,7 +122,7 @@ function makeSandbox() {
     assert.match(html, /id="levelIntroScreen"/, 'index.html contains the intro overlay');
     assert.match(html, /<script src="level-intro\.js\?v=levelintro1"><\/script>/, 'module loads before game.js with a cache key');
     assert.match(html, /level-intro\.css\?v=levelintro1/, 'overlay styles load with a cache key');
-    assert.match(html, /game\.js\?v=levelintro-kirchende-20261118/, 'changed game.js bumps its cache key');
+    assert.match(html, /game\.js\?v=levelintro-volume-20261120/, 'changed game.js bumps its cache key');
     assert.match(html, /id="levelIntroVideo"[^>]*preload="none"[^>]*playsinline/, 'no preload and inline playback for WebView');
   }
   console.log('Level-3 intro video: module contract, wiring and 404-gate compatibility verified.');
