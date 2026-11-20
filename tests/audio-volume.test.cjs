@@ -30,7 +30,7 @@ assert.ok(html.includes('id="menuVolumeBtn"') && html.includes('id="volumeBtn"')
   'both option surfaces expose the volume control');
 assert.ok(html.includes('LAUTSTÄRKE: 100 %'),
   'the control is labelled with its level');
-assert.ok(html.includes('game.js?v=volume-audio-20261120')
+assert.ok(html.includes('game.js?v=levelintro-volume-20261120')
   && html.includes('combat-fx.js?v=volume-audio-20261120')
   && html.includes('hero-saga.js?v=volume-audio-20261120'),
   'all touched modules ship fresh cache keys');

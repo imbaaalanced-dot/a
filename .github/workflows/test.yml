@@ -35,6 +35,8 @@ jobs:
         run: node tests/portrait-home-v1.test.cjs
       - name: Level 1 intro tutorial regression suite
         run: node tests/intro-tutorial.test.cjs
+      - name: Level 3 intro video regression suite
+        run: node tests/level-intro.test.cjs
       - name: Preloader startup regression suite
         run: |
           node tests/preloader.test.cjs

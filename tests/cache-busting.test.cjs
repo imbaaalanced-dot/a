@@ -60,7 +60,10 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','late-ground-20261113'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','late-ground-20261113'],
-  ['game.js', 'volume-audio-20261120'],
+  ['game.js', 'levelintro-volume-20261120'],
+  ['level-intro.js', 'levelintro1'],
+  ['level-intro.css', 'levelintro1'],
+
   ['barracks.js','beta-barracks-matte-20261116'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],

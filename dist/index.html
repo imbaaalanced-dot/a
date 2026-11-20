@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="style2-v5-ui-refinement.css?v=20261109a" />
   <link rel="stylesheet" href="combat-hud-layout-v3.css?v=td2hud-layout-20261113a" />
   <link rel="stylesheet" href="level4-options-menu-compact.css?v=level4menu-20261114a" />
+  <link rel="stylesheet" href="level-intro.css?v=levelintro1" />
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
@@ -252,6 +253,11 @@
       </div></div>
     </section>
 
+    <section id="levelIntroScreen" class="modal level-intro hidden" role="dialog" aria-modal="true" aria-labelledby="levelIntroTitle">
+      <div class="level-intro-caption"><p class="eyebrow" id="levelIntroKicker">KAPITEL III</p><h2 id="levelIntroTitle">KRIEGERDENKMAL KIRCHENDE</h2></div>
+      <div class="level-intro-frame"><video id="levelIntroVideo" preload="none" playsinline webkit-playsinline disablepictureinpicture disableremoteplayback></video><button id="levelIntroSkip" class="icon-btn level-intro-skip" type="button" aria-label="Intro überspringen">ÜBERSPRINGEN</button></div>
+      <button id="levelIntroContinue" class="primary level-intro-continue hidden" type="button">WEITER ZUR WACHT</button>
+    </section>
     <section id="characterScreen" class="modal character-screen hidden" role="dialog" aria-modal="true" aria-labelledby="characterTitle">
       <div class="character-shell"><header class="character-header"><div><p class="eyebrow" id="characterLevel"></p><h2 id="characterTitle">MARCEL</h2></div><button id="characterClose" class="icon-btn">ZURÜCK <kbd>H / ESC</kbd></button></header>
         <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
@@ -339,7 +345,8 @@
   <script src="map-polish-v410.js?v=building-clearance-20261114"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
   <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
-  <script src="game.js?v=volume-audio-20261120"></script>
+  <script src="level-intro.js?v=levelintro1"></script>
+  <script src="game.js?v=levelintro-volume-20261120"></script>
   <script src="portrait-avatars-v5.js?v=portrait-v6-clean-20261117"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-version-label">
