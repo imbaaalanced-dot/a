@@ -18,7 +18,7 @@
   atlas.src = 'assets/asset-atlas-style2.webp?v=style2a1';
   // All six maps render their own ground; do not decode the unused 1254px legacy terrain.
   const WORLD_W=3072,WORLD_H=3072;
-  let zoom=.56,zoomMode='wide',graphicsMode='auto';
+  let zoom=.56,zoomMode='wide',graphicsMode='auto',volume=1;
   // Adaptive Grafikstufen: 'high' | 'medium' | 'low'. Der Modus 'auto' passt die Stufe
   // anhand der gemessenen Bildrate an; Hysterese und Abklingzeit verhindern ständiges Umschalten.
   let qualityTier=mobileRender?'low':'high';
@@ -90,8 +90,8 @@
   let developerMode=false,developerToastTimer=0;
   try{developerMode=storage?.getItem(developerStorageKey)==='enabled';}catch{}
   const preferenceKey='denkmal-preferences-v1',preferenceVersion=1;
-  const preferenceDefaults={character:'marcel',graphics:'auto',zoom:'wide',sound:true,telemetry:false,tutorialSeen:false};
-  const validPreferences=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['marcel','kim'].includes(p.character)&&['auto','low','high'].includes(p.graphics)&&['wide','standard'].includes(p.zoom)&&typeof p.sound==='boolean'&&typeof p.telemetry==='boolean'&&typeof p.tutorialSeen==='boolean';
+  const preferenceDefaults={character:'marcel',graphics:'auto',zoom:'wide',sound:true,telemetry:false,tutorialSeen:false,volume:1};
+  const validPreferences=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['marcel','kim'].includes(p.character)&&['auto','low','high'].includes(p.graphics)&&['wide','standard'].includes(p.zoom)&&typeof p.sound==='boolean'&&typeof p.telemetry==='boolean'&&typeof p.tutorialSeen==='boolean'&&(!('volume' in p)||[1,.7,.4].includes(p.volume));
   const preferenceStore=globalThis.DenkmalPersistence.create(storage);
   const preferenceLoaded=preferenceStore.load(preferenceKey,preferenceVersion,preferenceDefaults,validPreferences,s=>{
     const character=s.getItem('denkmal-character'),graphics=s.getItem('denkmal-graphics'),zoom=s.getItem('denkmal-zoom');
@@ -99,7 +99,7 @@
   });
   const preferences=preferenceLoaded.value;
   function savePreference(key,value){preferences[key]=value;return preferenceStore.save(preferenceKey,preferenceVersion,preferences,validPreferences);}
-  audioOn=preferences.sound;graphicsMode=preferences.graphics;qualityTier=graphicsMode==='high'?'high':graphicsMode==='low'?'low':mobileRender?'low':'high';zoomMode=preferences.zoom;telemetryOn=preferences.telemetry;
+  audioOn=preferences.sound;volume=[1,.7,.4].includes(preferences.volume)?preferences.volume:1;globalThis.TD2_AUDIO_VOLUME=volume;graphicsMode=preferences.graphics;qualityTier=graphicsMode==='high'?'high':graphicsMode==='low'?'low':mobileRender?'low':'high';zoomMode=preferences.zoom;telemetryOn=preferences.telemetry;
   const lootModel=globalThis.DenkmalLoot.create({storage,canManage:()=>state==='inventory'&&inventoryReturn==='start',getHero:()=>state==='inventory'&&inventoryReturn!=='start'?(game?.hero.character||selectedCharacter):selectedCharacter});
   if(lootModel.profile.level2&&!campaign.unlocked)campaign.unlock();
   if(campaign.unlocked&&!lootModel.profile.level2)lootModel.unlockLevel();
@@ -1350,6 +1350,8 @@
   function cycleZoom(){zoomMode=zoomMode==='wide'?'standard':'wide';zoom=zoomForMode();savePreference('zoom',zoomMode);zoomLabel();updateCamera();}
   function telemetryLabel(){$('menuTelemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('menuTelemetryBtn').textContent=$('telemetryBtn').textContent=`FPS: ${telemetryOn?'AN':'AUS'}`;$('telemetryBtn').setAttribute('aria-pressed',String(telemetryOn));$('fpsOverlay').classList.toggle('hidden',!telemetryOn);}
   function toggleTelemetry(){telemetryOn=!telemetryOn;resetFrameTelemetry();savePreference('telemetry',telemetryOn);telemetryLabel();}
+  function volumeLabel(){$('menuVolumeBtn').textContent=$('volumeBtn').textContent=`LAUTSTÄRKE: ${Math.round(volume*100)} %`;$('volumeBtn').setAttribute('aria-label',`Lautstaerke wechseln (${Math.round(volume*100)} %)`);}
+  function cycleVolume(){const steps=[1,.7,.4];volume=steps[(steps.indexOf(volume)+1)%steps.length];globalThis.TD2_AUDIO_VOLUME=volume;fx.setVolume?.(volume);savePreference('volume',volume);volumeLabel();if(audioOn)tone(440,.1);}
   function soundLabel(){$('menuSoundBtn').setAttribute('aria-pressed',String(audioOn));$('menuSoundBtn').textContent=$('soundBtn').textContent=`TON: ${audioOn?'AN':'AUS'}`;$('soundBtn').setAttribute('aria-pressed',String(audioOn));}
   let menuPanel='home';
   const menuEntries={campaign:'menuCampaignBtn',arcade:'menuArcadeBtn',hero:'menuCharacterBtn',options:'menuOptionsBtn'};
@@ -1430,9 +1432,9 @@
   $('chooseMarcel').onclick=()=>chooseCharacter('marcel');$('chooseKim').onclick=()=>chooseCharacter('kim');
   chooseCharacter(selectedCharacter);showMenuPanel('home',false);
   $('menuDeveloperBtn').onclick=toggleDeveloperMode;developerLabel();
-  for(const [menu,hud] of [['menuSoundBtn','soundBtn'],['menuGraphicsBtn','graphicsBtn'],['menuZoomBtn','zoomBtn'],['menuTelemetryBtn','telemetryBtn']])$(menu).onclick=()=>$(hud).onclick();
+  for(const [menu,hud] of [['menuSoundBtn','soundBtn'],['menuVolumeBtn','volumeBtn'],['menuGraphicsBtn','graphicsBtn'],['menuZoomBtn','zoomBtn'],['menuTelemetryBtn','telemetryBtn']])$(menu).onclick=()=>$(hud).onclick();
   $('tutorialNext').onclick=nextIntroTutorial;$('tutorialSkip').onclick=finishIntroTutorial;
-  $('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();savePreference('sound',audioOn);if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;$('fullscreenBtn').onclick=toggleFullscreen;$('menuFullscreenBtn').onclick=toggleFullscreen;soundLabel();graphicsLabel();zoomLabel();telemetryLabel();updateFullscreenButtons();
+  $('volumeBtn').onclick=cycleVolume;$('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();savePreference('sound',audioOn);if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;$('fullscreenBtn').onclick=toggleFullscreen;$('menuFullscreenBtn').onclick=toggleFullscreen;soundLabel();volumeLabel();graphicsLabel();zoomLabel();telemetryLabel();updateFullscreenButtons();
   atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({getCharacter:()=>selectedCharacter,openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);

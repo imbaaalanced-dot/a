@@ -16,6 +16,6 @@ assert.ok(fx.includes("(now - (lastSound.get(key) ?? -1) < .055) return;"),
   'per-kind rate limit prevents SFX spam during large waves');
 assert.ok(fx.includes("audio.state !== 'running'"), 'SFX only plays after the audio unlock');
 assert.ok(fx.includes('unlock,mute,burst'), 'burst remains exported in the combat-fx API');
-assert.ok(html.includes('combat-fx.js?v=readable-fx-20261119'),
+assert.ok(html.includes('combat-fx.js?v=volume-audio-20261120'),
   'index.html must reference the new combat-fx cache key');
 console.log('SFX wiring: burst triggers shot/impact/magic profiles with caps and unlock gate');

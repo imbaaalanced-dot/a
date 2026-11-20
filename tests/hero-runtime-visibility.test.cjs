@@ -14,7 +14,7 @@ assert.ok(nativeDuo,'home menu must include a native two-hero figure');
 assert.match(nativeDuo,/id="menuHeroBanner"[^>]*marcel-wand-menu-portrait-20261117-refined\.webp/);
 assert.match(nativeDuo,/id="menuHeroCompanion"[^>]*kim-marksman-v6\.webp/);
 assert.match(html,/menu\.css\?v=hero-caption-right-20261117/);
-assert.match(html,/hero-saga\.js\?v=voice-saga-20261119/);
+assert.match(html,/hero-saga\.js\?v=volume-audio-20261120/);
 
 const visibilityPatch=css.split('/* Hero visibility:')[1];
 assert.ok(visibilityPatch,'native duo visibility override is present');

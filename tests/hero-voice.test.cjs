@@ -26,6 +26,6 @@ assert.ok(saga.includes('currentVoice={id:null,priority:0};'),
   'stopVoice must reset the priority state');
 assert.ok(saga.includes('if(!voiceEnabled||!api.soundOn())return;'),
   'voice must respect the voice toggle and the global sound switch');
-assert.ok(html.includes('hero-saga.js?v=voice-saga-20261119'),
+assert.ok(html.includes('hero-saga.js?v=volume-audio-20261120'),
   'index.html must reference the new hero-saga cache key');
 console.log('Hero voice: 6 recorded clips wired with priorities and TTS fallback');
