@@ -11,12 +11,12 @@
   const sheet='?v=hero-dir-v5b-20261114';
   globalThis.TD2HeroSideAssets={
     marcel:{
-      file:globalThis.TD2CanonicalHeroArt?.marcel?.actions||'assets/hero/marcel-side-actions-v5b.webp?v=v5b-alpha-20261112',
+      file:globalThis.TD2CanonicalHeroArt?.marcel?.actions||'assets/hero/marcel-side-actions-v5b.webp?v=v5b-wand-20261119',
       cell:128,frames:6,facing:'right',rows:{attack:2,hit:4,death:5},anchor:[64,116],height:95,
       sheets:{
         down:'assets/hero/marcel-down-actions-v5b-alpha-repair.webp?v=alpha-repair-20261116',
-        left:'assets/hero/marcel-left-actions-v5b.webp'+sheet,
-        up:'assets/hero/marcel-up-actions-v5b.webp'+sheet
+        left:'assets/hero/marcel-left-actions-v5b.webp?v=hero-dir-v5b-wand-20261119',
+        up:'assets/hero/marcel-up-actions-v5b.webp?v=hero-dir-v5b-wand-20261119'
       }
     },
     kim:{
