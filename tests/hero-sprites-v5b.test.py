@@ -1,8 +1,9 @@
 """Pixel-level QA for the actual V5b runtime atlases.
 
-The four base sheets (walk + side-actions) have every grid cell painted.
-The six direction sheets added for v5b-20261114 only paint the combat rows
-(attack=2, hit=4, death=5) that the runtime reads; rows 0/1/3 stay empty.
+The walk sheets and Kim's base side sheet have every grid cell painted.
+Since the 2026-11-19 wand re-production Marcel's base side sheet follows the
+same contract as the direction sheets: only the combat rows (attack=2,
+hit=4, death=5) that the runtime reads are painted; rows 0/1/3 stay empty.
 """
 from pathlib import Path
 from PIL import Image
@@ -13,7 +14,7 @@ SPEC = {
     'kim-walk-v5b.webp': (3, 4, (768, 1024), None),
     'marcel-walk-v5b.webp': (3, 4, (768, 1024), None),
     'kim-side-actions-v5b.webp': (6, 6, (768, 768), None),
-    'marcel-side-actions-v5b.webp': (6, 6, (768, 768), None),
+    'marcel-side-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
     'marcel-down-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
     'marcel-left-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
     'marcel-up-actions-v5b.webp': (6, 6, (768, 768), (2, 4, 5)),
