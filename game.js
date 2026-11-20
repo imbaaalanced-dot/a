@@ -322,7 +322,7 @@
   }
   // V4 alpha.4: the HUD menu is a <details> overlay; every screen switch must close it.
   function closeHudMenu(){const menu=$('hudMenu');if(menu)menu.open=false;return true;}
-  function closeScreens(){closeHudMenu();tutorialActive=false;tutorialPending=false;saga.stopVoice();for(const id of ['startScreen','pauseScreen','perkScreen','gameover','levelComplete','storyScreen','characterScreen','inventoryScreen','introTutorial'])$(id).classList.add('hidden');}
+  function closeScreens(){closeHudMenu();tutorialActive=false;tutorialPending=false;globalThis.DenkmalLevelIntro?.stop();saga.stopVoice();for(const id of ['startScreen','pauseScreen','perkScreen','gameover','levelComplete','storyScreen','levelIntroScreen','characterScreen','inventoryScreen','introTutorial'])$(id).classList.add('hidden');}
   const introTutorialSteps=[
     {title:'Bewegen & angreifen',text:'Bewege deinen Helden am PC mit WASD oder den Pfeiltasten. Auf dem Handy nutzt du den linken Steuerstick. Dein Held greift Gegner automatisch an.',target:()=>mobileRender?$('joystick'):$('game')},
     {title:'Seelenruf & Ausweichen',text:'Marcels Seelenruf schießt einen blauen Fernzauber auf einen Gegner und trifft dessen Umgebung. Kim behält ihren Schutzruf in der Nähe. Aktiviere ihn mit F oder per Touch. Mit der Leertaste oder der Ausweich-Taste entgehst du Angriffen.',target:()=>$('soulBtn')},
@@ -510,7 +510,7 @@
     }
     closeScreens();reset(level,mode);state='playing';focusGame();tone(220,.1);last=performance.now();
     setTimeout(()=>{if(levelLoadRequest===request&&assetLevel===level)globalThis.DenkmalAssets?.next(level);},1800);
-    if(level===1){const storyShown=saga.chapter(1);if(!storyShown)queueIntroTutorial();}else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
+    if(level===1){const storyShown=saga.chapter(1);if(!storyShown)queueIntroTutorial();}else if(level===3&&mode==='campaign'&&globalThis.DenkmalLevelIntro?.show(level)){}else showToast(`LEVEL ${level} · ${campaign.levels[level].name}`);updateUI();
   }
   // A temporary same-page history entry makes Android/WebView Back dismiss the
   // inventory instead of accidentally leaving the game. No persistent state changes.
@@ -1203,7 +1203,7 @@
     const renderTolerance=renderInterval&&renderInterval<=1000/60?1:.01;
     const renderElapsed=now-lastGameplayDraw;
     const gameplayDrawDue=state!=='playing'||!renderInterval||renderElapsed+renderTolerance>=renderInterval;
-    const shouldDraw=!document.hidden&&(state==='playing'?gameplayDrawDue:now-lastIdleDraw>=100);
+    const shouldDraw=!document.hidden&&state!=='levelintro'&&(state==='playing'?gameplayDrawDue:now-lastIdleDraw>=100);
     if(shouldDraw){
       draw();lastIdleDraw=now;
       if(state==='playing')lastGameplayDraw=renderInterval
@@ -1229,6 +1229,7 @@
     if(e.code==='KeyH'&&!e.repeat){e.preventDefault();if(state==='character')saga.closeCharacter();else saga.openCharacter();return;}
     if(e.code==='Escape'&&state==='start'&&menuPanel!=='home'){e.preventDefault();showMenuPanel('home');return;}
     if((e.code==='Escape'||e.key==='BrowserBack'||e.key==='GoBack')&&state==='inventory'){e.preventDefault();if(!lootUI?.dismiss?.())closeInventory();return;}
+    if(e.code==='Escape'&&state==='levelintro'){e.preventDefault();globalThis.DenkmalLevelIntro?.close();return;}
     if(e.code==='Escape'&&state==='character'){saga.closeCharacter();return;}
     if(e.code==='Escape'||e.code==='KeyP'){if(!e.repeat){e.preventDefault();state==='paused'?resumeGame():pauseGame();}return;}
     if(state==='playing')keys[e.code]=true;
@@ -1437,6 +1438,7 @@
   $('volumeBtn').onclick=cycleVolume;$('soundBtn').onclick=()=>{audioOn=!audioOn;fx.mute(!audioOn);if(!audioOn)saga.stopVoice();soundLabel();savePreference('sound',audioOn);if(audioOn)tone(440,.1);};$('graphicsBtn').onclick=cycleGraphics;$('zoomBtn').onclick=cycleZoom;$('telemetryBtn').onclick=toggleTelemetry;$('fullscreenBtn').onclick=toggleFullscreen;$('menuFullscreenBtn').onclick=toggleFullscreen;soundLabel();volumeLabel();graphicsLabel();zoomLabel();telemetryLabel();updateFullscreenButtons();
   atlas.onerror=()=>showToast('Zusatzgrafik nicht verfügbar · Ersatzdarstellung aktiv');
   saga.init({getCharacter:()=>selectedCharacter,openInventory,getGame:()=>game,getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,soundOn:()=>audioOn,hurtEnemy,spark,tone,nearest,shoot});
+  globalThis.DenkmalLevelIntro?.init({getState:()=>state,setState:s=>{state=s;last=performance.now();},focusModal,focusGame,clearInput,updateUI,showToast,soundOn:()=>audioOn});
   $('storyContinue').addEventListener('click',()=>{if(!tutorialSeen()&&game?.level===1){tutorialPending=true;requestAnimationFrame(()=>{if(state==='playing'&&game?.level===1)showIntroTutorial();else tutorialPending=false;});}},true);
   globalThis.DenkmalTestHooks={startPortalRun,enterPortal,launchWave,getPortalRun:()=>portalRun,portalHit,projectileSynergy,wavePlan,applyWavePlan,enemyTypeForSpawn,wavePreview,placementError,resetGame:reset,getGame:()=>game,getView:()=>({camera:{...camera},zoom,viewDepth,width:W,height:H}),towerTarget,startGame,spawnEnemy,endWave,update,getState:()=>state,simulationStepsPerFrame,toggleSpeed,getSpeedMultiplier:()=>speedMultiplier,toggleDeveloperMode,getDeveloperMode:()=>developerMode,interceptPoint,projectileSpeed,shootBoomerang,moveBoomerang,closeHudMenu,churchBlocks,qualityTier:()=>qualityTier,medFX,advanceQualityMonitor,setGraphicsPreference,graphicsPreference:()=>graphicsMode};
   resize();reset();menuStatus();focusModal(ui.start);requestAnimationFrame(loop);

@@ -4,8 +4,8 @@
 (()=>{'use strict';
   const art={
     marcel:{
-      walk:'assets/hero/marcel-walk-v5b.webp?v=v5b-alpha-20261112',
-      actions:'assets/hero/marcel-side-actions-v5b.webp?v=v5b-alpha-20261112',
+      walk:'assets/hero/marcel-walk-v5b.webp?v=v5b-wand-20261119',
+      actions:'assets/hero/marcel-side-actions-v5b.webp?v=v5b-wand-20261119',
       portrait:'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117',
       walkGrid:[3,4],actionGrid:[6,6],walkCell:256,actionCell:128
     },

@@ -1,0 +1,101 @@
+{
+  "actor": "marcel",
+  "facing": "up",
+  "cell": 128,
+  "grid": [
+    6,
+    6
+  ],
+  "frames": 6,
+  "anchor": [
+    64,
+    116
+  ],
+  "actions": {
+    "attack": 2,
+    "hit": 4,
+    "death": 5
+  },
+  "status": "candidate-unapproved",
+  "manual_art_approval": false,
+  "source": {
+    "attack": [
+      "source-art/hero/actions-v5/marcel/up/attack/00.png",
+      "source-art/hero/actions-v5/marcel/up/attack/01.png",
+      "source-art/hero/actions-v5/marcel/up/attack/02.png",
+      "source-art/hero/actions-v5/marcel/up/attack/03.png",
+      "source-art/hero/actions-v5/marcel/up/attack/04.png",
+      "source-art/hero/actions-v5/marcel/up/attack/05.png"
+    ],
+    "hit": [
+      "source-art/hero/actions-v5/marcel/up/hit/00.png",
+      "source-art/hero/actions-v5/marcel/up/hit/01.png",
+      "source-art/hero/actions-v5/marcel/up/hit/02.png",
+      "source-art/hero/actions-v5/marcel/up/hit/03.png",
+      "source-art/hero/actions-v5/marcel/up/hit/04.png",
+      "source-art/hero/actions-v5/marcel/up/hit/05.png"
+    ],
+    "death": [
+      "source-art/hero/actions-v5/marcel/up/death/00.png",
+      "source-art/hero/actions-v5/marcel/up/death/01.png",
+      "source-art/hero/actions-v5/marcel/up/death/02.png",
+      "source-art/hero/actions-v5/marcel/up/death/03.png",
+      "source-art/hero/actions-v5/marcel/up/death/04.png",
+      "source-art/hero/actions-v5/marcel/up/death/05.png"
+    ]
+  },
+  "frame_hashes": {
+    "attack": [
+      "2807db40d7cc321458fd7fb7ceadd9d17397a1c31e8621c1e410d5a22acb3afe",
+      "2a77b8be62f7dca4387368266c7c057573f7bbd4809efaa06b06e2aeac69567a",
+      "c45cad7fa2f31032f3eec23fb563cc68ac119aca3457caf40342fa38172b62a0",
+      "b19b08f884a9e96cbf7eacd02b9d9040831c07f2c4ae5729018f216b05d6b91c",
+      "2cb0716ba5cfb9c2a496428ee091e8bc4114bd0df4095b57eac02f0e0bce1346",
+      "9755f8e2dfc952aca9fedd23a1cb14b948830dabef00471be4acd7f1255e3cfd"
+    ],
+    "hit": [
+      "3e2d13d922ecbb60afcdaeec4d7bb193e02c325203d2117cfac717415cfe4807",
+      "ec1d0e6966444bb6d3fc416d4783bd39fcd1607c22737e41385aadc03fa23f8f",
+      "3cb4ce3e6eea123680d965f2affa0af03bbefdb033c1cefe178cff674504f3f9",
+      "c4fe0a0c6c3b27c1d7a0d80753447166a89b7c51739aca96f013bf83bc3db393",
+      "93d112b8144e45e4941ada6f735ef408f408aaaec3745bca5f1a653007829bb4",
+      "a58b5355aee2d3e276986c2d1ad05cce36defb668b59f2af1ce35a8d0d504f2f"
+    ],
+    "death": [
+      "65deffae38ad47faa1dff675bf76aa0817cae3796e241299be57ab3fd2ba28cc",
+      "a7182541a991770232a6083e1f2a5cca47beed73388dc4bd67c7bd7fc150f69e",
+      "02482d93c280e1edc217d20758f941308ba552f45ded84004fe3b6f4c2fceb37",
+      "6d28ced061910a4aa23ff22fa7a9d444cc57adf80eb0e71ccefda937011fa0cc",
+      "53a8a4ad4bced12f5f6bc3e867571713621bfc29092c83a3cb5e7ce4124ac7c2",
+      "fb8995ef5a409a5909523faac596fabe2d2f1100e6e5799d3d9449744cffc086"
+    ]
+  },
+  "motion_checks": {
+    "attack": {
+      "allowed_hold": null,
+      "unique_frames": 6,
+      "unique_alpha_silhouettes": 6,
+      "max_height_drop_px": 1,
+      "manual_perspective_review": "required",
+      "manual_identity_review": "required"
+    },
+    "hit": {
+      "allowed_hold": null,
+      "unique_frames": 6,
+      "unique_alpha_silhouettes": 6,
+      "max_height_drop_px": 13,
+      "manual_perspective_review": "required",
+      "manual_identity_review": "required"
+    },
+    "death": {
+      "allowed_hold": null,
+      "unique_frames": 6,
+      "unique_alpha_silhouettes": 6,
+      "max_height_drop_px": 22,
+      "manual_perspective_review": "required",
+      "manual_identity_review": "required"
+    }
+  },
+  "bytes": 178094,
+  "sha256_webp": "4af2ba73ebc4de9be8e9a94fa677ec09810d95042be6cef2fd40367c5e229c3d"
+}
