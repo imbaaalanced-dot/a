@@ -53,13 +53,13 @@ const server=http.createServer((req,res)=>{
       };
     });
     assert.ok(layout.open,t.name+' menu opens via summary click');
-    assert.equal(layout.buttonIds.length,9,t.name+' all options preserved');
+    assert.equal(layout.buttonIds.length,10,t.name+' all options preserved');
     assert.equal(layout.gridColumns,2,t.name+' options use two columns');
     assert.ok(layout.panel.width<=t.maxPanelWidth,t.name+' menu width '+layout.panel.width);
     assert.ok(layout.panel.height<=t.maxPanelHeight,t.name+' menu height '+layout.panel.height);
     assert.ok(layout.panel.x>=-1&&layout.panel.y>=-1&&layout.panel.right<=t.width+1&&layout.panel.bottom<=t.height+1,t.name+' menu inside viewport '+JSON.stringify(layout.panel));
     assert.ok(layout.minBtnHeight>=(t.touch?47:37),t.name+' minimum settings button size');
-    assert.equal(layout.visibleBtnCount,9,t.name+' every settings button rendered');
+    assert.equal(layout.visibleBtnCount,10,t.name+' every settings button rendered');
     assert.ok(!layout.touchingToolbar,t.name+' menu clears bottom gameplay controls');
     assert.deepEqual(layout.tower,['bow','cannon','mage','rift','barracks'],t.name+' tower roster preserved');
     const oldLabel=await page.locator('#soundBtn').textContent();
