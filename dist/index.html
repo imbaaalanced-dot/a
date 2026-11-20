@@ -38,7 +38,8 @@
         <div><strong>DENKMAL TD2</strong><small>MARCEL &amp; KIM · DIE DENKMALWÄCHTER</small></div>
       </div>
       <div class="wave-seal"><small id="levelLabel">EINLEITUNG</small><strong id="wave">1</strong></div>
-      <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu" id="hudMenu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Rucksack öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2× umschalten" aria-pressed="false">TEMPO: 1×</button><button id="menuPauseBtn" class="icon-btn" aria-label="Spiel pausieren">PAUSE</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button><button id="fullscreenBtn" class="icon-btn" type="button" aria-label="Vollbild aktivieren" aria-pressed="false">VOLLBILD: AUS</button></div></details></div>
+      <div class="header-actions"><button id="pauseBtn" class="icon-btn" disabled aria-label="Spiel pausieren">PAUSE</button><details class="hud-menu" id="hudMenu"><summary>MENÜ</summary><div class="hud-menu-panel"><button id="inventoryBtn" class="icon-btn" disabled aria-label="Rucksack öffnen (I)">BEUTE <span id="inventoryCount">0 / 30</span> <kbd>I</kbd></button><button id="heroBtn" class="icon-btn" disabled aria-label="Heldenprofil und Chronik öffnen (H)">HELD <kbd>H</kbd></button><button id="speedBtn" class="icon-btn hidden" type="button" aria-label="Spieltempo auf 2× umschalten" aria-pressed="false">TEMPO: 1×</button><button id="menuPauseBtn" class="icon-btn" aria-label="Spiel pausieren">PAUSE</button><button id="soundBtn" class="icon-btn" aria-label="Ton umschalten">TON: AN</button><button id="volumeBtn" class="icon-btn" aria-label="Lautstaerke wechseln (100 %)">LAUTSTÄRKE: 100 %</button>
+<button id="graphicsBtn" class="icon-btn" aria-label="Grafikqualität wechseln">GRAFIK: AUTO</button><button id="zoomBtn" class="icon-btn" aria-label="Kamera-Zoom wechseln">KAMERA: WEIT</button><button id="telemetryBtn" class="icon-btn" aria-label="FPS-Anzeige umschalten" aria-pressed="false">FPS: AUS</button><button id="fullscreenBtn" class="icon-btn" type="button" aria-label="Vollbild aktivieren" aria-pressed="false">VOLLBILD: AUS</button></div></details></div>
     </header>
 
     <section id="compactHud" class="compact-hud hidden" aria-label="Kompakter Kampfstatus">
@@ -195,6 +196,7 @@
           <section id="optionsMenu" class="menu-section menu-options" hidden aria-labelledby="optionsMenuTitle">
             <h2 id="optionsMenuTitle">Optionen</h2>
             <button id="menuSoundBtn" class="icon-btn" type="button" aria-pressed="true">TON: AN</button>
+            <button id="menuVolumeBtn" class="icon-btn" type="button" aria-label="Lautstaerke wechseln (100 %)">LAUTSTÄRKE: 100 %</button>
             <button id="menuGraphicsBtn" class="icon-btn" type="button">GRAFIK: AUTO</button>
             <button id="menuZoomBtn" class="icon-btn" type="button">KAMERA: WEIT</button>
             <button id="menuTelemetryBtn" class="icon-btn" type="button" aria-pressed="false">FPS: AUS</button>
@@ -305,8 +307,8 @@
   <script src="directional-actions-v410.js?v=v5-hero-canonical1"></script>
   <script src="v2-expansion.js?v=building-clearance-20261114"></script>
   <script src="loot-ui.js?v=portrait-v6-clean-20261117"></script>
-  <script src="hero-saga.js?v=portrait-v6-clean-20261117"></script>
-  <script src="combat-fx.js?v=save-restore-20261117"></script>
+  <script src="hero-saga.js?v=volume-audio-20261120"></script>
+  <script src="combat-fx.js?v=volume-audio-20261120"></script>
   <script src="style2-impact-atlas.js?v=reference-refresh-1"></script>
   <script src="style2-impact-atlas-v4.js?v=style2-v4a1"></script>
   <script src="style2-user-towers-v4.js?v=style2-v4a1"></script>
@@ -337,7 +339,7 @@
   <script src="map-polish-v410.js?v=building-clearance-20261114"></script>
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
   <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
-  <script src="game.js?v=save-restore-20261117"></script>
+  <script src="game.js?v=volume-audio-20261120"></script>
   <script src="portrait-avatars-v5.js?v=portrait-v6-clean-20261117"></script>
   <script src="level-gallery.js?v=v5-style2a1"></script>
 <script id="td2-version-label">

@@ -1,0 +1,92 @@
+name: TD2 Beta CI Gates
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'ansturm-alpha1-5/**'
+      - '.github/workflows/td2-beta-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  beta-unit-and-mobile:
+    name: Beta unit tests desktop and touch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Desktop gameplay, menu and HUD regressions
+        run: node tests/game.test.cjs
+      - name: Touch, Hochformat and mobile budgets
+        run: TEST_MOBILE=1 node tests/game.test.cjs
+      - name: Ansturm suite
+        run: npm test --prefix ansturm-alpha1-5
+      - name: Menuefunktionen und Navigation
+        run: |
+          node tests/menu-navigation.test.cjs
+          node tests/main-menu.test.cjs
+          node tests/portrait-home-v1.test.cjs
+      - name: Audio unlock wiring regression
+        run: |
+          node tests/audio-unlock.test.cjs
+          TEST_MOBILE=1 node tests/audio-unlock.test.cjs
+  beta-asset-gates:
+    name: Beta asset gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install Pillow decode requirements
+        run: pip install pillow
+      - name: Asset integrity and mobile budgets
+        run: python3 tests/assets.test.py
+      - name: Hero art magenta gate
+        run: python3 tests/hero-art-magenta-gate.test.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Hero atlanten runtime visibility and asset manager
+        run: |
+          node tests/hero-runtime-visibility.test.cjs
+          node tests/asset-manager.test.cjs
+          node tests/marcel-menu-wand.test.cjs
+  beta-browser-gates:
+    name: Beta browser QA (JS/404, cold start, portrait)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium for actual UI gates
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install chromium
+      - name: Cold start without JS errors, failed or missing requests
+        timeout-minutes: 8
+        run: TD2_COLD_START_OUT=/tmp/td2-beta-cold-start timeout 420s node tools/verify-game-cold-start-browser.cjs
+      - name: Fullscreen and portrait view regression
+        timeout-minutes: 8
+        run: timeout 420s node tools/verify-browser-fullscreen.cjs
+      - name: Audio unlock after first user gesture and mute toggle
+        timeout-minutes: 8
+        run: timeout 420s node tools/verify-audio-unlock-browser.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: td2-beta-ci-browser-qa
+          path: /tmp/td2-beta-cold-start
+          if-no-files-found: ignore

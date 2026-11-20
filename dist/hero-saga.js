@@ -59,12 +59,15 @@
     return activeWalkImage;
   }
   const walkRows={down:0,up:1,left:2,right:3};
-  let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing';
+  let api, currentAudio=null, voiceEnabled=true, captionTimer=0, voiceGeneration=0, currentStory=null, returnState='playing', currentVoice={id:null,priority:0};
   let selectedTab='equipment', lowHpSpoken=false, storySeen=new Set(), animationTime=0;
   let pulse=null, cast=null, echoes=[], trail=[], attackTime=0, walkTime=0;
   const getHero = () => api.getGame().hero;
   const ready = img => img && img.complete && img.naturalWidth > 0;
   const item = (h, slot) => equipment[slot].find(i=>i.id===h.equipment[slot])||{name:'Unbelegt',color:'#83cfff'};
+
+  const VOICE_CLIPS={intro:'assets/hero/voice/intro.mp3?v=voice-saga-20261119',chapter2:'assets/hero/voice/chapter2.mp3?v=voice-saga-20261119',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'assets/hero/voice/ending.mp3?v=voice-saga-20261119',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:'assets/hero/voice/lowhp.mp3?v=voice-saga-20261119'};
+  const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1};
 
   function reset(h,loadout) {
     stopVoice();
@@ -81,6 +84,7 @@
   function stopVoice() {
     voiceGeneration++;
     if(currentAudio){currentAudio.pause();currentAudio=null;}
+    currentVoice={id:null,priority:0};
     if(globalThis.speechSynthesis)globalThis.speechSynthesis.cancel();
     clearTimeout(captionTimer);
     $('subtitle').classList.add('hidden');
@@ -89,15 +93,30 @@
     $('voiceBtn').textContent=`STIMME: ${voiceEnabled?'AN':'AUS'}`;
     $('voiceBtn').setAttribute('aria-pressed',String(voiceEnabled));
   }
+  function speakTts(text) {
+    if(!globalThis.speechSynthesis||!globalThis.SpeechSynthesisUtterance)return;
+    const utterance=new SpeechSynthesisUtterance(text);utterance.lang='de-DE';utterance.volume=globalThis.TD2_AUDIO_VOLUME??1;utterance.rate=.92;utterance.pitch=.85;
+    utterance.voice=speechSynthesis.getVoices().find(v=>v.lang.startsWith('de'))||null;
+    speechSynthesis.speak(utterance);
+  }
   function say(id, inStory=false) {
     if(!lines[id])return;
+    if(!inStory&&currentVoice.id&&currentVoice.priority>(VOICE_PRIORITY[id]||0))return;
     stopVoice();
     if(!inStory){$('subtitleText').textContent=lines[id];$('subtitle').classList.remove('hidden');captionTimer=setTimeout(()=>$('subtitle').classList.add('hidden'),Math.max(4500,lines[id].length*62));}
     if(!voiceEnabled||!api.soundOn())return;
-    if(!globalThis.speechSynthesis||!globalThis.SpeechSynthesisUtterance)return;
-    const utterance=new SpeechSynthesisUtterance(lines[id]);utterance.lang='de-DE';utterance.rate=.92;utterance.pitch=.85;
-    utterance.voice=speechSynthesis.getVoices().find(v=>v.lang.startsWith('de'))||null;
-    speechSynthesis.speak(utterance);
+    currentVoice={id,priority:VOICE_PRIORITY[id]||0};
+    const tts=()=>speakTts(lines[id]);
+    if(typeof Audio!=='function')return tts();
+    try{
+      const clip=new Audio(VOICE_CLIPS[id]||'');
+      let handled=false;
+      clip.volume=globalThis.TD2_AUDIO_VOLUME??1;clip.onended=()=>{if(currentAudio===clip)currentAudio=null;};
+      clip.onerror=()=>{if(!handled){handled=true;tts();}};
+      const playing=clip.play();
+      if(playing&&playing.catch)playing.catch(()=>{if(!handled){handled=true;tts();}});
+      currentAudio=clip;
+    }catch{tts();}
   }
 
   function chapter(wave) {
