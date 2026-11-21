@@ -61,7 +61,7 @@ const expectedVersions = new Map([
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','late-ground-20261113'],
   ['game.js', 'levelintro-volume-20261120'],
-  ['level-intro.js', 'levelintro1'],
+  ['level-intro.js', 'levelintro2'],
   ['level-intro.css', 'levelintro1'],
 
   ['barracks.js','beta-barracks-matte-20261116'],

@@ -14,6 +14,10 @@
       src: ['assets/intro/', 'kirchende-intro-v1', '.mp4']
     }
   };
+  // Ship-Schalter: verhindert garantierte 404-Requests, solange das MP4 noch
+  // nicht im Repo liegt. tests/level-intro-clip-availability.test.cjs erzwingt
+  // die Konsistenz mit dem tatsaechlichen Dateibestand (Flip beim Clip-Upload).
+  const CLIP_SHIPPED = false;
   let api = null, overlay = null, video = null, continueButton = null, current = null;
   let continueState = 'hidden';
   const seen = new Set();
@@ -54,6 +58,7 @@
   }
   function show(level) {
     const entry = INTRO_VIDEOS[level];
+    if (!CLIP_SHIPPED) return false;
     if (!entry || !api || !overlay || seen.has(level) || api.getState() !== 'playing') return false;
     seen.add(level);
     current = level;
