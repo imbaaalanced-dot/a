@@ -55,6 +55,11 @@ jobs:
         run: |
           node tests/audio-unlock.test.cjs
           TEST_MOBILE=1 node tests/audio-unlock.test.cjs
+          node tests/audio-volume.test.cjs
+          node tests/sfx-wiring.test.cjs
+          node tests/audio-sfx-recipes.test.cjs
+          node tests/audio-game-flow.test.cjs
+          TEST_MOBILE=1 node tests/audio-game-flow.test.cjs
       - name: Level 4 seamfix preview and V3 fallback
         run: node tests/level4-seamfix-preview.test.cjs
       - name: Kirchende terrain and renderer caching
