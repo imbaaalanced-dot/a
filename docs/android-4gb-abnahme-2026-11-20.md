@@ -32,6 +32,15 @@ vergleichbar.
 | H | Optionen: Lautstärke 100→70→40 %, Ton AN/AUS, Vollbild | Neue Volume-Stufen wirken hörbar auf SFX UND Stimme; Ton erst nach erster Geste (Unlock-Gate) |
 | I | 10 Minuten Dauersitzung inkl. App-Wechsel (Hintergrund/Return) | Speicherprofil: kein stetiger JS-Heap-Anstieg, kein Reload-Verlust |
 
+### Hinweis Szenario F: Intro-Cutscene erneut ausloesen
+
+Die Intro-Cutscene (`VERTEIDIGUNG STARTEN`) laeuft **einmal pro Geraet** (Schluessel `td2.denkmalAnsturm.cutscene.intro.v1` im LocalStorage). Fuer die Abnahme des Cutscene-Ablaufs und des SKIP-Buttons vor dem ersten Abspielen zuruecksetzen:
+
+- **Dev-Konsole** (chrome://inspect): `localStorage.removeItem('td2.denkmalAnsturm.cutscene.intro.v1')` und Seite neu laden, oder
+- **Site-Daten der Seite loeschen** und neu laden (achtung: setzt auch Ansturm-Spielstand und Praferenzen zurueck).
+
+Pruefen: Beide Clips (Hohensyburg, Loewe) laufen in Folge, SKIP beendet sofort, danach direkter Spielstart; zweiter Besuch ohne Cutscene.
+
 ## 3. Aufzeichnung je Szenario (ausfüllen)
 
 | Feld | Notiz |
