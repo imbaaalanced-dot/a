@@ -79,7 +79,7 @@
 #inventoryScreen .loot-toolbar select{width:100%;min-height:48px}
 #inventoryScreen .loot-toolbar button{grid-column:1/-1;min-height:44px;font-size:10px}
 .loot-scroll-area{max-height:clamp(300px,57dvh,690px)}
-#lootDetail{top:12px;max-height:calc(100dvh - 28px);font-size:12px;scrollbar-gutter:stable}
+#lootDetail{top:12px;max-height:calc(100dvh - 28px);font-size:12px;scrollbar-gutter:stable;padding-bottom:84px}
 .loot-detail-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
 .loot-detail-header .eyebrow{font:600 9px/1.4 system-ui;color:#b7bba9;letter-spacing:.09em;margin:0}
 #inventoryScreen .loot-detail-close{min-height:44px;margin:0;padding:8px;font-size:10px}
@@ -140,7 +140,7 @@
  .loot-scroll-area{max-height:clamp(290px,55dvh,580px);padding-right:7px}
  #inventoryScreen .loot-scroll-hint{font-size:11px}
  #lootDetail{display:none}
- #inventoryScreen[data-detail-open=true] #lootDetail{display:block;position:fixed;left:8px;right:8px;bottom:0;top:auto;width:auto;max-height:88dvh;min-height:0;overflow:auto;overscroll-behavior:contain;border:1px solid #b59a65;border-radius:15px 15px 0 0;z-index:11;padding:14px 12px max(16px,env(safe-area-inset-bottom));box-shadow:0 -10px 50px #000b}
+ #inventoryScreen[data-detail-open=true] #lootDetail{display:block;position:fixed;left:8px;right:8px;bottom:0;top:auto;width:auto;max-height:88dvh;min-height:0;overflow:auto;overscroll-behavior:contain;border:1px solid #b59a65;border-radius:15px 15px 0 0;z-index:11;padding:14px 12px calc(84px + max(16px,env(safe-area-inset-bottom)));box-shadow:0 -10px 50px #000b}
  #inventoryScreen .loot-detail-backdrop:not([hidden]){display:block;position:fixed;inset:0;width:100%;height:100%;max-width:none;border:0;border-radius:0;margin:0;padding:0;background:#03090db8;z-index:10;cursor:default}
  #inventoryScreen[data-detail-open=true]{overflow:hidden}
  #inventoryScreen .loot-comparison-table{font-size:11px}
