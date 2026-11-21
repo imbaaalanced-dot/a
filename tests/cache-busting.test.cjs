@@ -46,7 +46,7 @@ const expectedVersions = new Map([
   ['v2-expansion.js', 'building-clearance-20261114'],
   ['hero-saga.js', 'volume-audio-20261120'],
   ['directional-hero-assets-v5.js','v5-alpha-repair-20261116'],
-  ['combat-fx.js', 'volume-audio-20261120'],
+  ['combat-fx.js', 'procedural-sfx-20261121'],
   ['style2-impact-atlas.js', 'reference-refresh-1'],
   ['style2-impact-atlas-v4.js', 'style2-v4a1'],
   ['style2-user-towers-v4.js', 'style2-v4a1'],
@@ -60,7 +60,7 @@ const expectedVersions = new Map([
   ['goethestrasse-art.js','late-ground-20261113'],
   ['westhofen.js', 'westhofen2'],
   ['westhofen-art.js','late-ground-20261113'],
-  ['game.js', 'levelintro-volume-20261120'],
+  ['game.js', 'procedural-sfx-20261121'],
   ['level-intro.js', 'levelintro2'],
   ['level-intro.css', 'levelintro1'],
 

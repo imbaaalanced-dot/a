@@ -21,7 +21,7 @@ assert.ok(game.includes('fx.setViewZoom?.(zoom);'),
   'the draw loop must feed the current zoom into combat-fx each frame');
 assert.ok(game.includes("if(zoomMode==='wide')return portraitLayout()?.46:(mobileRender?.50:.52);"),
   'baseline zoom levels are unchanged (readability fix must not alter camera behavior)');
-assert.ok(html.includes('combat-fx.js?v=volume-audio-20261120')
-  && html.includes('game.js?v=levelintro-volume-20261120'),
+assert.ok(html.includes('combat-fx.js?v=procedural-sfx-20261121')
+  && html.includes('game.js?v=procedural-sfx-20261121'),
   'index.html must reference the new cache keys');
 console.log('Projectile readability: zoom-compensated strokes, cores and impact rings pinned');
