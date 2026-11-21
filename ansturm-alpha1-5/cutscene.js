@@ -5,8 +5,8 @@
 // Fehlt ein Clip oder blockiert der Autoplay, geht es ohne Unterbrechung weiter.
 
 export const CUTSCENE_CLIPS=[
-  {src:'../1038180366_1795018262039150.mp4'}, // Hohensyburg
-  {src:'../877558426_1795017624234177.mp4'} // Loewe
+  {src:'assets/cutscenes/hohensyburg-intro-v1.mp4'}, // Hohensyburg
+  {src:'assets/cutscenes/loewe-intro-v1.mp4'} // Loewe
 ];
 export const CUTSCENE_KEY='td2.denkmalAnsturm.cutscene.intro.v1';
 
