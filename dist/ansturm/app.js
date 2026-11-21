@@ -63,7 +63,7 @@ function buttons(){
       const info=document.createElement('div'),title=document.createElement('h3'),desc=document.createElement('p'),level=document.createElement('small'),b=document.createElement('button');
       const icon=document.createElement('canvas');icon.className='shop-icon';icon.width=64;icon.height=64;icon.setAttribute('aria-hidden','true');info.prepend(icon);title.textContent=cfg.name;desc.textContent=cfg.desc;
       info.append(title,desc,level);b.className='buy';b.type='button';
-      b.addEventListener('click',()=>{if(purchase(s,id)){checkpoint();update();}});
+      b.addEventListener('click',()=>{if(purchase(s,id)){checkpoint();update();sfx('towerUpgrade');}});
       card.append(info,b);root.append(card);cardRefs.set(id,{level,b});
     }
   }
@@ -92,13 +92,49 @@ function update(){
   buttons();
 }
 function tone(frequency=440){if(!soundOn)return;try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!audioCtx)audioCtx=new Audio();if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});const o=audioCtx.createOscillator(),g=audioCtx.createGain(),now=audioCtx.currentTime;o.type='sine';o.frequency.value=frequency;g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.001,now+.09);o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+.1);}catch{soundOn=false;}}
-function restart(){discardRun();if(s.wave>0)saveRecord(storage,s.wave);s=createGame();manualPause=false;hiddenPause=document.hidden;shownDefeat=false;lastKills=0;acc=0;prev=0;renderedTab=null;el('defeat').close();el('intro').hidden=false;resumeOffer();update();}
+// #395-Folge: benannte prozedurale Ereignis-Sounds wie im Hauptspiel (combat-fx.js).
+// Gleiche Vertraege wie tone(): kein Audio vor der ersten Geste, lazy AudioContext,
+// Resume bei suspended, Drossel pro Name, gemeinsames Voice-Cap, kein Wurf bei Mocks.
+const SFX_A={
+  waveLaunch:[{osc:1,type:'sine',f0:110,f1:55,dur:.22,vol:.14},{noise:1,f0:400,f1:120,dur:.16,vol:.12},{osc:1,type:'sine',f0:90,f1:45,at:.14,dur:.22,vol:.12}],
+  waveCleared:[{osc:1,type:'sine',f0:523,dur:.13,vol:.05},{osc:1,type:'sine',f0:659,at:.09,dur:.13,vol:.05},{osc:1,type:'sine',f0:784,at:.18,dur:.2,vol:.055}],
+  bossSpawn:[{osc:1,type:'sawtooth',f0:58,f1:44,dur:1.1,vol:.06,hit:.3},{osc:1,type:'sawtooth',f0:63.5,f1:47,at:.05,dur:1.1,vol:.05,hit:.35},{noise:1,f0:220,f1:60,dur:1,vol:.04}],
+  enemyDie:[{osc:1,type:'triangle',f0:240,f1:70,dur:.18,vol:.05,rand:1},{noise:1,f0:800,f1:200,dur:.14,vol:.04}],
+  monumentHit:[{osc:1,type:'sine',f0:70,f1:40,dur:.25,vol:.1},{noise:1,f0:350,f1:100,dur:.18,vol:.07}],
+  defeat:[{osc:1,type:'sine',f0:220,f1:110,dur:.5,vol:.06,hit:.05},{osc:1,type:'sine',f0:165,f1:82,at:.4,dur:.6,vol:.06,hit:.05},{noise:1,f0:300,f1:80,dur:.9,vol:.035,hit:.25}],
+  towerUpgrade:[{osc:1,type:'triangle',f0:262,dur:.09,vol:.06},{osc:1,type:'triangle',f0:330,at:.07,dur:.09,vol:.06},{osc:1,type:'triangle',f0:392,at:.14,dur:.12,vol:.065}],
+  uiClick:[{osc:1,type:'square',f0:520,f1:430,dur:.05,vol:.03,rand:1}],
+  uiToggle:[{osc:1,type:'square',f0:440,f1:560,dur:.07,vol:.035}]
+};
+const SFX_A_COOLDOWN={monumentHit:.09,enemyDie:.05,uiClick:.028};
+let sfxVoices=0,sfxOut=null,sfxNoiseBuffer=null,bossSeen=new WeakSet(),lastMonumentHp=0;
+const sfxLastT=new Map();
+function sfxOutReady(){if(!sfxOut){sfxOut=audioCtx.createGain();sfxOut.gain.value=.65;sfxOut.connect(audioCtx.destination);}}
+function sfxNoiseBufferReady(){if(typeof audioCtx.createBuffer!=='function'||typeof audioCtx.createBiquadFilter!=='function')return false;if(!sfxNoiseBuffer){const length=Math.floor(audioCtx.sampleRate*.5);sfxNoiseBuffer=audioCtx.createBuffer(1,length,audioCtx.sampleRate);const data=sfxNoiseBuffer.getChannelData(0);for(let i=0;i<length;i++)data[i]=Math.random()*2-1;}return true;}
+function sfxLayer(l,now){
+  if(l.osc){const o=audioCtx.createOscillator(),g=audioCtx.createGain(),detune=l.rand?.92+Math.random()*.16:1;
+    o.type=l.type||'sine';o.frequency.setValueAtTime(l.f0*detune,now+l.at);
+    if(l.f1)o.frequency.exponentialRampToValueAtTime(l.f1*detune,now+l.at+l.dur);
+    g.gain.setValueAtTime(.0001,now+l.at);g.gain.exponentialRampToValueAtTime(l.vol,now+l.at+(l.hit||.006));g.gain.exponentialRampToValueAtTime(.0001,now+l.at+l.dur);
+    o.connect(g).connect(sfxOut);sfxVoices++;o.onended=()=>{sfxVoices--;o.disconnect();g.disconnect();};o.start(now+l.at);o.stop(now+l.at+l.dur+.02);return;}
+  if(!sfxNoiseBufferReady())return;
+  const src=audioCtx.createBufferSource(),g=audioCtx.createGain(),filter=audioCtx.createBiquadFilter();
+  src.buffer=sfxNoiseBuffer;src.loop=true;filter.type=l.filter||'lowpass';
+  filter.frequency.setValueAtTime(l.f0,now+l.at);
+  if(l.f1)filter.frequency.exponentialRampToValueAtTime(l.f1,now+l.at+l.dur);
+  filter.Q.value=l.q||.8;
+  g.gain.setValueAtTime(.0001,now+l.at);g.gain.exponentialRampToValueAtTime(l.vol,now+l.at+(l.hit||.004));g.gain.exponentialRampToValueAtTime(.0001,now+l.at+l.dur);
+  src.connect(filter);filter.connect(g);g.connect(sfxOut);sfxVoices++;src.onended=()=>{sfxVoices--;src.disconnect();filter.disconnect();g.disconnect();};src.start(now+l.at);src.stop(now+l.at+l.dur+.02);
+}
+function sfx(name){if(!soundOn)return;try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;if(!audioCtx)audioCtx=new Audio();if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});if(audioCtx.state!=='running'||sfxVoices>=8)return;const r=SFX_A[name];if(!r)return;const now=audioCtx.currentTime;if(now-(sfxLastT.get(name)??-1)<(SFX_A_COOLDOWN[name] ?? .028))return;sfxLastT.set(name,now);sfxOutReady();for(const l of r)try{sfxLayer(l,now)}catch{}}catch{}}
+lastMonumentHp=s.hp+s.shield;
+function restart(){discardRun();if(s.wave>0)saveRecord(storage,s.wave);s=createGame();manualPause=false;hiddenPause=document.hidden;shownDefeat=false;lastKills=0;acc=0;prev=0;renderedTab=null;bossSeen=new WeakSet();lastMonumentHp=s.hp+s.shield;el('defeat').close();el('intro').hidden=false;resumeOffer();update();}
 const portraitShop=window.matchMedia('(max-width:650px) and (orientation:portrait)');let shopOpen=false;
 function syncShop(){const layout=document.querySelector('.layout'),toggle=el('shopToggle');layout.classList.toggle('portrait-shop-open',portraitShop.matches&&shopOpen);toggle.hidden=!portraitShop.matches;toggle.setAttribute('aria-expanded',String(portraitShop.matches&&shopOpen));toggle.textContent=shopOpen?'Schließen':'Ausbauen';}
-el('shopToggle').onclick=()=>{shopOpen=!shopOpen;syncShop();};portraitShop.addEventListener('change',()=>{shopOpen=false;syncShop();});syncShop();
+el('shopToggle').onclick=()=>{shopOpen=!shopOpen;sfx('uiClick');syncShop();};portraitShop.addEventListener('change',()=>{shopOpen=false;syncShop();});syncShop();
 // #330: Tempo wirkt nur auf den Fixschritt-Akkumulator; normal max. 2x, Entwicklermodus max. 5x.
-el('speed').onclick=()=>{speed=nextSpeed(speed,developerSpeedMode);acc=0;prev=0;update();};el('sound').onclick=()=>{soundOn=!soundOn;tone(650);update();};el('start').onclick=()=>requestNewRun(true);el('pause').onclick=()=>{manualPause=!manualPause;acc=0;prev=0;update();};el('next').onclick=()=>{if(nextWave(s))checkpoint();update();};el('reset').onclick=()=>requestNewRun(false);el('cancelRestart').onclick=()=>el('confirm').close();el('confirmRestart').onclick=()=>{el('confirm').close();restart();if(pendingStart)beginRun();};el('again').onclick=restart;el('techTab').onclick=()=>{tab='tech';el('techTab').classList.add('selected');el('upgradeTab').classList.remove('selected');update();};el('upgradeTab').onclick=()=>{tab='upgrades';el('upgradeTab').classList.add('selected');el('techTab').classList.remove('selected');update();};document.addEventListener('visibilitychange',()=>{hiddenPause=document.hidden;if(hiddenPause)checkpoint();prev=0;acc=0;update();});
-function frame(t){const oldWave=s.wave,oldStatus=s.status;const dt=prev?Math.min((t-prev)/1000,.1):0;prev=t;if(!manualPause&&!hiddenPause&&!el('confirm').open&&!el('leaveConfirm').open&&!el('tutorial').open&&s.status!=='ready'&&s.status!=='lost'){acc=Math.min(.30,acc+dt*speed);let count=0;while(acc>=1/30&&count++<10){step(s,1/30);acc-=1/30;}}if(s.kills>lastKills){tone(580);lastKills=s.kills;}if(s.status==='lost'&&!shownDefeat){shownDefeat=true;discardRun();saveRecord(storage,s.wave);el('result').textContent=`Welle ${s.wave} · ${s.kills} besiegte Gegner`;el('defeat').showModal();}if(oldWave!==s.wave||oldStatus!==s.status)checkpoint();else if(!manualPause&&!hiddenPause&&performance.now()-lastSaveTime>=5000)checkpoint();if(s.status==='intermission' && s.wave > readRecord(storage))saveRecord(storage,s.wave);const r=canvas.getBoundingClientRect();renderArena(ctx,s,{width:r.width,height:r.height,pixelRatio:window.devicePixelRatio||1});if(Math.floor(t/180)!==Math.floor((t-dt*1000)/180))update();requestAnimationFrame(frame);}resumeOffer();update();requestAnimationFrame(frame);
+el('speed').onclick=()=>{speed=nextSpeed(speed,developerSpeedMode);acc=0;prev=0;sfx('uiClick');update();};el('sound').onclick=()=>{soundOn=!soundOn;sfx('uiToggle');update();};el('start').onclick=()=>requestNewRun(true);el('pause').onclick=()=>{manualPause=!manualPause;acc=0;prev=0;sfx('uiClick');update();};el('next').onclick=()=>{if(nextWave(s))checkpoint();update();};el('reset').onclick=()=>requestNewRun(false);el('cancelRestart').onclick=()=>el('confirm').close();el('confirmRestart').onclick=()=>{el('confirm').close();restart();if(pendingStart)beginRun();};el('again').onclick=restart;el('techTab').onclick=()=>{tab='tech';el('techTab').classList.add('selected');el('upgradeTab').classList.remove('selected');sfx('uiClick');update();};el('upgradeTab').onclick=()=>{tab='upgrades';el('upgradeTab').classList.add('selected');el('techTab').classList.remove('selected');sfx('uiClick');update();};document.addEventListener('visibilitychange',()=>{hiddenPause=document.hidden;if(hiddenPause)checkpoint();prev=0;acc=0;update();});
+function frame(t){const oldWave=s.wave,oldStatus=s.status;const dt=prev?Math.min((t-prev)/1000,.1):0;prev=t;if(!manualPause&&!hiddenPause&&!el('confirm').open&&!el('leaveConfirm').open&&!el('tutorial').open&&s.status!=='ready'&&s.status!=='lost'){acc=Math.min(.30,acc+dt*speed);let count=0;while(acc>=1/30&&count++<10){step(s,1/30);acc-=1/30;}}if(s.kills>lastKills){sfx('enemyDie');lastKills=s.kills;}if(s.status==='lost'&&!shownDefeat){shownDefeat=true;sfx('defeat');discardRun();saveRecord(storage,s.wave);el('result').textContent=`Welle ${s.wave} · ${s.kills} besiegte Gegner`;el('defeat').showModal();}if(s.wave>oldWave&&s.status==='running')sfx('waveLaunch');else if(s.status==='intermission'&&oldStatus==='running')sfx('waveCleared');const bossNow=s.enemies.find(e=>e.alive&&e.type==='boss');if(bossNow&&!bossSeen.has(bossNow)){bossSeen.add(bossNow);sfx('bossSpawn');}const hpNow=s.hp+s.shield;if(hpNow<lastMonumentHp&&s.status==='running')sfx('monumentHit');lastMonumentHp=hpNow;if(oldWave!==s.wave||oldStatus!==s.status)checkpoint();else if(!manualPause&&!hiddenPause&&performance.now()-lastSaveTime>=5000)checkpoint();if(s.status==='intermission' && s.wave > readRecord(storage))saveRecord(storage,s.wave);const r=canvas.getBoundingClientRect();renderArena(ctx,s,{width:r.width,height:r.height,pixelRatio:window.devicePixelRatio||1});if(Math.floor(t/180)!==Math.floor((t-dt*1000)/180))update();requestAnimationFrame(frame);}resumeOffer();update();requestAnimationFrame(frame);
 
 function leaveGame(){checkpoint();if(s.wave>0)saveRecord(storage,s.wave);location.assign(new URL('../index.html',location.href));}
 el('leave').onclick=()=>{if(s.status==='ready'||s.status==='lost')leaveGame();else el('leaveConfirm').showModal();};
@@ -110,6 +146,7 @@ el('resume').onclick=()=>{
   if(!loaded.ok){savedRun=loaded;resumeOffer();return;}
   s=loaded.state;manualPause=true;hiddenPause=document.hidden;prev=0;acc=0;
   lastKills=s.kills;shownDefeat=false;lastSaveTime=performance.now();
+  bossSeen=new WeakSet();lastMonumentHp=s.hp+s.shield;
   el('intro').hidden=true;notice();update();el('pause').focus();
 };
 window.addEventListener('pagehide',()=>{hiddenPause=true;checkpoint();prev=0;acc=0;});
