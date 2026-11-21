@@ -1,7 +1,7 @@
 {
   "actors": {
     "enemy-00": {
-      "file": "assets/directional-v410/enemy-00.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-00.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         66.10640311218589,
@@ -33,7 +33,7 @@
       }
     },
     "enemy-01": {
-      "file": "assets/directional-v410/enemy-01.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-01.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.44041450777202,
@@ -65,7 +65,7 @@
       }
     },
     "enemy-02": {
-      "file": "assets/directional-v410/enemy-02.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-02.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.10989010989011,
@@ -97,7 +97,7 @@
       }
     },
     "enemy-03": {
-      "file": "assets/directional-v410/enemy-03.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-03.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         70.08067226890756,
@@ -129,7 +129,7 @@
       }
     },
     "enemy-04": {
-      "file": "assets/directional-v410/enemy-04.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-04.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.99173553719008,
@@ -161,7 +161,7 @@
       }
     },
     "enemy-05": {
-      "file": "assets/directional-v410/enemy-05.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-05.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.04379562043796,
@@ -193,7 +193,7 @@
       }
     },
     "enemy-06": {
-      "file": "assets/directional-v410/enemy-06.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-06.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         68.16988416988417,
@@ -225,7 +225,7 @@
       }
     },
     "enemy-07": {
-      "file": "assets/directional-v410/enemy-07.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-07.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.865546218487395,
@@ -257,7 +257,7 @@
       }
     },
     "enemy-08": {
-      "file": "assets/directional-v410/enemy-08.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-08.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         64.23478260869565,
@@ -289,7 +289,7 @@
       }
     },
     "enemy-09": {
-      "file": "assets/directional-v410/enemy-09.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-09.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.22222222222222,
@@ -321,7 +321,7 @@
       }
     },
     "enemy-10": {
-      "file": "assets/directional-v410/enemy-10.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-10.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         70.37638376383764,
@@ -353,7 +353,7 @@
       }
     },
     "enemy-11": {
-      "file": "assets/directional-v410/enemy-11.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-11.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.65560165975104,
@@ -385,7 +385,7 @@
       }
     },
     "enemy-12": {
-      "file": "assets/directional-v410/enemy-12.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-12.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         55.6215953307393,
@@ -417,7 +417,7 @@
       }
     },
     "enemy-13": {
-      "file": "assets/directional-v410/enemy-13.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-13.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.352941176470594,
@@ -449,7 +449,7 @@
       }
     },
     "enemy-14": {
-      "file": "assets/directional-v410/enemy-14.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-14.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         68.03937007874016,
@@ -481,7 +481,7 @@
       }
     },
     "enemy-15": {
-      "file": "assets/directional-v410/enemy-15.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-15.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         64.41432225063939,
@@ -513,7 +513,7 @@
       }
     },
     "enemy-16": {
-      "file": "assets/directional-v410/enemy-16.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-16.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         65.5940959409594,
@@ -545,7 +545,7 @@
       }
     },
     "enemy-17": {
-      "file": "assets/directional-v410/enemy-17.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-17.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.747663551401864,
@@ -577,7 +577,7 @@
       }
     },
     "enemy-18": {
-      "file": "assets/directional-v410/enemy-18.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-18.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.73282442748092,
@@ -609,7 +609,7 @@
       }
     },
     "enemy-19": {
-      "file": "assets/directional-v410/enemy-19.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-19.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         60.53012048192771,
@@ -641,7 +641,7 @@
       }
     },
     "enemy-20": {
-      "file": "assets/directional-v410/enemy-20.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-20.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.682403433476395,
@@ -673,7 +673,7 @@
       }
     },
     "kim": {
-      "file": "assets/directional-v410/kim.webp?v=v410a1",
+      "file": "assets/directional-v410/kim.webp?v=v410a2",
       "cell": 192,
       "anchor": [
         98.6875,
@@ -705,7 +705,7 @@
       }
     },
     "marcel": {
-      "file": "assets/directional-v410/marcel.webp?v=v410a1",
+      "file": "assets/directional-v410/marcel.webp?v=v410a2",
       "cell": 192,
       "anchor": [
         97.13157894736842,
