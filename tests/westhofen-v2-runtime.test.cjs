@@ -17,5 +17,5 @@ assert.ok(!manager.includes(url),'V2 remains available as rollback but is not pr
 assert.ok(!art.includes(url),'V3 preview uses a separate URL, V2 remains unchanged');
 assert.ok(!art.includes('westhofen-memorial-style2-v1.webp'),'V1 is retained on disk but not requested by runtime');
 assert.ok(fs.existsSync(path.join(root,'assets/westhofen/westhofen-memorial-style2-v1.webp')),'V1 fallback file remains available');
-assert.match(art,/ctx\.drawImage\(memorialSprite,m\.x-225,m\.y-265,450,300\)/,'preserve world anchor');
+assert.match(art,/ctx\.drawImage\(memorialBitmap,m\.x-225,m\.y-265,450,300\)/,'preserve world anchor');
 console.log('Westhofen V2 remains intact as a safe, transparent rollback while V3 preview is tested');

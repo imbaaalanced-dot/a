@@ -4,8 +4,8 @@
    two side tablets flank the empty central tablet frame, and the two fire-bowl
    pedestals stand bare — documenting the July 2026 bronze theft. */
 (()=>{'use strict';
-let ground=null,materialRevision=-1,environmentRequested=false;
-let memorialSprite=null,memorialRequested=false;
+let ground=null,materialRevision=-1,environmentRequested=false,groundLamps=false,bakedLayout=null;
+let memorialSprite=null,memorialRequested=false,memorialBitmap=null;
 const C={x:1536,y:1536};
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
 const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6';
@@ -38,12 +38,30 @@ function environmentLamps(layout){
   return true;
  });
 }
+function paintGroundLamps(q,layout){
+ const atlas=globalThis.KirchendeArt?.image?.('environment');
+ if(!atlas?.naturalWidth)return false;
+ const sw=atlas.naturalWidth/3,sh=atlas.naturalHeight/2;
+ for(const p of environmentLamps(layout)){
+  const {x,y}=p,glow=q.createRadialGradient(x,y-52,3,x,y-52,190);
+  glow.addColorStop(0,'#efbd7050');glow.addColorStop(.44,'#c18c4a20');glow.addColorStop(1,'#70591a00');
+  q.fillStyle=glow;q.fillRect(x-190,y-242,380,380);
+  q.drawImage(atlas,sw*2,sh,sw,sh,x-64,y-132,128,128);
+ }
+ return true;
+}
 function requestSharedEnvironment(){
  if(environmentRequested)return;
  const load=globalThis.KirchendeArt?.loadEnvironment;
  if(typeof load!=='function')return;
  environmentRequested=true;
- Promise.resolve(load.call(globalThis.KirchendeArt)).then(ok=>{if(ok)ground=null;else environmentRequested=false;}).catch(()=>{environmentRequested=false;});
+ Promise.resolve(load.call(globalThis.KirchendeArt)).then(ok=>{
+  if(!ok){environmentRequested=false;return;}
+  // When the shared atlas settles after the level entry bake, paint the
+  // lanterns incrementally onto the cached ground instead of discarding and
+  // re-baking the full 1536px scenery canvas (one warm-cache device save).
+  if(ground&&!groundLamps)groundLamps=paintGroundLamps(ground.getContext('2d'),bakedLayout);
+ }).catch(()=>{environmentRequested=false;});
 }
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
@@ -101,16 +119,7 @@ function createGround(layout){
  // Trees: northern green corridor and the street side, off authored lanes/pads.
  for(let i=0;i<30;i++){const north=i<20,x=north?C.x-1000+rnd()*2000:C.x-1050+rnd()*730,y=north?C.y-980+rnd()*520:C.y+430+rnd()*180,r=70+rnd()*80;const p={x,y};if(layout.paths.some(l=>globalThis.DenkmalLevels.pathDistance(p,l)<r+75)||layout.slots.some(s=>Math.hypot(x-s.x,y-s.y)<r+60))continue;
   q.fillStyle='#12231c55';q.beginPath();q.ellipse(x+25,y+55,r,r*.5,0,0,7);q.fill();globalThis.DenkmalForest?.drawCrown?.(q,x,y,r,i);}
- const atlas=globalThis.KirchendeArt?.image?.('environment');
- if(atlas?.naturalWidth){
-  const sw=atlas.naturalWidth/3,sh=atlas.naturalHeight/2;
-  for(const p of environmentLamps(layout)){
-   const {x,y}=p,glow=q.createRadialGradient(x,y-52,3,x,y-52,190);
-   glow.addColorStop(0,'#efbd7050');glow.addColorStop(.44,'#c18c4a20');glow.addColorStop(1,'#70591a00');
-   q.fillStyle=glow;q.fillRect(x-190,y-242,380,380);
-   q.drawImage(atlas,sw*2,sh,sw,sh,x-64,y-132,128,128);
-  }
- }
+ bakedLayout=layout;groundLamps=paintGroundLamps(q,layout);
  return canvas;
 }
 function drawGround(ctx,layout){requestSharedEnvironment();
@@ -119,9 +128,18 @@ function drawGround(ctx,layout){requestSharedEnvironment();
  ctx.drawImage(ground,0,0,3072,3072);}
 function drawMonument(ctx,m){
  if(readyMemorial()){
+  // Bake the SVG once into an offscreen bitmap (2x the 450x300 world footprint).
+  // Per-frame drawImage of the raw 430-path SVG makes Android WebView re-raster
+  // the preview art every frame; a baked blit matches the WebP pipeline of the
+  // other levels' monuments. Objective anchor and collision stay identical.
+  if(!memorialBitmap){
+   const c=document.createElement('canvas');c.width=900;c.height=600;
+   const q=c.getContext('2d');q.imageSmoothingQuality='high';
+   q.drawImage(memorialSprite,0,0,900,600);memorialBitmap=c;
+  }
   // Identical objective anchor and collision footprint; bitmap is visual only.
   ctx.save();try{
-   ctx.drawImage(memorialSprite,m.x-225,m.y-265,450,300);
+   ctx.drawImage(memorialBitmap,m.x-225,m.y-265,450,300);
    const damage=Math.max(0,1-(m.hp??m.maxHp??1)/(m.maxHp||1));
    if(damage>.25){ctx.strokeStyle='#332d2666';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(m.x-43,m.y-54);ctx.lineTo(m.x-35,m.y-36);ctx.lineTo(m.x-41,m.y-19);ctx.stroke();}
   }finally{ctx.restore();}
@@ -167,4 +185,4 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;memorialSprite=null;memorialRequested=false;environmentRequested=false;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;groundLamps=false;bakedLayout=null;memorialSprite=null;memorialBitmap=null;memorialRequested=false;environmentRequested=false;}};})();

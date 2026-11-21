@@ -25,7 +25,7 @@ assert.ok(loader.includes(url),'level 7 must preload the exact V3 URL');
 assert.ok(renderer.includes(url),'renderer must reuse that exact URL');
 assert.ok(!renderer.includes('westhofen-memorial-style2-v2.svg'),'V2 not loaded by V3 preview draw path');
 assert.ok(!loader.includes('westhofen-memorial-style2-v2.svg'),'V2 must not be decoded a second time');
-assert.match(renderer,/ctx\.drawImage\(memorialSprite,m\.x-225,m\.y-265,450,300\)/,'retain world pivot and size');
+assert.match(renderer,/ctx\.drawImage\(memorialBitmap,m\.x-225,m\.y-265,450,300\)/,'retain world pivot and size');
 for(const rollback of ['westhofen-memorial-style2-v2.svg','westhofen-memorial-style2-v1.webp']){
   assert.ok(fs.existsSync(path.join(root,'assets/westhofen',rollback)),rollback+' must remain for rollback');
 }
