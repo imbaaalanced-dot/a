@@ -66,3 +66,17 @@ Die v3-Dateien (`memorial-yard-v3.webp`, `memorial-yard-mobile-v3.webp`,
 Ein separater Cleanup-Patch kann nach Abnahme v3 aus `menu.css` und den Tests
 entfernen. `level-…-webp`-Galeriedateien heißen bewusst gleich wie zuvor
 (In-Place-Ersetzung, Cache über `?v=…` gebrochen).
+
+## Update 2026-11-21 (Abend): Westhofen-Karte v2, näher am Original
+
+Die Kampagnen-Karte VII (Westhofen) wurde neu gerendert und ersetzt die erste
+v4-Fassung, die erfundene Details enthielt (Kreuzschwert-Relief auf der Front,
+fehlender Querbalken, steinern statt bronzenener Block). Basis der neuen Karte
+ist die freigegebene Westhofen-Level-Vorschau vom 05.11.2026 (Drive
+„Denk-mal Branding“): geflügelter Wikingerhelm als Skulptur auf dem zentralen
+Bronzeblock (mit Patina/Goldglanz, glatte LEERE Front ohne Reliefs), zwei
+Efeu-Pfeiler mit sichtbarem Querbalken darüber, Herbstabend-Stilanker. Erzeugt
+als Landschaftsgenerierung mit Struktur-Beschreibung aus der offiziellen
+Referenz + 8/9-Punkte-Vision-Check + gezieltem Bronze-Fix per Bildbearbeitung;
+640×360 WebP (34 KB). Galerie-Cache-Key auf `?v=menu-v4a2` gebumpt
+(`level-gallery.js` + Ladevariable in `index.html`, Map im Cache-Busting-Test).

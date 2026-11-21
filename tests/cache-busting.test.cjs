@@ -31,7 +31,7 @@ const expectedVersions = new Map([
   ['combat-hud-layout-v3.css','td2hud-layout-20261113a'],
   ['level4-options-menu-compact.css','level4menu-20261114a'],
   ['portrait-avatars-v5.js', 'portrait-v6-clean-20261117'],
-  ['level-gallery.js', 'menu-v4a1'],
+  ['level-gallery.js', 'menu-v4a2'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
   ['asset-manager.js', 'syburg-clean-runtime1'],
