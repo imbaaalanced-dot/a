@@ -1,0 +1,51 @@
+name: Decode Westhofen v2 card asset
+
+# Einmaliger Hilfs-Workflow fuer die Westhofen-Karten-Neufassung (naeher am
+# Original): dekodiert westhofen-payload/ nach dist, verifiziert MD5 und
+# committet die echte WebP; Payload und Workflow loeschen sich danach selbst.
+
+on:
+  push:
+    paths:
+      - 'westhofen-payload/**'
+      - '.github/workflows/decode-westhofen-v2-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decode, verify and install Westhofen v2 card
+        id: decode
+        run: |
+          set -euo pipefail
+          if [ ! -f westhofen-payload/manifest.md5 ]; then
+            echo "no payload present, nothing to decode"
+            exit 0
+          fi
+          n=0
+          while IFS='|' read -r b64file dest md5; do
+            [ -n "$b64file" ] || continue
+            base64 -d "westhofen-payload/$b64file" > "$dest"
+            echo "$md5  $dest" | md5sum -c -
+            n=$((n+1))
+          done < westhofen-payload/manifest.md5
+          echo "decoded and verified $n assets"
+          git rm -r -q westhofen-payload .github/workflows/decode-westhofen-v2-assets.yml
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit decoded asset and remove helper payload
+        if: ${{ steps.decode.outputs.installed == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Westhofen v2: decode card payload into repo (automated, md5-verified)"
+          git push
