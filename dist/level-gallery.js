@@ -55,7 +55,7 @@
         const image=data.locked?null:data.image;
         if(visual.dataset.image!==String(image)){
           visual.replaceChildren();
-          if(image){const img=doc.createElement('img');img.src=prefix+image;img.alt='';img.loading='lazy';visual.append(img);}
+          if(image){const img=doc.createElement('img');img.src=prefix+image+'?v=menu-v4a1';img.alt='';img.loading='lazy';visual.append(img);}
           else{const icon=doc.createElement('span');icon.className='level-gallery-symbol';icon.textContent=data.locked?'🔒':'✦';visual.append(icon);}
           visual.dataset.image=String(image);
         }
