@@ -1,0 +1,143 @@
+/* TD2 menu v4 "Herbstwacht" – unified autumn-eve dark-fantasy skin.
+   Last stylesheet layer after menu.css/level-gallery.css: optics only,
+   no behaviour, no DOM. Overrides the legacy v3 menu image references so
+   only v4 art is fetched. Focus rings stay turquoise (#9ce9ee) on purpose. */
+#startScreen{background:#0b141a}
+
+/* 1) Autumn scenery: swap every remaining v3 menu image for the v4 set. */
+#startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1")}
+#startScreen .menu-hero-figure{background-image:linear-gradient(90deg,#0a1018ee,#0c141a99 55%,#131b21aa),url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1")}
+#startScreen[data-menu-panel="home"] .menu-hero-figure{background-image:linear-gradient(0deg,#0a121acc,#0a121010 65%),url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1")}
+@media(max-width:700px){
+  #startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
+  #startScreen .menu-hero-figure{background-image:linear-gradient(90deg,#0a1018f5,#0c141a88),url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
+  #startScreen[data-menu-panel="home"] .menu-hero-figure{background-image:linear-gradient(0deg,#0a121acc,#0a121010 65%),url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
+}
+
+/* 2) Evening atmosphere: warm gold side-light from the left, autumn fog
+      pooling at the bottom, cold slate at the top of the sky. */
+#startScreen .menu-scene:after{
+  background:
+    radial-gradient(90% 65% at 8% 62%,#c98d3f26,transparent 60%),
+    radial-gradient(120% 85% at 50% 34%,transparent 40%,#05090c99 100%),
+    linear-gradient(180deg,#0a141c4d,transparent 32%,#060a0eb3 96%);
+}
+#startScreen .menu-kicker{color:#d9a45b}
+#startScreen .menu-heading .menu-kicker{color:#d9a45b}
+#startScreen .menu-crest{filter:drop-shadow(0 4px 14px #0009) drop-shadow(0 0 18px #d9a45b2e)}
+#startScreen h1 em{color:#f0ce8f}
+#startScreen .menu-intro{color:#c8c2b4}
+
+/* 3) Hero plate: bronze framing around the memorial yard scenery. */
+#startScreen .menu-hero-figure{
+  border-color:#8a6a3b;
+  box-shadow:0 16px 36px #000b,inset 0 0 0 1px #00000073,inset 0 1px 0 #f3d79c26;
+}
+#startScreen[data-menu-panel="home"] .menu-hero-figure::after{
+  background:
+    radial-gradient(circle at 78% 42%,#58c8b01f,transparent 32%),
+    linear-gradient(0deg,#0b121ae0,transparent 52%);
+}
+#startScreen #menuHeroCaption{color:#f0d7a5;text-shadow:0 2px 8px #000,0 1px 2px #000,0 0 22px #d9a45b2e}
+
+/* 4) Command plaques: dark slate with bronze veining, gold on hover,
+      arrow slides instead of jumping. */
+#startScreen .menu-command{
+  border-color:#8a6a3b;
+  background:linear-gradient(180deg,#131b21ef,#0d1418ee 68%,#0b1115ef);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+#startScreen .menu-command::before{opacity:.5}
+#startScreen .menu-command-mark{
+  border-color:#e2b96e88;background:#1d150fae;color:#f3d499;
+  box-shadow:0 3px 16px #0007,inset 0 1px #f7da9a26;
+}
+#startScreen .menu-command strong{color:#f6e9cc;text-shadow:0 2px 7px #000b,0 0 20px #d9a45b1c}
+#startScreen .menu-command small{color:#c3bda9}
+#startScreen .menu-command-arrow{transition:transform .18s ease,color .18s ease}
+#startScreen .menu-command-primary{border-color:#d9a45b;box-shadow:inset 3px 0 #f0ce8f,0 12px 26px #0009}
+#startScreen .menu-command-assault{border-color:#6aa8a0}
+#startScreen .menu-command-assault:hover{border-color:#9ce9ee;box-shadow:0 15px 30px #000a,0 0 20px #58c8b035}
+#startScreen .menu-command:hover{
+  transform:translateY(-2px);
+  border-color:#f0ce8f;
+  box-shadow:0 15px 30px #000a,0 0 22px #d9a45b2c;
+}
+#startScreen .menu-command:hover .menu-command-arrow{transform:translateX(3px);color:#f0ce8f}
+
+/* 5) Campaign / endless sections: double-rule bronze frame with a roman
+      numeral seal; the endless link becomes a small gold pill. */
+#startScreen .menu-section{
+  border-color:#8a6a3b;
+  box-shadow:inset 0 0 0 1px #f0ce8f14,0 14px 36px #000a;
+  background:linear-gradient(180deg,#10181df2,#0b1317f5);
+}
+#startScreen .menu-section-heading .menu-kicker{color:#d9a45b}
+#startScreen .menu-section-mark{
+  border-color:#e2b96e77;background:#1d150fb0;color:#f3d499;
+  box-shadow:inset 0 1px #f7da9a22;
+}
+#startScreen .campaign-endless-link{
+  border:1px solid #8a6a3b;
+  background:linear-gradient(180deg,#1c1510e6,#120e0af2);
+  color:#f0ce8f;
+}
+#startScreen .campaign-endless-link:hover{border-color:#f0ce8f;box-shadow:0 0 16px #d9a45b2e}
+
+/* 6) Legacy map cards inside campaign/endless lists stay readable. */
+#startScreen .map-card{border-color:#8a6a3b;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+#startScreen .map-card:not(:disabled):hover{border-color:#f0ce8f;box-shadow:0 0 18px #d9a45b26}
+#startScreen .map-card .map-number{color:#f0ce8f;opacity:.9}
+
+/* 7) Level gallery: warmer plate, bronze pager, gentler card lift. */
+#campaignMenu{background:linear-gradient(180deg,#0e171cf0,#0b141ae0 55%,#0b141af7),url("assets/menu/level-gallery/menu-background.webp?v=menu-v4a1") center/cover}
+#campaignMenu .level-gallery-visual{border-color:#ab864e99;background:#141c22}
+#campaignMenu .gallery-locked .level-gallery-visual{background:radial-gradient(ellipse at center,#3f464b,#1e262c 70%,#10181d)}
+#campaignMenu .level-gallery-title{
+  border-color:#e2b96e;
+  background:linear-gradient(115deg,#5b3d1e,#966d2f,#4f371c);
+  color:#ffe6ad;
+  text-shadow:0 2px 3px #17100b;
+}
+#campaignMenu .gallery-locked .level-gallery-title{color:#c9ccc9;background:linear-gradient(110deg,#2f373c,#4a5154,#2c3438);border-color:#6f787b}
+#campaignMenu .level-gallery-pages button{
+  border-color:#8a6a3b;
+  background:linear-gradient(180deg,#1d1611,#13100c);
+  color:#f0ce8f;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+#campaignMenu .level-gallery-pages button:not(:disabled):hover{
+  border-color:#f0ce8f;transform:translateY(-2px);box-shadow:0 0 14px #d9a45b2c;
+}
+#campaignMenu .level-gallery .map-card{transition:transform .18s ease,filter .18s ease}
+#campaignMenu .level-gallery .map-card:is(:hover,:focus-visible):not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
+
+/* 8) Masthead, footer and channel card in autumn gold. */
+#startScreen .menu-wordmark{color:#f0ce8f;text-shadow:0 2px 10px #000,0 0 18px #d9a45b26}
+#startScreen .menu-wordmark b{color:#f6e2b4}
+#startScreen .menu-version{color:#e6cf9f}
+#startScreen .menu-masthead .menu-version-top{border-color:#8a6a3b8c;background:#120e09d9;color:#f0ce8f}
+#startScreen .menu-footer{color:#b8ae96;letter-spacing:.07em}
+#startScreen .channel-card{border-color:#8a6a3b6e}
+#startScreen .menu-help{color:#c3bda9}
+
+/* 9) Motion safety: hover lifts and arrow slides collapse to plain color
+      changes when the player prefers reduced motion. */
+@media(prefers-reduced-motion:reduce){
+  #startScreen .menu-command,
+  #startScreen .menu-command-arrow,
+  #startScreen .map-card,
+  #campaignMenu .level-gallery .map-card,
+  #campaignMenu .level-gallery-pages button{transition:none}
+  #startScreen .menu-command:hover,
+  #campaignMenu .level-gallery .map-card:is(:hover,:focus-visible):not(:disabled),
+  #campaignMenu .level-gallery-pages button:not(:disabled):hover{transform:none}
+  #startScreen .menu-command:hover .menu-command-arrow{transform:none}
+}
+
+/* 10) Mobile: keep the compact plaque look, warm border accents. */
+@media(max-width:700px){
+  #startScreen .menu-command{border-color:#8a6a3b}
+  #startScreen .menu-command-primary{border-color:#d9a45b}
+  #startScreen .menu-hero-figure{border-color:#8a6a3b}
+}
