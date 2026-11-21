@@ -15,7 +15,7 @@ test('enemies animate a procedural walk cycle from their single-frame sprites',(
   assert.match(src,/sprite\(ctx,e\.spriteKey\|\|`enemy_\$\{e\.type\}`,0,0,r\*2\.7,r\*3\.5\)/,'existing transparent single-frame sprites stay the art source');
 });
 test('walk animation ships with a fresh cache key in both trees',()=>{
-  assert.match(app,/render\.js\?v=attack2b2/);
+  assert.match(app,/render\.js\?v=atmoglow1/);
   const deployed=readFileSync(new URL('../../dist/ansturm/render.js',import.meta.url),'utf8');
   assert.equal(src,deployed,'source and dist renderers stay byte-identical');
 });
