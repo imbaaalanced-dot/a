@@ -12,3 +12,5 @@ Format manifest.md5 (eine Zeile je Datei): `<b64datei>|<zielpfad>|<md5summe>`
 
 Nach dem Dekodieren löscht sich sowohl dieser Ordner als auch der Workflow selbst.
 Dies ist ein einmaliger Mechanismus; dauerhafte Automation wird nicht hinterlassen.
+
+Trigger-Refresh: 2026-11-21T19:00Z
