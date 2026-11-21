@@ -1,5 +1,5 @@
 import {TUTORIAL_STEPS,tutorialSeen,rememberTutorial} from './tutorial.js?v=copy-20261110a';
-import {TECH,UPGRADES,nextSpeed} from './config.js?v=ansturm-devspeed-20261117';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=attack2b2';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v6-style2full1';
+import {TECH,UPGRADES,nextSpeed} from './config.js?v=ansturm-devspeed-20261117';import {createGame,getStats,quotePurchase,purchase,startGame,nextWave,step,bossCue} from './model.js?v=v410a1sim1';import {renderArena} from './render.js?v=attack2b2';import {readRecord,saveRecord,saveRun,readRun,clearRun} from './storage.js?v=v410a1sim1';import {sprite} from './sprites.js?v=v6-style2full1';import {playIntroCutscene} from './cutscene.js?v=v410a1cut2';
 const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d');let s=createGame(),tab='tech',manualPause=false,hiddenPause=document.hidden,prev=0,acc=0,shownDefeat=false,speed=1,soundOn=false,audioCtx=null,lastKills=0;const storage=(()=>{try{return localStorage}catch{return null}})();
 const developerSpeedMode=(()=>{try{return String(location.search||'').includes('dev=')||storage.getItem('ansturm-developer-speed')==='enabled'}catch{return false}})();
 let savedRun=readRun(storage), pendingStart=false, lastSaveTime=0;
@@ -50,7 +50,7 @@ function checkpoint(){
   notice(ok?'':storageWarning);
 }
 function discardRun(){if(!clearRun(storage))notice(storageWarning);savedRun={ok:false,reason:'missing'};}
-function beginRun(){el('intro').hidden=true;startGame(s);prev=0;acc=0;checkpoint();update();if(!tutorialSeen(storage))openTutorial(el('pause'));}
+async function beginRun(){await playIntroCutscene(storage);el('intro').hidden=true;startGame(s);prev=0;acc=0;checkpoint();update();if(!tutorialSeen(storage))openTutorial(el('pause'));}
 function requestNewRun(startImmediately){pendingStart=startImmediately;if(s.status!=='ready'||savedRun.reason!=='missing')el('confirm').showModal();else beginRun();}
 // Kaufkarten bleiben beim HUD-Refresh im DOM: laufende Touch-Gesten werden nicht unterbrochen.
 let renderedTab=null;const cardRefs=new Map();
