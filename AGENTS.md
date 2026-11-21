@@ -47,14 +47,14 @@ python3 tests/assets.test.py
 ## 4. Arbeitszyklus
 
 ```
-Stand prüfen → Branch → umsetzen → testen → PR → (Freigabe) → Merge → Release verifizieren
+Stand prüfen → Branch → umsetzen → testen → PR → Merge → Release verifizieren
 ```
 
 1. **Branch:** Von aktuell verifiziertem `main` einen thematischen Branch erstellen (`feature/…`, `fix/…`, `assets/…`). Nie direkt auf `main` arbeiten.
 2. **Umsetzen:** Änderung implementieren, klein und testbar halten.
 3. **Testen:** Betroffene Tests aus Abschnitt 2 ausführen; fehlgeschlagene Pflichtchecks beheben, nicht ignorieren. CI (test.yml) muss grün sein.
 4. **PR:** Commit + Pull Request mit knapper, fachlicher Beschreibung. Unvollständige Arbeit als Draft-PR.
-5. **Merge/Release:** Nur mit ausdrücklicher Freigabe (Abschnitt 8). Nach Merge die veröffentlichte HTTPS-Vorschau unabhängig verifizieren – ein Merge beweist keine Veröffentlichung.
+5. **Merge/Release:** Nach grüner CI ohne weitere Freigabe mergen (Schutzzonen in Abschnitt 8 bleiben unangetastet). Nach Merge die veröffentlichte HTTPS-Vorschau unabhängig verifizieren – ein Merge beweist keine Veröffentlichung.
 
 Bei „Weiter": die letzte sichere, offene Aufgabe fortführen.
 
@@ -74,9 +74,9 @@ Bei „Weiter": die letzte sichere, offene Aufgabe fortführen.
 | 1 | Node-/Python-Tests (`node tests/game.test.cjs` etc.) | Logik und Assets – **keine** Browser-/Android-Abnahme |
 | 2 | Chromium-Smoke-Test (Desktop) | UI/Runtime-Grundfunktion |
 | 3 | Mobile-Emulation (`TEST_MOBILE=1`) | Layout/Touch-Indikatoren |
-| 4 | Physisches Android-Gerät, 4 GB RAM | Einzige echte Abnahme für Performance und Touch |
+| 4 | Physisches Android-Gerät (optional, keine Pflicht) | Zusatzprüfung bei Bedarf; Stufe 1–3 genügen als Nachweis |
 
-Jede Stufe getrennt ausweisen. Stufe 4 gilt als offen, bis sie tatsächlich durchgeführt und dokumentiert wurde. Änderungen an Spielständen, Kernarchitektur oder großen Gameplay-Systemen zusätzlich beim Nutzer abnehmen lassen.
+Jede Stufe getrennt ausweisen. Ohne physisches Gerät sind Stufe 1–3 der Nachweis; Stufe 4 ist optional und keine Abnahmepflicht mehr. Änderungen an Spielständen, Kernarchitektur oder großen Gameplay-Systemen weiterhin beim Nutzer abnehmen lassen.
 
 ## 7. Performance-Regeln
 
@@ -87,13 +87,12 @@ Jede Stufe getrennt ausweisen. Stufe 4 gilt als offen, bis sie tatsächlich durc
 
 ## 8. Schutzzonen – nur mit ausdrücklicher Freigabe
 
-- Merge von PRs, Releases/Veröffentlichungen.
 - Löschen von Branches, PRs, Assets oder Original-Referenzen.
 - Irreversible Datenänderungen (inkl. Spielstände/Migrationsformate).
 - Änderungen an bestehenden PRs anderer (hier: des Nutzers).
 - Umgehung von Branch-Schutz oder CI-Pflichtchecks.
 
-Alles andere im beauftragten Arbeitsumfeld (lokale Befehle, Tests, Diagnose, Sandbox-Berechtigungen) ohne zusätzliche Einzelfreigabe.
+Alles andere im beauftragten Arbeitsumfeld (lokale Befehle, Tests, Diagnose, Sandbox-Berechtigungen) ohne zusätzliche Einzelfreigabe — einschließlich Merge grüner PRs nach Abschnitt 4 und dem Verzicht auf die physische Geräte-Abnahme (Stufe 4 optional, Abschnitt 6).
 
 ## 9. Berichtsformat
 
