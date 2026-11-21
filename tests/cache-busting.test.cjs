@@ -59,7 +59,7 @@ const expectedVersions = new Map([
   ['goethestrasse.js', 'goethe2'],
   ['goethestrasse-art.js','late-ground-20261113'],
   ['westhofen.js', 'westhofen2'],
-  ['westhofen-art.js','late-ground-20261113'],
+  ['westhofen-art.js','westhofen-membake1'],
   ['game.js', 'levelintro-volume-20261120'],
   ['level-intro.js', 'levelintro2'],
   ['level-intro.css', 'levelintro1'],
