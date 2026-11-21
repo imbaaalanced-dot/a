@@ -13,7 +13,7 @@ assert.ok(fx.includes('master.gain.value = mutedState ? 0 : .65*volumeScale;'),
   'mute and volume compose: mute wins, otherwise gain scales with the level');
 assert.ok(fx.includes('master.gain.value = .65*volumeScale;'),
   'a late audio unlock must respect the chosen level');
-assert.ok(fx.includes('setViewZoom,uiScale,setVolume};'), 'setVolume is exported in the fx API');
+assert.ok(fx.includes('setViewZoom,uiScale,setVolume,sfx};'), 'setVolume and sfx are exported in the fx API');
 assert.ok(game.includes('const steps=[1,.7,.4];volume=steps[(steps.indexOf(volume)+1)%steps.length];'),
   'volume cycles 100 -> 70 -> 40 %');
 assert.ok(game.includes("volume=[1,.7,.4].includes(preferences.volume)?preferences.volume:1;"),
@@ -30,8 +30,8 @@ assert.ok(html.includes('id="menuVolumeBtn"') && html.includes('id="volumeBtn"')
   'both option surfaces expose the volume control');
 assert.ok(html.includes('LAUTSTÄRKE: 100 %'),
   'the control is labelled with its level');
-assert.ok(html.includes('game.js?v=levelintro-volume-20261120')
-  && html.includes('combat-fx.js?v=volume-audio-20261120')
+assert.ok(html.includes('game.js?v=procedural-sfx-20261121')
+  && html.includes('combat-fx.js?v=procedural-sfx-20261121')
   && html.includes('hero-saga.js?v=volume-audio-20261120'),
   'all touched modules ship fresh cache keys');
 console.log('Audio volume levels: 100/70/40 across SFX, voice and TTS pinned');
