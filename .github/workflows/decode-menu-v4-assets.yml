@@ -1,0 +1,47 @@
+name: Decode menu v4 assets
+
+# Einmaliger Hilfs-Workflow des Menü-v4-Redesigns (feature/menu-v4-herbstwacht):
+# Der GitHub-Konnektor kann keine Binärdateien übertragen (UTF-8-Kodierung).
+# Deshalb liegen die WebP-Assets base64-kodiert in menu-v4-payload/ und werden
+# hier dekodiert, per MD5 verifiziert und als echte Dateien committet.
+# Danach löscht sich dieser Workflow mitsamt dem Payload selbst.
+
+on:
+  push:
+    paths:
+      - 'menu-v4-payload/**'
+      - '.github/workflows/decode-menu-v4-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    if: ${{ hashFiles('menu-v4-payload/manifest.md5') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decode, verify and install v4 menu assets
+        run: |
+          set -euo pipefail
+          n=0
+          while IFS='|' read -r b64file dest md5; do
+            [ -n "$b64file" ] || continue
+            base64 -d "menu-v4-payload/$b64file" > "$dest"
+            echo "$md5  $dest" | md5sum -c -
+            n=$((n+1))
+          done < menu-v4-payload/manifest.md5
+          echo "decoded and verified $n assets"
+          git rm -r -q menu-v4-payload .github/workflows/decode-menu-v4-assets.yml
+
+      - name: Commit decoded assets and remove helper payload
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Menu v4: decode webp payloads into repo (automated, md5-verified)"
+          git push
