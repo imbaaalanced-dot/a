@@ -6,7 +6,7 @@
   // 8-voice cap, no audio before the first user gesture, life===max on every particle.
   const MAX_PARTICLES = 240;
   const MAX_DAMAGE_TEXTS = 24, MAX_DAMAGE_TEXTS_REDUCED = 8;
-  let audio, master, voices = 0;
+  let audio, master, voices = 0, noiseBuffer = null;
   const lastSound = new Map();
   // Compact, opt-in Marcel-only V2 FX atlas: 6 frames × 3 rows, 40 px per cell.
   // Loaded only when Marcel fires. Keep procedural effects for decode/HTTP failures.
@@ -66,6 +66,79 @@
     osc.connect(gain).connect(master); voices++;
     osc.onended = () => { voices--; osc.disconnect(); gain.disconnect(); };
     osc.start(now); osc.stop(now + duration);
+  }
+  // #371: named procedural event sounds (UI, towers, waves, bosses, loot, outcome).
+  // Same contracts as sound(): no audio before the unlock, shared voice cap,
+  // per-name throttle, no throw on exotic/mocked AudioContexts.
+  const noiseBufferReady = () => {
+    if (typeof audio.createBuffer !== 'function' || typeof audio.createBiquadFilter !== 'function') return false;
+    if (!noiseBuffer) {
+      const length = Math.floor(audio.sampleRate * .5);
+      noiseBuffer = audio.createBuffer(1, length, audio.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
+    }
+    return true;
+  };
+  function sfxOsc(layer, now) {
+    const osc = audio.createOscillator(), gain = audio.createGain();
+    const detune = layer.rand ? .92 + Math.random() * .16 : 1;
+    osc.type = layer.type || 'sine';
+    osc.frequency.setValueAtTime(layer.f0 * detune, now + layer.at);
+    if (layer.f1) osc.frequency.exponentialRampToValueAtTime(layer.f1 * detune, now + layer.at + layer.dur);
+    gain.gain.setValueAtTime(.0001, now + layer.at);
+    gain.gain.exponentialRampToValueAtTime(layer.vol, now + layer.at + (layer.hit || .006));
+    gain.gain.exponentialRampToValueAtTime(.0001, now + layer.at + layer.dur);
+    osc.connect(gain).connect(master); voices++;
+    osc.onended = () => { voices--; osc.disconnect(); gain.disconnect(); };
+    osc.start(now + layer.at); osc.stop(now + layer.at + layer.dur + .02);
+  }
+  function sfxNoise(layer, now) {
+    if (!noiseBufferReady()) return;
+    const src = audio.createBufferSource(), gain = audio.createGain(), filter = audio.createBiquadFilter();
+    src.buffer = noiseBuffer; src.loop = true;
+    filter.type = layer.filter || 'lowpass';
+    filter.frequency.setValueAtTime(layer.f0, now + layer.at);
+    if (layer.f1) filter.frequency.exponentialRampToValueAtTime(layer.f1, now + layer.at + layer.dur);
+    filter.Q.value = layer.q || .8;
+    gain.gain.setValueAtTime(.0001, now + layer.at);
+    gain.gain.exponentialRampToValueAtTime(layer.vol, now + layer.at + (layer.hit || .004));
+    gain.gain.exponentialRampToValueAtTime(.0001, now + layer.at + layer.dur);
+    src.connect(filter); filter.connect(gain); gain.connect(master); voices++;
+    src.onended = () => { voices--; src.disconnect(); filter.disconnect(); gain.disconnect(); };
+    src.start(now + layer.at); src.stop(now + layer.at + layer.dur + .02);
+  }
+  const SFX = {
+    gameStart: [{osc:1,type:'sine',f0:196,f1:392,dur:.5,vol:.05,hit:.09},{osc:1,type:'sine',f0:294,f1:588,at:.06,dur:.5,vol:.035,hit:.12},{noise:1,filter:'bandpass',f0:900,f1:2500,dur:.4,vol:.02,hit:.15}],
+    waveLaunch: [{osc:1,type:'sine',f0:110,f1:55,dur:.22,vol:.14},{noise:1,f0:400,f1:120,dur:.16,vol:.12},{osc:1,type:'sine',f0:90,f1:45,at:.14,dur:.22,vol:.12}],
+    bossSpawn: [{osc:1,type:'sawtooth',f0:58,f1:44,dur:1.1,vol:.06,hit:.3},{osc:1,type:'sawtooth',f0:63.5,f1:47,at:.05,dur:1.1,vol:.05,hit:.35},{noise:1,f0:220,f1:60,dur:1,vol:.04}],
+    bossLoot: [{osc:1,type:'triangle',f0:392,dur:.14,vol:.07},{osc:1,type:'triangle',f0:523,at:.1,dur:.14,vol:.07},{osc:1,type:'triangle',f0:659,at:.2,dur:.16,vol:.07},{osc:1,type:'sine',f0:1047,at:.3,dur:.3,vol:.045,hit:.05}],
+    enemyDie: [{osc:1,type:'triangle',f0:240,f1:70,dur:.18,vol:.05,rand:1},{noise:1,f0:800,f1:200,dur:.14,vol:.04}],
+    towerBuild: [{osc:1,type:'triangle',f0:96,f1:52,dur:.16,vol:.11},{noise:1,f0:500,f1:150,dur:.12,vol:.09}],
+    towerUpgrade: [{osc:1,type:'triangle',f0:262,dur:.09,vol:.06},{osc:1,type:'triangle',f0:330,at:.07,dur:.09,vol:.06},{osc:1,type:'triangle',f0:392,at:.14,dur:.12,vol:.065}],
+    towerSell: [{osc:1,type:'triangle',f0:392,dur:.08,vol:.05},{osc:1,type:'triangle',f0:262,at:.07,dur:.1,vol:.05},{noise:1,filter:'highpass',f0:900,f1:300,dur:.1,vol:.03}],
+    waveCleared: [{osc:1,type:'sine',f0:523,dur:.13,vol:.05},{osc:1,type:'sine',f0:659,at:.09,dur:.13,vol:.05},{osc:1,type:'sine',f0:784,at:.18,dur:.2,vol:.055}],
+    victory: [{osc:1,type:'triangle',f0:392,dur:.14,vol:.06},{osc:1,type:'triangle',f0:523,at:.12,dur:.14,vol:.06},{osc:1,type:'triangle',f0:659,at:.24,dur:.14,vol:.06},{osc:1,type:'triangle',f0:784,at:.36,dur:.34,vol:.065},{noise:1,filter:'bandpass',f0:1200,f1:3200,at:.36,dur:.3,vol:.02,hit:.1}],
+    defeat: [{osc:1,type:'sine',f0:220,f1:110,dur:.5,vol:.06,hit:.05},{osc:1,type:'sine',f0:165,f1:82,at:.4,dur:.6,vol:.06,hit:.05},{noise:1,f0:300,f1:80,dur:.9,vol:.035,hit:.25}],
+    monumentHit: [{osc:1,type:'sine',f0:70,f1:40,dur:.25,vol:.1},{noise:1,f0:350,f1:100,dur:.18,vol:.07}],
+    heroHurt: [{osc:1,type:'triangle',f0:190,f1:120,dur:.12,vol:.055,rand:1},{noise:1,f0:700,f1:250,dur:.1,vol:.035}],
+    lootPickup: [{osc:1,type:'sine',f0:640,f1:960,dur:.07,vol:.04,rand:1}],
+    lootItem: [{osc:1,type:'sine',f0:784,dur:.08,vol:.045},{osc:1,type:'sine',f0:1046,at:.06,dur:.1,vol:.04}],
+    dodge: [{noise:1,filter:'bandpass',q:1.6,f0:300,f1:1800,dur:.16,vol:.05,hit:.02}],
+    uiClick: [{osc:1,type:'square',f0:520,f1:430,dur:.05,vol:.03,rand:1}],
+    uiToggle: [{osc:1,type:'square',f0:440,f1:560,dur:.07,vol:.035}]
+  };
+  const SFX_COOLDOWN = { monumentHit:.09, enemyDie:.05, heroHurt:.06, lootPickup:.03 };
+  function sfx(name) {
+    try {
+      if (!audio || mutedState || voices >= 10 || audio.state !== 'running') return;
+      const recipe = SFX[name];
+      if (!recipe) return;
+      const now = audio.currentTime;
+      if (now - (lastSound.get(name) ?? -1) < (SFX_COOLDOWN[name] ?? .028)) return;
+      lastSound.set(name, now);
+      for (const layer of recipe) { if (layer.osc) sfxOsc(layer, now); else sfxNoise(layer, now); }
+    } catch {}
   }
   function push(game, p) { if (game.particles.length >= MAX_PARTICLES) return false; game.particles.push(p); return true; }
   function emit(game, x, y, color, count, smoke = false, reduced = false) {
@@ -219,5 +292,5 @@
     }
     return false;
   }
-  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster,setViewZoom,uiScale,setVolume};
+  globalThis.DenkmalCombatFX = {MAX_PARTICLES,MAX_DAMAGE_TEXTS,unlock,mute,burst,bolt,damage,updateDamage,drawDamage,draw,drawParticle,drawStaffFrame,getContext,getMaster,setViewZoom,uiScale,setVolume,sfx};
 })();
