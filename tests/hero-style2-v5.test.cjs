@@ -25,7 +25,7 @@ for(const name of ['kim','marcel']){
    [pixels.readUIntLE(24,3)+1,pixels.readUIntLE(27,3)+1];
  assert.deepEqual(dims,[atlas.cell*6,atlas.cell*6],`${name} canonical side action atlas dimensions`);
 }
-assert.match(portraitSource,/marcel-guardian-v6\.webp/);
+assert.match(portraitSource,/marcel-guardian-v7\.webp/);
 assert.match(portraitSource,/kim-marksman-v6\.webp/);
 assert.match(portraitSource,/DIE TREFFSICHERE/);
 

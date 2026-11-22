@@ -21,7 +21,7 @@ async function test(){
   assert.equal(created,6,'three loading images and the device-appropriate menu set (scenery, crest, saved hero banner) load at startup');
   assert.ok(loaded.some(src=>src.endsWith('memorial-yard-mobile-v4.webp?v=menu-v4a1')),'mobile scenery preloaded on mobile viewport');
   assert.ok(!loaded.some(src=>src.endsWith('memorial-yard-v4.webp?v=menu-v4a1')),'desktop scenery not preloaded on mobile viewport');
-  assert.ok(loaded.some(src=>src.endsWith('marcel-guardian-v6.webp')),'default approved Marcel art preloaded');
+  assert.ok(loaded.some(src=>src.endsWith('marcel-guardian-v7.webp')),'default approved Marcel art preloaded');
   assert.ok(!loaded.some(src=>src.endsWith('kim-marksman-v6.webp')),'other approved hero art not preloaded without saved selection');
   console.log('Preloader: success, progress 100%, game menu unlocked, device-aware menu preload verified');
 }

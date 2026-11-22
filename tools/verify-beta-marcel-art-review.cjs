@@ -23,6 +23,9 @@ assert.match(doc,/NOT APPROVED/);
 assert.match(doc,/NO RUNTIME CHANGE/);
 assert.match(doc,/Android 4 GB/);
 const canonical=fs.readFileSync(path.join(root,'dist/canonical-hero-art-v5.js'),'utf8');
-assert.match(canonical,/marcel-guardian-v6\.webp/,'existing runtime portrait not silently changed');
+// 2026-11-22: the armory/Story projection now uses the approved wand portrait v7
+// (see HERO_REFERENCE_LOCK_20261107.md, Runtime-Abgleich 22.11.2026). This guard
+// still catches a silent swap away from the documented portrait.
+assert.match(canonical,/marcel-guardian-v7\.webp/,'runtime portrait stays the documented v7 wand cutout');
 assert.match(canonical,/kim-marksman-v6\.webp/,'Kim is unchanged');
 console.log('Marcel crystal-staff review thumbnail, SHA, alpha, dimensions and no-runtime-change gate passed (ART APPROVAL STILL OPEN)');

@@ -14,7 +14,7 @@ assert.match(preloader, /memorial-yard-mobile-v4\.webp\?v=menu-v4a1/, 'mobile sc
 assert.match(preloader, /memorial-yard-v4\.webp\?v=menu-v4a1/, 'desktop scenery referenced by preloader');
 
 // Only the saved hero banner is preloaded; the other loads on demand in game.js.
-assert.match(preloader, /character\s*===\s*'kim'\s*\?\s*'kim-marksman-v6\.webp'\s*:\s*'marcel-guardian-v6\.webp'/, 'approved hero art is selected per character');
+assert.match(preloader, /character\s*===\s*'kim'\s*\?\s*'kim-marksman-v6\.webp'\s*:\s*'marcel-guardian-v7\.webp'/, 'approved hero art is selected per character');
 assert.doesNotMatch(preloader, /hero-banner-(?:marcel|kim)-v3\.webp/, 'retired banner references stay unloaded');
 
 // Character preference is read from the versioned envelope with the legacy key as fallback.
@@ -28,7 +28,7 @@ assert.match(scene, /memorial-yard-v4\.webp\?v=menu-v4a1[^>]*loading="lazy"/, 'd
 assert.match(scene, /memorial-yard-mobile-v4\.webp\?v=menu-v4a1[^>]*loading="lazy"/, 'mobile scenery is lazy');
 
 // Cache key bumped for the changed preloader.
-assert.match(html, /preloader\.js\?v=menu-v4-20261121/);
+assert.match(html, /preloader\.js\?v=portrait-v7-20261122/);
 
 // The CSS swap breakpoint stays in sync with the preloader breakpoint.
 assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*?menu-scene-mobile/, 'CSS scenery swap at 700px');

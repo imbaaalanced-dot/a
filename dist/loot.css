@@ -264,3 +264,20 @@
   pointer-events:auto;
   touch-action:manipulation;
 }
+
+/* ===== 2026-11-22 portrait-fit: complete hero cutouts fill the armory frame =====
+   The frame aspect ratio follows the selected hero (data-hero set by loot-ui.js),
+   so nothing is cropped: Kim's bow and legs and Marcel's wand stay fully visible.
+   The bottom 26 px stay free, so the role caption no longer sits on the figure. */
+#inventoryScreen .loot-portrait{aspect-ratio:474/885;height:auto;min-height:0;max-height:none}
+#inventoryScreen .loot-portrait[data-hero="kim"]{aspect-ratio:645/1048}
+#inventoryScreen .loot-portrait img{object-fit:contain;object-position:top center;height:calc(100% - 26px)}
+@media(max-width:760px){
+  #inventoryScreen .loot-portrait{min-height:260px;max-height:none}
+}
+@media(max-width:420px){
+  #inventoryScreen .loot-portrait{min-height:240px}
+}
+@media(max-width:360px){
+  #inventoryScreen .loot-portrait{min-height:220px}
+}

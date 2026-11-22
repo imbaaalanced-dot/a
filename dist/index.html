@@ -10,8 +10,8 @@
   <meta name="description" content="Verteidige historische Denkmäler mit Marcel oder Kim. Baue Türme, überstehe Gegnerwellen und entdecke sieben Schauplätze in der Kampagne." />
   <link rel="stylesheet" href="styles.css?v=v400a4merge1" />
   <link rel="stylesheet" href="hero.css?v=v400a4merge1" />
-  <link rel="stylesheet" href="polish.css?v=v5-style2a1" />
-  <link rel="stylesheet" href="loot.css?v=beta-inventory-back-20261117" />
+  <link rel="stylesheet" href="polish.css?v=portrait-v7-20261122" />
+  <link rel="stylesheet" href="loot.css?v=portrait-fit-20261122" />
   <link rel="stylesheet" href="menu.css?v=menu-v4base-20261122" />
   <link rel="stylesheet" href="preloader.css?v=td2preload1" />
   <link rel="stylesheet" href="portrait-patch.css?v=v410a1touch1" />
@@ -28,9 +28,9 @@
 </head>
 <body>
   <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
-  <script src="canonical-hero-art-v5.js?v=portrait-v6-clean-20261117"></script>
+  <script src="canonical-hero-art-v5.js?v=portrait-v7-wand-20261122"></script>
   <script src="asset-manager.js?v=enemyv3-runtime-20261121"></script>
-  <script src="preloader.js?v=menu-v4-20261121"></script>
+  <script src="preloader.js?v=portrait-v7-20261122"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal TD2. Bewegen mit WASD oder Pfeiltasten, ausweichen mit Leertaste, Turm bauen mit E, pausieren mit Escape."></canvas>
 
@@ -235,7 +235,7 @@
         </div>
         <button id="lootDetailBackdrop" class="loot-detail-backdrop" type="button" aria-label="Gegenstandsvergleich schließen" hidden></button>
         <div class="loot-columns">
-          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-hero-switch" role="group" aria-label="Wächter auswählen"><button id="lootSelectMarcel" type="button" aria-pressed="true">Marcel</button><button id="lootSelectKim" type="button" aria-pressed="false">Kim</button></div><div class="loot-portrait"><img id="lootHeroPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer" width="640" height="960"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
+          <section id="lootEquipmentPanel" class="loot-panel loot-equipment" role="tabpanel" aria-labelledby="lootEquipmentTab"><h3 id="lootHeroTitle">MARCEL · DEINE AUSRÜSTUNG</h3><div class="loot-hero-switch" role="group" aria-label="Wächter auswählen"><button id="lootSelectMarcel" type="button" aria-pressed="true">Marcel</button><button id="lootSelectKim" type="button" aria-pressed="false">Kim</button></div><div class="loot-portrait" data-hero="marcel"><img id="lootHeroPortrait" src="assets/menu/v5-avatars/marcel-guardian-v7.webp" alt="Marcel der Beschützer" width="474" height="885"/><span id="lootHeroRole">DER BESCHÜTZER</span></div><div id="loadoutSlots"></div><div id="loadoutStats"></div></section>
           <section id="lootBagPanel" class="loot-panel loot-bag" role="tabpanel" aria-labelledby="lootBagTab"><h3 id="backpackCount"></h3><div class="loot-searchbar"><input id="lootSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Ausrüstung suchen …" aria-label="Gegenstand nach Namen suchen"/><button id="lootClearFilters" type="button" class="loot-action">ZURÜCKSETZEN</button></div><div class="loot-toolbar"><select id="lootFilter" aria-label="Beute filtern"><option value="all">Alle Gegenstände</option><option value="favorites">★ Favoriten</option><option value="upgrades">↑ Verbesserungen</option><option value="legendary">Legendär</option><option value="epic">Episch</option><option value="rare">Selten</option><option value="magic">Magisch</option><option value="common">Gewöhnlich</option></select><select id="lootSlotFilter" aria-label="Ausrüstungsplatz filtern"><option value="all">Alle Plätze</option><option value="weapon">Waffen</option><option value="head">Kopf</option><option value="armor">Rüstungen</option><option value="gloves">Handschuhe</option><option value="boots">Stiefel</option><option value="amulet">Amulette</option><option value="rings">Ringe</option></select><select id="lootSort" aria-label="Beute sortieren"><option value="rarity">Nach Seltenheit</option><option value="level">Nach Stufe</option><option value="type">Nach Ausrüstungsplatz</option></select></div><p class="loot-scroll-hint"><span id="lootResultCount" aria-live="polite"></span> · Gegenstand antippen zum Vergleichen · Ausrüstung beider Helden</p><div class="loot-scroll-area" tabindex="0" role="region" aria-label="Rucksack und Überlauf, scrollbar"><div id="inventoryGrid"></div><p id="lootEmptyHint"></p><section id="lootOverflow" hidden></section></div></section>
           <section id="lootForgePanel" class="loot-panel loot-forge-panel" role="tabpanel" aria-labelledby="lootForgeTab" hidden><h3>DEINE SCHMIEDE</h3><p>Verbessere deine Ausrüstung bis Schmiedestufe III. Die Kosten siehst du vor jeder Aufwertung.</p><div class="loot-forge-essence" id="lootForgeBalance"></div><div class="loot-forge-tools"><h4>Rucksack aufräumen</h4><p>Du kannst ungenutzte Gegenstände zerlegen, wenn sie weder angelegt noch als Favorit markiert sind. Die erhaltene Essenz wird vor deiner Bestätigung angezeigt.</p><button id="lootSalvageAllBtn" class="loot-action" type="button">ZERLEGEN PRÜFEN</button></div><p>Wähle einen Gegenstand im Rucksack, um seine Werte und mögliche Verbesserungen zu vergleichen.</p></section>
           <aside class="loot-panel" id="lootDetail" role="region" tabindex="-1" aria-label="Gegenstandsvergleich"></aside>
@@ -246,7 +246,7 @@
     </section>
 
     <section id="storyScreen" class="modal story-screen hidden" role="dialog" aria-modal="true" aria-labelledby="storyTitle">
-      <div class="story-card"><div class="story-portrait"><img id="storyPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer"/></div><div class="story-copy">
+      <div class="story-card"><div class="story-portrait"><img id="storyPortrait" src="assets/menu/v5-avatars/marcel-guardian-v7.webp" alt="Marcel der Beschützer"/></div><div class="story-copy">
         <p class="eyebrow" id="storyKicker"></p><h2 id="storyTitle"></h2><p id="storyBody"></p><blockquote id="storyQuote"></blockquote>
         <p id="storyReward" class="story-reward"></p><p id="storyObjective" class="story-objective"></p>
         <div class="story-actions"><button id="storyContinue" class="primary">WEITER ZUR WACHT</button><button id="storyReplay" class="icon-btn">ANHÖREN</button><button id="voiceBtn" class="icon-btn" aria-pressed="false">STIMME: AUS</button></div>
@@ -261,7 +261,7 @@
     </section>
     <section id="characterScreen" class="modal character-screen hidden" role="dialog" aria-modal="true" aria-labelledby="characterTitle">
       <div class="character-shell"><header class="character-header"><div><p class="eyebrow" id="characterLevel"></p><h2 id="characterTitle">MARCEL</h2></div><button id="characterClose" class="icon-btn">ZURÜCK <kbd>H / ESC</kbd></button></header>
-        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/menu/v5-avatars/marcel-guardian-v6.webp" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
+        <div class="character-layout"><aside class="character-showcase"><div id="characterPreview" class="character-preview"><img id="characterPortrait" src="assets/menu/v5-avatars/marcel-guardian-v7.webp" alt="Marcel der Beschützer"/><i class="equipment-glow" aria-hidden="true"></i></div><p id="equippedNames"></p><p id="characterStats"></p></aside>
           <div class="character-detail"><div class="character-tabs" role="tablist" aria-label="Heldendetails"><button id="equipmentTab" role="tab" aria-controls="equipmentPanel" aria-selected="true">KAMPFPROFIL</button><button id="journalTab" role="tab" aria-controls="journalPanel" aria-selected="false">CHRONIK</button></div>
             <div id="equipmentPanel" role="tabpanel" aria-labelledby="equipmentTab"><p class="gear-hint">Hier siehst du deine Kampfwerte. Um Ausrüstung zu wechseln, öffne im Hauptmenü die Rüstkammer.</p><div id="gearGrid"></div></div>
             <div id="journalPanel" class="hidden" role="tabpanel" aria-labelledby="journalTab"><div id="journalEntries"></div></div>
@@ -313,8 +313,8 @@
   <script src="directional-hero-assets-v5.js?v=v5-alpha-repair-20261116"></script>
   <script src="directional-actions-v410.js?v=v5-hero-canonical1"></script>
   <script src="v2-expansion.js?v=building-clearance-20261114"></script>
-  <script src="loot-ui.js?v=portrait-v6-clean-20261117"></script>
-  <script src="hero-saga.js?v=volume-audio-20261120"></script>
+  <script src="loot-ui.js?v=portrait-v7-20261122"></script>
+  <script src="hero-saga.js?v=saga-plain-20261122"></script>
   <script src="combat-fx.js?v=procedural-sfx-20261121"></script>
   <script src="style2-impact-atlas.js?v=fx-v3-refresh-20261122"></script>
   <script src="style2-impact-atlas-v4.js?v=fx-v3-20261122"></script>
@@ -347,8 +347,8 @@
   <script src="touch-context-hud.js?v=v5hud2a1"></script>
   <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
   <script src="level-intro.js?v=levelintro2"></script>
-  <script src="game.js?v=procedural-sfx-20261121"></script>
-  <script src="portrait-avatars-v5.js?v=portrait-v6-clean-20261117"></script>
+  <script src="game.js?v=portrait-v7-20261122"></script>
+  <script src="portrait-avatars-v5.js?v=portrait-v7-wand-20261122"></script>
   <script src="level-gallery.js?v=menu-v4a2"></script>
 <script id="td2-version-label">
 (function(){

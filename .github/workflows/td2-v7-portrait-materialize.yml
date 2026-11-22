@@ -1,0 +1,46 @@
+name: TD2 v7 wand portrait materialization
+
+on:
+  push:
+    branches: ['assets/v7-wand-portrait-20261122']
+    paths:
+      - '.github/workflows/td2-v7-portrait-materialize.yml'
+      - 'tools/export-marcel-wand-portrait-v7.py'
+      - 'originals/marcel-der-beschuetzer-reference-20261115.png'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: td2-v7-portrait-materialize
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install version-pinned asset runtime
+        run: python -m pip install 'Pillow==12.3.0'
+      - name: Materialize SHA-gated v7 wand portrait
+        run: python tools/export-marcel-wand-portrait-v7.py
+      - name: Commit materialized portrait to the asset branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist/assets/menu/v5-avatars/marcel-guardian-v7.webp
+          if git diff --cached --quiet; then
+            echo 'v7 portrait unchanged.'
+            exit 0
+          fi
+          git commit -m 'assets(armory): materialize SHA-locked Marcel wand portrait v7'
+          git pull --rebase origin assets/v7-wand-portrait-20261122
+          git push origin HEAD:assets/v7-wand-portrait-20261122

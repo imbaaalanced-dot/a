@@ -12,7 +12,7 @@ vm.runInNewContext(source('canonical-hero-art-v5.js'), sandbox);
 const art = sandbox.TD2CanonicalHeroArt;
 assert.ok(Object.isFrozen(art));
 for (const [actor, expected] of Object.entries({
-  marcel: 'marcel-guardian-v6.webp',
+  marcel: 'marcel-guardian-v7.webp',
   kim: 'kim-marksman-v6.webp'
 })) {
   const entry = art[actor];

@@ -20,17 +20,17 @@
     ]
   };
   const lines = {
-    intro:'Ich bin Marcel, der Denkmalschützer. Vier Tore. Ein Denkmal. Wir halten die Wacht.',
-    chapter2:'Die Tore werden stärker. Unser Stab auch. Kein Stein wird aufgegeben.',
+    intro:'Ich bin Marcel, der Denkmalschützer. Wir halten die Wacht.',
+    chapter2:'Die Gegner werden stärker. Unsere Türme auch.',
     chapter3:'Sie drängen durch das Labyrinth. Wir halten sie am Weg auf.',
-    ultimate:'Kein Name geht verloren!',lowhp:'Noch ein Atemzug. Die Wacht geht weiter.',
-    ending:'Das Denkmal steht. Und die Erinnerung bleibt.'
+    ultimate:'Kein Name geht verloren!',lowhp:'Ich halte noch durch.',
+    ending:'Das Denkmal steht. Die Erinnerung bleibt.'
   };
   const story = [
-    {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Beschütze das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift automatisch an. Nutze die Baupause, um dich auf den nächsten Angriff vorzubereiten.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
-    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Beute für deinen nächsten Durchlauf. Bogentürme treffen einzelne Gegner präzise, Kanonen treffen ganze Gruppen. Verstärke deine Türme, bevor der Belagerer erscheint.',objective:'Bereite dich auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN DURCHLAUF'},
-    {wave:8,id:'chapter3',kicker:'WELLE 8 · DER WEG ZUM LABYRINTH',title:'Halte die Stellung.',text:'Die Gegner folgen festen Wegen zum Denkmal. Deine Türme greifen bevorzugt Gegner an, die dem Denkmal bereits nahe sind.',objective:'Nutze die markierten Bauplätze und kombiniere Bogentürme mit Kanonen.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN DURCHLAUF'},
-    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Jetzt entscheidet sich alles.',text:'Der Kapitelboss führt den letzten Angriff an. Schütze deinen Helden und das Denkmal mit allen verfügbaren Türmen.',objective:'Besiege den Kapitelboss und überstehe die 20. Welle.',reward:'DIE NAMEN SIND FREI'}
+    {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift von selbst an. Zwischen zwei Wellen hast du Zeit, neue Türme zu bauen.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
+    {wave:4,id:'chapter2',kicker:'WELLE 4 · DIE TORE ERWACHEN',title:'Das nächste Siegel.',text:'Sammle Beute für deinen nächsten Durchlauf. Bogentürme sind stark gegen einzelne Gegner, Kanonen gegen Gruppen. Verstärke deine Türme, bevor der Belagerer kommt.',objective:'Bereite dich auf den ersten Kapitelboss in Welle 10 vor.',reward:'WELLE 4 · NACHHALL FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:8,id:'chapter3',kicker:'WELLE 8 · DER WEG ZUM LABYRINTH',title:'Halte die Stellung.',text:'Die Gegner folgen festen Wegen zum Denkmal. Deine Türme greifen zuerst Gegner an, die dem Denkmal schon nahe sind.',objective:'Nutze die markierten Bauplätze und kombiniere Bogentürme mit Kanonen.',reward:'NACH WELLE 8 · DIE LETZTE GLOCKE FÜR DEN NÄCHSTEN DURCHLAUF'},
+    {wave:20,id:'ending',kicker:'WELLE 20 · DIE LETZTE WACHT',title:'Jetzt entscheidet sich alles.',text:'Der Boss greift zum letzten Mal an. Setze alle Türme ein, um dein Denkmal zu schützen.',objective:'Besiege den Kapitelboss und überstehe die 20. Welle.',reward:'DIE NAMEN SIND FREI'}
   ];
   // A single on-demand movement atlas. The V5b 768x1024 sheets need only
   // 3 MiB each decoded, versus about 6.75 MiB for the earlier 1152x1536 art.
@@ -39,7 +39,7 @@
     kim:globalThis.TD2CanonicalHeroArt?.kim?.walk||'assets/hero/kim-walk-v5b.webp?v=v5b-alpha-20261112'
   };
   const portraitFor=actor=>globalThis.TD2CanonicalHeroArt?.[actor]?.portrait||
-    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
+    (actor==='kim'?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v7.webp?v=portrait-v7-wand-20261122');
   let activeWalkActor=null,activeWalkImage=null,walkRetryAt=0;
   function walkAtlas(actor){
     if(!walkPaths[actor])return null;
@@ -66,7 +66,10 @@
   const ready = img => img && img.complete && img.naturalWidth > 0;
   const item = (h, slot) => equipment[slot].find(i=>i.id===h.equipment[slot])||{name:'Unbelegt',color:'#83cfff'};
 
-  const VOICE_CLIPS={intro:'assets/hero/voice/intro.mp3?v=voice-saga-20261119',chapter2:'assets/hero/voice/chapter2.mp3?v=voice-saga-20261119',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'assets/hero/voice/ending.mp3?v=voice-saga-20261119',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:'assets/hero/voice/lowhp.mp3?v=voice-saga-20261119'};
+  /* 2026-11-22: intro/chapter2/ending/lowhp lines were reworded; their recorded
+     clips would no longer match the text, so they use the TTS fallback until new
+     clips exist. chapter3 and ultimate are unchanged and keep their recordings. */
+  const VOICE_CLIPS={intro:'',chapter2:'',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:''};
   const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1};
 
   function reset(h,loadout) {
@@ -109,7 +112,9 @@
     const tts=()=>speakTts(lines[id]);
     if(typeof Audio!=='function')return tts();
     try{
-      const clip=new Audio(VOICE_CLIPS[id]||'');
+      const clipSrc=VOICE_CLIPS[id];
+      if(!clipSrc){tts();return;}
+      const clip=new Audio(clipSrc);
       let handled=false;
       clip.volume=globalThis.TD2_AUDIO_VOLUME??1;clip.onended=()=>{if(currentAudio===clip)currentAudio=null;};
       clip.onerror=()=>{if(!handled){handled=true;tts();}};
