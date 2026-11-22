@@ -51,7 +51,7 @@ const server=http.createServer((req,res)=>{
       await page.waitForFunction(()=>DenkmalChurch.lionSpriteReady,null,{timeout:15000});
       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       await page.screenshot({path:path.join(output,`${active?'v4':'default'}-${mobile?'mobile':'desktop'}-ender-dorfkirche-gameplay.png`),fullPage:true});
-      assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
+      assert(requests.some(url=>url.includes('ground-style2-v2.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
       assert(!requests.some(url=>url.includes('lion-ende-style2.webp')),'no placeholder lion request');
       assert(requests.some(url=>url.includes('lion-1879-style2-2x.webp')),'approved photo lion requested');
