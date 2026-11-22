@@ -41,7 +41,7 @@ function getEnemyGlows(){
 export function renderArena(ctx,s,{width,height,pixelRatio=1}){const dpr=Math.min(2,pixelRatio),c=ctx.canvas;if(c.width!==Math.round(width*dpr)||c.height!==Math.round(height*dpr)){c.width=Math.round(width*dpr);c.height=Math.round(height*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);const w=width,h=height,cx=w/2,cy=h/2,unit=Math.min(w*.44,h*.44);ctx.clearRect(0,0,w,h);
 let grad=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*.75);grad.addColorStop(0,'#34403e');grad.addColorStop(1,'#111923');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
 // The floor is screen anchored: scaling it with the world unit would repeat hard seams.
-ctx.save();ctx.globalAlpha=.22;sprite(ctx,'arena_ground',cx,h,w,h);ctx.restore();
+ctx.save();ctx.globalAlpha=.5;sprite(ctx,'arena_ground',cx,h,w,h);ctx.restore();
 const atmo=getAtmosphere(w,h,unit,cx,cy);ctx.drawImage(atmo.glow,0,0,w,h);
 ctx.save();ctx.translate(cx,cy);ctx.strokeStyle='#c3b18d14';ctx.lineWidth=1;for(let n=0;n<11;n++){let d=n*unit/5;ctx.beginPath();ctx.moveTo(-w/2,d);ctx.lineTo(w/2,d);ctx.moveTo(d,-h/2);ctx.lineTo(d,h/2);ctx.stroke();}
 const range=getStats(s).rangeRatio*unit;ctx.strokeStyle='#d8b46940';ctx.lineWidth=2;ctx.setLineDash([5,7]);ctx.beginPath();ctx.arc(0,0,range,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
