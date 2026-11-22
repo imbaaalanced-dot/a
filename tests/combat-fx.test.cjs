@@ -58,5 +58,14 @@ vm.runInContext(fs.readFileSync(require('path').join(__dirname,'../dist/combat-f
 assert.equal(fallbackCtx.DenkmalCombatFX.drawStaffFrame(context,0,0,0,0),false);
 fallbackCtx.DenkmalCombatFX.draw(context,wand,false,'marcel');
 
+// Impact juice survives budget pressure: packed muzzle particles must not push
+// rings and core flashes out of the frame during dense late waves.
+const packed={particles:[]};
+for(let i=0;i<240;i++)packed.particles.push({muzzle:true,life:.5,max:.5,x:i,y:i,vx:0,vy:0,r:1.5,color:'#fff'});
+fx.burst(packed,{x:120,y:120,vx:40,vy:0,kind:'bow',color:'#e9c477',level:2},true,true,false);
+assert.equal(packed.particles.length,240,'eviction keeps the particle budget bounded');
+assert.ok(packed.particles.some(p=>p.ring),'the impact ring evicts low-priority particles instead of being dropped');
+assert.ok(packed.particles.some(p=>p.flash),'the core flash survives a full particle budget');
+assert.equal(packed.particles.filter(p=>p.muzzle).length,238,'only the two impact effects swapped in');
 console.log('Marcel staff V2: PNG dimensions, lazy loading, actor isolation, three FX rows and fallbacks passed.');
 console.log('Combat FX: gesture gating, mute, throttling, voice/particle caps and reduced motion passed.');
