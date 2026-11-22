@@ -1,7 +1,5 @@
 # Menügrafiken menu-v3 (Hauptmenü-Redesign)
 
-> **Stand 2026-11-22:** Die v3-Grafiken (`memorial-yard-v3.webp`, `memorial-yard-mobile-v3.webp`, `crest-v3.webp`, `hero-banner-*-v3.webp`) sind nach dem v4-Redesign „Herbstwacht“ (#394) aus dem Repository entfernt. Der Text unten bleibt als Entstehungs-Dokumentation erhalten. Laden tut das Spiel seither nur noch v4 (`?v=menu-v4a1`); auch die Ansturm-Intro-Kopien nutzen v4.
-
 - `memorial-yard-v3.webp` (1536×1194) und `memorial-yard-mobile-v3.webp` (768×1194): neu generierte nächtliche Denkmalhof-Szenerie (verwitterte Steinbögen, Obelisk mit Bronzekranz und türkisem Runenlicht, Nebel, warmes Laternenlicht von links oben; linke Seite dunkel für das HTML-Menü). Über integriertes ImageGen erstellt; im Hauptmenü responsiv geladen: CSS-Display-Wechsel bei 700px (kein `srcset`, damit der Asset-Existenz-Test einfach bleibt), die Szenerie-`<img>`s nutzen `loading="lazy"`, und der Preloader lädt viewport-abhängig nur die passende Variante. Im Ansturm-Intro als lokale Kopie unter `dist/ansturm/assets/menu/`.
 - `hero-banner-marcel-v3.webp` / `hero-banner-kim-v3.webp` (1440×720, 2:1): generierte Heldenplatten; Figur rechts, linke Fläche ruhig für die Beschriftung. Ersetzen die SVG-Auswahlbanner `heroes-*-selected-v2.svg`; die Heldenwahl in `game.js` lädt je nach gespeicherter Wahl eines der beiden Banner.
 - `crest-v3.webp` (512×512, RGBA): generiertes Siegel-Wappen (steinerner Obelisk mit Lorbeerkranz und Runen auf transparentem Grund, runder Alpha-Cut). Ersetzt `crest-v2.webp` im Hauptmenü und im Ansturm-Intro.

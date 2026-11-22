@@ -341,7 +341,7 @@ a.menu-art-button{text-decoration:none;color:inherit}
   pointer-events:none;
 }
 #startScreen .menu-command-primary::before{background-image:url("assets/menu/level-gallery/level-01-einleitung.webp")}
-#startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1")}
+#startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-v3.webp")}
 #startScreen #menuCharacterBtn::before{background-image:url("assets/menu/v5-avatars/kim-marksman-v6.webp");background-position:88% 30%;background-size:auto 140%;background-repeat:no-repeat}
 #startScreen .menu-command-quiet::before{background-image:url("assets/menu/level-gallery/menu-background.webp")}
 #startScreen .menu-command-mark{
@@ -371,7 +371,7 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen .menu-hero-figure{
   position:relative;isolation:isolate;overflow:hidden;max-width:800px;
   height:clamp(178px,27vh,270px);margin:0 auto 11px;border:1px solid #c9ac7266;
-  border-radius:10px;background:linear-gradient(90deg,#090f17db,#0a101999 55%,#121a2099),url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1") center 45% / cover no-repeat;
+  border-radius:10px;background:linear-gradient(90deg,#090f17db,#0a101999 55%,#121a2099),url("assets/menu/memorial-yard-v3.webp") center 45% / cover no-repeat;
   box-shadow:0 14px 34px #000a,inset 0 1px #fff2;
 }
 #startScreen .menu-hero-figure::after{
@@ -392,8 +392,8 @@ a.menu-art-button{text-decoration:none;color:inherit}
 }
 @media(max-width:700px){
   #startScreen .menu-content{margin:0 auto}
-  #startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
-  #startScreen .menu-hero-figure{height:clamp(133px,21vh,178px);background-image:linear-gradient(90deg,#090f17ee,#0a101988),url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
+  #startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-mobile-v3.webp")}
+  #startScreen .menu-hero-figure{height:clamp(133px,21vh,178px);background-image:linear-gradient(90deg,#090f17ee,#0a101988),url("assets/menu/memorial-yard-mobile-v3.webp")}
   #startScreen .menu-hero-figure .hero-menu-banner{width:54%;height:100%;max-height:none;margin-right:6%;object-fit:contain;object-position:center bottom}
   #startScreen #menuHeroCaption{max-width:46%;font-size:clamp(11px,3.4vw,14px)}
   #startScreen .menu-home-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
@@ -473,7 +473,7 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen[data-menu-panel="home"] .menu-hero-figure{
   display:block;
   width:min(100%,800px);
-  background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1");
+  background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-v3.webp");
   background-position:center,center 45%;
   background-size:cover,cover;
 }
@@ -490,7 +490,7 @@ a.menu-art-button{text-decoration:none;color:inherit}
 @media(max-width:700px){
   #startScreen[data-menu-panel="home"] .menu-hero-figure{
     height:clamp(130px,21dvh,185px);
-    background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1");
+    background-image:linear-gradient(0deg,#09111acc,#09111a10 65%),url("assets/menu/memorial-yard-mobile-v3.webp");
   }
   #startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-banner{right:3%;left:auto;}
   #startScreen[data-menu-panel="home"] .menu-hero-figure .hero-menu-companion{left:3%;right:auto;}
