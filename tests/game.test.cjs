@@ -654,6 +654,18 @@ check('Painted animation renderer handles ground, flying and boss enemies withou
     assert.equal(JSON.stringify(e),before,'drawing preserves enemy hp, position and abilities');
   }
 });
+check('hit-stop slows the simulation instead of freezing hero input',()=>{
+  const m=t.game.monument,h=t.game.hero;h.x=m.x+500;h.y=m.y+500;h.fireCd=100;
+  const boss={x:m.x+50,y:m.y,type:'boss',hp:990,maxHp:1000,r:34,armor:0,phase:1,dead:false,hitKick:0,slow:0,slowFactor:1,speed:0,damage:0,attackCd:99,attackCooldown:.85,gateIndex:0,waypoint:1};
+  t.game.enemies=[boss];
+  const oldRandom=sandbox.Math.random;sandbox.Math.random=()=>.5;
+  t.hurtEnemy(boss,10);sandbox.Math.random=oldRandom;
+  const charged=t.hitStop;assert.ok(charged>0,'boss impact charges hit-stop');
+  const x=h.x;listeners.keydown({code:'ArrowRight',preventDefault(){}});
+  try{t.update(.016);}finally{listeners.keyup({code:'ArrowRight'});}
+  assert.ok(h.x>x,'hero input keeps moving during the hit-stop beat');
+  assert.ok(t.hitStop<charged,'hit-stop decays on the running clock');
+});
 console.log(`${tests.length} gameplay checks passed; local assets verified.\n`+tests.join('\n'));
 
 check('Barracks keyboard, recruitment, upgrade health and sell integration',()=>{

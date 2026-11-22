@@ -20,9 +20,9 @@ function trace(name,build,count,options,ticks,prepare=()=>{}){
  results[name]=hash.digest('hex');
 }
 for(const [mode,build] of Object.entries({campaign,ansturm}))for(const count of [25,50,100,200])for(const lethal of [false,true])
- trace(`${mode}-${count}-${lethal?'lethal':'sustained'}`,build,count,{lethal},360);
+ trace(`${mode}-${count}-${lethal?'lethal':'sustained'}`,build,count,{lethal,reducedMotion:true},360);
 for(const bossWave of [5,10,15,20])trace(`boss-${bossWave}`,ansturm,25,{lethal:true,bossWave},1200);
-for(const level of [1,2,3,4,5,6,7])trace(`campaign-mixed-level-${level}`,campaign,25,{level,mixed:true,lethal:true},360);
+for(const level of [1,2,3,4,5,6,7])trace(`campaign-mixed-level-${level}`,campaign,25,{level,mixed:true,lethal:true,reducedMotion:true},360);
 for(const kind of ['ties','lost','effect-cap'])trace(`ansturm-${kind}`,ansturm,25,{lethal:true},360,s=>{
  for(let i=0;i<s.enemies.length;i++){const e=s.enemies[i];e.x=i%2?.8:.1;e.y=0;e.speed=0;e.burnUntil=0;e.type='normal';}
  if(kind==='lost'){s.hp=.001;s.shield=0;s.enemies.forEach(e=>e.x=0);}
