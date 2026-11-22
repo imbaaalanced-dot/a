@@ -52,7 +52,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox,{
 const fx=sandbox.DenkmalCombatFX,game={particles:[]};
 for(const kind of kinds)for(let level=1;level<=3;level++){
   const before=game.particles.length;
-  fx.burst(game,{kind,level,x:20,y:30,vx:400,vy:5,color:'#cba9e9'},true,false,false);
+  fx.burst(game,{kind,level,x:20,y:30,vx:400,dy:undefined,color:'#cba9e9'},true,false,false);
   const particles=game.particles.slice(before);
   assert.equal(particles.filter(p=>p.style2Impact).length,0,kind+level+' must not request old specialty atlas');
   const p=particles.find(p=>p.ring);
@@ -78,7 +78,7 @@ assert.equal(typeof runtime.UserStyle2Towers.drawTower,'function');
 assert.doesNotMatch(html,/src="style2-towers\.js/,'legacy tower renderer must be absent from production page');
 assert.ok(html.indexOf('style2-user-towers-v4.js')<html.indexOf('game.js?v='),
   'active V4 tower renderer loads before the main game');
-assert.match(html,/combat-fx\.js\?v=procedural-sfx-20261121/);
+assert.match(html,/combat-fx\.js\?v=particle-priority-20261122/);
 const gameCode=fs.readFileSync(path.join(root,'game.js'),'utf8');
 assert.match(gameCode,/UserStyle2Towers\?\.drawTower/,'canonical tower renderer integrated');
 assert.match(gameCode,/location\?\.pathname\?\.includes\('\/v4-style2-towers\/'\)/,'test-only campaign preview path');
