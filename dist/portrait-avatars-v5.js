@@ -12,13 +12,13 @@
   const stage=document.createElement('div');
   stage.className='td2-v5-duo-stage';
   stage.setAttribute('role','img');
-  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Schwert und Schild; Kim, die Treffsichere, mit Bogen');
+  stage.setAttribute('aria-label','Marcel, der Beschützer, mit Zauberstab; Kim, die Treffsichere, mit Bogen');
   const art=document.createElement('div');
   art.className='td2-v5-duo-art';
   stage.appendChild(art);
 
   const sources=[
-    {name:'marcel',path:globalThis.TD2CanonicalHeroArt?.marcel?.portrait||'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117'},
+    {name:'marcel',path:globalThis.TD2CanonicalHeroArt?.marcel?.portrait||'assets/menu/v5-avatars/marcel-guardian-v7.webp?v=portrait-v7-wand-20261122'},
     {name:'kim',path:globalThis.TD2CanonicalHeroArt?.kim?.portrait||'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117'}
   ];
   let successful=0;

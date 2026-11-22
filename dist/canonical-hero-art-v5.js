@@ -6,7 +6,9 @@
     marcel:{
       walk:'assets/hero/marcel-walk-v5b.webp?v=v5b-wand-20261119',
       actions:'assets/hero/marcel-side-actions-v5b.webp?v=v5b-wand-20261119',
-      portrait:'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117',
+      /* 2026-11-22: armory/story projection switches to the wand portrait (v7), cut
+         from the locked 2026-11-15 full-body reference; the menu keeps its own illustration. */
+      portrait:'assets/menu/v5-avatars/marcel-guardian-v7.webp?v=portrait-v7-wand-20261122',
       walkGrid:[3,4],actionGrid:[6,6],walkCell:256,actionCell:128
     },
     kim:{
