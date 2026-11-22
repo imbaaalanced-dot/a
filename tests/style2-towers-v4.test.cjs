@@ -32,7 +32,7 @@ assert.match(impactSource,/impact_\$\{kind\}_6x3\.webp/);
 assert.match(impactSource,/frame\*128/);
 assert(impactSource.includes('(tier-1)*128'));
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-for(const script of ['style2-impact-atlas-v4.js?v=style2-v4a1','style2-user-towers-v4.js?v=style2-v4a1'])
+for(const script of ['style2-impact-atlas-v4.js?v=fx-v3-20261122','style2-user-towers-v4.js?v=fx-v3-towers-20261122'])
  assert(html.indexOf(script)<html.indexOf('game.js?v='),`${script} must load before game logic`);
 const vm=require('node:vm');
 {
@@ -57,7 +57,7 @@ const vm=require('node:vm');
  vm.runInNewContext(impactSource,box);
  const image={naturalWidth:768,naturalHeight:384};
  for(const [row,family] of ['bow','cannon','mage','rift','boomerang'].entries()){
-  const url=`assets/style2-user-towers-v4/runtime-webp/impact_${family}_6x3.webp?v=style2-v4`;
+  const url=`assets/style2-user-towers-v4/runtime-webp/impact_${family}_6x3.webp?v=impactv3-20261122`;
   const p={kind:family,level:row%3+1,x:40,y:60,life:.3,max:.3};
   const ctx={globalAlpha:1,saves:0,restores:0,draws:[],save(){this.saves++},restore(){this.restores++},drawImage(...args){this.draws.push(args)}};
   assert.equal(box.Style2ImpactsV4.draw(ctx,p),false,'cold V4 hit atlas falls back cleanly');

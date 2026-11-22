@@ -1,7 +1,7 @@
 /* One shared V2 impact texture. Old Canvas effects remain the cold/error/low-mode fallback. */
 (()=>{'use strict';
   const url='assets/impacts-v2/runtime.webp?v=impact2';
-  const referenceUrl='assets/style2-reference-impacts-v1/runtime.webp?v=reference-1';
+  const referenceUrl='assets/style2-reference-impacts-v1/runtime.webp?v=reference-2-20261122';
   const referenceEnabled=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2ImpactRefresh')==='1';
   const rows={bow:0,cannon:1,mage:2,rift:3,boomerang:4};
   let requested=false,pending=false,retryAt=0;
