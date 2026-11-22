@@ -81,16 +81,11 @@ for name in ('marcel-portrait-alpha9.webp', 'marcel-lantern-sprite-v1.webp'):
 
 MENU = DIST_ASSETS / 'menu'
 for name, limit in (
-    ('memorial-yard-v3.webp', 200000),
-    ('memorial-yard-mobile-v3.webp', 120000),
-    ('crest-v3.webp', 60000),
-    ('hero-banner-marcel-v3.webp', 90000),
-    ('hero-banner-kim-v3.webp', 90000),
     ('memorial-yard-v4.webp', 200000),
     ('memorial-yard-mobile-v4.webp', 120000),
     ('crest-v4.webp', 60000),
 ):
-    check(MENU / name, alpha=(name in ('crest-v3.webp', 'crest-v4.webp')), budget=limit)
+    check(MENU / name, alpha=(name == 'crest-v4.webp'), budget=limit)
 
 check(DIST_ASSETS / 'items' / 'equipment-v1.webp', size=(1024, 512))
 

@@ -22,7 +22,7 @@ const expectedVersions = new Map([
   ['hero.css', 'v400a4merge1'],
   ['polish.css', 'v5-style2a1'],
   ['loot.css', 'beta-inventory-back-20261117'],
-  ['menu.css', 'menu-hub-art-v6-20261121'],
+  ['menu.css', 'menu-v4base-20261122'],
   ['level-gallery.css', 'gallery-combined1'],
   ['menu-v4.css', 'menu-v4a1'],
   ['portrait-avatars-v5.css', 'duo-v5a1'],
