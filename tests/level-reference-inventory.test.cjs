@@ -9,7 +9,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const modulePins=[
   ['dist/game.js',['assets/monument-level1-style2.webp']],
   ['dist/asset-manager.js',['assets/monument-level1-style2.webp','assets/elemental/goethestrasse-memorial-style2.webp','assets/westhofen/westhofen-memorial-style2-v3-preview.svg']],
-  ['dist/terrain-polish.js',['assets/kirchende/ground-style2-v1.webp','assets/level4/level4-cobblestone-512-seamfix.webp','assets/level4/level4-flagstone-512-seamfix.webp']],
+  ['dist/terrain-polish.js',['assets/kirchende/ground-style2-v2.webp','assets/level4/level4-cobblestone-512-seamfix.webp','assets/level4/level4-flagstone-512-seamfix.webp']],
   ['dist/kirchende-art.js',['monument-style2-pilot.webp','monument-photo-v2.webp','environment-atlas-style2-v1.webp','rootrunner','stoneguard','mistcaller','uprooted']],
   ['dist/church-art.js',['assets/church-ende-reference-20261114.webp','assets/level4/graves-style2-20261114.png','assets/level4/lion-1879-style2-2x.webp']],
   ['dist/hohensyburg-art.js',['kaiser-wilhelm-style2-qa-v2-2x.webp','kaiser-wilhelm-style2-qa-v1-2x.webp']],
@@ -21,7 +21,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   'dist/assets/monument-level1-style2.webp',
   'dist/assets/scenery-style2.webp',
   'dist/assets/asset-atlas-style2.webp',
-  'dist/assets/kirchende/ground-style2-v1.webp',
+  'dist/assets/kirchende/ground-style2-v2.webp',
   'dist/assets/kirchende/monument-style2-pilot.webp',
   'dist/assets/kirchende/monument-photo-v2.webp',
   'dist/assets/kirchende/environment-atlas-style2-v1.webp',
