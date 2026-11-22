@@ -6,6 +6,7 @@ on:
       - 'dist/kirchende-art.js'
       - 'dist/assets/kirchende/*pilot.webp'
       - 'tests/kirchende-memorial-pilot.test.cjs'
+      - 'tests/kirchende-memorial-orientation.test.cjs'
       - 'tools/verify-kirchende-memorial-browser.cjs'
       - '.github/workflows/td2-kirchende-memorial-browser.yml'
   workflow_dispatch:
@@ -27,6 +28,7 @@ jobs:
           node --check dist/kirchende-art.js
           node --check tools/verify-kirchende-memorial-browser.cjs
           node tests/kirchende-memorial-pilot.test.cjs
+          node tests/kirchende-memorial-orientation.test.cjs
           node tests/kirchende-loading.test.cjs
       - name: Install Chromium
         run: |
