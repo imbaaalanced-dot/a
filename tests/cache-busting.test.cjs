@@ -40,7 +40,7 @@ const expectedVersions = new Map([
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
   ['levels.js', 'level7btouch1campaign20-kirchende-layout-20261114a'],
   ['visuals.js', 'expansion2'],
-  ['equipment-catalog.js', 'loot-v2-20261029'],
+  ['equipment-catalog.js', 'loot-v3-20261122'],
   ['loot.js', 'loot-v2-20261029'],
   ['loot-ui.js', 'portrait-v7-20261122'],
   ['v2-expansion-data.js', 'expansion2'],
