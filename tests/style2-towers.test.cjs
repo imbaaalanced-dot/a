@@ -52,7 +52,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'combat-fx.js'),'utf8'),sandbox,{
 const fx=sandbox.DenkmalCombatFX,game={particles:[]};
 for(const kind of kinds)for(let level=1;level<=3;level++){
   const before=game.particles.length;
-  fx.burst(game,{kind,level,x:20,y:30,vx:400,dy:undefined,color:'#cba9e9'},true,false,false);
+  fx.burst(game,{kind,level,x:20,y:30,vx:400,vy:5,color:'#cba9e9'},true,false,false);
   const particles=game.particles.slice(before);
   assert.equal(particles.filter(p=>p.style2Impact).length,0,kind+level+' must not request old specialty atlas');
   const p=particles.find(p=>p.ring);
