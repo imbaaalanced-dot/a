@@ -1,7 +1,7 @@
 {
   "actors": {
     "enemy-00": {
-      "file": "assets/directional-v410/enemy-00.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-00.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         66.10640311218589,
@@ -33,7 +33,7 @@
       }
     },
     "enemy-01": {
-      "file": "assets/directional-v410/enemy-01.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-01.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.44041450777202,
@@ -65,7 +65,7 @@
       }
     },
     "enemy-02": {
-      "file": "assets/directional-v410/enemy-02.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-02.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.10989010989011,
@@ -97,7 +97,7 @@
       }
     },
     "enemy-03": {
-      "file": "assets/directional-v410/enemy-03.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-03.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         70.08067226890756,
@@ -129,7 +129,7 @@
       }
     },
     "enemy-04": {
-      "file": "assets/directional-v410/enemy-04.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-04.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.99173553719008,
@@ -161,7 +161,7 @@
       }
     },
     "enemy-05": {
-      "file": "assets/directional-v410/enemy-05.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-05.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.04379562043796,
@@ -193,7 +193,7 @@
       }
     },
     "enemy-06": {
-      "file": "assets/directional-v410/enemy-06.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-06.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         68.16988416988417,
@@ -225,7 +225,7 @@
       }
     },
     "enemy-07": {
-      "file": "assets/directional-v410/enemy-07.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-07.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.865546218487395,
@@ -257,7 +257,7 @@
       }
     },
     "enemy-08": {
-      "file": "assets/directional-v410/enemy-08.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-08.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         64.23478260869565,
@@ -289,7 +289,7 @@
       }
     },
     "enemy-09": {
-      "file": "assets/directional-v410/enemy-09.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-09.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.22222222222222,
@@ -321,7 +321,7 @@
       }
     },
     "enemy-10": {
-      "file": "assets/directional-v410/enemy-10.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-10.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         70.37638376383764,
@@ -353,7 +353,7 @@
       }
     },
     "enemy-11": {
-      "file": "assets/directional-v410/enemy-11.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-11.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         62.65560165975104,
@@ -385,7 +385,7 @@
       }
     },
     "enemy-12": {
-      "file": "assets/directional-v410/enemy-12.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-12.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         55.6215953307393,
@@ -417,7 +417,7 @@
       }
     },
     "enemy-13": {
-      "file": "assets/directional-v410/enemy-13.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-13.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.352941176470594,
@@ -449,7 +449,7 @@
       }
     },
     "enemy-14": {
-      "file": "assets/directional-v410/enemy-14.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-14.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         68.03937007874016,
@@ -481,7 +481,7 @@
       }
     },
     "enemy-15": {
-      "file": "assets/directional-v410/enemy-15.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-15.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         64.41432225063939,
@@ -513,7 +513,7 @@
       }
     },
     "enemy-16": {
-      "file": "assets/directional-v410/enemy-16.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-16.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         65.5940959409594,
@@ -545,7 +545,7 @@
       }
     },
     "enemy-17": {
-      "file": "assets/directional-v410/enemy-17.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-17.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         63.747663551401864,
@@ -577,7 +577,7 @@
       }
     },
     "enemy-18": {
-      "file": "assets/directional-v410/enemy-18.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-18.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.73282442748092,
@@ -609,7 +609,7 @@
       }
     },
     "enemy-19": {
-      "file": "assets/directional-v410/enemy-19.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-19.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         60.53012048192771,
@@ -641,7 +641,7 @@
       }
     },
     "enemy-20": {
-      "file": "assets/directional-v410/enemy-20.webp?v=v410a1",
+      "file": "assets/directional-v410/enemy-20.webp?v=v410a2",
       "cell": 128,
       "anchor": [
         61.682403433476395,
@@ -673,7 +673,7 @@
       }
     },
     "kim": {
-      "file": "assets/directional-v410/kim.webp?v=v410a1",
+      "file": "assets/directional-v410/kim.webp?v=v410a2",
       "cell": 192,
       "anchor": [
         98.6875,
@@ -705,7 +705,7 @@
       }
     },
     "marcel": {
-      "file": "assets/directional-v410/marcel.webp?v=v410a1",
+      "file": "assets/directional-v410/marcel.webp?v=v410a2",
       "cell": 192,
       "anchor": [
         97.13157894736842,
@@ -759,7 +759,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "9a5862cc2937c5964adaf5cfcf0e2b168731e09dab7e0386440e4a844ebbf9c2",
       "runtime": "dist/assets/directional-v410/enemy-00.webp",
-      "runtimeSha256": "fbfa601193d0eb954a59bbeb89631d17159d8242a4bc616163d7ae9f489ee753",
+      "runtimeSha256": "6a729463fde305f5d8138a3b283f9d7b294d725915435e3e9c1c60270ff0eb9a",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -1985,7 +1985,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "91cf1a7b184ea102d212f3b17d17b1bd60fd0befbcb9128fe90e01daa3773ae0",
       "runtime": "dist/assets/directional-v410/enemy-01.webp",
-      "runtimeSha256": "c04ff2c059e6d530e92e94471826455346a3db57e2e276862cd1b30c7624e0a3",
+      "runtimeSha256": "72f819ae39f259aca33b280ee6c781cd59496a54f281d3ab2640042851d4aab1",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -3211,7 +3211,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "495b9f37cca0f468e07c70ae359ad1b1be12aa5cde3489688f4408726da8c437",
       "runtime": "dist/assets/directional-v410/enemy-02.webp",
-      "runtimeSha256": "a9a0777b50627b6a6ff7ac6921e8e3332131ad3b6eae08683cc1cecce38361fa",
+      "runtimeSha256": "a5c17a4ed1d21ebbfbac4dd80778ab9dd39ffadd8ae26225218605361a0af21f",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -4437,7 +4437,7 @@
       "extractionThreshold": 240,
       "sourceSha256": "7378e233f598559bb6d58cbe11522d57fb74540034c0f0d5bf413c7b86e23370",
       "runtime": "dist/assets/directional-v410/enemy-03.webp",
-      "runtimeSha256": "5768e954c199aed3d681c5264a05b4888008c551ab7b9d6f188ac99d4b052237",
+      "runtimeSha256": "83bbd52727200434c36061ba1d0fe92d590be2e43dde5cef972ee91f7ed37a17",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -5658,7 +5658,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "a58250b19590404410b164655c223e3cc51ec52d7cf533cafc113086d4e219df",
       "runtime": "dist/assets/directional-v410/enemy-04.webp",
-      "runtimeSha256": "8fdfccc9c606aa98e97dd330a6f9e5881ab86717fcfaaef78c0217702a9ff42d",
+      "runtimeSha256": "88cdc202197c6faad31aa4c4e5f71e110fbc7c81bdc1d60c16b4df26c7b17bd5",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -6879,7 +6879,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "5e9b6c28db9d8a44147990c572de988dfb2ab06344f945a4dc09872b831c046c",
       "runtime": "dist/assets/directional-v410/enemy-05.webp",
-      "runtimeSha256": "17e8563544b311be3e0b24125431a1282b5f00fed19e137cf564f642f65150b7",
+      "runtimeSha256": "3ed8dd4c7e0f3197769770dcbb59dc92f08f3f3f18009613407ae48cdf6d47cb",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -8100,7 +8100,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "43bf5f75176bc37e50c1f3ce5ffe1ba600d1df6a7d8b333e2379d30a666e9859",
       "runtime": "dist/assets/directional-v410/enemy-06.webp",
-      "runtimeSha256": "6e9fc783dfccf0de5158f7cf79dd1aa76e38af2175bfb4fca6b19cd6e6c84b12",
+      "runtimeSha256": "4db3ac956aefacebef645b0ca2213f980368e0c03542f4f0052cb7f7148449a8",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -9321,7 +9321,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "6141a7503ebf452ea6fc26ba7feece0479148c47e80325ece8dda2651d9e27e8",
       "runtime": "dist/assets/directional-v410/enemy-07.webp",
-      "runtimeSha256": "845da455ab4d137efe1f2a404bd4657d562b957decaea42b7aa775bc701aef32",
+      "runtimeSha256": "d32e75863882474d613ed70dd8eca091873d7eb0e22b48120f8d721ff64a5227",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -10542,7 +10542,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "8e91d51777aada631f10d8ac1d79090dcdc00f69d475bedc6ebe9b9070dcaa0c",
       "runtime": "dist/assets/directional-v410/enemy-08.webp",
-      "runtimeSha256": "975096c0e7dd89aa1cec097e501ba2207e797ec886e0ea8401550403bb1a10b6",
+      "runtimeSha256": "a6b3fdfb74af21d112b7842d0091fecc54550728b06785b860899f5f570ff04a",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -11763,7 +11763,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "2c6aec21ed053418ff6fc9d771fd831571bdfccf4fd799631b072ca2ea745804",
       "runtime": "dist/assets/directional-v410/enemy-09.webp",
-      "runtimeSha256": "b9a12acfa7070db8681b5cc68eeaa3a448c2def130b39955a912b56fe11ce079",
+      "runtimeSha256": "2a0d69f696df3c6c23e2a6369a7f371839acf0c165478ec7b5ec08df840b2e51",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -12984,7 +12984,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "9dc6ff95a03f5ab4ab27e18940945fd80f970d6852b8e59dd3dc1cd7d22f3b7c",
       "runtime": "dist/assets/directional-v410/enemy-10.webp",
-      "runtimeSha256": "20e6d416393ae8642d9a780a4283493d6bdfc73904d063d0e18d6cea98d3fc6e",
+      "runtimeSha256": "85f7305ac264547ab0902efd87e17fff664d36f08decf36b19b7718ecd88d098",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -14205,7 +14205,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "4d6c1477078bae97cf77a3ef3af5e7dd59ccac32037694a4bb381c995b39ef01",
       "runtime": "dist/assets/directional-v410/enemy-11.webp",
-      "runtimeSha256": "f771a072f2a012f4a5a1981200c8ca9ed4eeb6be11f504e8ccb0febd86a85e78",
+      "runtimeSha256": "77e0da1ccf619c6885130068e6deb73072b52d5afde9e663f7a8a69b0a7bf22a",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -15433,7 +15433,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "9ecea0085f7989625e47e655950bccd3b8ea101b516017c3c9a6e2e598d76f27",
       "runtime": "dist/assets/directional-v410/enemy-12.webp",
-      "runtimeSha256": "4d22ff29c13c5ea9748f2455e485774da6f35cde1f70f0f5cf60d02b03b87dc9",
+      "runtimeSha256": "4ee513589bf77d41fa2e8e7dbee9c83482558b7082f49c587cb2e4bae016435c",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -16654,7 +16654,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "7be3f05590f1a4aedf761eff6366b3dc2dbccfae2ad233704fbd5d9f221170fe",
       "runtime": "dist/assets/directional-v410/enemy-13.webp",
-      "runtimeSha256": "90e6f0ebe6c6e8753ef54de2b3d5c5e3d3abe2752967c8c59b77cb16cf3f4a11",
+      "runtimeSha256": "45508e51095c77d1db3e25d7c815fa253bffd7a56cbbf8504ecd8bed9c7af0b5",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -17875,7 +17875,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "07c385b117808ec1fb4cd9faae0e94601876032b30623a5ae235a6a99c0a80dc",
       "runtime": "dist/assets/directional-v410/enemy-14.webp",
-      "runtimeSha256": "cd3139c1bee0c147e59e99faa73e3339c386d06eb22656e9789562f6220192d5",
+      "runtimeSha256": "baaff91683bcbed79840bfb33fad69832ba22f5fc041c99f136f211becbf883b",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -19098,7 +19098,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "6725dcfb838214d22df84802beef59d5d6920ae986cd0759a2de1bc0c401df65",
       "runtime": "dist/assets/directional-v410/enemy-15.webp",
-      "runtimeSha256": "c39c3fc1fc2e9f7e2232847a44859ebd9f0fd081320730dce385a421351346a5",
+      "runtimeSha256": "88c82b9de4cb6bfd1583a209c5bcfd88a7278b89ac15095da39b5e91f8564b74",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -20319,7 +20319,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "5738180cb66c8eed2c333aee907c28fd98044dde859ebcb9eb12a5263bafce6d",
       "runtime": "dist/assets/directional-v410/enemy-16.webp",
-      "runtimeSha256": "d4ccc017354403f5229fdbd24cd913c658c1e932c64a9974b10c2d1efdb67989",
+      "runtimeSha256": "51c6111038bfd3c30b771bd1061f699c11da68f9cd734ad1965129b76810e31e",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -21540,7 +21540,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "89856b3908050e08a1f785249ce941667327e546e13a20283f8cea1c2f645520",
       "runtime": "dist/assets/directional-v410/enemy-17.webp",
-      "runtimeSha256": "6ff750310ab5c79956f83413b5d3755ecd487b6843ade9ea45a07aaa7a8d2eb8",
+      "runtimeSha256": "8ef34d212dbaf05999bb3f514cec0b1cbbbc4346d8e8b807a8c3a6f29a4846bc",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -22761,7 +22761,7 @@
       "extractionThreshold": 96,
       "sourceSha256": "c628f84119255b9e8ebcb0574fff74eb0de176db63414d588e56ab94c5c039a5",
       "runtime": "dist/assets/directional-v410/enemy-18.webp",
-      "runtimeSha256": "581e2ab1e76b9db161e1ff599859710078bc7574a466205732eac1a16e6fca0f",
+      "runtimeSha256": "ecb4d8674f78e3157838a5349ea89e1964e3f37360aecb05a95b154d88b4daec",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -23982,7 +23982,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "d843ecb371e0b94b91d78a24f9699cd5dea8f01c75466754a9efc34d0cb00bdc",
       "runtime": "dist/assets/directional-v410/enemy-19.webp",
-      "runtimeSha256": "a62f08b36fc7d34cf14e8245ba420af38f9db0995a73f49bb6310851a3b50980",
+      "runtimeSha256": "dbf99b3f30ede52b187f3ac897d3fb9e8d9ea40fea8c586e6faf2dfda1446e97",
       "decodedBytes": 3145728,
       "frames": [
         {
@@ -25203,7 +25203,7 @@
       "extractionThreshold": 64,
       "sourceSha256": "b888be34f895165287bb848b606ce60994fa1f99de99019d1b1eacb123439e86",
       "runtime": "dist/assets/directional-v410/enemy-20.webp",
-      "runtimeSha256": "f1b17131976b47fb713f1645f4bd006a471afb164e59deb353617ba48de7dadb",
+      "runtimeSha256": "444426994069921646369497a5969c0a3c5348ebb42fa15719e242cce38823a3",
       "decodedBytes": 3145728,
       "frames": [
         {
