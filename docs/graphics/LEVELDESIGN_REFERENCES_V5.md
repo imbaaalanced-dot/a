@@ -137,3 +137,27 @@ Vor jeder Grafikübernahme: Alpha, Pivot/Frame, Atlaszuschnitt, gekachelte Wegr�
 Querverweise: ART-DIRECTION.md; docs/graphics/level-environment-audit.md; docs/graphics/style2-environment-plan.md; docs/KIRCHENDE_PHOTO_TERRAIN.md; docs/STYLE2_UMGEBUNGSPILOT_KIRCHENDE.md; docs/WESTHOFEN_LEVEL.md; docs/style2/2026-11-10-westhofen-asset-audit.md; dist/levels.js.
 
 **Grenze dieser Änderung:** Nur Dokumentation. Kein Umbau, kein Merge-/Release-Nachweis, keine Live- oder Android-Freigabe.
+
+## Runtime-Abgleich 22.11.2026 (P1 #330 §2: Inventar dem tatsächlichen Level zuordnen)
+
+Code-Lesung auf `main` @ `762fbdf` — welche Assets jedes Level tatsächlich lädt
+(Pfadangaben ohne Cache-Key). **Keine Browser-/Android-Abnahme.** Gepinnt durch
+`tests/level-reference-inventory.test.cjs`.
+
+| Level | Tatsächlich geladene Grafik-Assets (aus dist-Code) | Abweichung zum Stand 12.11. oben |
+| --- | --- | --- |
+| 1 Einleitung | `assets/monument-level1-style2.webp` (game.js + asset-manager-Preload); Boden prozedural gecacht in `style2-maps.js`; shared `assets/scenery-style2.webp`, `assets/asset-atlas-style2.webp` | unverändert |
+| 2 Labyrinth | kein level-eigenes Bild (asset-manager-Gruppe 2 leer); gemeinsame `style2-maps.js`-Karte | unverändert |
+| 3 Kirchende | `assets/kirchende/ground-style2-v1.webp` (terrain-polish-Basis), `monument-style2-pilot.webp` (Default) bzw. `monument-photo-v2.webp` nur mit `?td2KirchendeMemorialLegacy=1`, `environment-atlas-style2-v1.webp`, `rootrunner/stoneguard/mistcaller/uprooted.webp`; shared Level-4-Wegmaterial (`level4-cobblestone/flagstone-512-seamfix.webp`, `style2-pilot-v1` grounds) | Default-Monument ist inzwischen das Style-2-Pilot-Sprite (Foto nur noch Legacy); Ausrichtungsvariante `?td2KirchendeMemorialFace=-1` seit #406 |
+| 4 Dorfkirche/Löwe | `assets/church-ende-reference-20261114.webp` (Site), `assets/level4/graves-style2-20261114.png`, `assets/level4/lion-1879-style2-2x.webp` (lazy, 512×608-Gate); `lion-ende-style2.webp` bleibt ungenutzt (opaaker Placeholder) | unverändert |
+| 5 Hohensyburg | `assets/hohensyburg/kaiser-wilhelm-style2-qa-v2-2x.webp` (Default), `qa-v1-2x` als Fallback | unverändert |
+| 6 Goethestraße | `assets/elemental/goethestrasse-memorial-style2.webp` (asset-manager-Preload + drawMonument) | unverändert |
+| 7 Westhofen | `assets/westhofen/westhofen-memorial-style2-v3-preview.svg` (asset-manager + drawMonument); Galerie-Karte `assets/menu/level-gallery/level-07-westhofen.webp` (v2 seit #396); `westhofen-memorial-style2-v1.webp` liegt noch als Datei, wird aber nicht mehr geladen | Doku oben nennt noch `v1.webp?v=westhofen-style2a1` — Runtime nutzt seit v3-Preview das SVG |
+
+Gemeinsam/alle Level: `assets/scenery-style2.webp`, `assets/enemies/walk-style2.webp`,
+`assets/directional-v410/enemy-00…20.webp` (Richtungsatlanten), Hero-Atlanten unter
+`assets/hero/`, Voice-MP3s unter `assets/hero/voice/`.
+
+**Offen bleibt:** die Recherche-Tabelle „Offene historische Bilder" oben (P0/P1) —
+die Zuordnung Level ↔ tatsächlich geladenes Asset ist mit diesem Abgleich
+abgeschlossen und per Test gegen Dateiverlust gepinnt.
