@@ -45,7 +45,7 @@ const server=http.createServer((req,res)=>{
         return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible};
       });
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-kirchende-gameplay.png`),fullPage:true});
-      assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'new ground tile was fetched');
+      assert(requests.some(url=>url.includes('ground-style2-v2.webp')),'new ground tile was fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'transparent environment atlas was fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(failed,[],'no failed asset or script requests');
