@@ -4,7 +4,7 @@
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const root = path.resolve(__dirname, '../../dist');
 
-function createRenderSandbox({ mobile = false, countOps = true, sourceOverrides = {}, math = Math, initialStorage = {} } = {}) {
+function createRenderSandbox({ mobile = false, countOps = true, sourceOverrides = {}, math = Math, initialStorage = {}, reducedMotion = false } = {}) {
   const elements = new Map(), listeners = {};
   const counts = Object.create(null);
   const gradients = { radial: 0, linear: 0 };
@@ -60,7 +60,7 @@ function createRenderSandbox({ mobile = false, countOps = true, sourceOverrides 
     innerWidth: mobile ? 720 : 1280, innerHeight: mobile ? 1600 : 800,
     devicePixelRatio: mobile ? 2 : 1,
     performance: { now: () => 0 },
-    requestAnimationFrame() {}, matchMedia: q => ({ matches: mobile && q === '(pointer:coarse)' }),
+    requestAnimationFrame() {}, matchMedia: q => ({ matches: (reducedMotion && q === '(prefers-reduced-motion: reduce)') || (mobile && q === '(pointer:coarse)') }),
     setTimeout: () => 1, clearTimeout() {}, setInterval: () => 1, clearInterval() {},
     addEventListener(name, fn) { listeners[name] = fn; },
     localStorage: { data: new Map(Object.entries(initialStorage)), getItem(k) { return this.data.get(k) || null; }, setItem(k, v) { this.data.set(k, v); } },
