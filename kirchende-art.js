@@ -5,6 +5,8 @@
   // ?td2KirchendeMemorialLegacy=1 restores the previous photographic version.
   const legacy=/(?:^|[?&])td2KirchendeMemorialLegacy=1(?:&|$)/.test(globalThis.location?.search||'');
   const pilot=!legacy;
+  const faceMatch=/(?:^|[?&])td2KirchendeMemorialFace=(-1|1)(?:&|$)/.exec(globalThis.location?.search||'');
+  const monumentFace=faceMatch?Number(faceMatch[1]):1;
   const assets={monument:pilot?'monument-style2-pilot.webp':'monument-photo-v2.webp',environment:'environment-atlas-style2-v1.webp'};
   // The opt-in plaque WebP shows unverified candles and has fringe artifacts.
   // Retain the file for later review but never request it in the game.
@@ -52,7 +54,7 @@
     });
     return loading;
   }
-  function draw(ctx,key,x,y,height,{face=1,opacity=1}={}){
+  function draw(ctx,key,x,y,height,{face=key==='monument'?monumentFace:1,opacity=1}={}){
     const img=images[key];if(!img?.complete||!img.naturalWidth)return false;
     const sw=img.naturalWidth,sh=img.naturalHeight,sx=0,sy=0;
     const width=height*sw/sh;ctx.save();ctx.translate(x,y);ctx.scale(face,1);ctx.globalAlpha*=opacity;ctx.drawImage(img,sx,sy,sw,sh,-width/2,12-height,width,height);ctx.restore();return true;
@@ -348,5 +350,5 @@
     ctx.restore();
   }
   function drawCracks(ctx,m){if(m.hp/m.maxHp>.66)return;ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle=m.hp/m.maxHp<=.33?'#db8b5555':'#34261b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-12,-130);ctx.lineTo(8,-105);ctx.lineTo(-3,-82);ctx.lineTo(16,-55);if(m.hp/m.maxHp<=.33){ctx.moveTo(28,-110);ctx.lineTo(10,-75);ctx.lineTo(22,-40);}ctx.stroke();ctx.restore();}
-  globalThis.KirchendeArt={load,loadEnvironment,ready,image(key){return ready(key)?images[key]:null;},draw,drawScenery,drawSite,drawCracks,crownOpacity,buildingFootprints,groundDecorationClear};
+  globalThis.KirchendeArt={load,loadEnvironment,ready,monumentFace,image(key){return ready(key)?images[key]:null;},draw,drawScenery,drawSite,drawCracks,crownOpacity,buildingFootprints,groundDecorationClear};
 })();
