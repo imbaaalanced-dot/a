@@ -119,6 +119,21 @@ const server=http.createServer((req,res)=>{
      assert.ok(thumb.changed>size*size*.02,profile.name+' '+size+'px monument silhouette visible');
      fs.writeFileSync(path.join(output,profile.name+'-'+size+'px.png'),Buffer.from(thumb.png,'base64'));
    }
+   if(profile.style2&&!profile.touch){
+     await page.evaluate(()=>{
+       const art=globalThis.KirchendeArt;
+       const c=document.createElement('canvas');c.id='kirchendeOrientationQACanvas';c.width=1160;c.height=470;
+       const q=c.getContext('2d');q.fillStyle='#32352f';q.fillRect(0,0,c.width,c.height);
+       for(const [x,face,label] of [[290,art.monumentFace,'default (face='+art.monumentFace+')'],[870,-1,'?td2KirchendeMemorialFace=-1']]){
+         art.draw(q,'monument',x,235,235,{face});
+         q.fillStyle='#e8e8e8';q.font='16px sans-serif';q.textAlign='center';q.fillText(label,x,450);
+       }
+       c.style.cssText='position:fixed;z-index:2147483647;left:0;top:0;pointer-events:none';
+       document.body.appendChild(c);
+     });
+     await page.locator('#kirchendeOrientationQACanvas').screenshot({path:path.join(output,profile.name+'-orientation-variants.png')});
+     await page.locator('#kirchendeOrientationQACanvas').evaluate(el=>el.remove());
+   }
    await page.locator('#kirchendePilotQACanvas').evaluate(el=>el.remove());
    await page.waitForTimeout(300);
    // The default profile verifies the original image and actual gameplay,
