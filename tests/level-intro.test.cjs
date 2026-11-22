@@ -102,7 +102,7 @@ function makeSandbox() {
     assert.equal(element('levelIntroScreen').classList.contains('hidden'), true, 'skip hides the overlay');
   }
   {
-    const { sandbox, apiState } = makeSandbox();
+    const { sandbox, element, apiState } = makeSandbox();
     sandbox.DenkmalLevelIntro.show(3);
     sandbox.DenkmalLevelIntro.close();
     assert.equal(apiState.value, 'playing', 'close is idempotent and restores play');
@@ -130,7 +130,7 @@ function makeSandbox() {
     assert.match(html, /id="levelIntroScreen"/, 'index.html contains the intro overlay');
     assert.match(html, /<script src="level-intro\.js\?v=levelintro2"><\/script>/, 'module loads before game.js with a cache key');
     assert.match(html, /level-intro\.css\?v=levelintro1/, 'overlay styles load with a cache key');
-    assert.match(html, /game\.js\?v=portrait-v7-20261122/, 'changed game.js bumps its cache key');
+    assert.match(html, /game\.js\?v=hitstop-slowmo-20261122/, 'changed game.js bumps its cache key');
     assert.match(html, /id="levelIntroVideo"[^>]*preload="none"[^>]*playsinline/, 'no preload and inline playback for WebView');
   }
   console.log('Level-3 intro video: module contract, wiring and 404-gate compatibility verified.');
