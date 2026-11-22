@@ -102,7 +102,7 @@ function makeSandbox() {
     assert.equal(element('levelIntroScreen').classList.contains('hidden'), true, 'skip hides the overlay');
   }
   {
-    const { sandbox, element, apiState } = makeSandbox();
+    const { sandbox, apiState } = makeSandbox();
     sandbox.DenkmalLevelIntro.show(3);
     sandbox.DenkmalLevelIntro.close();
     assert.equal(apiState.value, 'playing', 'close is idempotent and restores play');
