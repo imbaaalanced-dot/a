@@ -18,6 +18,6 @@ assert.ok(fx.includes("audio.state !== 'running'"), 'SFX only plays after the au
 assert.ok(fx.includes('unlock,mute,burst'), 'burst remains exported in the combat-fx API');
 assert.ok(fx.includes('setViewZoom,uiScale,setVolume,sfx};'),
   'the sfx event API is exported alongside the fx controls');
-assert.ok(html.includes('combat-fx.js?v=procedural-sfx-20261121'),
+assert.ok(html.includes('combat-fx.js?v=particle-priority-20261122'),
   'index.html must reference the new combat-fx cache key');
 console.log('SFX wiring: burst triggers shot/impact/magic profiles with caps and unlock gate');
