@@ -21,7 +21,7 @@ for (const key of ['walk', 'actions', 'portrait'])
   assert.ok(fs.existsSync(path.join(root, marcel[key].split('?')[0])), 'missing ' + key);
 assert.match(marcel.walk, /-v5b\.webp/, 'ingame walk must use the locked v5b atlas');
 assert.match(marcel.actions, /-v5b\.webp/, 'ingame actions must use the locked v5b atlas');
-assert.match(marcel.portrait, /marcel-guardian-v6\.webp/, 'menu portrait must be the v6 lock');
+assert.match(marcel.portrait, /marcel-guardian-v7\.webp/, 'armory/Story portrait must be the v7 wand cutout');
 
 const sides = mapping.TD2HeroSideAssets.marcel;
 assert.equal(sides.file, marcel.actions, 'side sheet must equal the canonical action atlas');

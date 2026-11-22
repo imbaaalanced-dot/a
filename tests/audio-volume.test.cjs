@@ -30,8 +30,8 @@ assert.ok(html.includes('id="menuVolumeBtn"') && html.includes('id="volumeBtn"')
   'both option surfaces expose the volume control');
 assert.ok(html.includes('LAUTSTÄRKE: 100 %'),
   'the control is labelled with its level');
-assert.ok(html.includes('game.js?v=procedural-sfx-20261121')
+assert.ok(html.includes('game.js?v=portrait-v7-20261122')
   && html.includes('combat-fx.js?v=procedural-sfx-20261121')
-  && html.includes('hero-saga.js?v=volume-audio-20261120'),
+  && html.includes('hero-saga.js?v=saga-plain-20261122'),
   'all touched modules ship fresh cache keys');
 console.log('Audio volume levels: 100/70/40 across SFX, voice and TTS pinned');

@@ -10,8 +10,8 @@ const css=fs.readFileSync(path.join(root,'portrait-avatars-v5.css'),'utf8');
 const source=fs.readFileSync(path.join(root,'portrait-avatars-v5.js'),'utf8');
 
 assert.match(html,/portrait-avatars-v5\.css\?v=duo-v5a1/);
-assert.match(html,/portrait-avatars-v5\.js\?v=portrait-v6-clean-20261117/);
-assert.match(source,/marcel-guardian-v6\.webp/);
+assert.match(html,/portrait-avatars-v5\.js\?v=portrait-v7-wand-20261122/);
+assert.match(source,/marcel-guardian-v7\.webp/);
 assert.match(source,/kim-marksman-v6\.webp/);
 assert.match(source,/successful===sources\.length/);
 assert.match(source,/stage\.remove\(\)/);

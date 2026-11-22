@@ -23,7 +23,7 @@ assert.ok(nativeDuo.includes('kim-marksman-v6.webp'),'Kim retains her bow portra
 assert.ok(game.includes("const menuMarcelPortrait='"+menuUrl+"'"),'character switch uses staff menu image');
 assert.ok(game.includes('const bannerUrl=kim?portraitUrl:menuMarcelPortrait;'),'selected Marcel uses staff art');
 assert.ok(game.includes("const companionUrl=otherCharacter==='marcel'?menuMarcelPortrait:"),'Kim selection shows Marcel with staff as companion');
-assert.ok(canonical.includes("portrait:'assets/menu/v5-avatars/marcel-guardian-v6.webp"),'canonical HUD/armory remains unchanged');
+assert.ok(canonical.includes("portrait:'assets/menu/v5-avatars/marcel-guardian-v7.webp"),'canonical HUD/armory now projects the wand portrait v7');
 assert.ok(!canonical.includes(portrait),'menu illustration must not alter gameplay art mapping');
-assert.ok(html.includes('game.js?v=procedural-sfx-20261121'),'game JS cache key is updated');
+assert.ok(html.includes('game.js?v=portrait-v7-20261122'),'game JS cache key is updated');
 console.log('Menu-only Marcel wand WebP fingerprint, selection and HUD isolation passed');
