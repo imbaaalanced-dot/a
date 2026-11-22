@@ -112,8 +112,12 @@
       $('lootHeroTitle').textContent=(kim?'KIM':'MARCEL')+' · DEINE AUSRÜSTUNG';
       $('lootHeroRole').textContent=kim?'DIE TREFFSICHERE':'DER BESCHÜTZER';
       $('lootHeroPortrait').src=globalThis.TD2CanonicalHeroArt?.[getHero()]?.portrait||
-        (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v6.webp?v=portrait-v6-clean-20261117');
+        (kim?'assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117':'assets/menu/v5-avatars/marcel-guardian-v7.webp?v=portrait-v7-wand-20261122');
       $('lootHeroPortrait').alt=kim?'Kim die Treffsichere':'Marcel der Beschützer';
+      /* 2026-11-22 portrait-fit: the frame aspect ratio follows the hero so the
+         full figure (bow, legs, wand) fills the frame instead of being cropped. */
+      const heroFrame=$('lootHeroPortrait').closest?.('.loot-portrait');
+      if(heroFrame)heroFrame.dataset.hero=getHero();
       for(const hero of ['marcel','kim']){
         const picker=$('lootSelect'+(hero==='kim'?'Kim':'Marcel'));
         picker.setAttribute('aria-pressed',String(getHero()===hero));

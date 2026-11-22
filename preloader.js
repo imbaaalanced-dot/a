@@ -16,7 +16,7 @@
     mobile ? 'assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1' : 'assets/menu/memorial-yard-v4.webp?v=menu-v4a1',
     'assets/menu/crest-v4.webp?v=menu-v4a1',
     globalThis.TD2CanonicalHeroArt?.[character]?.portrait ||
-      'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v6.webp')
+      'assets/menu/v5-avatars/' + (character === 'kim' ? 'kim-marksman-v6.webp' : 'marcel-guardian-v7.webp')
   ];
   const screen=document.getElementById('td2Loading');
   if(!screen)return;
