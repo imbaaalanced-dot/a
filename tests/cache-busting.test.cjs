@@ -15,7 +15,7 @@ assert.match(html, /id="td2-version-label"/, 'menu version labels use the canoni
 // and the expected key updated here; unchanged files keep their existing keys.
 const expectedVersions = new Map([
   ['canonical-hero-art-v5.js', 'portrait-v6-clean-20261117'],
-  ['directional-assets-v410.js','v410a1'],
+  ['directional-assets-v410.js','v410a2'],
   ['directional-actions-v410.js','v5-hero-canonical1'],
   ['map-polish-v410.js','building-clearance-20261114'],
   ['styles.css', 'v400a4merge1'],
@@ -34,7 +34,7 @@ const expectedVersions = new Map([
   ['level-gallery.js', 'menu-v4a2'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
-  ['asset-manager.js', 'syburg-clean-runtime1'],
+  ['asset-manager.js', 'enemyv3-runtime-20261121'],
   ['preloader.js', 'menu-v4-20261121'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
@@ -52,7 +52,7 @@ const expectedVersions = new Map([
   ['style2-impact-atlas-v4.js', 'style2-v4a1'],
   ['style2-user-towers-v4.js', 'style2-v4a1'],
   ['style2-v6-towers.js', 'v6-candidates-20261116'],
-  ['enemy-animations.js', 'v410a1'],
+  ['enemy-animations.js', 'v410a2'],
   ['style2-markers.js', 'markers2'],
   ['ground-v3.js','late-ground-20261113'],
   ['style2-maps.js','cold-start-20261113'],

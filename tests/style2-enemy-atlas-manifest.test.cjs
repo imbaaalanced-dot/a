@@ -19,7 +19,7 @@ for(const [id,spec] of Object.entries(manifest)){
  assert.equal(spec.frames,4,id+' frame count');
  assert.ok(spec.height>0,id+' authored height');
  assert.ok(spec.anchor.length===2&&spec.anchor.every(v=>Number.isFinite(v)&&v>=0&&v<=128),id+' anchor');
- assert.match(spec.file,/^assets\/directional-v410\/enemy-\d\d\.webp\?v=v410a1$/);
+ assert.match(spec.file,/^assets\/directional-v410\/enemy-\d\d\.webp\?v=v410a2$/);
  assert.equal(spec.file.match(/enemy-\d\d/)[0],id,id+' filename identity');
  assert.ok(!files.has(spec.file),id+' duplicate atlas URL');
  files.add(spec.file);
