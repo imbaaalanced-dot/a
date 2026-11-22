@@ -140,7 +140,17 @@
       for (const layer of recipe) { if (layer.osc) sfxOsc(layer, now); else sfxNoise(layer, now); }
     } catch {}
   }
-  function push(game, p) { if (game.particles.length >= MAX_PARTICLES) return false; game.particles.push(p); return true; }
+  // Under budget pressure the impact juice (rings, core flashes, bolts) evicts the
+  // oldest low-priority particle (muzzle, smoke, plain debris) instead of being
+  // dropped, so dense late waves keep every hit readable.
+  function push(game, p) {
+    if (game.particles.length < MAX_PARTICLES) { game.particles.push(p); return true; }
+    for (let i = 0; i < game.particles.length; i++) {
+      const q = game.particles[i];
+      if (!q.ring && !q.flash && !q.bolt && !q.userStyle2Impact && !staffImpacts.has(q)) { game.particles[i] = p; return true; }
+    }
+    return false;
+  }
   function emit(game, x, y, color, count, smoke = false, reduced = false) {
     const n = Math.min(reduced ? Math.max(1, Math.ceil(count / 3)) : count, Math.max(0, MAX_PARTICLES - game.particles.length));
     for (let i = 0; i < n; i++) {
