@@ -8,7 +8,7 @@ const scenery = fs.readFileSync(path.join(root, 'dist/kirchende-art.js'), 'utf8'
 const levels = fs.readFileSync(path.join(root, 'dist/levels.js'), 'utf8');
 const markup = fs.readFileSync(path.join(root, 'dist/index.html'), 'utf8');
 
-assert.match(terrain, /ground-style2-v1\.webp/);
+assert.match(terrain, /ground-style2-v2\.webp/);
 // The V3 preview selects its material first, but the original Kirchende art
 // must remain the fallback if the opt-in texture is absent or fails to decode.
 assert.match(terrain, /const reference=globalThis\.TD2GroundV3\?\.imageFor\?\.\(groundLevel,'base'\)/,
@@ -24,7 +24,7 @@ assert.match(markup, /src="terrain-polish\.js/);
 assert.match(markup, /src="kirchende-art\.js/);
 assert.match(levels, /kirchendePaths=/);
 
-const ground = path.join(root, 'dist/assets/kirchende/ground-style2-v1.webp');
+const ground = path.join(root, 'dist/assets/kirchende/ground-style2-v2.webp');
 const atlas = path.join(root, 'dist/assets/kirchende/environment-atlas-style2-v1.webp');
 assert.ok(fs.statSync(ground).size < 250_000, 'ground texture stays below 250 KB');
 assert.ok(fs.statSync(atlas).size < 500_000, 'transparent atlas stays below 500 KB');
