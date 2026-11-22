@@ -28,8 +28,8 @@ jobs:
           node tests/menu-navigation.test.cjs
           TEST_MOBILE=1 node tests/menu-navigation.test.cjs
           node --check dist/portrait-home-v1.js
-          test -f dist/assets/menu/crest-v3.webp
-          test -f dist/assets/menu/memorial-yard-mobile-v3.webp
+          test -f dist/assets/menu/crest-v4.webp
+          test -f dist/assets/menu/memorial-yard-mobile-v4.webp
           test -f dist/ansturm/index.html
       - name: Publish separate Android browser preview
         shell: bash
