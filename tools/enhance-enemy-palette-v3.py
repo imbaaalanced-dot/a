@@ -68,10 +68,11 @@ def enhance(path: Path) -> tuple[int, int]:
 
 
 def main() -> None:
-    targets = [Path(a) for a in sys.argv[1:]] or [ROOT / p for p in DEFAULTS]
+    targets = [(Path(a) if Path(a).is_absolute() else ROOT / a) for a in sys.argv[1:]] or [ROOT / p for p in DEFAULTS]
     for path in targets:
         pixels, alpha_ok = enhance(path)
-        print(f"{path.relative_to(ROOT)}: {pixels} opaque px enhanced, alpha preserved={alpha_ok}")
+        rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+        print(f"{rel}: {pixels} opaque px enhanced, alpha preserved={alpha_ok}")
 
 
 if __name__ == "__main__":

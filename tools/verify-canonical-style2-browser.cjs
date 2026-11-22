@@ -69,7 +69,7 @@ const server=http.createServer((req,res)=>{
           }
           projectiles++;
           const particle={kind,level:tier,x:90,y:90,life:.15,max:.3};
-          const impactUrl=`assets/style2-user-towers-v4/runtime-webp/impact_${kind}_6x3.webp?v=style2-v4`;
+          const impactUrl=`assets/style2-user-towers-v4/runtime-webp/impact_${kind}_6x3.webp?v=impactv3-20261122`;
           const impactStarted=performance.now();
           while(!Style2ImpactsV4.draw(ctx,particle)){
             if(performance.now()-impactStarted>15000)throw Error(`V4 ${kind}/${tier} impact atlas did not draw within 15 s`);

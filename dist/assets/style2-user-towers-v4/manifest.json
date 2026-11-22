@@ -42,27 +42,27 @@
   "runtime_assets": [
     {
       "path": "runtime-webp/impact_boomerang_6x3.webp",
-      "bytes": 321328,
+      "bytes": 437774,
       "sha256": "71e48713d483ece22dd84950b798ff13eef8018e3fb996afcb68179f193ee25b"
     },
     {
       "path": "runtime-webp/impact_bow_6x3.webp",
-      "bytes": 344264,
+      "bytes": 436434,
       "sha256": "ad212db745e1e7ead46cf0e54b96bdefeaf68adb63e9d1fc1c7f33f876722ff0"
     },
     {
       "path": "runtime-webp/impact_cannon_6x3.webp",
-      "bytes": 318150,
+      "bytes": 420498,
       "sha256": "818b207300ab401ceb29e258d06c1dde8c1c7fa2eb6832ae8c0bac077f9cd6a7"
     },
     {
       "path": "runtime-webp/impact_mage_6x3.webp",
-      "bytes": 309584,
+      "bytes": 358122,
       "sha256": "dbd3078870dac67745047e3a29c40004ab129474e55dcd45a38b16f3ea0e60d0"
     },
     {
       "path": "runtime-webp/impact_rift_6x3.webp",
-      "bytes": 179430,
+      "bytes": 200792,
       "sha256": "c888013ad96b6d1e5cfd038335be6f2f81cef66a3e071cc42e6eee1552e7bbcd"
     },
     {

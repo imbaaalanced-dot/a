@@ -5,7 +5,7 @@
   const retryDelay=10000;
   const debug=typeof URLSearchParams==='function'&&new URLSearchParams(globalThis.location?.search||'').get('td2Style2Debug')==='1';
   function warm(kind){
-    const url=`assets/style2-user-towers-v4/runtime-webp/impact_${kind}_6x3.webp?v=style2-v4`;
+    const url=`assets/style2-user-towers-v4/runtime-webp/impact_${kind}_6x3.webp?v=impactv3-20261122`;
     const assets=globalThis.DenkmalAssets;
     if(!assets?.retain||!assets?.ready)return null;
     let entry=entries.get(kind);
