@@ -160,6 +160,7 @@
     }
   }
   function burst(game, bullet, impact, enabled, reduced) {
+    sound(bullet.kind, impact, enabled);
     const heavy = bullet.kind === 'cannon' || bullet.kind === 'mortar';
     if (impact) {
       // Expanding shock ring marks the exact hit spot.
