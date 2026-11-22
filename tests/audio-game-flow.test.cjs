@@ -12,7 +12,18 @@ element('heroVoice').play=function(){this.paused=false;return Promise.resolve();
 element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
-const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-style2.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console};
+/* Publish gate observed a one-off flake: the „Gegnertod“ sound batch assertion
+   failed in publish run 44965371487 (2026-11-22) while the identical battery on
+   the same merge commit passed in the Test workflow. Root cause class: the
+   vm context falls back to the host’s wall-clock Date and unseeded
+   Math.random (runId/Portal-Seed/loot dice/particles). Pin both so this
+   battery is a pure function of the checked-out source and reproducible on
+   every runner and every retry. */
+const rngState={s:0x9e3779b9^(0x20261121|0)};
+const seededRandom=()=>{rngState.s|=0;rngState.s=(rngState.s+0x6d2b79f5)|0;let t=Math.imul(rngState.s^(rngState.s>>>15),1|rngState.s);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};
+class FixedDate extends Date{constructor(){super(0);}static now(){return 0;}}
+const SeededMath=Object.create(Math,{});SeededMath.random=seededRandom;
+const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(value){this._src=value;if(value.includes('assets/enemies/walk-style2.webp')){this.naturalWidth=640;this.naturalHeight=3360;}}get src(){return this._src;}},Audio:class{play(){return Promise.resolve();}pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:process.env.TEST_MOBILE==='1'&&q==='(pointer:coarse)'}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math:SeededMath,Date:FixedDate,console};
 sandbox.window=sandbox;
 sandbox.TD2DeveloperMode=true;
 sandbox.localStorage.setItem('td2_developer_mode_enabled','true');
