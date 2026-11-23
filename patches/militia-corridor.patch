@@ -1,0 +1,57 @@
+--- a/dist/barracks.js
++++ b/dist/barracks.js
+@@ -52,6 +52,7 @@
+       let target=null,nearest=Infinity;
+       for(const e of game.enemies){
+         if(e.dead||e.flying||distanceSq(e,u.rally)>ALERT*ALERT)continue;
++        if((e.x-u.rally.x)**2+(e.y-u.rally.y)**2>82*82)continue;// Korridor-Regel: Miliz hält wie Gegner-Bogenschützen einen 82px-Wachtkorridor um den Lane-Posten
+         const d=distanceSq(e,u);if(d<nearest){nearest=d;target=e;}
+       }
+       const desired=target&&distanceSq(target,u.rally)<=LEASH*LEASH?target:u.rally,d=distance(desired,u);
+--- a/dist/index.html
++++ b/dist/index.html
+@@ -345,7 +345,7 @@
+   <script src="portal-perks.js?v=portal1"></script>
+   <script src="map-polish-v410.js?v=building-clearance-20261114"></script>
+   <script src="touch-context-hud.js?v=v5hud2a1"></script>
+-  <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
++  <script src="barracks.js?v=militia-corridor-20261123"></script>
+   <script src="level-intro.js?v=levelintro2"></script>
+   <script src="game.js?v=hitstop-slowmo-20261122"></script>
+   <script src="portrait-avatars-v5.js?v=portrait-v7-wand-20261122"></script>
+--- a/tests/cache-busting.test.cjs
++++ b/tests/cache-busting.test.cjs
+@@ -65,7 +65,7 @@
+   ['level-intro.js', 'levelintro2'],
+   ['level-intro.css', 'levelintro1'],
+ 
+-  ['barracks.js','beta-barracks-matte-20261116'],
++  ['barracks.js','militia-corridor-20261123'],
+   ['touch-context-hud.js','v5hud2a1'],
+   ['portal-run.js','save2'],
+   ['portal-perks.js','portal1'],
+--- a/tests/barracks.test.cjs
++++ b/tests/barracks.test.cjs
+@@ -16,6 +16,22 @@
+ const enemy={x:90,y:0,r:12,hp:75,dead:false};game.enemies.push(enemy);
+ let hits=0;for(let k=0;k<200;k++)b.update(game,1/60,{paths,hurtEnemy:(e,d)=>{hits++;e.hp-=d;if(e.hp<=0)e.dead=true}});
+ assert.ok(hits>0&&enemy.hp<75);
++// Korridor-Regel: Gegner im Alarmradius, aber außerhalb des 82px-Wachtkorridors um den Rally-Posten, werden ignoriert.
++{
++ const g2={towers:[{kind:'barracks',level:1,x:90,y:78,recruitCd:0}],enemies:[],militia:[]};
++ for(let k=0;k<300;k++)b.update(g2,1/60,{paths});
++ assert.equal(g2.militia.length,1);assert.ok(g2.militia[0].y<10);
++ const far={x:90,y:-90,r:12,hp:75,dead:false};// 90px von der Lane, aber nur 90px vom Rally-Punkt
++ g2.enemies.push(far);
++ let farHits=0;const tally=(e,d)=>{farHits++;e.hp-=d;if(e.hp<=0)e.dead=true};
++ for(let k=0;k<240;k++)b.update(g2,1/60,{paths,hurtEnemy:tally});
++ assert.equal(farHits,0,'Miliz greift Gegner außerhalb des Lane-Korridors nicht an');
++ assert.equal(far.hp,75);
++ far.y=0;far.dead=false;far.hp=75;
++ for(let k=0;k<240;k++)b.update(g2,1/60,{paths,hurtEnemy:tally});
++ assert.ok(farHits>0&&far.hp<75,'Miliz greift Gegner auf der Lane an');
++ console.log('Barracks: Lane-Korridor-Regel (ignoriert außerhalb, trifft auf der Lane) passed');
++}
+ assert.equal(b.aggroTarget(game,{x:90,y:0}),game.militia[0]);
+ assert.equal(b.aggroTarget(game,{x:90,y:0,flying:true}),null);
+ assert.equal(b.aggroTarget(game,{x:90,y:0,type:'sapper'}),null);
