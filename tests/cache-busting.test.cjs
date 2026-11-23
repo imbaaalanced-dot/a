@@ -36,7 +36,7 @@ const expectedVersions = new Map([
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
   ['asset-manager.js', 'cdn-pilot-20261123'],
-  ['preloader.js', 'portrait-v7-20261122'],
+  ['preloader.js', 'cdn-pilot-display-20261123'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
   ['levels.js', 'level7btouch1campaign20-kirchende-layout-20261114a'],
