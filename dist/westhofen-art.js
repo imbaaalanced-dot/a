@@ -1,15 +1,17 @@
 /* Reference-derived Westhofen composition: street frontage with bus stop,
-   green strip, cached ground. The memorial renders procedurally from press
-   photos: stepped stone pedestal with bronze winged helmet, sword and shield;
-   two side tablets flank the empty central tablet frame, and the two fire-bowl
-   pedestals stand bare — documenting the July 2026 bronze theft. */
+   green strip, cached ground. Memorial sprite v4: handpainted photo-guided
+   WebP diorama (23.11.2026 photo run, verified against the reference
+   structure - weathered stone block with two unreadable bronze tablets,
+   bronze winged helmet with sword and shield on top, two ivy-covered pillars
+   joined by a stone lintel). Baked into a 900x600 bitmap and blitted at the
+   unchanged 450x300 world anchor. */
 (()=>{'use strict';
 let ground=null,materialRevision=-1,environmentRequested=false,groundLamps=false,bakedLayout=null;
 let memorialSprite=null,memorialRequested=false,memorialBitmap=null;
 const C={x:1536,y:1536};
 const streetRoute=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
-const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6';
+const memorialUrl='assets/westhofen/westhofen-memorial-style2-v4.webp?v=westhofen-style2v4';
 function readyMemorial(){
  // Level 7 preloads the same preview SVG through the shared asset manager.
  // Keep the standalone fallback for previews without the manager.

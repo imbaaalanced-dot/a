@@ -21,7 +21,7 @@ const landmarks=[
   [4,'church-art.js','assets/level4/lion-1879-style2-2x.webp'],
   [5,'hohensyburg-art.js','assets/hohensyburg/kaiser-wilhelm-style2-qa-v2-2x.webp'],
   [6,'goethestrasse-art.js','assets/elemental/goethestrasse-memorial-style2.webp'],
-  [7,'westhofen-art.js','assets/westhofen/westhofen-memorial-style2-v3-preview.svg']
+  [7,'westhofen-art.js','assets/westhofen/westhofen-memorial-style2-v4.webp']
 ];
 for(const [level,loader,asset] of landmarks){
   assert.match(levelCode,new RegExp('(?:^|\\n)\\s*'+level+':\\s*\\{'),'level '+level+' registered');

@@ -1,0 +1,38 @@
+name: Decode Westhofen v4 assets (one-time)
+on:
+  push:
+    branches: [feature/westhofen-v4-20261123]
+permissions:
+  contents: write
+concurrency:
+  group: decode-westhofen-v4
+  cancel-in-progress: false
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/westhofen-v4-20261123
+          persist-credentials: true
+      - name: Assemble, decode, verify, self-remove payloads
+        run: |
+          set -e
+          SPRITE=dist/assets/westhofen/westhofen-memorial-style2-v4.webp
+          CARD=dist/assets/menu/level-gallery/level-07-westhofen.webp
+          if ! ls dist/assets/westhofen/___ 2>/dev/null && [ ! -f "$(ls dist/assets/westhofen/westhofen-memorial-style2-v4.webp.b64.part* 2>/dev/null | head -1)" ]; then
+            echo "Payloads already decoded; nothing to do."
+            exit 0
+          fi
+          cat dist/assets/westhofen/westhofen-memorial-style2-v4.webp.b64.part* > /tmp/w4.b64
+          cat dist/assets/menu/level-gallery/level-07-westhofen.webp.b64.part* > /tmp/card.b64
+          base64 -d /tmp/w4.b64 > "$SPRITE"
+          base64 -d /tmp/card.b64 > "$CARD"
+          echo "36f8243fa271cd195a9044d82ca4a8bd  $SPRITE" | md5sum -c -
+          echo "0cf83c8faa9d44c5dfd2921f79175631  $CARD" | md5sum -c -
+          git config user.name "td2-asset-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git rm -q dist/assets/westhofen/westhofen-memorial-style2-v4.webp.b64.part* dist/assets/menu/level-gallery/level-07-westhofen.webp.b64.part* .github/workflows/decode-westhofen-v4-assets.yml
+          git add "$SPRITE" "$CARD"
+          git commit -m "chore: decode Westhofen v4 assets (md5-verified), remove payloads and one-time workflow"
+          git push
