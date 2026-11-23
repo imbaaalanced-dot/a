@@ -11,6 +11,7 @@
     // artwork. Avoid duplicate decodes and never preload placeholder images.
     4:[],
     // The archived branded monument WebP is not a gameplay preload.
+    // Level 7 actively preloads the V3 preview; V2/V1 remain rollback-only files.
     5:[],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
     7:['assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6']
