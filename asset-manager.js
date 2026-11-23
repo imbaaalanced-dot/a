@@ -1,4 +1,6 @@
-/* Alpha 9 image registry. Decoded images stay stable until all owning groups release them. */
+/* Alpha 9 image registry. Decoded images stay stable until all owning groups release them.
+ * CDN pilot: entry() routes mapped assets through TD2CdnMap (opt-in ?td2Cdn=1);
+ * a failed CDN request retries exactly once against the local file before failing. */
 (()=>{'use strict';
   const entries=new Map(), groups=new Map();
   const levelAssets={
@@ -21,6 +23,8 @@
     if(old?.status==='failed'&&Date.now()-old.failedAt>5000)entries.delete(url);
     else if(old)return old;
     const img=new Image();img.decoding='async';
+    const cdn=globalThis.TD2CdnMap?.resolve(url)||{url,fallback:null};
+    let localRetry=!!cdn.fallback;
     const current={img,status:'loading',promise:null,url};
     current.promise=new Promise(resolve=>{
       let settled=false;
@@ -30,13 +34,17 @@
         resolve(ok?img:null);
         if(current.releaseWhenReady&&!isOwned(url))evict(url,current);
       };
-      img.onload=async()=>{
-        if(!img.naturalWidth){finish(false);return;}
-        try{if(typeof img.decode==='function')await img.decode();finish(img.naturalWidth>0);}
-        catch{finish(false);}
+      const retryLocal=()=>{
+        if(!localRetry)return false;
+        localRetry=false;img.src=cdn.fallback;return true;
       };
-      img.onerror=()=>finish(false);
-      img.src=url;
+      img.onload=async()=>{
+        if(!img.naturalWidth){if(!retryLocal())finish(false);return;}
+        try{if(typeof img.decode==='function')await img.decode();finish(img.naturalWidth>0);}
+        catch{if(!retryLocal())finish(false);}
+      };
+      img.onerror=()=>{if(!retryLocal())finish(false);};
+      img.src=cdn.url;
       if(img.complete&&img.naturalWidth)img.onload();
     });
     entries.set(url,current);return current;

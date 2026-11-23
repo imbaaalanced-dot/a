@@ -27,10 +27,11 @@
   <link rel="stylesheet" href="menu-v4.css?v=menu-v4a1" />
 </head>
 <body>
-  <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" src="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
+  <div id="td2Loading" role="status" aria-live="polite" aria-label="Spielgrafiken werden geladen"><img id="td2LoadArt" class="td2-load-image" data-td2-asset="assets/loading/kim-marcel-loading-v5.webp" alt="" /><div class="td2-load-panel"><div class="td2-load-tag">MARCEL &amp; KIM · DIE DENKMALWÄCHTER</div><h2>DENK MAL NACH</h2><div class="td2-load-track" aria-label="Ladefortschritt"><div id="td2LoadBar"></div></div><div class="td2-load-caption"><span id="td2LoadStatus">Spielgrafiken werden geladen …</span><strong id="td2LoadPercent">0%</strong></div></div></div>
   <script src="canonical-hero-art-v5.js?v=portrait-v7-wand-20261122"></script>
-  <script src="asset-manager.js?v=enemyv3-runtime-20261121"></script>
-  <script src="preloader.js?v=portrait-v7-20261122"></script>
+  <script src="cdn-asset-map.js?v=cdn-pilot-20261123"></script>
+  <script src="asset-manager.js?v=cdn-pilot-20261123"></script>
+  <script src="preloader.js?v=cdn-pilot-display-20261123"></script>
   <main id="app">
     <canvas id="game" tabindex="0" aria-label="Spielbereich Denkmal TD2. Bewegen mit WASD oder Pfeiltasten, ausweichen mit Leertaste, Turm bauen mit E, pausieren mit Escape."></canvas>
 
@@ -115,12 +116,12 @@
     <div id="joystick" class="joystick" aria-label="Touch-Steuerung: zum Bewegen ziehen"><span></span></div>
 
     <section class="start-screen modal" id="startScreen" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-      <div class="menu-scene" aria-hidden="true"><img src="assets/menu/memorial-yard-v4.webp?v=menu-v4a1" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" src="assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
+      <div class="menu-scene" aria-hidden="true"><img data-td2-asset="assets/menu/memorial-yard-v4.webp?v=menu-v4a1" alt="" width="1536" height="1194" decoding="async" loading="lazy" /><img class="menu-scene-mobile" data-td2-asset="assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1" alt="" width="768" height="1194" decoding="async" loading="lazy" aria-hidden="true" /></div>
       <div class="menu-shell">
         <header class="menu-masthead"><span class="menu-wordmark">DENKMAL <b>TD2</b></span><span id="menuVersionTop" class="menu-version menu-version-top">V6 · ALPHA</span></header>
         <div class="menu-content">
           <figure class="menu-hero-figure" aria-label="Die beiden Denkmalwächter Marcel und Kim"><img id="menuHeroBanner" class="hero-menu-banner" src="assets/menu/v6/marcel-wand-menu-portrait-20261117-refined.webp?v=wand-menu-refined-20261117" width="384" height="576" alt="Marcel · Der Beschützer" fetchpriority="high" /><img id="menuHeroCompanion" class="hero-menu-companion" src="assets/menu/v5-avatars/kim-marksman-v6.webp?v=portrait-v6-clean-20261117" width="661" height="1050" alt="Kim · Die Treffsichere" fetchpriority="high" /><figcaption id="menuHeroCaption">Marcel · Der Beschützer</figcaption></figure>
-          <div class="menu-heading"><img class="menu-crest" src="assets/menu/crest-v4.webp?v=menu-v4a1" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
+          <div class="menu-heading"><img class="menu-crest" data-td2-asset="assets/menu/crest-v4.webp?v=menu-v4a1" width="92" height="92" alt="Denkmal-TD-Wappen" /><div><p class="menu-kicker">DIE ERINNERUNG BRAUCHT EINEN HÜTER</p><h1 id="startTitle">Deine Wacht.<br><em>Dein Vermächtnis.</em></h1></div></div>
           <p class="menu-intro">Sieben historische Schauplätze. Eine Aufgabe: Bewahre die Erinnerung.</p>
           <nav id="menuHomeActions" class="menu-home-actions menu-primary-actions" aria-label="Hauptmenü">
             <button id="menuCampaignBtn" class="menu-command menu-command-primary" type="button" aria-controls="campaignMenu"><span class="menu-command-mark" aria-hidden="true">Ⅰ</span><span><strong>Kampagne</strong><small>Sieben Schauplätze · 20 Wellen je Kapitel</small></span><span class="menu-command-arrow" aria-hidden="true">›</span></button>
@@ -332,7 +333,8 @@
   <script src="style2-level4-reference.js?v=ref4a2"></script>
   <script src="style2-phase6.js?v=save-restore-20261117"></script>
   <script src="style2-markers.js?v=markers2"></script>
-  <script src="style2-ambience.js?v=alpha9a4-sizegrid-20261123"></script>
+  <script src="style2-ambience.js?v=alpha9a5-vegetation-20261123"></script>
+  <script src="vegetation.js?v=vegetation-pass-20261123"></script>
   <script src="traffic.js?v=traffic-proto-20261122"></script>
   <script src="size-grid.js?v=sizegrid-20261123"></script>
   <script src="flight-enemies.js?v=flight2"></script>
