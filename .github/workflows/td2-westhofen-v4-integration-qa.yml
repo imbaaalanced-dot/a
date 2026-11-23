@@ -9,7 +9,7 @@ on:
       - 'dist/asset-manager.js'
       - 'tests/westhofen-v4-runtime.test.cjs'
       - 'tools/verify-level7-style2-environment.cjs'
-      - '.github/workflows/td2-westhofen-v3-integration-qa.yml'
+      - '.github/workflows/td2-westhofen-v4-integration-qa.yml'
   workflow_dispatch:
 
 permissions:
