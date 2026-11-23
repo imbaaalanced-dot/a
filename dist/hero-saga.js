@@ -30,7 +30,10 @@
     portal1:'Erster Abschnitt der Portalreise. Wir gehen hindurch, wo die Steine sprechen.',
     portal2:'Das Labyrinth. Jeder unserer Schritte bleibt hier erhalten.',
     portal3:'Die Kirchende. Hier endet die Reise – oder beginnt sie von vorn.',
-    portalBoss:'Der Wächter des Portals greift an!'
+    portalBoss:'Der Wächter des Portals greift an!',
+    record:'Ein neuer Rekord für das Denkmal.',
+    bossnear:'Er kommt. Stell dich ihm.',
+    portalsecure:'Ein Abschnitt mehr, der Erinnerung bewahrt.'
   };
   const story = [
     {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift von selbst an. Zwischen zwei Wellen hast du Zeit, neue Türme zu bauen.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
@@ -76,14 +79,17 @@
      clips would no longer match the text, so they use the TTS fallback until new
      clips exist. chapter3 and ultimate are unchanged and keep their recordings. */
   const VOICE_CLIPS={intro:'',chapter2:'',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:'',portal1:'',portal2:'',portal3:'',portalBoss:''};
-  const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,portal1:3,portal2:3,portal3:3,portalBoss:3};
+  const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,record:2,bossnear:2,portalsecure:2,portal1:3,portal2:3,portal3:3,portalBoss:3};
+  // Chronik-Pacing: Meilenstein-Stimmen hoechstens alle 30 s, nie in Story-Situationen.
+  const CHRONIK_IDS={record:1,bossnear:1,portalsecure:1},CHRONIK_COOLDOWN_MS=30000;
+  let lastChronikAt=0,lastChronikId=null;
 
   function reset(h,loadout) {
     stopVoice();
     h.loadout=loadout||[];h.gear=globalThis.DenkmalLoot.totals(h.loadout);const p=h.gear.powers;
     h.equipment={weapon:p.echo?'echo':p.ember?'ember':'none',armor:p.ash?'ash':p.oath?'oath':'none',relic:p.bell?'bell':p.lantern?'lantern':'none'};h.maxHp+=h.gear.health;h.hp=h.maxHp;
     h.soul=100;h.moving=false;h.faceX=0;h.faceY=1;h.direction='down';h.attackDirection=null;h.hitFlash=0;
-    lowHpSpoken=false;storySeen=new Set();pulse=null;cast=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;
+    lowHpSpoken=false;storySeen=new Set();pulse=null;cast=null;echoes=[];trail=[];attackTime=0;walkTime=0;animationTime=0;lastChronikAt=0;lastChronikId=null;
     $('storyScreen').classList.add('hidden');$('characterScreen').classList.add('hidden');
     $('subtitle').classList.add('hidden');$('sagaComplete').classList.add('hidden');
   }
@@ -110,6 +116,7 @@
   }
   function say(id, inStory=false) {
     if(!lines[id])return;
+    if(!inStory&&CHRONIK_IDS[id]){if(Date.now()-lastChronikAt<CHRONIK_COOLDOWN_MS)return;lastChronikAt=Date.now();lastChronikId=id;}
     if(!inStory&&currentVoice.id&&currentVoice.priority>(VOICE_PRIORITY[id]||0))return;
     stopVoice();
     if(!inStory){$('subtitleText').textContent=lines[id];$('subtitle').classList.remove('hidden');captionTimer=setTimeout(()=>$('subtitle').classList.add('hidden'),Math.max(4500,lines[id].length*62));}
@@ -330,5 +337,5 @@
     $('journalTab').onclick=()=>{selectedTab='journal';renderCharacter();};
     $('voiceBtn').onclick=()=>{voiceEnabled=!voiceEnabled;stopVoice();voiceLabel();try{localStorage.setItem('denkmal-voice',voiceEnabled?'on':'off');}catch{}if(voiceEnabled&&currentStory)say(currentStory.id,true);};
   }
-  globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,say,lines};
+  globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,say,speak:say,lines};
 })();
