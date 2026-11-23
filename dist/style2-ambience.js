@@ -40,6 +40,7 @@ function drawGround(ctx,level,layout,time=0,{low=false}={}){
    ctx.drawImage(light('blue'),layout.airGate.x-118,layout.airGate.y-118,236,236);
   }
  }finally{ctx.restore();}
+ globalThis.TD2Traffic?.draw(ctx,level,layout,time,{low});
 }
 function motes(level,camera,viewWidth,viewHeight,time=0,{low=false}={}){
  if(low||!camera||viewWidth<=0||viewHeight<=0)return [];
