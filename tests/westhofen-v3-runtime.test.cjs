@@ -1,4 +1,5 @@
 'use strict';
+/* Keep the V3 preload and draw contract in the street/level integration PR diff. */
 /* Isolated V3 candidate contract: this does not grant historical or Android approval. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
