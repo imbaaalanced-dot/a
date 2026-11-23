@@ -2,6 +2,8 @@
 (()=>{'use strict';
 let ground=null,materialRevision=-1,memorial=null,environmentRequested=false;
 const C={x:1536,y:1536};
+const streetRoute=[{x:C.x+730,y:C.y-900},{x:C.x+730,y:C.y+120},{x:C.x+800,y:C.y+540},{x:C.x+1120,y:C.y+780}];
+const frontRoute=[{x:C.x-1120,y:C.y+820},{x:C.x-530,y:C.y+600},{x:C.x+20,y:C.y+720},{x:C.x+800,y:C.y+540}];
 const lampOffsets=[[-1050,-760],[1030,-740],[1040,300]];
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
 function environmentLamps(layout){
@@ -30,8 +32,7 @@ function createGround(layout){
  let seed=18631;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<2300;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#69795424','#b09b6330','#1c322b32'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Street along the park's east and front edges. Flight does not receive a ground road.
- const street=[{x:C.x+730,y:C.y-900},{x:C.x+730,y:C.y+120},{x:C.x+800,y:C.y+540},{x:C.x+1120,y:C.y+780}];
- const front=[{x:C.x-1120,y:C.y+820},{x:C.x-530,y:C.y+600},{x:C.x+20,y:C.y+720},{x:C.x+800,y:C.y+540}];
+ const street=streetRoute,front=frontRoute;
  for(const road of [street,front]){path(q,road,'#a5a28c',155);path(q,road,'#676f6b',133);path(q,road,globalThis.TD2GroundV3?.patternFor?.(q,6,'street')||'#767d7444',110);}
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,6,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
@@ -78,4 +79,4 @@ function drawMonument(ctx,m){
  }finally{ctx.restore();}
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;memorial=null;environmentRequested=false;}};})();
+globalThis.DenkmalGoetheArt={drawGround,drawMonument,drawAirLane,environmentLamps,streetRoutes(){return [{points:streetRoute,halfWidth:56},{points:frontRoute,halfWidth:56}];},release(){ground=null;memorial=null;environmentRequested=false;}};})();
