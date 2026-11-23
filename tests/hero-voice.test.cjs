@@ -22,7 +22,7 @@ for(const id of clips){
 }
 assert.ok(saga.includes("if(!clipSrc){tts();return;}"),
   'a line without a recorded clip must fall straight back to TTS');
-assert.ok(saga.includes('const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,record:2,bossnear:2,portalsecure:2};'),
+assert.ok(saga.includes('const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,record:2,bossnear:2,portalsecure:2,portal1:3,portal2:3,portal3:3,portalBoss:3};'),
   'voice priorities must rank story above ultimate above lowhp');
 assert.ok(saga.includes("currentVoice.priority>(VOICE_PRIORITY[id]||0))return;"),
   'lower-priority voice lines must not interrupt a running higher-priority line');
@@ -44,8 +44,14 @@ assert.ok(saga.includes("portalsecure:'Ein Abschnitt mehr"), 'portalsecure-Zeile
 assert.ok(saga.includes('const CHRONIK_IDS={record:1,bossnear:1,portalsecure:1},CHRONIK_COOLDOWN_MS=30000;'), 'Chronik-Cooldown-Gesetz (30 s) gepinnt');
 assert.ok(saga.includes("if(!inStory&&CHRONIK_IDS[id]){if(Date.now()-lastChronikAt<CHRONIK_COOLDOWN_MS)return;"), 'Cooldown greift nur ausserhalb der Story');
 assert.ok(saga.includes('lastChronikAt=0;lastChronikId=null;'), 'Cooldown wird pro Run zurueckgesetzt');
-assert.ok(saga.includes('stopVoice,speak:say,lines};'), 'speak-Export fuer Spiel-Trigger');
+assert.ok(saga.includes('stopVoice,say,speak:say,lines};'), 'speak-Export fuer Spiel-Trigger');
 
-assert.ok(html.includes('hero-saga.js?v=voice-chronik-20261123'),
+assert.ok(html.includes('hero-saga.js?v=voice-chronik-b-20261123'),
   'index.html must reference the new hero-saga cache key');
+// B-Pass: Chronik-Stimme der Portalreise (portal1..3 + portalBoss) als TTS-Fallback.
+for(const id of ['portal1','portal2','portal3','portalBoss']){
+  assert.ok(saga.includes(`${id}:''`),`portal line ${id} must use the TTS fallback until a recording exists`);
+}
+assert.ok(saga.includes("portal1:'"),'portal chronicle line portal1 must exist');
+assert.ok(saga.includes('globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,say,speak:say,lines};'),'saga must export say() and speak() for the chronicle voice');
 console.log('Hero voice: unchanged lines keep their recordings, reworded lines use TTS fallback');
