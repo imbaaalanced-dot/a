@@ -7,6 +7,7 @@
 let ground=null,materialRevision=-1,environmentRequested=false,groundLamps=false,bakedLayout=null;
 let memorialSprite=null,memorialRequested=false,memorialBitmap=null;
 const C={x:1536,y:1536};
+const streetRoute=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
 const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6';
 function readyMemorial(){
@@ -71,7 +72,7 @@ function createGround(layout){
  let seed=4127;const rnd=()=>((seed=(Math.imul(seed,1664525))+1013904223)>>>0)/4294967296;
  for(let i=0;i<2100;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#6a7c5224','#a89a642c','#1a2f2834'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Reichshofstraße runs along the southern edge of the memorial green.
- const street=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
+ const street=streetRoute;
  path(q,street,'#a5a28c',165);path(q,street,'#676f6b',143);path(q,street,globalThis.TD2GroundV3?.patternFor?.(q,7,'street')||'#767d7444',118);
  for(let i=1;i<street.length;i++){const a=street[i-1],b=street[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}
  // Sidewalk between street and green strip; the air corridor crosses it.
@@ -185,4 +186,4 @@ function drawMonument(ctx,m){
  ctx.restore();
 }
 function drawAirLane(ctx,layout,active){if(!active)return;const a=layout.airGate;ctx.save();try{ctx.setLineDash([13,20]);path(ctx,[a,C],'#7ac5d27a',3);ctx.setLineDash([]);ctx.fillStyle='#a6e7ec';ctx.font='700 16px sans-serif';ctx.textAlign='center';ctx.fillText('LUFTZULAUF',a.x,a.y-36);ctx.beginPath();ctx.moveTo(a.x-12,a.y-12);ctx.lineTo(a.x,a.y-25);ctx.lineTo(a.x+12,a.y-12);ctx.strokeStyle='#a6e7ec';ctx.lineWidth=3;ctx.stroke();}finally{ctx.restore();}}
-globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,release(){ground=null;groundLamps=false;bakedLayout=null;memorialSprite=null;memorialBitmap=null;memorialRequested=false;environmentRequested=false;}};})();
+globalThis.DenkmalWesthofenArt={drawGround,drawMonument,drawAirLane,environmentLamps,streetRoutes(){return [{points:streetRoute,halfWidth:60}];},release(){ground=null;groundLamps=false;bakedLayout=null;memorialSprite=null;memorialBitmap=null;memorialRequested=false;environmentRequested=false;}};})();
