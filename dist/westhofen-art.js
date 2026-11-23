@@ -8,6 +8,7 @@ let ground=null,materialRevision=-1,environmentRequested=false,groundLamps=false
 let memorialSprite=null,memorialRequested=false,memorialBitmap=null;
 const C={x:1536,y:1536};
 const streetRoute=[{x:C.x-1120,y:C.y+760},{x:C.x-560,y:C.y+700},{x:C.x+40,y:C.y+720},{x:C.x+640,y:C.y+660},{x:C.x+1120,y:C.y+700}];
+const walkRoute=[{x:C.x-1120,y:C.y+632},{x:C.x-560,y:C.y+574},{x:C.x+40,y:C.y+592},{x:C.x+640,y:C.y+536},{x:C.x+1120,y:C.y+574}];
 const lampOffsets=[[-900,-780],[900,-780],[-1080,-100]];
 const memorialUrl='assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6';
 function readyMemorial(){
@@ -77,7 +78,7 @@ function createGround(layout){
  path(q,street,'#3f443f66',165);path(q,street,'#a5a28c',159);path(q,street,'#676f6b',143);path(q,street,globalThis.TD2GroundV3?.patternFor?.(q,7,'street')||'#767d7444',118);
  laneMarks(q,street);
  // Sidewalk between street and green strip; the air corridor crosses it.
- const walk=[{x:C.x-1120,y:C.y+632},{x:C.x-560,y:C.y+574},{x:C.x+40,y:C.y+592},{x:C.x+640,y:C.y+536},{x:C.x+1120,y:C.y+574}];
+ const walk=walkRoute;
  path(q,walk,'#4a4f4a',58);path(q,walk,globalThis.TD2GroundV3?.patternFor?.(q,7,'sidewalk')||'#8f9482',54);
  // Bus stop "Westhofen Denkmal" at the eastern roadside (Reichshofstr. 142).
  const bx=C.x+330,by=C.y+596;q.fillStyle='#565d58';q.fillRect(bx-58,by-40,116,46);q.fillStyle='#7e837a';q.fillRect(bx-58,by-48,116,10);q.fillStyle='#33383444';q.beginPath();q.ellipse(bx,by+10,72,14,0,0,7);q.fill();q.fillStyle='#4b524d';q.fillRect(bx-50,by-24,100,10);q.fillStyle='#2c332f';q.fillRect(bx+40,by-22,8,28);
@@ -85,6 +86,8 @@ function createGround(layout){
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,7,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
+ // Paved approach plates where the lanes meet street and sidewalk (Anschlüsse).
+ for(const lane of layout.paths){globalThis.TD2GroundV3?.approachPlates?.(q,[lane],streetRoute,88);globalThis.TD2GroundV3?.approachPlates?.(q,[lane],walkRoute,42);}
  // Gravel apron around the memorial stays oval and blends into the grass.
  // Previous 48x28 bright rectangles overlapped on a 37x20 grid, producing an
  // opaque rectangular mat behind the altar in mobile portrait. Keep deliberate

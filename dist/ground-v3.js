@@ -70,8 +70,34 @@ function drawBase(ctx,level){
  ctx.save();ctx.fillStyle=tile;ctx.fillRect(0,0,3072,3072);ctx.restore();
  return true;
 }
+// Paved approach plates where a gameplay lane meets a street polyline.
+// Visual only: plates are drawn on the cached ground, lanes and routes are
+// only read. Deterministic sampling, no per-frame work.
+function approachPlates(q,lanes,route,reach=80){
+ const pd=globalThis.DenkmalLevels?.pathDistance;
+ if(!pd||!route||route.length<2)return 0;
+ let drawn=0;
+ for(const lane of lanes){
+  if(!lane||lane.length<2)continue;
+  for(let i=1;i<lane.length;i++){
+   const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y);
+   if(!len)continue;
+   const ang=Math.atan2(b.y-a.y,b.x-a.x);
+   for(let d=0;d<=len;d+=18){
+    const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;
+    if(pd({x,y},route)>=reach)continue;
+    q.save();q.translate(x,y);q.rotate(ang);
+    q.fillStyle='#3a3f3855';q.fillRect(-15,-11,30,22);
+    q.fillStyle='#83876f';q.fillRect(-14,-10,28,20);
+    q.fillStyle='#9b9f88';q.fillRect(-14,-10,28,4);
+    q.restore();drawn++;
+   }
+  }
+ }
+ return drawn;
+}
 function clearCache(){patterns=new WeakMap();}
-globalThis.TD2GroundV3=Object.freeze({enabled:active,names,byLevel,material,imageFor,pattern,patternFor,drawBase,load,clearCache,
+globalThis.TD2GroundV3=Object.freeze({enabled:active,names,byLevel,material,imageFor,pattern,patternFor,drawBase,approachPlates,load,clearCache,
  get revision(){return revision;},
  get loadedCount(){return images.size;}});
 })();
