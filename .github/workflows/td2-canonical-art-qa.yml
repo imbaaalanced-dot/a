@@ -16,6 +16,7 @@ on:
       - 'dist/hohensyburg-art.js'
       - 'dist/goethestrasse-art.js'
       - 'dist/westhofen-art.js'
+      - 'dist/assets/westhofen/westhofen-memorial-style2-v4.webp'
       - 'dist/assets/kirchende/ground-style2-v1.webp'
       - 'dist/assets/kirchende/environment-atlas-style2-v1.webp'
       - 'tests/kirchende-loading.test.cjs'
@@ -24,6 +25,7 @@ on:
       - 'tests/level5.test.cjs'
       - 'tests/goethestrasse.test.cjs'
       - 'tests/westhofen.test.cjs'
+      - 'tests/westhofen-v4-runtime.test.cjs'
       - 'tests/canonical-style2-runtime.test.cjs'
       - 'tests/environment-style2-pilot.test.cjs'
       - 'tools/verify-canonical-style2-browser.cjs'
@@ -93,6 +95,7 @@ jobs:
           node tools/verify-level6-style2-environment.cjs
       - name: Westhofen shared Style-2 environment preview
         run: |
+          node tests/westhofen-v4-runtime.test.cjs
           node tests/westhofen.test.cjs
           node tools/verify-level7-style2-environment.cjs
       - uses: actions/upload-artifact@v7
