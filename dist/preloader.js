@@ -38,13 +38,13 @@
   function load(src){
     if(globalThis.DenkmalAssets){
       return globalThis.DenkmalAssets.load(src).then(img=>{
-        finished++;results.set(src,!!img);if(!img)failed++;progress();return !!img;
+        finished++;results.set(src,img||null);if(!img)failed++;progress();return img;
       });
     }
     return new Promise(resolve=>{
       const item=new Image();
       let settled=false;
-      function settle(ok){if(settled)return;settled=true;finished++;results.set(src,ok);if(!ok)failed++;progress();resolve(ok);}
+      function settle(ok){if(settled)return;settled=true;finished++;results.set(src,ok?item:null);if(!ok)failed++;progress();resolve(ok?item:null);}
       item.onload=()=>settle(true); item.onerror=()=>settle(false);
       item.decoding='async';item.src=src;
       if(item.complete&&item.naturalWidth)settle(true);
@@ -61,17 +61,39 @@
     const complete=loadQueue(unique).then(()=>true);
     const ready=await Promise.race([complete,new Promise(resolve=>{deadline=setTimeout(()=>resolve(false),15000);})]);
     clearTimeout(deadline);pending=ready?0:unique.length-finished;
-    const available=portraits.map(n=>prefix+n).filter(url=>results.get(url)===true);
+    const available=portraits.map(n=>prefix+n).filter(url=>!!results.get(url));
     if(available.length){
-      image.src=available[0];
+      image.src=results.get(available[0]).src||available[0];
       if(available.length>1&&!reduced){
         let i=0;
         const timer=setInterval(()=>{
           if(!document.getElementById('td2Loading')){clearInterval(timer);return;}
-          i=(i+1)%available.length;image.src=available[i];
+          i=(i+1)%available.length;
+          const asset=results.get(available[i]);image.src=asset?.src||available[i];
         },2200);
       }
     }
+    const desktopSceneUrl='assets/menu/memorial-yard-v4.webp?v=menu-v4a1';
+    const mobileSceneUrl='assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1';
+    const desktopScene=document.querySelector?.('.menu-scene img:not(.menu-scene-mobile)');
+    const mobileScene=document.querySelector?.('.menu-scene-mobile');
+    const menuCrest=document.querySelector?.('.menu-crest');
+    const crestUrl='assets/menu/crest-v4.webp?v=menu-v4a1';
+    const crestAsset=results.get(crestUrl);
+    if(menuCrest&&crestAsset)menuCrest.src=crestAsset.src||crestUrl;
+    function applyScene(){
+      const isMobile=window.matchMedia('(max-width:700px)').matches;
+      const url=isMobile?mobileSceneUrl:desktopSceneUrl;
+      const node=isMobile?mobileScene:desktopScene;
+      if(!node)return;
+      const apply=asset=>{if(asset&&window.matchMedia('(max-width:700px)').matches===isMobile)node.src=asset.src||url;};
+      const cached=results.get(url);
+      if(cached){apply(cached);return;}
+      if(globalThis.DenkmalAssets?.load){globalThis.DenkmalAssets.load(url).then(apply);return;}
+      const fallback=new Image();fallback.onload=()=>apply(fallback);fallback.src=url;
+    }
+    applyScene();
+    window.addEventListener?.('resize',applyScene);
     await new Promise(resolve=>setTimeout(resolve,180));
     status.textContent=failed?'Spielbereit · Ersatzgrafiken aktiv':pending?'Spielbereit · weitere Bilder laden im Hintergrund':'Alle Startgrafiken geladen';
     screen.classList.add('td2-loaded');
