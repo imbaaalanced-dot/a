@@ -45,14 +45,14 @@ function takeFunction(name){
   assert.match(source,/campaign20Plan\(game\.wave\)\?bossAhead\(game\.wave\):/,'Baupause: Boss-Distanz im 20er-Feld');
   assert.match(source,/campaign20Plan\(game\.wave\+1\)\?bossAhead\(game\.wave\+1\):''/,'Kampf: Boss-Distanz auf die Folgewelle');
 }
-assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-voice-20261123/,'game.js cache key gebumpt');
+assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-voice-b-20261123/,'game.js cache key gebumpt');
 console.log('Gameplay A-Pass: Kampf-Vorschau, Boss-Distanz und Endlos-Rekord gepinnt');
 /* B-Anschluss: Portal-Rekord (tiefster erreichter Abschnitt, analog zum Endlos-Rekord). */
 {
   const s=source;
   assert.match(s,/function readPortalRecord\(\)\{try\{return Number\(storage\?\.getItem\('td2\.portal\.record\.section'\)\)\|\|0\}catch\{return 0\}\}/,'Portal-Rekord-Lese mit Storage-Guard');
   assert.match(s,/function writePortalRecord\(section\)\{try\{const prev=readPortalRecord\(\);if\(section>prev\)storage\.setItem\('td2\.portal\.record\.section',String\(section\)\)\}catch\{\}\}/,'Portal-Rekord schreibt nur persoenliche Bestmarken');
-  assert.match(s,/writePortalRecord\(portalRun\.section\);showToast\('PORTALREISE · ABSCHNITT '/,'Tiefe wird beim Abschnitts-Eintritt dokumentiert');
+  assert.match(s,/writePortalRecord\(portalRun\.section\);saga\.say\?\.\('portal'\+portalMapForSection\(portalRun\.section\)\);showToast\('PORTALREISE · ABSCHNITT '/,'Tiefe wird beim Abschnitts-Eintritt dokumentiert');
   assert.match(s,/PORTAL-REKORD: ABSCHNITT '\+readPortalRecord\(\)/,'Portal-Abschluss zeigt die Bestmarke');
   assert.match(s,/' · REKORD '\+readPortalRecord\(\)/,'HUD zeigt den Portal-Rekord');
 }
