@@ -82,7 +82,7 @@ const server=http.createServer((req,res)=>{
         fs.writeFileSync(path.join(output,filename),Buffer.from(dataUrl.split(',')[1],'base64'));
       }
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-westhofen-gameplay.png`)});
-      assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
+      assert(requests.some(url=>url.includes('ground-style2-v2.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
       assert(requests.some(url=>url.includes('westhofen-memorial-style2-v3-preview.svg')),'reference-derived Westhofen memorial was not fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');

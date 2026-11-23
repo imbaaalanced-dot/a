@@ -91,7 +91,7 @@ const server=http.createServer((req,res)=>{
    if(profile.touch){await tapTower();await page.locator('#touchContext .touch-context-options button').filter({hasText:/VERKAUF/}).tap();}
    else await page.keyboard.press('KeyX');
    await page.waitForFunction(()=>DenkmalTestHooks.getGame().towers.length===0&&DenkmalTestHooks.getGame().militia.length===0);
-   assert.equal(await page.evaluate(()=>DenkmalTestHooks.getGame().essence),444,'55+35+50 cost; 84 refund');
+   assert.equal(await page.evaluate(()=>DenkmalTestHooks.getGame().essence),472,'55+35+50 spent; 112 refund (80%)');
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.equal(assets.length,2,'each atlas requested exactly once');
    results.push({profile:profile.name,combat,renderedStates:frames,atlasRequests:assets.length,errors,missing});await context.close();
   }

@@ -5,7 +5,7 @@
 const textures=new Map();let patterns=new WeakMap();
 let groundLoading=null,style2Ground=null;
 const pilot=/(?:^|[?&])td2Style2Pilot=1(?:&|$)/.test(globalThis.location?.search||'');
-const baseGroundUrl='assets/kirchende/ground-style2-v1.webp?v=kirchende-pilot1';
+const baseGroundUrl='assets/kirchende/ground-style2-v2.webp?v=kirchende-ground-v2-20261122';
 const pilotGroundUrl='assets/style2-pilot-v1/environment/ground/forest_floor.webp?v=pilot1';
 const pilotRoad={earth:null,slabs:null};
 // Optional Level-4-only preview. Production keeps reference-ground V3.

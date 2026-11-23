@@ -44,7 +44,7 @@ const server=http.createServer((req,res)=>{
         return {level:game.level,wave:game.wave,canvas:{width:canvas.width,height:canvas.height},visiblePixels:visible,environmentReady,groundReady};
       });
       await page.screenshot({path:path.join(output,`${mobile?'mobile':'desktop'}-goethestrasse-gameplay.png`)});
-      assert(requests.some(url=>url.includes('ground-style2-v1.webp')),'shared Style-2 ground texture was not fetched');
+      assert(requests.some(url=>url.includes('ground-style2-v2.webp')),'shared Style-2 ground texture was not fetched');
       assert(requests.some(url=>url.includes('environment-atlas-style2-v1.webp')),'shared transparent environment atlas was not fetched');
       assert.deepEqual(errors,[],'no JavaScript exceptions');
       assert.deepEqual(failed,[],'no failed asset or script requests');

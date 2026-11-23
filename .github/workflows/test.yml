@@ -191,6 +191,7 @@ jobs:
           python tests/style2-enemy-boss-audit.test.py
           python tests/barracks-assets.test.py
           python tests/style2-active-atlas-pilot-v5.test.py
+          python tests/ansturm-walk-sheet-intake.test.py
 
       - name: V4.1 directional actions, maps and balance
         run: |

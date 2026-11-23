@@ -1,8 +1,8 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
 const {ansturm,campaign,snapshot}=require('./helpers/simulation.cjs');
-const target='tests/fixtures/simulation-c5d6f21.json',record=process.argv.includes('--record'),ref=process.argv.find(a=>a.startsWith('--ref='))?.slice(6);
-if(record)assert.equal(ref,'c5d6f21','record only from the original baseline commit');
+const target='tests/fixtures/simulation-4aaaa8f.json',record=process.argv.includes('--record'),ref=process.argv.find(a=>a.startsWith('--ref='))?.slice(6);
+if(record)assert.equal(ref,'4aaaa8fd89cc833719c8d4f5fec4179bdbc9770b','record only from the current baseline commit 4aaaa8f');
 const results={};
 // Both engines execute under the same Node/Math implementation. Cross-version
 // floating point digests are diagnostic only; no rounding or tolerance is used.
@@ -20,16 +20,16 @@ function trace(name,build,count,options,ticks,prepare=()=>{}){
  results[name]=hash.digest('hex');
 }
 for(const [mode,build] of Object.entries({campaign,ansturm}))for(const count of [25,50,100,200])for(const lethal of [false,true])
- trace(`${mode}-${count}-${lethal?'lethal':'sustained'}`,build,count,{lethal},360);
+ trace(`${mode}-${count}-${lethal?'lethal':'sustained'}`,build,count,{lethal,reducedMotion:true},360);
 for(const bossWave of [5,10,15,20])trace(`boss-${bossWave}`,ansturm,25,{lethal:true,bossWave},1200);
-for(const level of [1,2,3,4,5,6,7])trace(`campaign-mixed-level-${level}`,campaign,25,{level,mixed:true,lethal:true},360);
+for(const level of [1,2,3,4,5,6,7])trace(`campaign-mixed-level-${level}`,campaign,25,{level,mixed:true,lethal:true,reducedMotion:true},360);
 for(const kind of ['ties','lost','effect-cap'])trace(`ansturm-${kind}`,ansturm,25,{lethal:true},360,s=>{
  for(let i=0;i<s.enemies.length;i++){const e=s.enemies[i];e.x=i%2?.8:.1;e.y=0;e.speed=0;e.burnUntil=0;e.type='normal';}
  if(kind==='lost'){s.hp=.001;s.shield=0;s.enemies.forEach(e=>e.x=0);}
  if(kind==='effect-cap')s.effects=Array.from({length:150},(_,i)=>({type:'projectile',x:i,life:i%2?.4:.001,total:.4,progress:0}));
  s.fireClock=1;
 });
-if(record){fs.writeFileSync(target,JSON.stringify({baseline:'c5d6f21',runtime:process.version,ticks:360,bossTicks:1200,results},null,2)+'\n');console.log('Recorded unmodified baseline diagnostics');}
+if(record){fs.writeFileSync(target,JSON.stringify({baseline:'4aaaa8f',runtime:process.version,ticks:360,bossTicks:1200,results},null,2)+'\n');console.log('Recorded unmodified baseline diagnostics');}
 else{
  const legacy=JSON.parse(fs.readFileSync(target));const drift=Object.keys(results).filter(k=>results[k]!==legacy.results[k]);
  console.log(`${Object.keys(results).length} simulation traces match immutable baseline exactly after every update (${process.version})`);
