@@ -16,6 +16,22 @@ assert.equal(game.militia.length,1);assert.ok(game.militia[0].y<78);
 const enemy={x:90,y:0,r:12,hp:75,dead:false};game.enemies.push(enemy);
 let hits=0;for(let k=0;k<200;k++)b.update(game,1/60,{paths,hurtEnemy:(e,d)=>{hits++;e.hp-=d;if(e.hp<=0)e.dead=true}});
 assert.ok(hits>0&&enemy.hp<75);
+// Korridor-Regel: Gegner im Alarmradius, aber außerhalb des 82px-Wachtkorridors um den Rally-Posten, werden ignoriert.
+{
+ const g2={towers:[{kind:'barracks',level:1,x:90,y:78,recruitCd:0}],enemies:[],militia:[]};
+ for(let k=0;k<300;k++)b.update(g2,1/60,{paths});
+ assert.equal(g2.militia.length,1);assert.ok(g2.militia[0].y<10);
+ const far={x:90,y:-90,r:12,hp:75,dead:false};// 90px von der Lane, aber nur 90px vom Rally-Punkt
+ g2.enemies.push(far);
+ let farHits=0;const tally=(e,d)=>{farHits++;e.hp-=d;if(e.hp<=0)e.dead=true};
+ for(let k=0;k<240;k++)b.update(g2,1/60,{paths,hurtEnemy:tally});
+ assert.equal(farHits,0,'Miliz greift Gegner außerhalb des Lane-Korridors nicht an');
+ assert.equal(far.hp,75);
+ far.y=0;far.dead=false;far.hp=75;
+ for(let k=0;k<240;k++)b.update(g2,1/60,{paths,hurtEnemy:tally});
+ assert.ok(farHits>0&&far.hp<75,'Miliz greift Gegner auf der Lane an');
+ console.log('Barracks: Lane-Korridor-Regel (ignoriert außerhalb, trifft auf der Lane) passed');
+}
 assert.equal(b.aggroTarget(game,{x:90,y:0}),game.militia[0]);
 assert.equal(b.aggroTarget(game,{x:90,y:0,flying:true}),null);
 assert.equal(b.aggroTarget(game,{x:90,y:0,type:'sapper'}),null);

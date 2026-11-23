@@ -52,6 +52,7 @@
       let target=null,nearest=Infinity;
       for(const e of game.enemies){
         if(e.dead||e.flying||distanceSq(e,u.rally)>ALERT*ALERT)continue;
+        if((e.x-u.rally.x)**2+(e.y-u.rally.y)**2>82*82)continue;// Korridor-Regel: Miliz hält wie Gegner-Bogenschützen einen 82px-Wachtkorridor um den Lane-Posten
         const d=distanceSq(e,u);if(d<nearest){nearest=d;target=e;}
       }
       const desired=target&&distanceSq(target,u.rally)<=LEASH*LEASH?target:u.rally,d=distance(desired,u);

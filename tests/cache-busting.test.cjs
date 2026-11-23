@@ -65,7 +65,7 @@ const expectedVersions = new Map([
   ['level-intro.js', 'levelintro2'],
   ['level-intro.css', 'levelintro1'],
 
-  ['barracks.js','beta-barracks-matte-20261116'],
+  ['barracks.js','militia-corridor-20261123'],
   ['touch-context-hud.js','v5hud2a1'],
   ['portal-run.js','save2'],
   ['portal-perks.js','portal1'],
