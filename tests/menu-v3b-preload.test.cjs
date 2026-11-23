@@ -24,11 +24,12 @@ assert.match(preloader, /character === 'marcel' \|\| envelope\.data\.character =
 
 // Hidden scenery must not be downloaded eagerly on mobile (CSS display swap + lazy).
 const scene = html.match(/<div class="menu-scene"[\s\S]*?<\/div>/)?.[0] || '';
-assert.match(scene, /memorial-yard-v4\.webp\?v=menu-v4a1[^>]*loading="lazy"/, 'desktop scenery is lazy');
-assert.match(scene, /memorial-yard-mobile-v4\.webp\?v=menu-v4a1[^>]*loading="lazy"/, 'mobile scenery is lazy');
+assert.match(scene, /data-td2-asset="assets\/menu\/memorial-yard-v4\.webp\?v=menu-v4a1"/, 'desktop scenery is assigned after the CDN-aware preload');
+assert.match(scene, /data-td2-asset="assets\/menu\/memorial-yard-mobile-v4\.webp\?v=menu-v4a1"/, 'mobile scenery is assigned after the CDN-aware preload');
+assert.doesNotMatch(scene, /src="assets\/menu\/memorial-yard-(?:mobile-)?v4\.webp/, 'menu scenery must not start a duplicate local request before preload');
 
 // Cache key bumped for the changed preloader.
-assert.match(html, /preloader\.js\?v=portrait-v7-20261122/);
+assert.match(html, /preloader\.js\?v=cdn-pilot-display-20261123/);
 
 // The CSS swap breakpoint stays in sync with the preloader breakpoint.
 assert.match(css, /@media\s*\(max-width:\s*700px\)[\s\S]*?menu-scene-mobile/, 'CSS scenery swap at 700px');
