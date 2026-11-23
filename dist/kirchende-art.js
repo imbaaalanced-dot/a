@@ -179,6 +179,9 @@
     ctx.fillStyle='#555b53';ctx.fillRect(street.left,top-4,street.right-street.left,8);
     ctx.fillStyle='#8e8c7a';ctx.fillRect(street.left,top-5,street.right-street.left,3);
     ctx.fillStyle='#50574e';ctx.fillRect(street.left,bottom-6,street.right-street.left,6);
+    // Worn centre dashes; the axial entrance stays open like the wall gap.
+    ctx.fillStyle='#d8d3ba66';
+    for(let x=street.left+20;x+30<street.right-10;x+=64){if(x<90&&x+30>-50)continue;ctx.fillRect(x,street.y-2,30,4);}
     for(let i=0;i<30;i++){
       const x=-820+i*56;
       ctx.fillStyle=i%3===0?'#72786c':'#62695e';

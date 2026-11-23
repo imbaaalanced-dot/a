@@ -6,6 +6,7 @@ const streetRoute=[{x:C.x+730,y:C.y-900},{x:C.x+730,y:C.y+120},{x:C.x+800,y:C.y+
 const frontRoute=[{x:C.x-1120,y:C.y+820},{x:C.x-530,y:C.y+600},{x:C.x+20,y:C.y+720},{x:C.x+800,y:C.y+540}];
 const lampOffsets=[[-1050,-760],[1030,-740],[1040,300]];
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
+function laneMarks(q,points){for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}}
 function environmentLamps(layout){
  return lampOffsets.map(([x,y])=>({x:C.x+x,y:C.y+y})).filter(p=>{
   if(Math.hypot(p.x-C.x,p.y-C.y)<320)return false;
@@ -33,7 +34,7 @@ function createGround(layout){
  for(let i=0;i<2300;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#69795424','#b09b6330','#1c322b32'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Street along the park's east and front edges. Flight does not receive a ground road.
  const street=streetRoute,front=frontRoute;
- for(const road of [street,front]){path(q,road,'#a5a28c',155);path(q,road,'#676f6b',133);path(q,road,globalThis.TD2GroundV3?.patternFor?.(q,6,'street')||'#767d7444',110);}
+ for(const road of [street,front]){path(q,road,'#3f443f66',155);path(q,road,'#a5a28c',149);path(q,road,'#676f6b',133);path(q,road,globalThis.TD2GroundV3?.patternFor?.(q,6,'street')||'#767d7444',110);laneMarks(q,road);}
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,6,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }

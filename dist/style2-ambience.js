@@ -60,6 +60,7 @@ function motes(level,camera,viewWidth,viewHeight,time=0,{low=false}={}){
  return dust;
 }
 function drawAir(ctx,level,camera,viewWidth,viewHeight,time=0,{low=false}={}){
+ globalThis.TD2SizeGrid?.draw(ctx,level,camera,viewWidth,viewHeight);
  const particles=motes(level,camera,viewWidth,viewHeight,time,{low});
  if(!particles.length)return 0;
  ctx.save();
