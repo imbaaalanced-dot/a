@@ -19,7 +19,7 @@
     const key=String(url).split('?')[0];
     const entry=MAP[key];
     if(!enabled||!entry)return {url,fallback:null};
-    const publicId='td2/runtime/'+key.slice(8).replace(/\.webp$/,'');
+    const publicId='td2/runtime/'+key.slice('assets/'.length).replace(/\.webp$/,'');
     return {url:CLOUD+'/'+entry.version+'/'+publicId+'.webp',fallback:url};
   }
   globalThis.TD2CdnMap=Object.freeze({resolve,enabled});
