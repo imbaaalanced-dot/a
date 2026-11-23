@@ -1,0 +1,174 @@
+--- a/dist/game.js
++++ b/dist/game.js
+@@ -227,10 +227,10 @@
+     if(!originalIntroSlots)originalIntroSlots=campaign.levels[1].slots;campaign.levels[1].slots=mode==='campaign-pilot'?CampaignBalance.profile(1,{pilot:true}).slots:originalIntroSlots;
+     clearInput();speedMultiplier=1;time=0;shake=0;hitStop=0;facing={x:1,y:0};moveIntent={x:0,y:0};cameraLeadState={x:0,y:0};
+     const definition=campaign.levels[level];
+-    game={runId:(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+(++runSerial)+'-'+Math.random().toString(36).slice(2)),spawnSerial:0,level,mode,wave:mode==='campaign'&&campaign20?campaign20.chapter(level).firstWave:definition.firstWave,elapsed:0,essence:definition.startEssence??(level===2?130:70),deathFx:[],selectedTower:'bow',developerRun:developerMode,kills:0,waveSpawned:0,waveKilled:0,waveTotal:0,spawnTimer:1.2,intermission:5,
++    game={runId:(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+(++runSerial)+'-'+Math.random().toString(36).slice(2)),spawnSerial:0,level,mode,wave:mode==='campaign'&&campaign20?campaign20.chapter(level).firstWave:definition.firstWave,elapsed:0,essence:definition.startEssence??(level===1?90:level===2?130:70),deathFx:[],selectedTower:'bow',developerRun:developerMode,kills:0,waveSpawned:0,waveKilled:0,waveTotal:0,spawnTimer:1.2,intermission:5,
+       hero:{character:selectedCharacter,x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
+       monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
+-      enemies:[],militia:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:30,rewardedWaves:new Set(),towers:[],maxTowers:definition.maxTowers??(level===2?6:4)};
++      enemies:[],militia:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:30,rewardedWaves:new Set(),towers:[],maxTowers:definition.maxTowers??(level===1?6:level===2?6:4)};
+     game.waveTotal=waveSize(game.wave);
+     if(mode==='campaign-pilot')game.maxTowers=6;
+     saga.reset(game.hero,lootModel.snapshot(selectedCharacter));game.inventory=lootModel.view(selectedCharacter).bag;updateCamera();ui.perk.classList.add('hidden');ui.gameover.classList.add('hidden');selectTower('bow');updateUI();
+@@ -739,7 +739,7 @@
+     showToast(`ZIELPRIORITÄT · ${targetLabels[t.targetMode]}`);updateUI();
+   }
+   function upgradeTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;if(t.kind==='barracks'){/* Existing recruits promote without resetting health or recruitment. */}else if(t.kind==='boomerang'){const spec=towerSpecs.boomerang;t.damage=[8,11,14][t.level-1];t.range=[265,285,305][t.level-1];t.fireRate=[1.75,1.65,1.55][t.level-1];}else{t.damage*=1.32;t.fireRate*=.92;t.range+=18;}spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);fx.sfx?.('towerUpgrade')}
+-  function sellTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');const refund=(inPortal()?t.spent*(portalRun.phase==='build'?1:.75):Math.floor(t.spent*.6));game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);fx.sfx?.('towerSell')}
++  function sellTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');const refund=(inPortal()?t.spent*(portalRun.phase==='build'?1:.75):Math.floor(t.spent*.8));game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);fx.sfx?.('towerSell')}
+   function selectTower(kind){if(!towerSpecs[kind]||!enabledTowers.has(kind))return;game.selectedTower=kind;document.querySelectorAll('.arsenal button').forEach(b=>{b.classList.toggle('selected',b.dataset.tower===kind);b.setAttribute('aria-pressed',String(b.dataset.tower===kind));});$('buildText').textContent=`${towerSpecs[kind].name} BAUEN · ${towerSpecs[kind].cost}`;updateUI()}
+   const touchContextUI=mobileRender&&globalThis.DenkmalTouchContext?.create($('touchContext'),{
+     isPlaying:()=>state==='playing'&&!document.querySelector('.modal:not(.hidden)'),
+@@ -754,7 +754,7 @@
+   function openTouchTowerContext(tower){
+     if(!touchContextUI||!game.towers.includes(tower))return;
+     const upgradeCost=20+tower.level*15;
+-    const refund=inPortal()?tower.spent*(portalRun.phase==='build'?1:.75):Math.floor(tower.spent*.6);
++    const refund=inPortal()?tower.spent*(portalRun.phase==='build'?1:.75):Math.floor(tower.spent*.8);
+     touchContextUI.openTower(tower,[
+       {label:tower.level>=3?'STUFE III':`AUFWERTEN · ${upgradeCost}`,enabled:tower.level<3&&game.essence>=upgradeCost,run:t=>{upgradeTower(t);updateUI();}},
+       {label:`ZIEL · ${targetLabels[tower.targetMode||'first']}`,enabled:true,run:t=>{cycleTargetMode(t);updateUI();}},
+@@ -859,7 +859,7 @@
+           const speed=projectileSpeed(t.kind);
+           const heavyCannon=(t.kind==='cannon'&&(t.level||1)>=3)||t.kind==='mortar';
+           const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;
+-          shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
++          shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:t.kind==='mage'?[.58,.5,.44][t.level-1]:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
+         }
+         towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*((t.x-h.x)*(t.x-h.x)+(t.y-h.y)*(t.y-h.y)<=h.r*h.r*36?1+perkStats().circle:1):1);
+       }
+@@ -896,7 +896,7 @@
+   }
+   function segmentProjection(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;return ((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1);}
+   function segmentDistance(e,b){const dx=b.x-b.prevX,dy=b.y-b.prevY;const t=clamp(((e.x-b.prevX)*dx+(e.y-b.prevY)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(e.x-(b.prevX+t*dx),e.y-(b.prevY+t*dy));}
+-  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';setHidden($('compactHud'),!playing);setText($('compactHp'),`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setText($('compactMonument'),`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText($('compactEssence'),game.essence);setText($('compactWave'),campaignWaveLabel(game.wave));setText($('compactSoul'),`${Math.ceil(h.soul)}%`);setText($('compactEnemies'),`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE`);setText($('compactTowers'),`${game.towers.length} / ${game.maxTowers} TÜRME`);setText($('compactDodge'),h.dodgeCd>0?`${h.dodgeCd.toFixed(1)}s`:'BEREIT');setWidth($('compactHpBar'),`${clamp(h.hp/h.maxHp*100,0,100)}%`);setWidth($('compactMonumentBar'),`${clamp(m.hp/m.maxHp*100,0,100)}%`);setHidden($('mobileNextWaveBtn'),!playing||game.intermission<=0||(inPortal()&&portalRun.phase!=='build'));setHidden($('compactObjective'),!playing||!inPortal()||portalRun.phase!=='exit');setText($('compactObjective'),inPortal()&&portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'');const speedBtn=$('speedBtn'),speedAvailable=game.developerRun||game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier!==1));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreviewText()}${campaign20Plan(game.wave)?'':game.level===7?' · '+globalThis.DenkmalWesthofen.warning(game.wave,game.mode):game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave,game.mode):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave,game.mode).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,campaignWaveLabel(game.wave));setText($('levelLabel'),game.developerRun?`DEV · LEVEL ${game.level}`:game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);const hpPct=clamp(h.hp/h.maxHp*100,0,100);setWidth(ui.playerHp,hpPct+'%');ui.playerHp.classList.toggle('low',hpPct<50&&hpPct>=25);ui.playerHp.classList.toggle('critical',hpPct<25);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);const mPct=clamp(m.hp/m.maxHp*100,0,100);setWidth(ui.monumentHp,mPct+'%');ui.monumentHp.classList.toggle('low',mPct<50&&mPct>=25);ui.monumentHp.classList.toggle('critical',mPct<25);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);const objPanel=$('objective');objPanel.classList.toggle('urgent',playing&&game.intermission>0&&game.intermission<=5&&!inPortal());setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:campaign20Plan(game.wave)?.boss||game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${campaignWaveLabel(game.wave)}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===7?'WESTHOFEN · ZWEI STRASSEN · GRÜNZUG · LUFTANGRIFFE':game.level===6?'GOETHESTRASSE · DREI WEGE · LUFTANGRIFFE':game.level===4?'ENDER DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · MARKIERTE BAUPLÄTZE':`VIER TORE · MARKIERTE BAUPLÄTZE · WELLE ${campaignWaveLabel(game.wave)} / ${campaign20Plan(game.wave)?20:5}`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);const buildContext=buildContextActive();setHidden($('arsenal'),!playing);setHidden($('buildBtn'),!playing);setDisabled($('buildBtn'),!playing||!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${(inPortal()?nearby.spent*(portalRun.phase==='build'?1:.75):Math.floor(nearby.spent*.6))}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');if(game.mode==='campaign-pilot'){setText($('levelLabel'),'KAMPAGNENPILOT');setText(ui.storyText,'DREI KAMPFPHASEN · WELLE '+game.wave+' / 8');}if(inPortal()){setText($('wavePreview'),portalRun.phase==='build'?'VORSCHAU · '+wavePreviewText()+' · ZULÄUFE '+[[3],[2,4],[2,3,4]][portalRun.section-1].join(', '):'');setText($('levelLabel'),'PORTALREISE '+portalRun.section+' / 3');setText(ui.storyText,portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'VERTEIDIGE DEN SCHUTZPUNKT');setText(ui.objectiveText,portalRun.phase==='exit'?'ABSCHNITT GESICHERT':portalRun.phase==='build'?'BAUPHASE · BEREIT?':'WELLE '+portalRun.waveInSection+' / 2');setText(ui.essence,Number(game.essence.toFixed(2)));setHidden($('nextWaveBtn'),portalRun.phase!=='build');setHidden($('arsenal'),!playing||portalRun.phase==='exit');setHidden($('buildBtn'),!playing||portalRun.phase==='exit');setDisabled($('buildBtn'),!playing||!buildContext||portalRun.phase==='exit');}}
++  function updateUI(){if(!game)return;saga.updateUI();setText($('storageWarning'),lootModel.status);setHidden($('storageWarning'),!lootModel.status);const h=game.hero,m=game.monument,playing=state==='playing';setHidden($('compactHud'),!playing);setText($('compactHp'),`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);setText($('compactMonument'),`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText($('compactEssence'),game.essence);setText($('compactWave'),campaignWaveLabel(game.wave));setText($('compactSoul'),`${Math.ceil(h.soul)}%`);setText($('compactEnemies'),`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE`);setText($('compactTowers'),`${game.towers.length} / ${game.maxTowers} TÜRME`);setText($('compactDodge'),h.dodgeCd>0?`${h.dodgeCd.toFixed(1)}s`:'BEREIT');setWidth($('compactHpBar'),`${clamp(h.hp/h.maxHp*100,0,100)}%`);setWidth($('compactMonumentBar'),`${clamp(m.hp/m.maxHp*100,0,100)}%`);setHidden($('mobileNextWaveBtn'),!playing||game.intermission<=0||(inPortal()&&portalRun.phase!=='build'));setHidden($('compactObjective'),!playing||!inPortal()||portalRun.phase!=='exit');setText($('compactObjective'),inPortal()&&portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'');const speedBtn=$('speedBtn'),speedAvailable=game.developerRun||game.level>=2||game.mode==='endless';setHidden(speedBtn,!speedAvailable);setDisabled(speedBtn,!playing||!speedAvailable);setText(speedBtn,`TEMPO: ${speedMultiplier}×`);speedBtn.setAttribute('aria-pressed',String(speedMultiplier!==1));const preview=$('wavePreview');if(preview){setText(preview,game.intermission>0?`VORSCHAU · ${wavePlan(game.wave).name} · ${wavePreviewText()}${campaign20Plan(game.wave)?'':game.level===7?' · '+globalThis.DenkmalWesthofen.warning(game.wave,game.mode):game.level===6?' · '+globalThis.DenkmalGoethe.warning(game.wave):game.level===5?' · '+globalThis.DenkmalHohensyburg.warning(game.wave,game.mode):''}${game.level>=3?' · ZULÄUFE '+campaign.getWaveGates(game.level,game.wave,game.mode).map(i=>i+1).join(', '):''}`:'');setHidden(preview,game.intermission<=0||!playing);}setText(ui.wave,campaignWaveLabel(game.wave));setText($('levelLabel'),game.developerRun?`DEV · LEVEL ${game.level}`:game.level===1?'EINLEITUNG':`LEVEL ${game.level}`);const hpPct=clamp(h.hp/h.maxHp*100,0,100);setWidth(ui.playerHp,hpPct+'%');ui.playerHp.classList.toggle('low',hpPct<50&&hpPct>=25);ui.playerHp.classList.toggle('critical',hpPct<25);setText(ui.playerHpText,`${Math.ceil(Math.max(0,h.hp))} / ${h.maxHp}`);const mPct=clamp(m.hp/m.maxHp*100,0,100);setWidth(ui.monumentHp,mPct+'%');ui.monumentHp.classList.toggle('low',mPct<50&&mPct>=25);ui.monumentHp.classList.toggle('critical',mPct<25);setText(ui.monumentHpText,`${Math.ceil(Math.max(0,m.hp))} / ${m.maxHp}`);setText(ui.essence,game.essence);setText($('inventoryCount'),`${lootModel.count} / 30`);setDisabled($('inventoryBtn'),!playing);setText(ui.towerCount,game.towers.length);setText(ui.towerMax,game.maxTowers);setWidth(ui.waveProgress,`${game.waveKilled/game.waveTotal*100}%`);setText(ui.enemyCount,`${Math.max(0,game.waveTotal-game.waveKilled)} FEINDE VERBLEIBEN`);const objPanel=$('objective');objPanel.classList.toggle('urgent',playing&&game.intermission>0&&game.intermission<=5&&!inPortal());setText(ui.objectiveText,state==='perk'?'WELLE ABGESCHLOSSEN':state==='paused'?'WACHT PAUSIERT':game.intermission>0?`BAUPAUSE · ${Math.ceil(game.intermission)} s`:campaign20Plan(game.wave)?.boss||game.wave===5||game.level===4&&game.wave===16?'BOSSWELLE':`WELLE ${campaignWaveLabel(game.wave)}`);const nextWave=$('nextWaveBtn');setHidden(nextWave,!playing||game.intermission<=0);setText(ui.storyText,game.level===7?'WESTHOFEN · ZWEI STRASSEN · GRÜNZUG · LUFTANGRIFFE':game.level===6?'GOETHESTRASSE · DREI WEGE · LUFTANGRIFFE':game.level===4?'ENDER DORFKIRCHE · SCHLAFENDER LÖWE':game.level===3?'KIRCHENDE · VIER ZULÄUFE':game.level===2?'LABYRINTH · MARKIERTE BAUPLÄTZE':`VIER TORE · MARKIERTE BAUPLÄTZE · WELLE ${campaignWaveLabel(game.wave)} / ${campaign20Plan(game.wave)?20:5}`);setDisabled($('pauseBtn'),!playing);setDisabled($('menuPauseBtn'),!playing);setDisabled($('dodgeBtn'),!playing||h.dodgeCd>0);setText($('dodgeText'),h.dodgeCd>0?`BEREIT IN ${h.dodgeCd.toFixed(1)} s`:'AUSWEICHEN');setDisabled($('buildBtn'),!playing||game.essence<towerSpecs[game.selectedTower].cost||game.towers.length>=game.maxTowers);setText($('buildText'),game.towers.length>=game.maxTowers?'TURMLIMIT':`${towerSpecs[game.selectedTower].name.replace('TURM','')} · ${towerSpecs[game.selectedTower].cost}`);const boss=game.enemies.find(e=>isBoss(e)&&!e.dead);setHidden(ui.bossHud,!boss);setText($('bossName'),boss?`${boss.type==='uprooted'?'DER ENTWURZELTE':game.level===4?'DER GRABWÄCHTER':'DER BELAGERER'} · ${boss.charge>0?'LÄDT '+boss.charge.toFixed(1)+' s':bossPhaseLabel(boss.phase)}`:'DER BELAGERER');ui.bossHud.classList.toggle('phase-2',!!boss&&boss.phase===2);ui.bossHud.classList.toggle('phase-3',!!boss&&boss.phase===3);if(boss)setWidth(ui.bossHp,`${clamp(boss.hp/boss.maxHp*100,0,100)}%`);const buildContext=buildContextActive();setHidden($('arsenal'),!playing);setHidden($('buildBtn'),!playing);setDisabled($('buildBtn'),!playing||!buildContext);const nearby=nearbyTower();setHidden($('upgradeBtn'),!nearby);setHidden($('sellBtn'),!nearby);setHidden($('targetBtn'),!nearby);setDisabled($('upgradeBtn'),!playing||!nearby||nearby.level>=3||game.essence<20+nearby.level*15);setText($('upgradeText'),nearby?(nearby.level>=3?'STUFE III':`AUFWERTEN · ${20+nearby.level*15}`):'AUFWERTEN');setDisabled($('sellBtn'),!playing||!nearby);setText($('sellText'),nearby?`VERKAUFEN · +${(inPortal()?nearby.spent*(portalRun.phase==='build'?1:.75):Math.floor(nearby.spent*.8))}`:'VERKAUFEN');setDisabled($('targetBtn'),!playing||!nearby);setText($('targetText'),nearby?`ZIEL · ${targetLabels[nearby.targetMode||'first']}`:'ZIEL');if(game.mode==='campaign-pilot'){setText($('levelLabel'),'KAMPAGNENPILOT');setText(ui.storyText,'DREI KAMPFPHASEN · WELLE '+game.wave+' / 8');}if(inPortal()){setText($('wavePreview'),portalRun.phase==='build'?'VORSCHAU · '+wavePreviewText()+' · ZULÄUFE '+[[3],[2,4],[2,3,4]][portalRun.section-1].join(', '):'');setText($('levelLabel'),'PORTALREISE '+portalRun.section+' / 3');setText(ui.storyText,portalRun.phase==='exit'?'↑ PORTAL OBEN · GEHE HINDURCH':'VERTEIDIGE DEN SCHUTZPUNKT');setText(ui.objectiveText,portalRun.phase==='exit'?'ABSCHNITT GESICHERT':portalRun.phase==='build'?'BAUPHASE · BEREIT?':'WELLE '+portalRun.waveInSection+' / 2');setText(ui.essence,Number(game.essence.toFixed(2)));setHidden($('nextWaveBtn'),portalRun.phase!=='build');setHidden($('arsenal'),!playing||portalRun.phase==='exit');setHidden($('buildBtn'),!playing||portalRun.phase==='exit');setDisabled($('buildBtn'),!playing||!buildContext||portalRun.phase==='exit');}}
+ 
+   function diamond(x,y,w,h,fill,stroke){ctx.beginPath();ctx.moveTo(x,y-h);ctx.lineTo(x+w,y);ctx.lineTo(x,y+h);ctx.lineTo(x-w,y);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
+   let groundCache=null,groundLoaded=false;
+--- a/dist/index.html
++++ b/dist/index.html
+@@ -347,7 +347,7 @@
+   <script src="touch-context-hud.js?v=v5hud2a1"></script>
+   <script src="barracks.js?v=beta-barracks-matte-20261116"></script>
+   <script src="level-intro.js?v=levelintro2"></script>
+-  <script src="game.js?v=hitstop-slowmo-20261122"></script>
++  <script src="game.js?v=gameplay-feel-20261123"></script>
+   <script src="portrait-avatars-v5.js?v=portrait-v7-wand-20261122"></script>
+   <script src="level-gallery.js?v=menu-v4a2"></script>
+ <script id="td2-version-label">
+--- a/tests/cache-busting.test.cjs
++++ b/tests/cache-busting.test.cjs
+@@ -61,7 +61,7 @@
+   ['goethestrasse-art.js','late-ground-20261113'],
+   ['westhofen.js', 'westhofen2'],
+   ['westhofen-art.js','westhofen-membake1'],
+-  ['game.js', 'hitstop-slowmo-20261122'],
++  ['game.js', 'gameplay-feel-20261123'],
+   ['level-intro.js', 'levelintro2'],
+   ['level-intro.css', 'levelintro1'],
+ 
+--- a/tests/game.test.cjs
++++ b/tests/game.test.cjs
+@@ -158,7 +158,9 @@
+   t.startGame(7);assert.equal(t.state,'start','normal launch lock restored');
+ });
+ check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
+-check('Start resources and clean restart',()=>{assert.equal(t.game.essence,70);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);});
++check('Start resources and clean restart',()=>{assert.equal(t.game.essence,90);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);assert.equal(t.game.maxTowers,6,'level 1 fields six towers');});
++check('Sell refunds 80 percent of the tower investment',()=>{const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.game.essence=200;const before=t.game.essence;t.selectTower('bow');t.buildTower();assert.equal(t.game.towers.length,1);const spent=before-t.game.essence;t.sellTower();assert.equal(t.game.towers.length,0);assert.equal(t.game.essence,before-spent+Math.floor(spent*.8),'campaign sells refund 80 percent');});
++check('Mage slow deepens with tower level',()=>{const src=fs.readFileSync(path.join(root,'game.js'),'utf8');assert.ok(src.includes("slow:t.kind==='mage'?[.58,.5,.44][t.level-1]:spec.slow"),'tower-fired mage projectiles carry the level-scaled slow value');});
+ check('Mobile combat strip reflects current hero, monument, essence and wave',()=>{
+   t.game.hero.hp=66;t.game.monument.hp=420;t.game.essence=77;t.game.wave=3;
+   t.update(.15);
+@@ -198,11 +200,11 @@
+   choices.children.find(b=>b.textContent.startsWith('ZIEL')).onclick();
+   assert.equal(built.targetMode,'strongest','tap actions target the selected tower even when hero is far away');
+ });
+-check('Level 1 uses fixed build pads and rejects occupied or off-pad placement',()=>{const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),true);t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,45);t.game.essence=100;t.buildTower();assert.equal(t.game.towers.length,1);t.game.hero.x=3060;t.game.hero.y=3060;t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,100);});
++check('Level 1 uses fixed build pads and rejects occupied or off-pad placement',()=>{const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};assert.equal(t.buildContextActive(),true);t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,65);t.game.essence=100;t.buildTower();assert.equal(t.game.towers.length,1);t.game.hero.x=3060;t.game.hero.y=3060;t.buildTower();assert.equal(t.game.towers.length,1);assert.equal(t.game.essence,100);});
+ check('Pause freezes simulation and clears held movement',()=>{listeners.keydown({code:'KeyD'});t.pauseGame();const x=t.game.hero.x;t.update(10);assert.equal(t.game.elapsed,0);assert.equal(t.game.hero.x,x);t.resumeGame();t.update(.01);assert.equal(t.game.hero.x,x);});
+ check('Movement and dodge work; repeat cannot spend twice',()=>{const x=t.game.hero.x;listeners.keydown({code:'ArrowRight',preventDefault(){}});t.update(.02);assert.ok(t.game.hero.x>x);listeners.keyup({code:'ArrowRight'});t.dodge();const x2=t.game.hero.x;t.update(.02);assert.ok(t.game.hero.x>x2);const cd=t.game.hero.dodgeCd;t.dodge();assert.equal(t.game.hero.dodgeCd,cd);});
+ check('Lost focus pauses',()=>{listeners.blur();assert.equal(t.state,'paused');});
+-check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.endWave();assert.equal(t.game.essence,78);let n=0;const perk={name:'Test',apply(){n++;}};t.selectPerk(perk);t.selectPerk(perk);assert.equal(t.game.wave,2);assert.equal(n,1);assert.equal(t.game.loot.length,0);});
++check('Wave loot and perk apply once',()=>{t.game.loot=[{},{}];t.endWave();t.endWave();assert.equal(t.game.essence,98);let n=0;const perk={name:'Test',apply(){n++;}};t.selectPerk(perk);t.selectPerk(perk);assert.equal(t.game.wave,2);assert.equal(n,1);assert.equal(t.game.loot.length,0);});
+ check('Dead enemies cannot award duplicate kills or soul charge',()=>{const e={x:0,y:0,hp:1};t.game.enemies=[e];t.game.hero.soul=0;t.hurtEnemy(e,5);t.hurtEnemy(e,5);assert.equal(t.game.kills,1);assert.equal(t.game.hero.soul,8);assert.equal(t.nearest({x:0,y:0},100),null);});
+ check('Enemy attacks start a cosmetic cue and kills leave a short-lived corpse effect',()=>{
+   t.game.level=2;t.game.intermission=0;t.game.waveSpawned=t.game.waveTotal=0;t.launchWave();t.spawnEnemy();
+@@ -237,7 +239,7 @@
+   t.upgradeTower();t.upgradeTower();assert.equal(t.game.towers[0].level,3);t.upgradeTower();
+   t.pauseGame();t.sellTower();assert.equal(t.game.towers.length,1);t.resumeGame();t.sellTower();assert.equal(t.game.towers.length,0);
+ });
+-check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,105);assert.equal(t.game.loot.length,9);});
++check('Wave 5 contains exactly one vertical-slice boss and one reward',()=>{t.game.wave=5;t.spawnEnemy();t.spawnEnemy();assert.equal(t.game.enemies.filter(e=>e.type==='boss').length,1);const boss=t.game.enemies[0];t.hurtEnemy(boss,99999);t.hurtEnemy(boss,99999);assert.equal(t.game.essence,125);assert.equal(t.game.loot.length,9);});
+ check('Resize repaints a cleared buffer immediately without moving gameplay',()=>{const heroX=t.game.hero.x;t.game.hero.x=50;t.game.hero.y=50;sandbox.innerWidth=640;sandbox.innerHeight=400;draws.length=0;t.resize(false);assert.ok(draws.length>0,'the cleared canvas is redrawn before the next animation frame');assert.equal(t.state,'playing');t.game.hero.x=heroX;});
+ check('Resize does not clear the canvas when pixel dimensions are unchanged',()=>{const canvas=element('game');let width=canvas.width,height=canvas.height,widthWrites=0,heightWrites=0;Object.defineProperties(canvas,{width:{configurable:true,get:()=>width,set(v){widthWrites++;width=v;}},height:{configurable:true,get:()=>height,set(v){heightWrites++;height=v;}}});t.resize(false);assert.equal(widthWrites,0,'same-width canvas assignment clears its drawing buffer');assert.equal(heightWrites,0,'same-height canvas assignment clears its drawing buffer');});
+ check('Wardrobe freezes combat and enforces unlocks',()=>{const h=t.game.hero;saga.openCharacter();assert.equal(t.state,'character');t.update(3);assert.equal(t.game.elapsed,0);assert.equal(saga.equip('weapon','echo'),false);assert.equal(h.equipment.weapon,'ember');saga.closeCharacter();assert.equal(t.state,'playing');});
+--- a/tests/audio-volume.test.cjs
++++ b/tests/audio-volume.test.cjs
+@@ -30,7 +30,7 @@
+   'both option surfaces expose the volume control');
+ assert.ok(html.includes('LAUTSTÄRKE: 100 %'),
+   'the control is labelled with its level');
+-assert.ok(html.includes('game.js?v=hitstop-slowmo-20261122')
++assert.ok(html.includes('game.js?v=gameplay-feel-20261123')
+   && html.includes('combat-fx.js?v=particle-priority-20261122')
+   && html.includes('hero-saga.js?v=saga-plain-20261122'),
+   'all touched modules ship fresh cache keys');
+--- a/tests/tower-shop-hud.test.cjs
++++ b/tests/tower-shop-hud.test.cjs
+@@ -18,7 +18,7 @@
+ for(const kind of ['bow','cannon','mage','rift','barracks'])
+   assert.match(html,new RegExp('data-tower="'+kind+'"'),'active '+kind+' still available');
+ assert.match(html,/combat-hud-layout-v3\.css\?v=td2hud-layout-20261113a/,'new CSS cache key');
+-assert.match(html,/game\.js\?v=hitstop-slowmo-20261122/,'changed JS cache key');
++assert.match(html,/game\.js\?v=gameplay-feel-20261123/,'changed JS cache key');
+ assert.match(css,/@media \(hover:hover\) and \(pointer:fine\) and \(min-width:701px\)/,'scoped desktop layout');
+ assert.match(css,/#arsenal:not\(\.hidden\)/,'preserve hidden arsenal semantics');
+ assert.match(css,/@media \(hover:hover\) and \(pointer:fine\) and \(max-width:700px\)/,'narrow mouse layout');
+--- a/tests/marcel-menu-wand.test.cjs
++++ b/tests/marcel-menu-wand.test.cjs
+@@ -25,5 +25,5 @@
+ assert.ok(game.includes("const companionUrl=otherCharacter==='marcel'?menuMarcelPortrait:"),'Kim selection shows Marcel with staff as companion');
+ assert.ok(canonical.includes("portrait:'assets/menu/v5-avatars/marcel-guardian-v7.webp"),'canonical HUD/armory now projects the wand portrait v7');
+ assert.ok(!canonical.includes(portrait),'menu illustration must not alter gameplay art mapping');
+-assert.ok(html.includes('game.js?v=hitstop-slowmo-20261122'),'game JS cache key is updated');
++assert.ok(html.includes('game.js?v=gameplay-feel-20261123'),'game JS cache key is updated');
+ console.log('Menu-only Marcel wand WebP fingerprint, selection and HUD isolation passed');
+--- a/tests/projectile-readability.test.cjs
++++ b/tests/projectile-readability.test.cjs
+@@ -22,6 +22,6 @@
+ assert.ok(game.includes("if(zoomMode==='wide')return portraitLayout()?.46:(mobileRender?.50:.52);"),
+   'baseline zoom levels are unchanged (readability fix must not alter camera behavior)');
+ assert.ok(html.includes('combat-fx.js?v=particle-priority-20261122')
+-  && html.includes('game.js?v=hitstop-slowmo-20261122'),
++  && html.includes('game.js?v=gameplay-feel-20261123'),
+   'index.html must reference the new cache keys');
+ console.log('Projectile readability: zoom-compensated strokes, cores and impact rings pinned');
+--- a/tests/level-intro.test.cjs
++++ b/tests/level-intro.test.cjs
+@@ -130,7 +130,7 @@
+     assert.match(html, /id="levelIntroScreen"/, 'index.html contains the intro overlay');
+     assert.match(html, /<script src="level-intro\.js\?v=levelintro2"><\/script>/, 'module loads before game.js with a cache key');
+     assert.match(html, /level-intro\.css\?v=levelintro1/, 'overlay styles load with a cache key');
+-    assert.match(html, /game\.js\?v=hitstop-slowmo-20261122/, 'changed game.js bumps its cache key');
++    assert.match(html, /game\.js\?v=gameplay-feel-20261123/, 'changed game.js bumps its cache key');
+     assert.match(html, /id="levelIntroVideo"[^>]*preload="none"[^>]*playsinline/, 'no preload and inline playback for WebView');
+   }
+   console.log('Level-3 intro video: module contract, wiring and 404-gate compatibility verified.');
+--- a/tests/v410-balance.test.cjs
++++ b/tests/v410-balance.test.cjs
+@@ -12,8 +12,8 @@
+ });
+ test('campaign opening analysis evaluates current source rules including loot bounds',async()=>{
+  const {campaignOpening}=await load();const c=campaignOpening();
+- assert.equal(c.startEssence,70);assert.equal(c.towerCosts.bow,25);
+- assert.equal(c.openings.twoBow.remaining,20);assert.equal(c.openings.twoCannon.remaining,0);
++ assert.equal(c.startEssence,90);assert.equal(c.towerCosts.bow,25);
++ assert.equal(c.openings.twoBow.remaining,40);assert.equal(c.openings.twoCannon.remaining,20);
+  assert.equal(c.waves.length,5);assert.equal(c.waves[0].count,9);
+  assert.equal(c.waves[0].bounty,18);assert.equal(c.waves[0].lootUpperBound,36);
+  assert.equal(c.waves[4].types.boss||0,0,'regular fifth wave has no boss in 20-wave campaign');
