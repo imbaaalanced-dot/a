@@ -13,7 +13,7 @@
     // The archived branded monument WebP is not a gameplay preload.
     5:[],
     6:['assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1'],
-    7:['assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6']
+    7:['assets/westhofen/westhofen-memorial-style2-v4.webp?v=westhofen-style2v4']
   };
   const common=['assets/scenery-style2.webp?v=style2a1','assets/enemies/walk-style2.webp?v=enemyv3-20261121'];
   function entry(url){
