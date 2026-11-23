@@ -5,7 +5,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.join(__dirname,'../dist');
 for(const scenario of [
  {file:'goethestrasse-art.js',api:'DenkmalGoetheArt',url:'assets/elemental/goethestrasse-memorial-style2.webp?v=style2a1',baked:false},
- {file:'westhofen-art.js',api:'DenkmalWesthofenArt',url:'assets/westhofen/westhofen-memorial-style2-v3-preview.svg?v=westhofen-style2v3-preview6',baked:true}
+ {file:'westhofen-art.js',api:'DenkmalWesthofenArt',url:'assets/westhofen/westhofen-memorial-style2-v4.webp?v=westhofen-style2v4',baked:true}
 ]){
  let newImages=0,urls=[],draws=[],fallbackUrls=[],bakeDraws=[],bakeCanvas=null;
  const decoded={naturalWidth:512,naturalHeight:512,complete:true};

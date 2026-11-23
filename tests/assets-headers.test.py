@@ -111,9 +111,10 @@ check(ELEMENTAL / 'goethestrasse-memorial-v1.webp', size=(768, 768), alpha=True)
 check(HERO / 'marcel-walk-reference-v1.webp', size=(384, 512), alpha=True, budget=250000)
 
 check(
-    DIST_ASSETS / 'westhofen' / 'westhofen-memorial-style2-v1.webp',
-    size=(768, 512),
-    alpha=True,
+    DIST_ASSETS / 'westhofen' / 'westhofen-memorial-style2-v4.webp',
+    size=(900, 600),
+    alpha=False,
+    budget=122880,
 )
 
 print(f'\n{checked} assets header-verified, {len(failures)} failures')
