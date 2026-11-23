@@ -45,7 +45,7 @@ function takeFunction(name){
   assert.match(source,/campaign20Plan\(game\.wave\)\?bossAhead\(game\.wave\):/,'Baupause: Boss-Distanz im 20er-Feld');
   assert.match(source,/campaign20Plan\(game\.wave\+1\)\?bossAhead\(game\.wave\+1\):''/,'Kampf: Boss-Distanz auf die Folgewelle');
 }
-assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-ab-20261123/,'game.js cache key gebumpt');
+assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-voice-20261123/,'game.js cache key gebumpt');
 console.log('Gameplay A-Pass: Kampf-Vorschau, Boss-Distanz und Endlos-Rekord gepinnt');
 /* B-Anschluss: Portal-Rekord (tiefster erreichter Abschnitt, analog zum Endlos-Rekord). */
 {
@@ -57,3 +57,11 @@ console.log('Gameplay A-Pass: Kampf-Vorschau, Boss-Distanz und Endlos-Rekord gep
   assert.match(s,/' · REKORD '\+readPortalRecord\(\)/,'HUD zeigt den Portal-Rekord');
 }
 console.log('Portal-Rekord gepinnt');
+/* Chronik-Stimmen: Trigger im Spiel (23.11.2026). */
+{
+  assert.match(source,/bossVoiceSeen!==game\.wave&&campaign20Plan\(game\.wave\)&&!campaign20Plan\(game\.wave\)\.boss&&campaign20Plan\(game\.wave\+1\)\?\.boss\)\{bossVoiceSeen=game\.wave;saga\.speak\('bossnear'\);\}/,'Boss-Ankuendigung: einmal je Welle vor der Bosswelle (20er-Kampagne)');
+  assert.match(source,/if\(reached>prev&&reached>0\)saga\.speak\('record'\);/,'Endlos-Rekord wird besprochen');
+  assert.match(source,/if\(portalRun\.phase==='exit'\)saga\.speak\('portalsecure'\);/,'Portal-Abschnittssicherung wird besprochen');
+  assert.match(source,/prevPortalRecord=readPortalRecord\(\);if\(portalRun\.section>prevPortalRecord\)saga\.speak\('record'\);/,'Portal-Rekord wird nur bei Bestmarke besprochen');
+}
+console.log('Chronik-Stimmen-Trigger gepinnt');
