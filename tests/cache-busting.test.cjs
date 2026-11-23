@@ -34,7 +34,7 @@ const expectedVersions = new Map([
   ['level-gallery.js', 'menu-v4a2'],
   ['preloader.css', 'td2preload1'],
   ['portrait-patch.css', 'v410a1touch1'],
-  ['asset-manager.js', 'westhofen-v3-preload-20261123'],
+  ['asset-manager.js', 'enemyv3-runtime-20261121'],
   ['preloader.js', 'portrait-v7-20261122'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
