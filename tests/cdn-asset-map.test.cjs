@@ -7,6 +7,8 @@ const root=path.join(__dirname,'../dist');
 const mapSource=fs.readFileSync(path.join(root,'cdn-asset-map.js'),'utf8');
 const managerSource=fs.readFileSync(path.join(root,'asset-manager.js'),'utf8');
 
+function isCloudinary(url){try{return new URL(url).hostname==='res.cloudinary.com';}catch{return false;}}
+
 function create(search,mode='success'){
   const requests=[];
   class ImageMock{
@@ -15,7 +17,7 @@ function create(search,mode='success'){
       this._src=value;requests.push(value);
       queueMicrotask(()=>{
         this.complete=true;
-        if(value.includes('res.cloudinary.com')&&mode==='network'){
+        if(isCloudinary(value)&&mode==='network'){
           this.naturalWidth=0;this.onerror?.();return;
         }
         this.naturalWidth=64;this.onload?.();
@@ -23,7 +25,7 @@ function create(search,mode='success'){
     }
     get src(){return this._src;}
     decode(){
-      if(this._src.includes('res.cloudinary.com')&&mode==='decode')
+      if(isCloudinary(this._src)&&mode==='decode')
         return Promise.reject(new Error('simulated CDN decode failure'));
       return Promise.resolve();
     }
@@ -40,7 +42,7 @@ async function run(){
   assert.deepEqual({...env.box.TD2CdnMap.resolve(asset)},{url:asset,fallback:null});
   let image=await env.box.DenkmalAssets.load(asset);
   assert.equal(image.src,asset,'default mode uses the local asset');
-  assert.ok(env.requests.every(url=>!url.includes('res.cloudinary.com')));
+  assert.ok(env.requests.every(url=>!isCloudinary(url)));
 
   env=create('?td2Cdn=1');
   assert.equal(env.box.TD2CdnMap.enabled,true,'explicit query flag enables CDN');
