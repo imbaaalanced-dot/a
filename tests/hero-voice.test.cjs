@@ -22,7 +22,7 @@ for(const id of clips){
 }
 assert.ok(saga.includes("if(!clipSrc){tts();return;}"),
   'a line without a recorded clip must fall straight back to TTS');
-assert.ok(saga.includes('const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1};'),
+assert.ok(saga.includes('const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,portal1:3,portal2:3,portal3:3,portalBoss:3};'),
   'voice priorities must rank story above ultimate above lowhp');
 assert.ok(saga.includes("currentVoice.priority>(VOICE_PRIORITY[id]||0))return;"),
   'lower-priority voice lines must not interrupt a running higher-priority line');
@@ -36,6 +36,12 @@ assert.ok(saga.includes('currentVoice={id:null,priority:0};'),
   'stopVoice must reset the priority state');
 assert.ok(saga.includes('if(!voiceEnabled||!api.soundOn())return;'),
   'voice must respect the voice toggle and the global sound switch');
-assert.ok(html.includes('hero-saga.js?v=saga-plain-20261122'),
+assert.ok(html.includes('hero-saga.js?v=saga-chronik-20261123'),
   'index.html must reference the new hero-saga cache key');
+// B-Pass: Chronik-Stimme der Portalreise (portal1..3 + portalBoss) als TTS-Fallback.
+for(const id of ['portal1','portal2','portal3','portalBoss']){
+  assert.ok(saga.includes(`${id}:''`),`portal line ${id} must use the TTS fallback until a recording exists`);
+}
+assert.ok(saga.includes("portal1:'"),'portal chronicle line portal1 must exist');
+assert.ok(saga.includes('globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,say,lines};'),'saga must export say() for the chronicle voice');
 console.log('Hero voice: unchanged lines keep their recordings, reworded lines use TTS fallback');

@@ -45,5 +45,5 @@ function takeFunction(name){
   assert.match(source,/campaign20Plan\(game\.wave\)\?bossAhead\(game\.wave\):/,'Baupause: Boss-Distanz im 20er-Feld');
   assert.match(source,/campaign20Plan\(game\.wave\+1\)\?bossAhead\(game\.wave\+1\):''/,'Kampf: Boss-Distanz auf die Folgewelle');
 }
-assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-ab-20261123/,'game.js cache key gebumpt');
+assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=gameplay-b-20261123/,'game.js cache key gebumpt');
 console.log('Gameplay A-Pass: Kampf-Vorschau, Boss-Distanz und Endlos-Rekord gepinnt');

@@ -24,7 +24,13 @@
     chapter2:'Die Gegner werden stärker. Unsere Türme auch.',
     chapter3:'Sie drängen durch das Labyrinth. Wir halten sie am Weg auf.',
     ultimate:'Kein Name geht verloren!',lowhp:'Ich halte noch durch.',
-    ending:'Das Denkmal steht. Die Erinnerung bleibt.'
+    ending:'Das Denkmal steht. Die Erinnerung bleibt.',
+    // B-Pass: Chronik-Stimme der Portalreise (Abschnittsthemen + Portalwächter).
+    // Noch ohne Aufnahmen -> TTS-Fallback, bis Clips nachgereicht werden.
+    portal1:'Erster Abschnitt der Portalreise. Wir gehen hindurch, wo die Steine sprechen.',
+    portal2:'Das Labyrinth. Jeder unserer Schritte bleibt hier erhalten.',
+    portal3:'Die Kirchende. Hier endet die Reise – oder beginnt sie von vorn.',
+    portalBoss:'Der Wächter des Portals greift an!'
   };
   const story = [
     {wave:1,id:'intro',kicker:'KAPITEL I · DEINE ERSTE WACHT',title:'Vier Tore. Eine Wacht.',text:'Verteidige das Denkmal mit deinem Runenstab und Türmen entlang der Wege. Dein Held greift von selbst an. Zwischen zwei Wellen hast du Zeit, neue Türme zu bauen.',objective:'Nach Welle 20 wird das Labyrinth freigeschaltet. Auf dem Handy steuerst du deinen Helden mit dem Joystick und baust Türme über die Aktionsleiste.',reward:'Beute bleibt erhalten · Ausrüstung im Hauptmenü wechseln · Rucksack mit I öffnen'},
@@ -69,8 +75,8 @@
   /* 2026-11-22: intro/chapter2/ending/lowhp lines were reworded; their recorded
      clips would no longer match the text, so they use the TTS fallback until new
      clips exist. chapter3 and ultimate are unchanged and keep their recordings. */
-  const VOICE_CLIPS={intro:'',chapter2:'',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:''};
-  const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1};
+  const VOICE_CLIPS={intro:'',chapter2:'',chapter3:'assets/hero/voice/chapter3.mp3?v=voice-saga-20261119',ending:'',ultimate:'assets/hero/voice/ultimate.mp3?v=voice-saga-20261119',lowhp:'',portal1:'',portal2:'',portal3:'',portalBoss:''};
+  const VOICE_PRIORITY={intro:3,chapter2:3,chapter3:3,ending:3,ultimate:2,lowhp:1,portal1:3,portal2:3,portal3:3,portalBoss:3};
 
   function reset(h,loadout) {
     stopVoice();
@@ -324,5 +330,5 @@
     $('journalTab').onclick=()=>{selectedTab='journal';renderCharacter();};
     $('voiceBtn').onclick=()=>{voiceEnabled=!voiceEnabled;stopVoice();voiceLabel();try{localStorage.setItem('denkmal-voice',voiceEnabled?'on':'off');}catch{}if(voiceEnabled&&currentStory)say(currentStory.id,true);};
   }
-  globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,lines};
+  globalThis.HeroSaga={init,reset,stats,chapter,continueStory,openCharacter,closeCharacter,equip,update,draw,updateUI,onKill,onAttack,damage,unleash,stopVoice,say,lines};
 })();
