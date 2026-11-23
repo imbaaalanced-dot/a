@@ -44,6 +44,18 @@ async function run(){
 
   env=create('?td2Cdn=1');
   assert.equal(env.box.TD2CdnMap.enabled,true,'explicit query flag enables CDN');
+  const expected=[
+    ['assets/loading/kim-marcel-loading-v5.webp','v1795466831','td2/runtime/loading/kim-marcel-loading-v5'],
+    ['assets/loading/gate.webp','v1795466833','td2/runtime/loading/gate'],
+    ['assets/menu/memorial-yard-v4.webp?v=menu-v4a1','v1795466835','td2/runtime/menu/memorial-yard-v4'],
+    ['assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1','v1795466837','td2/runtime/menu/memorial-yard-mobile-v4'],
+    ['assets/menu/crest-v4.webp?v=menu-v4a1','v1795466838','td2/runtime/menu/crest-v4']
+  ];
+  for(const [url,version,publicId] of expected){
+    const resolved=env.box.TD2CdnMap.resolve(url);
+    assert.equal(resolved.url,`https://res.cloudinary.com/xs5rd7mt/image/upload/${version}/${publicId}.webp`,url+' maps to the exact immutable Cloudinary version');
+    assert.equal(resolved.fallback,url,'local fallback preserves the original logical URL');
+  }
   const mapped=env.box.TD2CdnMap.resolve(asset);
   assert.match(mapped.url,/^https:\/\/res\.cloudinary\.com\/xs5rd7mt\/image\/upload\/v1795466833\/td2\/runtime\/loading\/gate\.webp$/);
   assert.equal(mapped.fallback,asset);
