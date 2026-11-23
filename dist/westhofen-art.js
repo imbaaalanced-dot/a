@@ -27,6 +27,7 @@ function readyMemorial(){
  return !!(memorialSprite?.complete&&memorialSprite.naturalWidth&&memorialSprite.naturalHeight);
 }
 function path(ctx,points,color,width){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();}
+function laneMarks(q,points){for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}}
 function environmentLamps(layout){
  return lampOffsets.map(([x,y])=>({x:C.x+x,y:C.y+y})).filter(p=>{
   if(Math.hypot(p.x-C.x,p.y-C.y)<320)return false;
@@ -73,11 +74,11 @@ function createGround(layout){
  for(let i=0;i<2100;i++){const x=rnd()*3072,y=rnd()*3072;q.fillStyle=['#6a7c5224','#a89a642c','#1a2f2834'][i%3];q.beginPath();q.ellipse(x,y,4+rnd()*30,2+rnd()*12,0,0,7);q.fill();}
  // Reichshofstraße runs along the southern edge of the memorial green.
  const street=streetRoute;
- path(q,street,'#a5a28c',165);path(q,street,'#676f6b',143);path(q,street,globalThis.TD2GroundV3?.patternFor?.(q,7,'street')||'#767d7444',118);
- for(let i=1;i<street.length;i++){const a=street[i-1],b=street[i],len=Math.hypot(b.x-a.x,b.y-a.y);for(let d=30;d<len;d+=64){const t=d/len;q.strokeStyle='#d8d3ba99';q.lineWidth=4;q.setLineDash([26,34]);q.beginPath();q.moveTo(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);q.lineTo(a.x+(b.x-a.x)*(t+22/len),a.y+(b.y-a.y)*(t+22/len));q.stroke();q.setLineDash([]);}}
+ path(q,street,'#3f443f66',165);path(q,street,'#a5a28c',159);path(q,street,'#676f6b',143);path(q,street,globalThis.TD2GroundV3?.patternFor?.(q,7,'street')||'#767d7444',118);
+ laneMarks(q,street);
  // Sidewalk between street and green strip; the air corridor crosses it.
  const walk=[{x:C.x-1120,y:C.y+632},{x:C.x-560,y:C.y+574},{x:C.x+40,y:C.y+592},{x:C.x+640,y:C.y+536},{x:C.x+1120,y:C.y+574}];
- path(q,walk,globalThis.TD2GroundV3?.patternFor?.(q,7,'sidewalk')||'#8f9482',54);
+ path(q,walk,'#4a4f4a',58);path(q,walk,globalThis.TD2GroundV3?.patternFor?.(q,7,'sidewalk')||'#8f9482',54);
  // Bus stop "Westhofen Denkmal" at the eastern roadside (Reichshofstr. 142).
  const bx=C.x+330,by=C.y+596;q.fillStyle='#565d58';q.fillRect(bx-58,by-40,116,46);q.fillStyle='#7e837a';q.fillRect(bx-58,by-48,116,10);q.fillStyle='#33383444';q.beginPath();q.ellipse(bx,by+10,72,14,0,0,7);q.fill();q.fillStyle='#4b524d';q.fillRect(bx-50,by-24,100,10);q.fillStyle='#2c332f';q.fillRect(bx+40,by-22,8,28);
  // Lane footpaths: two street accesses and the northern green corridor.
