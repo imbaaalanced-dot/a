@@ -1,4 +1,5 @@
 'use strict';
+/* Keep the V2 rollback contract in the street/level integration PR diff. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'../dist');
