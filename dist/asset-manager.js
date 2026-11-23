@@ -34,15 +34,16 @@
         resolve(ok?img:null);
         if(current.releaseWhenReady&&!isOwned(url))evict(url,current);
       };
+      const retryLocal=()=>{
+        if(!localRetry)return false;
+        localRetry=false;img.src=cdn.fallback;return true;
+      };
       img.onload=async()=>{
-        if(!img.naturalWidth){finish(false);return;}
+        if(!img.naturalWidth){if(!retryLocal())finish(false);return;}
         try{if(typeof img.decode==='function')await img.decode();finish(img.naturalWidth>0);}
-        catch{finish(false);}
+        catch{if(!retryLocal())finish(false);}
       };
-      img.onerror=()=>{
-        if(localRetry){localRetry=false;img.src=cdn.fallback;return;}
-        finish(false);
-      };
+      img.onerror=()=>{if(!retryLocal())finish(false);};
       img.src=cdn.url;
       if(img.complete&&img.naturalWidth)img.onload();
     });
