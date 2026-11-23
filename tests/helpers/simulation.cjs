@@ -5,7 +5,7 @@ const {createRenderSandbox}=require('./render-sandbox.cjs');
 const root=path.resolve(__dirname,'../..');
 let baseline;
 function baselineSource(file){
- baseline??=require('../fixtures/simulation-baseline-c5d6f21.json');
+ baseline??=require('../fixtures/simulation-baseline-4aaaa8f.json');
  const item=baseline.files[file];if(!item)throw Error('Missing baseline source: '+file);
  const bytes=require('node:zlib').gunzipSync(Buffer.from(item.gzipBase64,'base64'));
  if(require('node:crypto').createHash('sha256').update(bytes).digest('hex')!==item.sha256)throw Error('Baseline integrity failure: '+file);
