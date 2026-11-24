@@ -103,6 +103,7 @@ jobs:
           node tests/vegetation.test.cjs
           node tests/style2-level4-reference.test.cjs
           node tests/style2-church-sprite.test.cjs
+          node tests/street-approaches.test.cjs
       - name: Westhofen V4 runtime asset contract
         run: node tests/westhofen-v4-runtime.test.cjs
       - name: Portrait HUD and hero/loot navigation regression
