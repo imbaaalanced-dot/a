@@ -200,6 +200,8 @@
   function bossAhead(wave){const next=campaign20Plan(wave);if(next?.boss)return ' · BOSSWELLE!';if(next){for(let d=1;d<=5;d++){if(campaign20Plan(wave+d)?.boss)return ' · BOSS IN '+(d===1?'EINER WELLE':d+' WELLN');}}return '';}
   function readEndlessRecord(level){try{return Number(storage?.getItem('td2.endless.level'+level+'.record'))||0}catch{return 0}}
   function readPortalRecord(){try{return Number(storage?.getItem('td2.portal.record.section'))||0}catch{return 0}}
+  function readRestoration(level){try{return Math.min(3,Number(storage?.getItem('td2.restoration.level'+level))||0)}catch{return 0}}
+  function writeRestoration(level){try{const cur=readRestoration(level);if(cur<3)storage.setItem('td2.restoration.level'+level,String(cur+1))}catch{}}
   function writePortalRecord(section){try{const prev=readPortalRecord();if(section>prev)storage.setItem('td2.portal.record.section',String(section))}catch{}}
   function wavePreview(wave){return Object.entries(waveComposition(wave)).map(([type,count])=>`${count}× ${enemyLabels[type]||type.toUpperCase()}`).join(' · ');}
   function applyWavePlan(type,base,wave){
@@ -234,7 +236,7 @@
     const definition=campaign.levels[level];
     game={runId:(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+(++runSerial)+'-'+Math.random().toString(36).slice(2)),spawnSerial:0,level,mode,wave:mode==='campaign'&&campaign20?campaign20.chapter(level).firstWave:definition.firstWave,elapsed:0,essence:definition.startEssence??(level===1?90:level===2?130:70),deathFx:[],selectedTower:'bow',developerRun:developerMode,kills:0,waveSpawned:0,waveKilled:0,waveTotal:0,spawnTimer:1.2,intermission:5,
       hero:{character:selectedCharacter,x:WORLD_W*.5+140,y:WORLD_H*.5+80,r:13,hp:100,maxHp:100,speed:205,damage:18,fireRate:.47,fireCd:0,range:340,dodgeCd:0,dodge:0,invuln:0,kind:'wand'},
-      monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:500,maxHp:500},
+      monument:{x:WORLD_W*.5,y:WORLD_H*.5,r:48,hp:mode==='portal'?500:Math.round(500*(1+.1*(mode==='campaign'||mode==='endless'?readRestoration(level):0))),maxHp:mode==='portal'?500:Math.round(500*(1+.1*(mode==='campaign'||mode==='endless'?readRestoration(level):0)))},
       enemies:[],militia:[],bullets:[],particles:[],damageTexts:[],loot:[],inventory:[],maxInventory:30,rewardedWaves:new Set(),towers:[],maxTowers:definition.maxTowers??(level===1?6:level===2?6:4)};
     game.waveTotal=waveSize(game.wave);
     if(mode==='campaign-pilot')game.maxTowers=6;
@@ -578,6 +580,7 @@
   function completeLevel(){
     collectWaveLoot();rewardWave();
     if(!game.developerRun){
+      if(game.mode!=='endless'&&game.mode!=='campaign-pilot'&&game.mode!=='portal')writeRestoration(game.level);
       if(game.level===1&&!alpha8Preview){campaign.unlock();lootModel.unlockLevel();}
       else if(game.level===2&&!alpha8Preview)lootModel.unlockLevel3();
       else if(game.level===3&&!style2Preview)lootModel.claimKirchendeCompletion();
@@ -592,6 +595,10 @@
     $('levelCompleteInfo').textContent=game.level===7?'Westhofen verteidigt · Endlosmodus freigeschaltet.':game.level===6?'Ehrenmal verteidigt · Westhofen ist jetzt spielbar.':game.level===5?'Kaiser-Wilhelm-Denkmal verteidigt · Goethestraße ist jetzt spielbar.':game.level===1?'Das Labyrinth ist freigeschaltet. Bereite dich auf neue Wege vor.':game.level===2?'Kirchende ist freigeschaltet. Verteidige das Kriegerdenkmal.':game.level===3?'Kirchende verteidigt · Die Ender Dorfkirche ist freigeschaltet.':'Löwendenkmal verteidigt · Endlosmodus für die Dorfkirche freigeschaltet.';
     if(campaign20Plan(game.wave))$('levelCompleteInfo').textContent=game.level===7?'Alle 20 Wellen geschafft · Endlosmodus für Westhofen freigeschaltet.':`Alle 20 Wellen geschafft · Kapitel ${game.level+1} ist freigeschaltet.`;
     $('nextLevelBtn').textContent=game.level===7?'WESTHOFEN ENDLOS':game.level===6?(style2Preview&&!campaign.level6Completed?'GOETHESTRASSE ENDLOS':'LEVEL 7 STARTEN'):game.level===5?(level5Preview?'HOHENSYBURG ENDLOS':'LEVEL 6 STARTEN'):game.level===4?'LEVEL 5 STARTEN':game.level===1?'LEVEL 2 STARTEN':game.level===2?'LEVEL 3 STARTEN':game.level===3?'LEVEL 4 STARTEN':'DORFKIRCHE ENDLOS';
+    if(!game.developerRun&&game.mode!=='portal'&&game.mode!=='campaign-pilot'){
+      const r=readRestoration(game.level);
+      $('levelSaveNote').textContent+=` · Denkmal-Restaurierung: Stufe ${r}/3 · +${r*10}% Denkmal-Gesundheit auf dieser Karte`;
+    }
     $('continueEndlessBtn').classList.toggle('hidden',game.level===1);
     $('levelComplete').classList.remove('hidden');focusModal($('levelComplete'));fx.sfx?.('victory');updateUI();
   }
