@@ -38,6 +38,8 @@ function createGround(layout){
  for(const lane of layout.paths){path(q,lane,'#192c2488',104);path(q,lane,'#aa9a7d',83);path(q,lane,'#816858',72);path(q,lane,globalThis.TD2GroundV3?.patternFor?.(q,6,'road')||'#b9907244',58);
   for(let i=1;i<lane.length;i++){const a=lane[i-1],b=lane[i],len=Math.hypot(b.x-a.x,b.y-a.y),nx=-(b.y-a.y)/len,ny=(b.x-a.x)/len;for(let d=12;d<len;d+=22){const x=a.x+(b.x-a.x)*d/len,y=a.y+(b.y-a.y)*d/len;q.strokeStyle='#483f3966';q.lineWidth=2;q.beginPath();q.moveTo(x+nx*34,y+ny*34);q.lineTo(x-nx*34,y-ny*34);q.stroke();}}
  }
+ // Paved approach plates where the lanes meet the two street routes (Anschlüsse).
+ for(const lane of layout.paths){globalThis.TD2GroundV3?.approachPlates?.(q,[lane],streetRoute,84);globalThis.TD2GroundV3?.approachPlates?.(q,[lane],frontRoute,84);}
  // Flagstone forecourt and rose borders leave the endpoint and build pads free.
  q.fillStyle='#5d6555';q.fillRect(C.x-240,C.y-115,480,225);
  for(let y=-105;y<105;y+=38)for(let x=-230;x<230;x+=57){q.fillStyle=(x+y)%3?'#96967e':'#858775';q.fillRect(C.x+x,C.y+y,53,34);q.fillStyle='#bfc0a030';q.fillRect(C.x+x+3,C.y+y+2,45,3);}

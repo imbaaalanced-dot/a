@@ -182,6 +182,17 @@
     // Worn centre dashes; the axial entrance stays open like the wall gap.
     ctx.fillStyle='#d8d3ba66';
     for(let x=street.left+20;x+30<street.right-10;x+=64){if(x<90&&x+30>-50)continue;ctx.fillRect(x,street.y-2,30,4);}
+    // Paved junction plates where the approach lanes meet the street; the axial
+    // entrance stays open like the wall and dash gaps.
+    const lanes=globalThis.DenkmalLevels?.levels?.[3]?.paths||[],lc=globalThis.DenkmalLevels?.center||{x:1536,y:1536},seen=new Set();
+    for(const lane of lanes)for(const p of lane){
+      const rx=p.x-lc.x,ry=p.y-lc.y;
+      if(Math.abs(ry-street.y)>60)continue;
+      const key=Math.round(rx)+':'+Math.round(ry);
+      if(seen.has(key)||(rx>-50&&rx<90))continue;
+      seen.add(key);
+      for(const dy of [-38,0,38]){ctx.fillStyle='#3a3f3855';ctx.fillRect(rx-39,street.y+dy-15,78,30);ctx.fillStyle='#83876f';ctx.fillRect(rx-38,street.y+dy-14,76,28);ctx.fillStyle='#9b9f88';ctx.fillRect(rx-38,street.y+dy-14,76,5);}
+    }
     for(let i=0;i<30;i++){
       const x=-820+i*56;
       ctx.fillStyle=i%3===0?'#72786c':'#62695e';
