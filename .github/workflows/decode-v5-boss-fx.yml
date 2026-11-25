@@ -1,0 +1,59 @@
+name: Decode V5 boss FX
+
+# One-shot decoder for the Vergessener-Hauptmann boss strips (V5, Briefing 06).
+# Binary push via the MCP connector corrupts bytes >= 0x80, so the runtime webp
+# strips are committed as base64 payload files. This workflow decodes them,
+# verifies RIFF/WEBP headers, removes the payloads and commits once ([skip ci]).
+
+on:
+  push:
+    branches: [feature/td2-v5-boss-fx-20261125]
+    paths:
+      - "dist/assets/bosse_b64_v5/**"
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Decode payload files
+        run: |
+          set -euo pipefail
+          src="dist/assets/bosse_b64_v5"
+          dst="dist/assets/bosse"
+          mkdir -p "$dst"
+          count=0
+          for f in "$src"/*.webp.b64; do
+            [ -e "$f" ] || { echo "no payload files found"; exit 1; }
+            name="$(basename "$f" .b64)"
+            base64 -d "$f" > "$dst/$name"
+            echo "decoded $name ($(stat -c%s "$dst/$name") bytes)"
+            count=$((count+1))
+            rm "$f"
+          done
+          test "$count" -eq 10
+      - name: Verify RIFF/WEBP headers
+        run: |
+          set -euo pipefail
+          for f in "$dst"/*.webp; do
+            head -c 4 "$f" | grep -q "RIFF" || { echo "bad header: $f"; exit 1; }
+          done
+          test "$(ls "$dst"/*.webp | wc -l)" -eq 10
+          echo "all headers ok"
+        env:
+          dst: dist/assets/bosse
+      - name: Commit decoded runtime assets
+        run: |
+          set -euo pipefail
+          git config user.name "td2-fx-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dist/assets/bosse
+          git add -A dist/assets/bosse_b64_v5
+          git commit -m "Decode V5 boss FX runtime webp strips [skip ci]" || echo "nothing to commit"
+          git push

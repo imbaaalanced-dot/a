@@ -1,0 +1,198 @@
+{
+  "project": "Denkmal TD2 V5",
+  "brief": "06_Bosse",
+  "version": "v5",
+  "boss": "Vergessener Hauptmann (Westhofen)",
+  "identityLock": "23.11.2026, Vision-Check bestanden",
+  "assets": [
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "idle",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_idle_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        4,
+        8,
+        959,
+        151
+      ],
+      "kb": 41.6,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-idle-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "move",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_move_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        3,
+        8,
+        959,
+        152
+      ],
+      "kb": 53.9,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-idle-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "attack-a",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_attack_a_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        2,
+        14,
+        959,
+        150
+      ],
+      "kb": 59.7,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-attack-a-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "attack-b",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_attack_b_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        6,
+        9,
+        958,
+        153
+      ],
+      "kb": 48.8,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-attack-b-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "special",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_special_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        1,
+        1,
+        956,
+        159
+      ],
+      "kb": 55.4,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-special-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "hit",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_hit_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        4,
+        17,
+        958,
+        144
+      ],
+      "kb": 40.3,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-hit-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "phase-transition",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_phase_transition_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        4,
+        11,
+        958,
+        151
+      ],
+      "kb": 52.6,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-phase-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "action": "death",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_death_6f.webp",
+      "pivot": [
+        80.0,
+        152
+      ],
+      "hitbox": [
+        4,
+        13,
+        475,
+        153
+      ],
+      "kb": 38.4,
+      "q": 92,
+      "driveMaster": "td2-boss-v5-hauptmann-death-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "effect": "telegraph",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_telegraph_6f.webp",
+      "pivot": [
+        80.0,
+        80.0
+      ],
+      "kb": 55.2,
+      "q": 86,
+      "driveMaster": "td2-boss-v5-hauptmann-telegraph-master.png"
+    },
+    {
+      "boss": "vergessener-hauptmann",
+      "effect": "bodenwarnung",
+      "frames": 6,
+      "cellPx": 160,
+      "file": "hauptmann_bodenwarnung_6f.webp",
+      "pivot": [
+        80.0,
+        80.0
+      ],
+      "kb": 56.3,
+      "q": 86,
+      "driveMaster": "td2-boss-v5-ground-master.png"
+    }
+  ],
+  "notes": "Frames programmatisch aus Keyframes abgeleitet (Bob/Lean/Flash/Crossfade) - Ausgangspunkt, im Spiel 1x/3x pruefen"
+}
