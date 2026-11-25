@@ -281,3 +281,7 @@
 @media(max-width:360px){
   #inventoryScreen .loot-portrait{min-height:220px}
 }
+/* Loot-Stufe 3 Wegweiser: recommendation panel in the equipment tab. */
+#inventoryScreen .loot-best-panel{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+#inventoryScreen .loot-best-panel[hidden]{display:none}
+#inventoryScreen .loot-best-btn{font-size:.85rem}

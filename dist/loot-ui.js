@@ -137,6 +137,11 @@
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
       $('backpackCount').textContent=`SAMMLUNG: ${all.length} · RUCKSACK: ${p.bag.length} / 30`;
       for(const [winner,loser,label]of [['echo','ember','Nachhall hat Vorrang vor Abendrot.'],['ash','oath','Aschenläufer hat Vorrang vor Steinwacht.'],['bell','lantern','Letzte Glocke hat Vorrang vor Erinnerungslicht.']])if(stats.powers[winner]&&stats.powers[loser])summary.append(el('span','loot-note',label));
+      // Loot-Stufe 3 Wegweiser: suggested strict upgrades with an explicit confirm.
+      const bestPanel=$('lootBestPanel'),bestBtn=$('lootBestBtn'),best=model.suggest(getHero());
+      bestPanel.hidden=!editable();
+      bestBtn.disabled=!can()||best.steps.length===0;
+      bestBtn.textContent=`BESTE AUSRÜSTUNG ANLEGEN · ${best.steps.length} ${best.steps.length===1?'ÄNDERUNG':'ÄNDERUNGEN'}`;
       const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
       bulkBtn.textContent=`ZERLEGEN PRÜFEN · ${bulk.count} GEGENSTÄNDE · +${bulk.essence} ESSENZ`;
@@ -228,6 +233,14 @@
       if(!can())return;
       const preview=model.salvagePreview();if(!preview.count)return;
       pending={message:`${preview.count} nicht favorisierte Gegenstände aus Rucksack und Überlauf unwiderruflich für insgesamt ${preview.essence} Schmiedessenz recyceln? Angelegte Gegenstände und Favoriten bleiben erhalten.`,run:()=>model.salvageAll()};
+      render();$('lootConfirm').scrollIntoView({block:'nearest'});
+    };
+    $('lootBestBtn').onclick=()=>{
+      if(!can())return;
+      const s=model.suggest(getHero());
+      if(!s.steps.length){notice='Keine garantierte Verbesserung im Rucksack gefunden.';render();return;}
+      const lines=s.steps.map(step=>`${L.slots[step.slot]}: ${model.find(step.from)?.name??'Leer'} → ${model.find(step.to)?.name}`).join(' · ');
+      pending={message:`${s.steps.length} ${s.steps.length===1?'empfohlene Änderung anlegen':'empfohlene Änderungen anlegen'}? ${lines} Jede Änderung ist eine garantierte Verbesserung: kein Wert wird schlechter, keine Kraft geht verloren.`,run:()=>model.equipBest(getHero())};
       render();$('lootConfirm').scrollIntoView({block:'nearest'});
     };
     $('lootConfirm').onkeydown=e=>{
