@@ -162,11 +162,17 @@ function groundPainting(groundLevel=3){
   const c=document.createElement('canvas');c.width=c.height=1536;
   const q=c.getContext('2d'),r=rng(671629);
   const reference=globalThis.TD2GroundV3?.imageFor?.(groundLevel,'base');
-  if(reference||style2Ground){
-    const pattern=q.createPattern(reference||style2Ground,'repeat');
+  const baseImg=reference||style2Ground;
+  if(baseImg&&globalThis.TD2GroundV3?.stampTiles){
+    // Stamped per tile with seeded rotation/mirror (no visible 256px grid) and a
+    // desaturating bake filter so actors stay the most saturated layer. The
+    // cached painting is enlarged 2x in world space; churchyard grass keeps its
+    // source scale via a 512px tile instead of the old pattern transform.
+    globalThis.TD2GroundV3.stampTiles(q,baseImg,groundLevel===4?512:256,1536,groundLevel);
+    q.fillStyle=groundLevel===4?'#27382c55':'#17231c22';q.fillRect(0,0,1536,1536);
+  }else if(baseImg){
+    const pattern=q.createPattern(baseImg,'repeat');
     if(pattern){
-      // The cached painting is enlarged 2x in world space. Keep churchyard
-      // grass at its source scale rather than enlarging individual blades.
       if(groundLevel===4)pattern.setTransform?.({a:.5,b:0,c:0,d:.5,e:0,f:0});
       q.fillStyle=pattern;q.fillRect(0,0,1536,1536);
     }

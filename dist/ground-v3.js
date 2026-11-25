@@ -64,10 +64,24 @@ function pattern(ctx,name){
  return cache.get(name);
 }
 function patternFor(ctx,level,kind='base'){return pattern(ctx,material(level,kind));}
+function hash2(x,y,seed){let n=(Math.imul(x,73856093)^Math.imul(y,19349663)^Math.imul(seed,83492791))>>>0;n=Math.imul(n^(n>>>13),1274126177);return((n^(n>>>16))>>>0)/4294967296;}
+// Base material is stamped tile by tile: a seeded 90-degree rotation plus mirror
+// per tile keeps the 256px source from reading as a visible grid. The base is
+// baked desaturated and darkened so saturated units separate from the ground.
+function stampTiles(q,img,tile,area,seed=1,filter='saturate(.55) brightness(.82)'){
+ const prev=q.filter;
+ try{q.filter=filter;}catch{q.filter='none';}
+ for(let y=0;y<area;y+=tile)for(let x=0;x<area;x+=tile){
+  const r=hash2(x/tile|0,y/tile|0,seed);
+  q.save();q.translate(x+tile/2,y+tile/2);q.rotate(Math.floor(r*4)*Math.PI/2);if(r>=.5)q.scale(-1,1);
+  q.drawImage(img,-tile/2,-tile/2,tile,tile);q.restore();
+ }
+ try{q.filter=prev;}catch{}
+}
 function drawBase(ctx,level){
- const tile=patternFor(ctx,level,'base');
- if(!tile)return false;
- ctx.save();ctx.fillStyle=tile;ctx.fillRect(0,0,3072,3072);ctx.restore();
+ const img=imageFor(level,'base');
+ if(!img)return false;
+ ctx.save();stampTiles(ctx,img,256,3072,level);ctx.restore();
  return true;
 }
 // Paved approach plates where a gameplay lane meets a street polyline.
@@ -97,7 +111,7 @@ function approachPlates(q,lanes,route,reach=80){
  return drawn;
 }
 function clearCache(){patterns=new WeakMap();}
-globalThis.TD2GroundV3=Object.freeze({enabled:active,names,byLevel,material,imageFor,pattern,patternFor,drawBase,approachPlates,load,clearCache,
+globalThis.TD2GroundV3=Object.freeze({enabled:active,names,byLevel,material,imageFor,pattern,patternFor,drawBase,stampTiles,hash2,approachPlates,load,clearCache,
  get revision(){return revision;},
  get loadedCount(){return images.size;}});
 })();

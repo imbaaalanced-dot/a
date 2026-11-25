@@ -65,5 +65,5 @@ assert.match(lootCss,/#loadoutStats\{display:flex;flex-direction:column;gap:7px;
 assert.match(html,/levels\.js\?v=level7btouch1/);
 assert.match(html,/loot-ui\.js\?v=portrait-v7-20261122/);
 assert.match(html,/loot\.css\?v=portrait-fit-20261122/);
-assert.match(html,/portrait-patch\.css\?v=v410a1touch1/);
+assert.match(html,/portrait-patch\.css\?v=lesbarkeit-20261125/);
 console.log('TD2 touch build, stable build controls and armory contrast checks passed');

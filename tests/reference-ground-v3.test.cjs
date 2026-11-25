@@ -40,12 +40,13 @@ async function run(search){
  assert.equal(on.material(7,'street'),'urban_asphalt');
  assert.equal(on.material(4,'road'),'churchyard_cobble');
  assert.equal(on.material(3,'base'),'forest_moss_roots');
- let patterns=0,fills=0;
- const canvas={save(){},restore(){},fillRect(){fills++;},createPattern(){patterns++;return {p:patterns}}};
+ let patterns=0,stamps=0;
+ const canvas={save(){},restore(){},fillRect(){},translate(){},rotate(){},scale(){},drawImage(){stamps++;},createPattern(){patterns++;return {p:patterns}}};
  assert.equal(!!on.patternFor(canvas,7,'street'),true);
  on.patternFor(canvas,7,'street');assert.equal(patterns,1,'context pattern reused');
- assert.equal(on.drawBase(canvas,3),true);assert.equal(fills,1);
- on.drawBase(canvas,3);assert.equal(patterns,2,'cached ground pattern reused');
+ assert.equal(on.drawBase(canvas,3),true);assert.equal(stamps,144,'base stamped as 12x12 seeded-rotation tiles');
+ on.drawBase(canvas,3);assert.equal(stamps,288,'stamped base repaints deterministically without a repeating pattern');
+ assert.equal(patterns,1,'drawBase no longer relies on a cached repeat pattern');
  const v4=await run('?td2PavementV4=1');await v4.load();
  assert.equal(v4.material(4,'road'),'churchyard_pavement_v4');
  assert.equal(v4.material(1,'road'),'churchyard_cobble');

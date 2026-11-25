@@ -145,7 +145,8 @@ check('Shell contracts: alpha.4 badge, cache busts and menu layering',()=>{
   assert.ok(html.includes('id="menuPauseBtn"'),'the menu has a PAUSE button');
   // Current game.js cache key is audited centrally in cache-busting.test.cjs.
   assert.ok(!html.includes('v400a3'),'no stale alpha.3 cache busts remain');
-  assert.equal((html.match(/\?v=v400a4merge1/g)||[]).length,2,'unchanged assets retain their cache keys');
+  assert.ok(html.includes('hero.css?v=v400a4merge1'),'unchanged assets retain their cache keys');
+  assert.ok(html.includes('styles.css?v=lesbarkeit-20261125'),'styles.css carries the readability-pass cache key');
   assert.ok(polish.includes('.hud-menu-panel{z-index:8}'),'polish keeps the menu under modal overlays');
   assert.ok(/\.hud-menu-panel\{[^}]*z-index:8/.test(portrait.replace(/\s/g,'')),'portrait keeps the menu under modal overlays');
   assert.ok(portrait.includes('touch-action:manipulation'),'menu taps avoid double-tap zoom');
