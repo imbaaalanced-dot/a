@@ -19,7 +19,7 @@
     display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;
     border-radius:6px;background:#0b1418e3;
   }
-  .left-hud .hud-label,.left-hud .hud-label b{font-size:10px;line-height:1.25}
+  .left-hud .hud-label,.left-hud .hud-label b{font-size:12px;line-height:1.25}
   .left-hud .meter{height:5px;margin-top:2px}
   .header-actions{top:var(--hud-safe-top);right:var(--hud-safe-right);z-index:20}
   .hud-menu summary{min-height:42px}
@@ -32,11 +32,11 @@
     min-width:0;max-width:none;padding:6px 8px;text-align:left;
     background:#0b1418e3;border:1px solid #a58e6229;pointer-events:none;
   }
-  .objective>span{font-size:12px;letter-spacing:.03em}
-  .objective small{font-size:10px;line-height:1.15;margin-top:3px}
-  .objective #wavePreview{font-size:9px;line-height:1.25}
+  .objective>span{font-size:14px;letter-spacing:.03em}
+  .objective small{font-size:12px;line-height:1.15;margin-top:3px}
+  .objective #wavePreview{font-size:11px;line-height:1.25}
   .objective #storyText{display:none}
-  .objective #nextWaveBtn{pointer-events:auto;min-height:38px}
+  .objective #nextWaveBtn{pointer-events:auto;min-height:38px;border-color:var(--gold2);color:var(--gold2)}
   .right-hud{
     top:calc(var(--hud-safe-top) + 52px);
     right:var(--hud-safe-right);left:auto;bottom:auto;
@@ -44,8 +44,8 @@
   }
   .right-hud .resource{display:block;min-width:0;padding:5px 6px;background:#0b1418e3}
   .right-hud .resource div{display:block}
-  .right-hud .resource small{font-size:9px}
-  .right-hud .resource b{font-size:13px;white-space:nowrap}
+  .right-hud .resource small{font-size:11px}
+  .right-hud .resource b{font-size:15px;white-space:nowrap}
   .boss-hud{top:calc(var(--hud-safe-top) + 123px);left:50%;right:auto;bottom:auto;transform:translateX(-50%);width:min(230px,65vw);padding:6px}
   .boss-hud>div:first-child{font-size:10px}
 
@@ -68,9 +68,9 @@
   .controls .action-btn{
     width:100%;min-width:0;min-height:44px;padding:5px 4px;
     display:flex;align-items:center;justify-content:center;
-    border-radius:5px;background:#0c1920f0;
+    border-radius:5px;background:#070d12f4;border-color:#b49b6566;
   }
-  .controls .action-btn span{font-size:11px;letter-spacing:0;line-height:1.12;overflow-wrap:anywhere}
+  .controls .action-btn span{font-size:13px;letter-spacing:0;line-height:1.12;overflow-wrap:anywhere}
   .controls .action-btn.hidden{display:none!important}
   .controls #targetBtn:not(.hidden){display:flex}
   .arsenal,#app:has(#upgradeBtn:not(.hidden)) .arsenal{
@@ -82,7 +82,7 @@
   }
   .arsenal.hidden{display:none!important}
   .arsenal button{min-width:0;min-height:41px;padding:4px 3px;gap:4px;width:100%;justify-content:center}
-  .arsenal button span,.arsenal button b{font-size:10px;line-height:1.1}
+  .arsenal button span,.arsenal button b{font-size:12px;line-height:1.1}
   .hero-subtitle{
     left:var(--hud-safe-left);top:calc(var(--hud-safe-top) + 182px);right:auto;bottom:auto;
     transform:none;width:min(300px,calc(100vw - 2 * var(--hud-safe-left)));
@@ -110,7 +110,7 @@
   .controls,.controls:has(#buildBtn:not(.hidden)),.controls:has(#upgradeBtn:not(.hidden)),
   .controls:has(#sellBtn:not(.hidden)),.controls:has(#targetBtn:not(.hidden)),
   .arsenal,#app:has(#upgradeBtn:not(.hidden)) .arsenal{width:min(190px,53vw)}
-  .controls .action-btn span{font-size:10px}
+  .controls .action-btn span{font-size:12px}
 }
 @media (orientation:portrait) and (max-height:600px){
   .hero-subtitle{top:calc(var(--hud-safe-top) + 145px);max-height:65px}
@@ -166,19 +166,19 @@
   .brand strong{font-size:13px;letter-spacing:.04em}
   .header-actions .icon-btn,.hud-menu summary{min-height:38px;font-size:11px;padding:5px 8px}
   .left-hud{padding:5px 8px;gap:1px 8px}
-  .left-hud .hud-label,.left-hud .hud-label b{font-size:11px}
+  .left-hud .hud-label,.left-hud .hud-label b{font-size:13px}
   .left-hud .meter{height:4px;margin-top:1px}
   .objective{padding:5px 8px}
-  .objective>span{font-size:13px}
-  .objective small{font-size:11px}
-  .objective #wavePreview{font-size:10px}
+  .objective>span{font-size:14px}
+  .objective small{font-size:12px}
+  .objective #wavePreview{font-size:11px}
   .right-hud .resource{padding:4px 6px}
-  .right-hud .resource small{font-size:10px}
-  .right-hud .resource b{font-size:14px}
+  .right-hud .resource small{font-size:12px}
+  .right-hud .resource b{font-size:15px}
   .boss-hud{padding:5px}
-  .boss-hud>div:first-child{font-size:11px}
-  .arsenal button span,.arsenal button b{font-size:11px}
-  .controls .action-btn span{font-size:12px}
+  .boss-hud>div:first-child{font-size:12px}
+  .arsenal button span,.arsenal button b{font-size:13px}
+  .controls .action-btn span{font-size:14px}
   .hud-menu-panel button{font-size:12px}
 }
 @media (orientation:portrait) and (max-width:700px) and (pointer:coarse){

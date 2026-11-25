@@ -27,7 +27,9 @@ function requestSharedEnvironment(){
 }
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
- q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,6,'base')||globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);
+ const base6=globalThis.TD2GroundV3?.imageFor?.(6,'base');
+ if(base6&&globalThis.TD2GroundV3?.stampTiles)globalThis.TD2GroundV3.stampTiles(q,base6,256,3072,6);
+ else{q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,6,'base')||globalThis.TD2Style2Materials?.terrain||'#354935';q.fillRect(0,0,3072,3072);}
  const tile=globalThis.DenkmalTerrain?.groundImage;
  if(!globalThis.TD2GroundV3?.imageFor?.(6,'base')&&tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
  let seed=18631;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);

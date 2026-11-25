@@ -91,7 +91,9 @@
     const rand=randomGenerator(1902),t=level.syburgTerrace;
     const c=C,r=t.raised,f=t.forecourt;
     // Woodland surrounds the north-facing Y junction. South is the wooded drop.
-    q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'base')||globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);
+    const base5=globalThis.TD2GroundV3?.imageFor?.(5,'base');
+    if(base5&&globalThis.TD2GroundV3?.stampTiles)globalThis.TD2GroundV3.stampTiles(q,base5,256,SIZE,5);
+    else{q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,5,'base')||globalThis.TD2Style2Materials?.forest||'#202f29';q.fillRect(0,0,SIZE,SIZE);}
     const texture=globalThis.DenkmalTerrain?.groundImage;
     if(!globalThis.TD2GroundV3?.imageFor?.(5,'base')&&texture?.complete&&texture.naturalWidth){
       const pattern=q.createPattern(texture,'repeat');
