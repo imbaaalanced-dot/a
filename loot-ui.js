@@ -137,6 +137,22 @@
       for(const power of Object.keys(stats.powers))summary.append(el('span','loot-power-summary',L.powers[power].desc));
       $('backpackCount').textContent=`SAMMLUNG: ${all.length} · RUCKSACK: ${p.bag.length} / 30`;
       for(const [winner,loser,label]of [['echo','ember','Nachhall hat Vorrang vor Abendrot.'],['ash','oath','Aschenläufer hat Vorrang vor Steinwacht.'],['bell','lantern','Letzte Glocke hat Vorrang vor Erinnerungslicht.']])if(stats.powers[winner]&&stats.powers[loser])summary.append(el('span','loot-note',label));
+      // Loot-Stufe 4 Set-Boni: aktive Familienverbünde des getragenen Helden.
+      const setPanel=$('lootSetPanel');
+      if(setPanel){
+        setPanel.replaceChildren();
+        const sets=L.setBonuses?L.setBonuses(p.items):[];
+        const worn=sets.filter(s=>s.count>0);
+        if(worn.length){
+          for(const s of worn){
+            const chip=el('span','loot-set-chip'+(Object.keys(s.bonuses).length?' loot-set-ready':''),s.name);
+            chip.title=`${s.name}: ${s.count}/${s.max} Teile${Object.keys(s.bonuses).length?' · '+Object.entries(s.bonuses).map(([k,v])=>`+${fmt(k,v)} ${L.statInfo[k].label}`).join(' · '):''}`;
+            chip.append(el('small','',`${s.count}/${s.max} Teile`));
+            if(Object.keys(s.bonuses).length)chip.append(el('small','',Object.entries(s.bonuses).map(([k,v])=>`+${fmt(k,v)} ${L.statInfo[k].label}`).join(' · ')));
+            setPanel.append(chip);
+          }
+        }else setPanel.append(el('p','loot-note','Familienverbünde: Trage zwei oder drei zusammengehörige Stücke, zum Beispiel die „Wacht\", um Set-Boni zu wecken.'));
+      }
       // Loot-Stufe 3 Wegweiser: suggested strict upgrades with an explicit confirm.
       const bestPanel=$('lootBestPanel'),bestBtn=$('lootBestBtn'),best=model.suggest(getHero());
       bestPanel.hidden=!editable();
