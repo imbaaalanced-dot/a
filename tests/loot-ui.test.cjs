@@ -151,3 +151,26 @@ assert.notEqual(get('inventoryClose').inert,true,'exit remains clickable behind 
 get('inventoryClose').onclick();
 assert.equal(exitCalls,1,'fixed exit closes the entire inventory');
 assert.equal(get('inventoryScreen').dataset.detailOpen,'false','fixed exit dismisses comparison first');
+
+// Loot-Stufe 3 Wegweiser: recommendation flow with an explicit confirmation.
+{
+let menu3=true,hero3='marcel';
+const wdata=new Map();
+const wegxModel=box.DenkmalLoot.create({storage:{getItem:k=>wdata.get(k)||null,setItem:(k,v)=>wdata.set(k,v)},canManage:()=>menu3,getHero:()=>hero3});
+const wenv=JSON.parse(wegxModel.exportJSON());
+wenv.profile.owned.push({id:'weg-stab',slot:'weapon',stats:{damage:12},baseStats:{damage:12},legacy:true,upgradeRank:0,power:'ember',favorite:false,name:'Wegweiser-Stab',rarity:'epic',level:5});
+assert.equal(wegxModel.importJSON(JSON.stringify(wenv)),true);
+const wegxUI=box.DenkmalLootUI.create(wegxModel,{editable:()=>menu3,onClose(){},onImport(){},getHero:()=>hero3});
+wegxUI.render();
+assert.equal(get('lootBestPanel').hidden,false,'wegweiser panel is visible in the menu');
+assert.match(get('lootBestBtn').textContent,/1 ÄNDERUNG$/,'step count appears on the button');
+get('lootBestBtn').onclick();
+assert.ok(!get('lootConfirm').hidden,'confirm dialog opens');
+assert.match(find(get('lootConfirm'),e=>e.tagName==='p').textContent,/Wegweiser-Stab/,'confirm names the change');
+find(get('lootConfirm'),e=>e.tagName==='button'&&e.textContent==='BESTÄTIGEN').onclick();
+assert.equal(wegxModel.profile.loadouts.marcel.weapon,'weg-stab','confirmed suggestion is applied');
+assert.equal(get('lootBestBtn').textContent.match(/0 ÄNDERUNGEN|0 ÄNDERUNG/)!==null,true,'button reports zero changes afterwards');
+menu3=false;wegxUI.render();
+assert.equal(get('lootBestPanel').hidden,true,'wegweiser panel hides during a run');
+}
+console.log('Loot-UI: Wegweiser confirm flow passed');
