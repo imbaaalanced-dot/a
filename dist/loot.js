@@ -21,11 +21,33 @@
     const pa=activePowersOf(before),pb=activePowersOf(after);
     return Object.keys(pa).every(p=>pb[p]);
   }
+  /* Loot-Stufe 4 Set-Boni: Stufen greifen kumulativ (3 Teile schließt den
+     2er-Effekt mit ein), Zuschläge sind additiv und totals-Obergrenzen bleiben wirksam.
+     Kern-Items (keine templateId) und Einzelgänger zählen nicht. */
+  function familyCounts(items){
+    const counts={};
+    if(C?.families&&C?.familyOf)for(const item of items){const fam=item&&C.familyOf(item.templateId);if(fam)counts[fam]=(counts[fam]||0)+1;}
+    return counts;
+  }
+  function setBonuses(items){
+    const counts=familyCounts(items),out=[];
+    for(const [id,def] of Object.entries(C?.families||{})){
+      const n=counts[id]||0,tiers={};
+      for(const t of [2,3]){const tier=def.tiers?.[t];if(tier&&n>=t)for(const [k,v] of Object.entries(tier))tiers[k]=(tiers[k]||0)+v;}
+      out.push({id,name:def.name,count:n,max:def.members.length,bonuses:tiers});
+    }
+    return out;
+  }
   function totals(items){
     const s={damage:0,health:0,haste:0,speed:0,defense:0,crit:0,leech:0,tower:0,powers:{}};
     for(const item of items){for(const [k,v] of Object.entries(item.stats))s[k]+=v;if(item.power)s.powers[item.power]=true;}
     if(s.powers.bark)s.defense+=.08;if(s.powers.roots)s.speed+=.08;
     if(s.powers.sustain)s.leech+=.03;if(s.powers.bastion)s.tower+=.15;
+    const counts=familyCounts(items);
+    for(const [id,def] of Object.entries(C?.families||{})){
+      const n=counts[id]||0;
+      for(const t of [2,3]){const tier=def.tiers?.[t];if(!tier||n<t)continue;for(const [k,v] of Object.entries(tier))s[k]+=v;}
+    }
     for(const [k,max] of Object.entries({damage:160,health:400,haste:.6,speed:.5,defense:.6,crit:.35,leech:.12,tower:.6}))s[k]=Math.min(max,s[k]);
     return s;
   }
@@ -333,5 +355,5 @@
     }
     return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,suggest,equipBest,savePreset,applyPreset,deletePreset,presets:(hero=getHero())=>heroes.includes(hero)?copy(profile.presets[hero]):[],get maxPresets(){return MAX_PRESETS;},claimBoss,claimEnemy,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_V5)||storage?.getItem(PRE_V4)||storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
   }
-  globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
+  globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,setBonuses,familyCounts,KEY,BACKUP,CAPACITY};
 })();

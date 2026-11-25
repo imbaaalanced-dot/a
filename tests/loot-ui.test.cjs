@@ -208,3 +208,34 @@ menu4=false;gardUI.render();
 assert.equal(get('lootPresetPanel').hidden,true,'garderobe panel hides during a run');
 }
 console.log('Loot-UI: Garderobe save/apply/delete passed');
+// Loot-Stufe 4 Set-Boni: Familienverbünde-Chips zeigen getragene Familien und aktive Stufen.
+{
+  const sdata=new Map();
+  const setModel=box.DenkmalLoot.create({storage:{getItem:k=>sdata.get(k)||null,setItem:(k,v)=>sdata.set(k,v)},canManage:()=>true,getHero:()=>hero});
+  const cat=box.DenkmalEquipmentCatalog;
+  const wacht=['watch-hood','oath-coat','guard-boots'].map((tid,n)=>{
+    const t=cat.templates[tid];
+    const stats={};t.keys.forEach(k=>stats[k]=k==='health'?10:.05);
+    return {id:'set-'+n,templateId:tid,name:t.name,slot:t.slot,rarity:'epic',level:5,power:t.power,stats,baseStats:{...stats},upgradeRank:0,source:{mapId:2,wave:5,bossType:'boss'},favorite:false};
+  });
+  const setUI=box.DenkmalLootUI.create(setModel,{editable:()=>true,onClose(){},onImport(){},getHero:()=>'marcel'});
+  setUI.render();
+  assert.ok(find(get('lootSetPanel'),e=>e.tagName==='p'),'hint appears when no family is worn');
+  const senv=JSON.parse(setModel.exportJSON());
+  senv.profile.owned.push(...wacht);
+  senv.profile.loadouts.marcel.head='set-0';
+  assert.equal(setModel.importJSON(JSON.stringify(senv)),true);
+  setUI.render();
+  assert.match(get('lootSetPanel').textContent,/Wacht/,'started family shows as chip');
+  assert.match(get('lootSetPanel').textContent,/1\/3 Teile/,'single piece shows the count');
+  assert.ok(!/Schadensreduktion/.test(get('lootSetPanel').textContent),'no bonus text with one piece');
+  assert.equal(setModel.equip('set-1','armor','marcel'),true);
+  setUI.render();
+  assert.match(get('lootSetPanel').textContent,/2\/3 Teile/,'pair shows the count');
+  assert.match(get('lootSetPanel').textContent,/\+5 % Schadensreduktion/,'tier-2 bonus text appears');
+  assert.equal(setModel.equip('set-2','boots','marcel'),true);
+  setUI.render();
+  assert.match(get('lootSetPanel').textContent,/3\/3 Teile/,'complete family shows the count');
+  assert.match(get('lootSetPanel').textContent,/\+10 Lebenspunkte/,'tier-3 bonus text appears');
+}
+console.log('Loot-UI: Set-Boni chips passed');
