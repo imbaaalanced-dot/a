@@ -69,7 +69,7 @@ async function killBoss(page){
    await page.waitForFunction(()=>!history.state?.__td2InventoryOverlay);
    await inventory(page,'kim');
    await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));await click(page.locator('#lootEquipAction'));
-   console.log('Kim equipped',mobile);let state=await saved(page);assert.equal(state.version,4);assert.equal(state.profile.loadouts.kim.weapon,'qa-shared');assert.equal(state.profile.loadouts.marcel.weapon,'fixture-0');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1-pre-v3')).version),2);
+   console.log('Kim equipped',mobile);let state=await saved(page);assert.equal(state.version,5);assert.equal(state.profile.loadouts.kim.weapon,'qa-shared');assert.equal(state.profile.loadouts.marcel.weapon,'fixture-0');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1-pre-v3')).version),2);
    await closeInventory(page);await inventory(page,'marcel');await click(page.locator('#inventoryGrid [data-item-id="qa-shared"]'));assert.equal(await page.locator('#lootRecycleAction').isDisabled(),true);await click(page.locator('#lootEquipAction'));
    state=await saved(page);assert.equal(state.profile.loadouts.marcel.weapon,'qa-shared');assert.equal(state.profile.owned.length,10);
    await closeSheet(page);await click(page.locator('#inventoryGrid [data-item-id="qa-forge"]'));await click(page.locator('.loot-forge summary'));
@@ -78,14 +78,33 @@ async function killBoss(page){
    state=await saved(page);assert.equal(state.profile.owned.find(i=>i.id==='qa-forge').stats.health,42);assert.equal(state.profile.essence,727);
    await closeInventory(page);const before=state.profile.owned.length,killed=await killBoss(page);assert.equal(killed.dead,true);state=await saved(page);assert.equal(state.profile.owned.length,before+1);const bossId=state.profile.owned.at(-1).id;
    await page.reload({waitUntil:'networkidle'});await waitReady(page);state=await saved(page);assert.ok(state.profile.owned.some(i=>i.id===bossId));assert.equal(state.profile.loadouts.kim.weapon,'qa-shared');
-   await inventory(page,'kim');if(mobile)await click(page.locator('#lootEquipmentTab'));await page.screenshot({path:path.join(out,mobile?'touch-equipment.png':'desktop-equipment.png')});await closeInventory(page);
+   await inventory(page,'kim');
+   // Loot-Stufe 3 Garderobe: live save/apply/delete roundtrip through the real DOM.
+   if(mobile)await click(page.locator('#lootEquipmentTab'));
+   await page.locator('#lootPresetName').fill('QA-Wacht');
+   await click(page.locator('#lootPresetSave'));
+   await page.waitForFunction(()=>{const s=JSON.parse(localStorage.getItem('denkmal-loot-v1'));return s.profile.presets.kim.some(p=>p.name==='QA-Wacht');});
+   if(mobile)await click(page.locator('#lootBagTab'));
+   await click(page.locator('#inventoryGrid [data-item-id="fixture-0"]'));
+   await click(page.locator('#lootEquipAction'));
+   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1')).profile.loadouts.kim.weapon==='fixture-0');
+   await closeSheet(page);
+   if(mobile)await click(page.locator('#lootEquipmentTab'));
+   await click(page.locator('#lootPresetList button').first());
+   await click(page.locator('#lootConfirm button').first());
+   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1')).profile.loadouts.kim.weapon==='qa-shared');
+   await page.screenshot({path:path.join(out,mobile?'touch-equipment.png':'desktop-equipment.png')});
+   await click(page.locator('#lootPresetList button').nth(1));
+   await click(page.locator('#lootConfirm button').first());
+   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('denkmal-loot-v1')).profile.presets.kim.length===0);
+   await closeInventory(page);
    for(const level of [1,2,3,4,5,6]){await page.evaluate(n=>DenkmalTestHooks.startGame(n),level);await page.waitForFunction(n=>DenkmalTestHooks.getGame()?.level===n,level);}
    const decoded=await page.evaluate(async()=>{const manifests=await Promise.all([1,2,3].map(v=>fetch(`assets/style2-user-towers-v${v}/manifest.json`).then(r=>r.json()))),map=new Map();for(let v=1;v<=3;v++)for(const a of manifests[v-1].assets)map.set(a.id,`assets/style2-user-towers-v${v}/${a.webp_path}`);return (await DenkmalAssets.retain('qa-equipment',Array.from(map.values()))).filter(Boolean).length;});assert.equal(decoded,30);
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);report.scenarios.push({mobile,viewport:page.viewportSize(),migration:true,sharedOwnership:true,forge:true,bossPersisted:true,reload:true,levels:[1,2,3,4,5,6],decoded,errors,missing});
    console.log((mobile?'Touch':'Desktop')+' equipment scenario passed');await context.close();
   }
   const context=await browser.newContext({acceptDownloads:true,ignoreHTTPSErrors:true,reducedMotion:'reduce'});await seedContext(context,true);const page=await context.newPage();await page.goto(url.href,{waitUntil:'networkidle'});await waitReady(page);assert.equal((await killBoss(page)).dead,true);assert.equal((await saved(page)).version,2);assert.match(await page.locator('#toast').textContent(),/SITZUNG/);
-  await page.evaluate(()=>document.getElementById('pauseMenuBtn').click());await inventory(page,'marcel');assert.match(await page.locator('#lootSaveState').textContent(),/Sitzung/);const [download]=await Promise.all([page.waitForEvent('download'),click(page.locator('#lootExportBtn'))]);const exported=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.equal(exported.version,4);assert.ok(exported.profile.owned.some(i=>i.id.startsWith('boss-')));report.quota={sessionWarning:true,exportContainsBoss:true,oldPrimaryPreserved:true};
+  await page.evaluate(()=>document.getElementById('pauseMenuBtn').click());await inventory(page,'marcel');assert.match(await page.locator('#lootSaveState').textContent(),/Sitzung/);const [download]=await Promise.all([page.waitForEvent('download'),click(page.locator('#lootExportBtn'))]);const exported=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.equal(exported.version,5);assert.ok(exported.profile.owned.some(i=>i.id.startsWith('boss-')));report.quota={sessionWarning:true,exportContainsBoss:true,oldPrimaryPreserved:true};
   fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log('Quota/export scenario passed');
  }catch(e){console.error(e);throw e;}finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());
