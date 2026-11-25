@@ -8,6 +8,19 @@
   const powers={bark:{name:'Rindenmantel',desc:'8 % weniger erlittener Schaden.'},roots:{name:'Wurzelstiefel',desc:'+8 % Lauftempo.'},splinter:{name:'Splitterstab',desc:'Stab ignoriert 10 Prozentpunkte Rüstung.'},wardlight:{name:'Laternenamulett',desc:'+25 % Stabschaden gegen Schilde.'},grove:{name:'Hainkern',desc:'Jeder fünfte Stabtreffer erzeugt einen kleinen Flächenimpuls.'},ember:{name:'Abendrot',desc:'+25 % Stabschaden.'},echo:{name:'Nachhall',desc:'30 % kürzere Angriffspausen und zwei zusätzliche Seelenechos.'},oath:{name:'Steinwacht',desc:'25 % weniger erlittener Schaden.'},ash:{name:'Aschenläufer',desc:'+20 % Tempo und 30 % kürzere Ausweich-Abklingzeit.'},lantern:{name:'Erinnerungslicht',desc:'Seelenruf heilt 25 LP.'},bell:{name:'Letzte Glocke',desc:'+40 % Seelenruf-Schaden und +1 Seele pro besiegtem Feind.'},chain:{name:'Rissfunke',desc:'Stabgeschosse springen auf ein weiteres Ziel über.'},sustain:{name:'Lebenslicht',desc:'+3 % Lebensraub durch Stabgeschosse.'},bastion:{name:'Bollwerk',desc:'+15 % Turmschaden.'}};
   const bases={weapon:'Runenstab',head:'Wächterkapuze',armor:'Steinmantel',gloves:'Runenhandschuhe',boots:'Aschenstiefel',amulet:'Seelenamulett',ring1:'Siegelring',ring2:'Siegelring'};
   const copy=x=>JSON.parse(JSON.stringify(x));
+  /* Loot-Stufe 3 Wegweiser: strict-improvement comparison shared by suggest/equipBest.
+     Same contract as the UI badge: no stat may get worse, at least one must get
+     better (after totals caps, so placebo swaps are excluded), and no active
+     power may be lost, including the echo/ash/bell precedence rules. */
+  const statKeys=Object.keys(statInfo);
+  const precedence=[['echo','ember'],['ash','oath'],['bell','lantern']];
+  function activePowersOf(items){const p={...totals(items).powers};for(const [winner,loser] of precedence)if(p[winner])delete p[loser];return p;}
+  function betterSet(before,after){
+    const a=totals(before),b=totals(after);
+    if(!statKeys.every(k=>b[k]>=a[k]-1e-9)||!statKeys.some(k=>b[k]>a[k]+1e-9))return false;
+    const pa=activePowersOf(before),pb=activePowersOf(after);
+    return Object.keys(pa).every(p=>pb[p]);
+  }
   function totals(items){
     const s={damage:0,health:0,haste:0,speed:0,defense:0,crit:0,leech:0,tower:0,powers:{}};
     for(const item of items){for(const [k,v] of Object.entries(item.stats))s[k]+=v;if(item.power)s.powers[item.power]=true;}
@@ -190,6 +203,37 @@
       if(!manage())return false;const p=upgradePreview(id);if(!p.allowed)return false;
       const next=copy(profile),item=next.owned.find(i=>i.id===id);item.stats=p.stats;item.upgradeRank=p.nextRank;next.essence-=p.cost;return commit(next);
     }
+    /* Wegweiser: one pass over the eight slots. A slot only changes when the
+       swap is strictly better against the already simulated set, so freed
+       items become candidates for later slots and no step can undo another. */
+    function suggest(hero=getHero()){
+      const steps=[];
+      if(!heroes.includes(hero))return {steps};
+      const worn=copy(profile.loadouts[hero]);
+      const itemsOf=map=>Object.values(map).map(id=>id?find(id):null).filter(Boolean);
+      for(const slot of Object.keys(slots)){
+        const current=itemsOf(worn),old=worn[slot];
+        let best=null,gainBest=0;
+        for(const c of profile.owned){
+          if(worn[slot]===c.id||Object.values(worn).includes(c.id)||!fits(c,slot))continue;
+          const after=current.filter(i=>i.id!==old).concat([c]);
+          if(!betterSet(current,after))continue;
+          const a=totals(current),b=totals(after);
+          const gain=statKeys.reduce((n,k)=>n+(b[k]-a[k]),0)+(Object.keys(activePowersOf(after)).length-Object.keys(activePowersOf(current)).length);
+          if(gain>gainBest){best=c;gainBest=gain;}
+        }
+        if(best){steps.push({slot,from:old,to:best.id});worn[slot]=best.id;}
+      }
+      return {steps};
+    }
+    function equipBest(hero=getHero()){
+      if(!manage()||!heroes.includes(hero))return false;
+      const s=suggest(hero);
+      if(!s.steps.length)return false;
+      const next=copy(profile);
+      for(const step of s.steps)next.loadouts[hero][step.slot]=step.to;
+      return commit(next);
+    }
     function retryPending(){
       let granted=0,persisted=false;
       if(!writable())return {granted,pending:pending.length,persisted};
@@ -233,7 +277,7 @@
       if(!granted&&!status)status='Sammlung voll: Bossfund ausstehend. Im Menü Platz schaffen oder exportieren.';
       return {state:granted?'granted':'pending',item:copy(candidate.item),persisted:granted&&result.persisted};
     }
-    return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,claimBoss,claimEnemy,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_V4)||storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
+    return {storage,getHero,view,equip,unequip,favorite,salvage,salvageAll,salvagePreview,salvageValue,upgrade,upgradePreview,suggest,equipBest,claimBoss,claimEnemy,retryPending,snapshot:(hero=getHero())=>view(hero)?.items??null,get profile(){return copy(profile);},get count(){return view()?.bag.length||0;},get overflowCount(){return view()?.overflow.length||0;},get readOnly(){return readOnly;},get recoveryAvailable(){return readOnly||recoveryRequired;},get status(){return status;},find:id=>{const i=find(id);return i?copy(i):null;},save,exportJSON:raw,exportRecovery:()=>lastRaw||raw(),exportPreMigration:()=>{try{return storage?.getItem(PRE_V4)||storage?.getItem(PRE_MIGRATION)||null;}catch{return null;}},validateImport,importJSON,unlockLevel:()=>setFlag('level2'),unlockLevel3:()=>setFlag('level3'),claimKirchendeCompletion:()=>setFlag('kirchendeCompleted')};
   }
   globalThis.DenkmalLoot={create,totals,slots,rarities,statInfo,powers,fits,KEY,BACKUP,CAPACITY};
 })();
