@@ -174,3 +174,37 @@ menu3=false;wegxUI.render();
 assert.equal(get('lootBestPanel').hidden,true,'wegweiser panel hides during a run');
 }
 console.log('Loot-UI: Wegweiser confirm flow passed');
+
+// Loot-Stufe 3 Garderobe: save, apply and delete sets through the real UI.
+{
+let menu4=true,hero4='marcel';
+const gdata=new Map();
+const gardModel=box.DenkmalLoot.create({storage:{getItem:k=>gdata.get(k)||null,setItem:(k,v)=>gdata.set(k,v)},canManage:()=>menu4,getHero:()=>hero4});
+const genv=JSON.parse(gardModel.exportJSON());
+genv.profile.owned.push({id:'gard-stab',slot:'weapon',stats:{damage:12},baseStats:{damage:12},legacy:true,upgradeRank:0,power:'ember',favorite:false,name:'Garderobe-Stab',rarity:'epic',level:5});
+assert.equal(gardModel.importJSON(JSON.stringify(genv)),true);
+const gardUI=box.DenkmalLootUI.create(gardModel,{editable:()=>menu4,onClose(){},onImport(){},getHero:()=>hero4});
+gardUI.render();
+assert.equal(get('lootPresetPanel').hidden,false,'garderobe panel is visible in the menu');
+assert.ok(find(get('lootPresetList'),e=>e.tagName==='p'),'empty hint appears for a fresh garderobe');
+get('lootPresetName').value='Bosswacht';
+get('lootPresetSave').onclick();
+assert.equal(gardModel.profile.presets.marcel.length,1,'set saved through the UI');
+assert.equal(find(get('lootPresetList'),e=>e.tagName==='strong').textContent,'Bosswacht','set appears in the list');
+assert.equal(gardModel.equip('gard-stab','weapon','marcel'),true);
+gardUI.render();
+const applyBtn=find(get('lootPresetList'),e=>e.tagName==='button'&&e.textContent==='ANLEGEN');
+applyBtn.onclick();
+assert.ok(!get('lootConfirm').hidden,'apply asks for confirmation');
+assert.match(find(get('lootConfirm'),e=>e.tagName==='p').textContent,/Bosswacht/,'confirm names the set');
+find(get('lootConfirm'),e=>e.tagName==='button'&&e.textContent==='BESTÄTIGEN').onclick();
+assert.equal(gardModel.profile.loadouts.marcel.weapon,'starter-ember','apply restores the saved set');
+gardUI.render();
+const delBtn=find(get('lootPresetList'),e=>e.tagName==='button'&&e.textContent==='LÖSCHEN');
+delBtn.onclick();
+find(get('lootConfirm'),e=>e.tagName==='button'&&e.textContent==='BESTÄTIGEN').onclick();
+assert.equal(gardModel.profile.presets.marcel.length,0,'delete removes the set');
+menu4=false;gardUI.render();
+assert.equal(get('lootPresetPanel').hidden,true,'garderobe panel hides during a run');
+}
+console.log('Loot-UI: Garderobe save/apply/delete passed');
