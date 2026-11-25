@@ -142,6 +142,31 @@
       bestPanel.hidden=!editable();
       bestBtn.disabled=!can()||best.steps.length===0;
       bestBtn.textContent=`BESTE AUSRÜSTUNG ANLEGEN · ${best.steps.length} ${best.steps.length===1?'ÄNDERUNG':'ÄNDERUNGEN'}`;
+      // Loot-Stufe 3 Garderobe: named equipment sets, applied only after confirmation.
+      const presetPanel=$('lootPresetPanel'),presetList=$('lootPresetList'),presetSave=$('lootPresetSave');
+      presetPanel.hidden=!editable();
+      presetList.replaceChildren();
+      const presets=model.presets(getHero());
+      presetSave.disabled=!can()||presets.length>=model.maxPresets;
+      presetSave.textContent=presets.length>=model.maxPresets?`GARDEROBE VOLL · ${model.maxPresets}/${model.maxPresets}`:'AKTUELLES SET SPEICHERN';
+      const ownedIds=new Set(all.map(i=>i.id));
+      for(const preset of presets){
+        const missing=Object.values(preset.slots).filter(id=>id&&!ownedIds.has(id)).length;
+        const row=el('div','loot-preset-row');
+        row.append(el('strong','',preset.name),el('small','',`8 Plätze · ${missing?missing+' Funde fehlen in der Sammlung':'vollständig'}`));
+        row.append(button('ANLEGEN',()=>{
+          if(!can())return;
+          pending={message:`Ausrüstungsset „${preset.name}" für ${kim?'Kim':'Marcel'} anlegen? ${missing?missing+' verlorene Funde bleiben frei.':'Dein aktuelles Set wird ersetzt.'}`,run:()=>model.applyPreset(getHero(),preset.id)};
+          render();$('lootConfirm').scrollIntoView({block:'nearest'});
+        },!can()));
+        row.append(button('LÖSCHEN',()=>{
+          if(!can())return;
+          pending={message:`Ausrüstungsset „${preset.name}" unwiderruflich löschen?`,run:()=>model.deletePreset(getHero(),preset.id)};
+          render();$('lootConfirm').scrollIntoView({block:'nearest'});
+        },!can()));
+        presetList.append(row);
+      }
+      if(!presets.length)presetList.append(el('p','loot-note','Noch keine Sets. Lege deine Ausrüstung an und speichere sie mit Namen, zum Beispiel „Bosswacht" oder „Endlos".'));
       const bulk=model.salvagePreview(),bulkBtn=$('lootSalvageAllBtn');
       bulkBtn.disabled=!can()||bulk.count===0;
       bulkBtn.textContent=`ZERLEGEN PRÜFEN · ${bulk.count} GEGENSTÄNDE · +${bulk.essence} ESSENZ`;
@@ -242,6 +267,13 @@
       const lines=s.steps.map(step=>`${L.slots[step.slot]}: ${model.find(step.from)?.name??'Leer'} → ${model.find(step.to)?.name}`).join(' · ');
       pending={message:`${s.steps.length} ${s.steps.length===1?'empfohlene Änderung anlegen':'empfohlene Änderungen anlegen'}? ${lines} Jede Änderung ist eine garantierte Verbesserung: kein Wert wird schlechter, keine Kraft geht verloren.`,run:()=>model.equipBest(getHero())};
       render();$('lootConfirm').scrollIntoView({block:'nearest'});
+    };
+    $('lootPresetSave').onclick=()=>{
+      if(!can())return;
+      const input=$('lootPresetName');
+      if(model.savePreset(getHero(),input.value))input.value='';
+      else notice='Set nicht gespeichert: Namen mit 1-24 Zeichen angeben oder Garderobe ist voll.';
+      render();
     };
     $('lootConfirm').onkeydown=e=>{
       if(!pending)return;
