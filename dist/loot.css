@@ -281,3 +281,19 @@
 @media(max-width:360px){
   #inventoryScreen .loot-portrait{min-height:220px}
 }
+/* Loot-Stufe 3 Wegweiser: recommendation panel in the equipment tab. */
+#inventoryScreen .loot-best-panel{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+#inventoryScreen .loot-best-panel[hidden]{display:none}
+#inventoryScreen .loot-best-btn{font-size:.85rem}
+/* Loot-Stufe 3 Garderobe: preset panel in the equipment tab. */
+#inventoryScreen .loot-preset-panel{margin-top:1rem;display:flex;flex-direction:column;gap:.5rem}
+#inventoryScreen .loot-preset-panel[hidden]{display:none}
+#inventoryScreen #lootPresetHeader{margin:0}
+#inventoryScreen .loot-preset-save{display:flex;gap:8px;flex-wrap:wrap}
+#inventoryScreen .loot-preset-save input{flex:1 1 170px;min-width:0;min-height:44px;padding:10px 12px;border:1px solid #7d826c;border-radius:7px;background:#0b131a;color:#f1e8d5;font:500 13px/1.4 Inter,system-ui;outline:none}
+#inventoryScreen .loot-preset-save input:focus-visible{border-color:#eac88c;outline:2px solid #91dfe9;outline-offset:2px}
+#inventoryScreen .loot-preset-save input::placeholder{color:#a0adaa}
+#inventoryScreen .loot-preset-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid #aabdaa17}
+#inventoryScreen .loot-preset-row strong{flex:1 1 140px;font-size:13px;color:#e5dfce}
+#inventoryScreen .loot-preset-row small{font-size:11px;color:#a5bdb8;flex:1 1 100%;order:3}
+#inventoryScreen .loot-preset-row .loot-action{min-height:38px;padding:7px 10px}
