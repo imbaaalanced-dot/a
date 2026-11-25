@@ -13,8 +13,8 @@ assert.match(terrain, /ground-style2-v2\.webp/);
 // must remain the fallback if the opt-in texture is absent or fails to decode.
 assert.match(terrain, /const reference=globalThis\.TD2GroundV3\?\.imageFor\?\.\(groundLevel,'base'\)/,
   'V3 material lookup is isolated to the ground-painting path');
-assert.match(terrain, /createPattern\(reference\|\|style2Ground,'repeat'\)/,
-  'Original Kirchende texture remains the fallback');
+assert.match(terrain, /createPattern\(baseImg,'repeat'\)/,
+  'Original Kirchende texture remains the fallback when tile stamping is unavailable');
 assert.match(terrain, /illustratedGround=null/);
 assert.match(scenery, /environment-atlas-style2-v1\.webp/);
 assert.match(scenery, /layout\.paths\?\.some/);

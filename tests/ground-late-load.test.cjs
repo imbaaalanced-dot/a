@@ -2,8 +2,8 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.join(__dirname,'../dist');
 function setup(search=''){
- let allocations=0;const requests=[],patterns=[];
- const ctx=new Proxy({drawImage(){},createPattern(img){patterns.push(img);return {};},createRadialGradient(){return {addColorStop(){}};},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
+ let allocations=0;const requests=[],patterns=[],stamps=[];
+ const ctx=new Proxy({drawImage(img){if(img&&img.url)stamps.push(img);},createPattern(img){patterns.push(img);return {};},createRadialGradient(){return {addColorStop(){}};},createLinearGradient(){return {addColorStop(){}};}},{get:(o,k)=>k in o?o[k]:()=>{}});
  class ImageMock{constructor(){this.naturalWidth=this.naturalHeight=256;this.complete=true;}set src(url){this.url=url;requests.push(this);}}
  const box={Math,Promise,location:{search},Image:ImageMock,document:{createElement(){allocations++;return {width:0,height:0,getContext:()=>ctx};}},localStorage:{getItem(){return null;},setItem(){}}};
  vm.createContext(box);
@@ -14,7 +14,7 @@ function setup(search=''){
   else if(level<=4)box.DenkmalTerrain.drawGround(ctx,0,0,3072,3072,level);
   else box[{5:'DenkmalHohensyburgArt',6:'DenkmalGoetheArt',7:'DenkmalWesthofenArt'}[level]].drawGround(ctx,layout);
  };
- return {box,requests,patterns,draw,get allocations(){return allocations;}};
+ return {box,requests,patterns,stamps,draw,get allocations(){return allocations;}};
 }
 (async()=>{
  for(const level of [1,2]){
@@ -37,7 +37,7 @@ function setup(search=''){
   for(const img of test.requests)img.onload();
   assert.equal(await pending,true);
   test.draw(level);assert.equal(test.allocations,cold+1,`level ${level} replaces its stale ground once`);
-  assert.ok(test.patterns.includes(api.imageFor(level,'base')),`level ${level} paints its decoded V3 base`);
+  assert.ok(test.stamps.includes(api.imageFor(level,'base')),`level ${level} stamps its decoded V3 base tile by tile`);
   const warm=test.allocations;
   for(let frame=0;frame<20;frame++)test.draw(level);
   assert.equal(test.allocations,warm,'decoded ground stays cached across frames');

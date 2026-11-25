@@ -70,7 +70,9 @@ function requestSharedEnvironment(){
 }
 function createGround(layout){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1536;const q=canvas.getContext('2d');q.scale(.5,.5);
- q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'base')||'#3c503b';q.fillRect(0,0,3072,3072);
+ const base7=globalThis.TD2GroundV3?.imageFor?.(7,'base');
+ if(base7&&globalThis.TD2GroundV3?.stampTiles)globalThis.TD2GroundV3.stampTiles(q,base7,256,3072,7);
+ else{q.fillStyle=globalThis.TD2GroundV3?.patternFor?.(q,7,'base')||'#3c503b';q.fillRect(0,0,3072,3072);}
  const tile=globalThis.DenkmalTerrain?.groundImage;
  if(!globalThis.TD2GroundV3?.imageFor?.(7,'base')&&tile?.complete&&tile.naturalWidth){const pattern=q.createPattern(tile,'repeat');if(pattern){q.save();q.globalAlpha=.16;q.fillStyle=pattern;q.fillRect(0,0,3072,3072);q.restore();}}
  let seed=4127;const rnd=()=>((seed=(Math.imul(seed,1664525))+1013904223)>>>0)/4294967296;

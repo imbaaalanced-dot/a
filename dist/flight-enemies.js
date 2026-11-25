@@ -23,7 +23,7 @@ function sprite(type){
 function draw(ctx,e,time=0,reduced=false){
  if(!e.flying)return false;
  const img=sprite(e.type);
- if(img){const size=e.type==='gargoyle'?100:e.type==='stormwing'?94:86,bob=reduced?0:Math.sin(time*4)*2;ctx.drawImage(img,e.x-size/2,e.y-12-size*.65+bob,size,size);return true;}
+ if(img){const size=(e.type==='gargoyle'?100:e.type==='stormwing'?94:86)*1.2,bob=reduced?0:Math.sin(time*4)*2;ctx.drawImage(img,e.x-size/2,e.y-12-size*.65+bob,size,size);return true;}
  const heavy=e.type==='gargoyle',storm=e.type==='stormwing',r=e.r;
  const flap=reduced?0:Math.sin(time*(heavy?5:9)+e.x*.02)*r*.35;
  ctx.save();try{ctx.translate(e.x,e.y-12);ctx.lineJoin='round';ctx.lineWidth=2;

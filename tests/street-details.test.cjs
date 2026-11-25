@@ -71,7 +71,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.ok(kRec.rec.fills.some(f=>f.style==='#242b2a'&&f.w===1640&&f.h===98),'L3 asphalt band unchanged');
  // --- wiring pins ---
  const html=read('dist/index.html');
- for(const [file,key] of [['kirchende-art.js','style2-approaches-20261123'],['goethestrasse-art.js','goethe-approaches-20261123'],['westhofen-art.js','westhofen-approaches-20261123']])
+ for(const [file,key] of [['kirchende-art.js','style2-approaches-20261123'],['goethestrasse-art.js','lesbarkeit-20261125'],['westhofen-art.js','lesbarkeit-20261125']])
   assert.ok(html.includes(file+'?v='+key),file+' cache key bumped');
  console.log('Street details: kerb rims, centre dashes, sidewalk edges on L3/L6/L7; layouts untouched');
 })().catch(e=>{console.error(e);process.exitCode=1;});
