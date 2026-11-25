@@ -10,6 +10,9 @@ const variants={
 const heights={wraith:62,runner:54,brute:80,archer:62,guardian:80,sapper:64,
  rootrunner:60,stoneguard:86,mistcaller:72,boss:116,uprooted:140,
  shadowwing:86,gargoyle:100,stormwing:94};
+// Silhouette over texture noise: enemies render ~20 % taller so they stay
+// readable at phone zoom levels (>= 32 px on a 1080p-class screen).
+const VISUAL_SCALE=1.2;
 let entry=null;
 const bakeCache=new Map(),BAKE_CAP=24;
 function bake(img,row,filter){
@@ -56,7 +59,7 @@ function draw(ctx,e,face=1,time=0,options={}){
  const reduced=options.reduced||options.low;
  const clock=Number.isFinite(time)?Math.max(0,time):0;
  const frame=reduced||(!e.flying&&!moving)?0:(Math.floor(clock*6)+variant(e))%4;
- const size=(heights[e.type]||62)*cell/136;
+ const size=(heights[e.type]||62)*VISUAL_SCALE*cell/136;
  const airborne=e.flying?12+(e.r||13)*.35:0;
  ctx.save();try{
   ctx.translate(e.x,e.y-airborne);
