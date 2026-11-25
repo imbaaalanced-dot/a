@@ -297,3 +297,11 @@
 #inventoryScreen .loot-preset-row strong{flex:1 1 140px;font-size:13px;color:#e5dfce}
 #inventoryScreen .loot-preset-row small{font-size:11px;color:#a5bdb8;flex:1 1 100%;order:3}
 #inventoryScreen .loot-preset-row .loot-action{min-height:38px;padding:7px 10px}
+/* Loot-Stufe 4 Set-Boni: Familienverbünde-Chips im Ausrüstungs-Tab. */
+.loot-set-panel{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;}
+.loot-set-panel .loot-note{margin:0;flex-basis:100%;}
+.loot-set-chip{display:inline-flex;align-items:baseline;gap:8px;border:1px solid #3a3630;background:#1d1a16;border-radius:10px;padding:6px 10px;font-size:12px;}
+.loot-set-chip small{color:#8d8577;}
+.loot-set-chip small:last-child{color:#b9ad8f;}
+.loot-set-chip.loot-set-ready{border-color:#6e5a33;background:#241f16;}
+.loot-set-chip.loot-set-ready small:last-child{color:#d8c48a;}

@@ -26,6 +26,19 @@
     ['sight-ring','Siegel des Scharfblicks','ring1','crit','damage']
   ];
   const templates=Object.fromEntries(rows.map(([id,name,slot,a,b,power=null])=>[id,Object.freeze({name,slot,keys:Object.freeze([a,b]),power})]));
+  /* Loot-Stufe 4 Set-Boni: thematische Familien über feste Vorlagen.
+     Stufen-Boni sind absolute Zuschläge auf der totals-Skala; totals-Obergrenzen greifen weiterhin. */
+  const families={
+    wacht:{name:'Wacht',desc:'Die alte Mauer hält zusammen.',members:['watch-hood','oath-coat','guard-boots'],tiers:{2:{defense:.05},3:{health:10}}},
+    hainwald:{name:'Hainwald',desc:'Was wächst, hält zusammen.',members:['bark-coat','grove-gloves','root-boots'],tiers:{2:{speed:.05},3:{health:8}}},
+    lichterwache:{name:'Lichterwache',desc:'Jedes Licht kennt das andere.',members:['memory-amulet','ward-amulet','sustain-ring'],tiers:{2:{health:8},3:{leech:.02}}},
+    seelenecho:{name:'Seelenecho',desc:'Seelen rufen einander nach.',members:['echo-staff','soul-hood','bell-amulet'],tiers:{2:{crit:.05},3:{damage:8}}},
+    glutpfad:{name:'Glutpfad',desc:'Wo Glut hingeht, bleibt Asche nicht zurück.',members:['ember-staff','ash-boots'],tiers:{2:{damage:6}}},
+    steinwerk:{name:'Steinwerk',desc:'Baumeister und Bollwerk, ein Fundament.',members:['architect-hood','bastion-ring'],tiers:{2:{tower:.08}}},
+    splitterkreis:{name:'Splitterkreis',desc:'Scharf bleibt scharf.',members:['splinter-staff','sight-ring'],tiers:{2:{crit:.04}}}
+  };
+  const familyIndex={};for(const [fam,def] of Object.entries(families))for(const id of def.members)familyIndex[id]=fam;
+  for(const def of Object.values(families)){Object.freeze(def.members);Object.freeze(def.tiers);Object.freeze(def);}
   /* Level 2 (Labyrinth) and Level 7 (Westhofen) were playable without boss loot;
      pools keep every campaign map covered. Labyrinth leans defensive for early runs,
      Westhofen as the finale carries the only previously unpooled template. */
@@ -65,5 +78,5 @@
     const allowed=Object.keys(stats).some(k=>stats[k]>item.stats[k]);
     return {allowed,reason:allowed?'':'Keine weitere Werteverbesserung',cost:allowed?[50,100,150][rank]:0,nextRank,stats};
   }
-  globalThis.DenkmalEquipmentCatalog=Object.freeze({templates:Object.freeze(templates),bossPools:Object.freeze(bossPools),caps:Object.freeze(caps),rollBoss,rollEnemy,validEnemy,previewUpgrade});
+  globalThis.DenkmalEquipmentCatalog=Object.freeze({templates:Object.freeze(templates),bossPools:Object.freeze(bossPools),caps:Object.freeze(caps),families:Object.freeze(families),familyOf:id=>familyIndex[id]||null,rollBoss,rollEnemy,validEnemy,previewUpgrade});
 })();
