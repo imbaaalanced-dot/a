@@ -97,16 +97,24 @@ Budget-/Header-Prüfung über `tests/assets.test.py` / `assets-headers.test.py`.
 Galerie-Karte `level-08-witten-heven.webp` im Menu-v4-Stil aus Referenzfoto
 `-5` (wie die anderen Galerie-Karten aus Referenzfotos).
 
+**Lesbarkeit:** Waldring außen dicht für Stimmung, Zentrumslichtung um das
+Denkmal offen und lesbar halten (Lesbarkeits-Review P1–P8 beachten); Platten
+nur in der Lichtung, nie auf Pfaden/Slots.
+
 ## Wellen, Gegner, Drops (Wellenmodul `DenkmalWittenHeven`, Muster `westhofen.js`)
 
 Kampagnen-Wellen 29–32 (4-Wellen-Kapitel wie L3–L7); Boss Welle 32, Index 0.
 
-| Welle | Name | Komposition | Tuning (Kampagne) |
+| Welle | Name | Komposition | Tuning + Modifikatoren (Kampagne) |
 | --- | --- | --- | --- |
-| 29 | NEBEL ÜBER HEVEN | Boden: `wraith,wraith,runner` | 44 × 0,56 s, Gates 0+1 |
-| 30 | DIE VIER PFEILER | + `guardian`, Luft alle 8. (`shadowwing/gargoyle/stormwing`), Gates 0–2 | 50 × 0,48 s |
-| 31 | STURM AUS DEM WALD | + `archer` | 56 × 0,42 s |
-| 32 | DIE LETZTE WACHT | + `sapper` (fokusMonument), **Boss** Index 0 | 62 × 0,36 s |
+| 29 | NEBEL ÜBER HEVEN | Boden: `wraith,wraith,runner` | 40 × 0,58 s, Gates 0+1 (weicher Einstieg nach L7, das mit 38×0,62 s startet) |
+| 30 | DIE VIER PFEILER | + `guardian`, Luft alle 8. (`shadowwing/gargoyle/stormwing`), Gates 0–2 | 50 × 0,48 s, `armorAll:.05` (Pfeiler-Panzer) |
+| 31 | STURM AUS DEM WALD | + `archer`, + `brute` (thematisch: Steinpfeiler) | 56 × 0,42 s, `speedAll:1.06` |
+| 32 | DIE LETZTE WACHT | + `sapper` (focusMonument), **Boss** Index 0 | 60 × 0,38 s, `damageAll:1.08` |
+
+Modifikatoren pro Welle erfordern, dass der `wavePlan`-Dispatch für Level 8 die
+Modifikatoren aus dem Modul übernimmt (aktuell nur `{name}`). Tuning-Option:
+Boss W32 nur über Gates 0+1 (fokussierter Bossfight); Default wie L7 alle Gates.
 
 Endlos: Boss jede 4. Welle Index 0, Luft ab lokaler Welle 2, Pool wächst wie
 Westhofen-Endlos. Warnungen: Welle 29 „BODENANGRIFF: WEST- UND OSTWEG · LUFT
@@ -166,9 +174,10 @@ nur Boden), `mage` (46, Slow, RW 282), `rift` (58, Kette, RW 292), `barracks`
   Waldwege gleichzeitig (wie Westhofener Kreuzungstürme).
 - **Lange West-/Ost-Flanken (-620,-160), (-560,120), (700,-160), (560,120):**
   `mage` (Slow stapelt sich mit `rift`-Kette) + `rift` gegen Luft ab Welle 30.
-- **Süd-Treppe (0,660) bzw. (-260,660)/(260,660):** erster `bow` (deckte
-  Luftkorridor aus dem Norden und den Süddurchbruch), später `barracks` nahe
-  Zentrum (±240,420) zum Tanken.
+- **Süd-Treppe (0,660) bzw. (-260,660)/(260,660):** (0,660) ist der
+  **Premium-Slot** — deckt Gate 2 und das Zentrum doppelt ab; erster `bow`
+  (deckt Luftkorridor aus dem Norden und den Süddurchbruch), später `barracks`
+  nahe Zentrum (±240,420) zum Tanken.
 - Sinnvolle Build-Reihenfolge: bow (0,660) → mage (-620,-160) → cannon
   (300,-90) → rift (560,120) vor Welle 30 → barracks (240,420) → Upgrades.
   12 von ~14 Plätzen aktiv — die übrigen Plätze bleiben als Ausweichpositionen.
@@ -187,11 +196,16 @@ nur Boden), `mage` (46, Slow, RW 282), `rift` (58, Kette, RW 292), `barracks`
    `level===8&&wave===32`, Render-Hooks
    (`drawGround`/`drawAirLane`/`drawMonument`/`release`),
    `setMapStatus('level8Btn', campaign.level7Completed …)`, Endlos-Gating,
-   `startGame(8)`-Gating, `nextLevelBtn`, Story-/Progress-Texte, onclick-Handler.
+   `startGame(8)`-Gating, `nextLevelBtn` (Level 8 = Kampagne abgeschlossen),
+   Story-/Progress-Texte, Menü- und Abschluss-Texte („Kapitel … von 8“,
+   `levelCompleteTitle`/`levelCompleteInfo`/`levelProgress` für L8),
+   onclick-Handler.
 4. `dist/equipment-catalog.js`: `validEnemy` von `mapId<=7` auf `<=8` und
    `bossPools[8]` ergänzen (4 Templates, s. o.) — sonst Boss-/Enemy-Drops
    rejected.
-5. `dist/index.html`: `level8Btn`, `endless8Btn`. `dist/level-gallery.js`:
+5. `dist/index.html`: `level8Btn`, `endless8Btn`; optional Level-Intro
+   (`DenkmalLevelIntro.show(8)`, Muster siehe `docs/LEVEL3_INTRO_VIDEO.md`).
+   `dist/level-gallery.js`:
    `levelMeta` um `{id:8, city:'Witten', name:'Heven', image:'level-08-witten-heven.webp'}`.
 6. Assets nach `dist/assets/witten-heven/` (WebP) + Galerie-Karte; Budget-Tests.
 7. Tests: `tests/witten-heven.test.cjs` (Geometrie, Slot-Clearance, Wave-Gates,
