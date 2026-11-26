@@ -113,14 +113,48 @@ Westhofen-Endlos. Warnungen: Welle 29 „BODENANGRIFF: WEST- UND OSTWEG · LUFT
 AB WELLE 30“, danach „LUFTANGRIFF AUS DEM NORDEN · BOGEN, MAGIE ODER
 RIFTLANZE BEREITHALTEN“. Gegnerspecs siehe `game.js` (wraith 54/66, runner
 38/106, archer 64/51/170, guardian 165/38/Rüstung .32, sapper 88/58/Schaden 38
-auf Denkmal, Boss). `campaign-20-wave-plan.js` bleibt unangetastet
-(`chapter()` nur bis Level 7; Level-8-Modul liefert `campaignWave` selbst).
+auf Denkmal, Boss 1040/35/Schaden 52). `campaign-20-wave-plan.js` bleibt
+unangetastet (`chapter()` nur bis Level 7; das Level-8-Modul liefert
+`campaignWave` selbst).
 
-**Drops (Loot V2, keine level-spezifische Änderung nötig):** normale Kills 4 %
-Item-Chance mit Pity beim 40. erfolglosen Kill; 75 % magisch / 25 % selten;
-aufgesammelte Loot-Orbs +4 Essenz; Boss Welle 32: 9 Orbs + garantiertes episches
-(80 %) bzw. legendäres (20 %) Item (`claimBoss`). Kapitelabschluss-Bonus
-+35 Essenz greift über `campaignWaveLabel(32)=4`.
+### Tatsächliche Wellen-Mechanik (geprüft gegen `game.js`, Stand 26.11.2026)
+
+- Globale Wellennummerierung, Kapitel je 4 Wellen: L1 1–5 (Boss 5), L2 6–8,
+  L3 9–12 (Boss 12 = `uprooted`), L4 13–16, L5 17–20, L6 21–24, L7 25–28 →
+  **L8 29–32, Boss 32 Index 0** (Boss-Label default „DER BELAGERER“).
+- `waveSize`: Tabelle nur für Wellen 1–8; ab Welle 9 Default
+  `min(48, 30+(wave-8)*3)` und Intervall `max(.30, 1.02-wave*.045)` — das
+  Level-Modul überschreibt beides für 29–32 über `campaignWave` (wie L5/L7;
+  Counts >48 sind dort üblich, z. B. L7 W28 = 52).
+- `endWave()`-Abschlussbedingung ist pro Level hart kodiert
+  (`level===7&&wave===28` …) → `level===8&&wave===32` ergänzen.
+- `wavePlan(wave)` liefert Name + optionale Stat-Modifikatoren
+  (`speedAll/hpAll/armorAll/cooldownAll/damageAll`, `miniBoss`); Wellen 1–8
+  haben Modifikatoren in `wavePlans`, Endlos ab Welle 12 jede 4. Welle
+  Mini-Boss (`miniBossPlans`). Für L8 kann das Modul optionale Modifikatoren
+  je Welle mitgeben (Dispatch aktuell nur `{name}` → entsprechend erweitern).
+- Zwischen den Wellen Perk-Auswahl (3 aus 6: u. a. „Steinmetzsegen“ +140
+  Denkmal-LP, „Festungsplan“ +1 Turmplatz +20 Essenz). Der +35-Essenz-Bonus
+  greift nur bei globaler Welle 4 bzw. 8 (`campaignWaveLabel`), **nicht** bei
+  Welle 32 — `campaign20` deckt nur Level 1–7 ab, `campaignWaveLabel(32)=32`.
+- Nach Kampagnen-Sieg: `writeRestoration(8)` → Key `td2.restoration.level8`,
+  +10 % Denkmal-HP pro Stufe (max 3) auf dieser Karte — läuft über die
+  Levelnummer automatisch. Endlos-Rekord-Key `td2.endless.level8.record` ebenso.
+
+### Drops (Loot V2 —mechanik geprüft, zwei Stellen brauchen Level-8-Eintrag)
+
+- Pro Kill: Bounty-Essenz sofort + **1 Loot-Orb** auf dem Boden
+  (`lootFor()` = `{kind:'essence'}`, +4 Essenz beim Einsammeln); Boss: 9 Orbs.
+- Item-Drop pro Kill über `lootModel.claimEnemy({mapId:8, wave, enemyType, …})`:
+  Roll < 4 % oder Pity bei Drought ≥ 39 (40. erfolgloser Kill); 75 % magisch /
+  25 % selten (selten trägt die Typ-Power). **Achtung:** `validEnemy` in
+  `dist/equipment-catalog.js:55` hartkodiert `mapId<=7` → muss auf 8 erhöht
+  werden, sonst wird jeder Level-8-Fund rejected.
+- Boss Welle 32: `claimBoss({mapId:8, bossType:'boss', …})` — **braucht neuen
+  Eintrag `bossPools[8]`** in `equipment-catalog.js:45` (sonst rejected).
+  Vorschlag (Denkmal-/Glocken-Thema): `['bell-amulet','memory-amulet',
+  'oath-coat','soul-hood']`. Roll: 60 % thematischer Pool / 40 % alle Templates,
+  episch 80 % / legendär 20 %.
 
 ## Turmplatzierungen (Empfehlung)
 
@@ -149,15 +183,21 @@ nur Boden), `mage` (46, Slow, RW 282), `rift` (58, Kette, RW 292), `barracks`
    (Ground-Bake, Monument-Sprite, Deko-Placement) + Script-Tags in
    `dist/index.html`.
 3. `dist/game.js`: Dispatch für Level 8 bei `waveSize`/`enemyType`/`wavePlan`/
-   `warning`, Render-Hooks (`drawGround`/`drawAirLane`/`drawMonument`/`release`),
+   `warning` (ggf. inkl. Modul-Modifikatoren), `endWave()`-Abschlussbedingung
+   `level===8&&wave===32`, Render-Hooks
+   (`drawGround`/`drawAirLane`/`drawMonument`/`release`),
    `setMapStatus('level8Btn', campaign.level7Completed …)`, Endlos-Gating,
    `startGame(8)`-Gating, `nextLevelBtn`, Story-/Progress-Texte, onclick-Handler.
-4. `dist/index.html`: `level8Btn`, `endless8Btn`. `dist/level-gallery.js`:
+4. `dist/equipment-catalog.js`: `validEnemy` von `mapId<=7` auf `<=8` und
+   `bossPools[8]` ergänzen (4 Templates, s. o.) — sonst Boss-/Enemy-Drops
+   rejected.
+5. `dist/index.html`: `level8Btn`, `endless8Btn`. `dist/level-gallery.js`:
    `levelMeta` um `{id:8, city:'Witten', name:'Heven', image:'level-08-witten-heven.webp'}`.
-5. Assets nach `dist/assets/witten-heven/` (WebP) + Galerie-Karte; Budget-Tests.
-6. Tests: `tests/witten-heven.test.cjs` (Geometrie, Slot-Clearance, Wave-Gates,
-   Wellenmodul, Save/Legacy-Envelope mit `level8`) + bestehende Suiten anpassen
-   (`game.test.cjs` etc.). CI grün vor Preview.
+6. Assets nach `dist/assets/witten-heven/` (WebP) + Galerie-Karte; Budget-Tests.
+7. Tests: `tests/witten-heven.test.cjs` (Geometrie, Slot-Clearance, Wave-Gates,
+   Wellenmodul, Loot-`mapId` 8 / `bossPools[8]`, Save/Legacy-Envelope mit
+   `level8`) + bestehende Suiten anpassen (`game.test.cjs` etc.). CI grün vor
+   Preview.
 
 **Regeln:** Denkmal zentral, Gegner von Kartenrändern (Ansturm-Regel); keine
 Spawnportale, keine spielbaren Helden-Änderung; Wege/Slots/Save-Keys anderer
