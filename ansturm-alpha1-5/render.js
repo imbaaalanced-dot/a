@@ -58,6 +58,7 @@ function drawWalkFrame(ctx,sheetImg,frame,x,y,width,height){
  const srcY=0;
  ctx.drawImage(sheetImg.img,srcX,srcY,WALK_CELL_SIZE,WALK_CELL_SIZE,x-width/2,y-height,width,height);
  return true;
+}
 
 function getWalkDirection(x,y){
  const angle=Math.atan2(y,x);
@@ -65,7 +66,7 @@ function getWalkDirection(x,y){
  const idx=Math.floor((angle+Math.PI/4)/(Math.PI/2))%4;
  return dirs[idx];
 }
-}
+
 export function renderArena(ctx,s,{width,height,pixelRatio=1}){const dpr=Math.min(2,pixelRatio),c=ctx.canvas;if(c.width!==Math.round(width*dpr)||c.height!==Math.round(height*dpr)){c.width=Math.round(width*dpr);c.height=Math.round(height*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);const w=width,h=height,cx=w/2,cy=h/2,unit=Math.min(w*.44,h*.44);ctx.clearRect(0,0,w,h);
 let grad=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*.75);grad.addColorStop(0,'#34403e');grad.addColorStop(1,'#111923');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
 // The floor is screen anchored: scaling it with the world unit would repeat hard seams.
