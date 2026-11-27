@@ -1,5 +1,7 @@
 /* Painted enemy movement, cosmetic only. One shared, lazily loaded atlas.
- * Cold/failed art returns false so the previous renderer stays available. */
+ * Cold/failed art returns false so the previous renderer stays available.
+ * V5 CDN art (enemy-art-v5.js) has priority; everything below is the
+ * unchanged offline fallback chain (directional → expansion → atlas). */
 (()=>{'use strict';
 const cell=160,rows=21,url='assets/enemies/walk-style2.webp?v=enemyv3-20261121';
 const variants={
@@ -51,6 +53,7 @@ function image(){
  return !entry.failed&&img.complete&&img.naturalWidth===cell*4&&img.naturalHeight===cell*rows?img:null;
 }
 function draw(ctx,e,face=1,time=0,options={}){
+ if(globalThis.DenkmalEnemyArtV5?.draw(ctx,e,face,time,options))return true;
  if(globalThis.TD2DirectionalActions?.enemy(ctx,e,options))return true;
  if(globalThis.V2Expansion?.enemy(ctx,e,face,options))return true;
  const row=select(e,options.level);if(row<0)return false;
