@@ -7,6 +7,7 @@ const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'../dist');
 const output=process.env.TD2_CDN_QA_OUT||'/tmp/td2-cdn-pilot-browser';
 const assets=[
+    ['assets/loading/kim-marcel-loading-v8.webp','v1795795543','td2/runtime/loading/kim-marcel-loading-v8'],
   ['assets/loading/kim-marcel-loading-v5.webp','v1795466831','td2/runtime/loading/kim-marcel-loading-v5'],
   ['assets/loading/gate.webp','v1795466833','td2/runtime/loading/gate'],
   ['assets/menu/memorial-yard-v4.webp','v1795466835','td2/runtime/menu/memorial-yard-v4'],
@@ -49,7 +50,7 @@ async function loadMapped(page){
       const cloudRequests=requests.filter(cloudHost);
       const expected=assets.map(cloudUrl);
       for(const url of expected)assert.equal(cloudRequests.filter(item=>item===url).length,1,'one real browser request for '+url);
-      assert.equal(cloudRequests.length,5,'no unapproved CDN host requests');
+      assert.equal(cloudRequests.length,assets.length,'no unapproved CDN host requests');
       assert.deepEqual(failed,[],'no network failures in CDN-success path');
       results.optIn={loaded,cloudRequests,failedRequests:failed};
       await context.close();
@@ -75,10 +76,10 @@ async function loadMapped(page){
       const loaded=await loadMapped(page);
       const cloudRequests=requests.filter(cloudHost);
       const localRequests=requests.filter(url=>!cloudHost(url)&&assets.some(([logical])=>new URL(url).pathname.endsWith('/'+logical)));
-      assert.equal(cloudRequests.length,5,'exactly one CDN attempt per mapped image');
-      assert.equal(localRequests.length,5,'exactly one local fallback per mapped image');
-      assert.equal(failed.length,5,'only the five intentionally blocked CDN requests fail');
-      assert.deepEqual(loaded.map(item=>item.status),Array(5).fill('ready'),'all local fallbacks decode successfully');
+      assert.equal(cloudRequests.length,assets.length,'exactly one CDN attempt per mapped image');
+      assert.equal(localRequests.length,assets.length,'exactly one local fallback per mapped image');
+      assert.equal(failed.length,assets.length,'only the intentionally blocked CDN requests fail');
+      assert.deepEqual(loaded.map(item=>item.status),Array(assets.length).fill('ready'),'all local fallbacks decode successfully');
       results.blockedCdnFallback={loaded,cloudRequests,localRequests,failedRequests:failed};
       await context.close();
     }

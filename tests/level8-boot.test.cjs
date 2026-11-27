@@ -8,14 +8,14 @@ const context=new Proxy({drawImage(...args){draws.push(args);},createLinearGradi
 function element(id){
   if(elements.has(id))return elements.get(id);
   const classes=new Set();
-  const e={id,style:{},dataset:{},children:[],inert:false,disabled:false,textContent:'',firstElementChild:{style:{}},classList:{add(...cs){cs.forEach(c=>classes.add(c));},remove(...cs){cs.forEach(c=>classes.delete(c));},toggle(c,b){if(b===undefined)b=!classes.has(c);b?classes.add(c):classes.delete(c);},contains:c=>classes.has(c)},focus(){document.activeElement=this;},setAttribute(k,v){this[k]=v;},removeAttribute(k){delete this[k];},remove(){},querySelector(){return element(id+'Button');},addEventListener(name,fn){this[name]=fn;},appendChild(b){this.children.push(b);},getBoundingClientRect:()=>({left:0,top:0,width:sandbox.innerWidth,height:sandbox.innerHeight}),getContext:()=>context};
+  const e={id,style:{},dataset:{},children:[],inert:false,disabled:false,textContent:'',firstElementChild:{style:{}},classList:{add(...cs){cs.forEach(c=>classes.add(c));},remove(...cs){cs.forEach(c=>classes.delete(c));},toggle(c,b){if(b===undefined)b=!classes.has(c);b?classes.add(c):classes.delete(c);},contains:c=>classes.has(c)},focus(){document.activeElement=this;},setAttribute(k,v){this[k]=v;},getAttribute(k){return this[k]??null;},hasAttribute(k){return k==='inert'?this.inert!==false&&this.inert!==undefined:Object.hasOwn(this,k);},removeAttribute(k){if(k==='inert')this.inert=false;else delete this[k];},remove(){},querySelector(){return element(id+'Button');},addEventListener(name,fn){this[name]=fn;},appendChild(b){this.children.push(b);},getBoundingClientRect:()=>({left:0,top:0,width:sandbox.innerWidth,height:sandbox.innerHeight}),getContext:()=>context};
   Object.defineProperty(e,'innerHTML',{set(v){this._html=v;this.children=[];},get(){return this._html||'';}});
   elements.set(id,e);return e;
 }
 element('heroVoice').play=function(){this.paused=false;return Promise.resolve();};
 element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
-const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
+const document={readyState:'complete',getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(v){this._src=v;}get src(){return this._src;}decode(){return Promise.resolve();}},Audio:class{play(){return Promise.resolve();};pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:false,addEventListener(){},removeEventListener(){}}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console,navigator:{userAgent:'node',maxTouchPoints:0},history:{pushState(){},back(){},state:null},crypto:{randomUUID:()=>'test-uuid'}};
 sandbox.window=sandbox;sandbox.location={pathname:process.env.TEST_PREVIEW?'/v4-style2/':'/a/',search:'',href:'http://localhost/v4-style2/'};
 sandbox.localStorage.setItem('td2-developer-mode-v2','disabled');

@@ -47,8 +47,10 @@ const server=http.createServer((req,res)=>{
    await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing'&&Style2Maps.stats().activeLevel===1);
    const snapshot=()=>page.evaluate(()=>{const g=DenkmalTestHooks.getGame();return {level:g.level,state:DenkmalTestHooks.getState(),hero:{x:g.hero.x,y:g.hero.y},loaded:TD2GroundV3.loadedCount,revision:TD2GroundV3.revision,maps:Style2Maps.stats()};});
    const before=await snapshot();assert.equal(requested,9,'normal menu startup must request V3 without prewarming');assert.equal(before.loaded,0);
+   await page.locator('#game').focus();
    await page.keyboard.down('ArrowRight');
-   try{await page.waitForFunction(p=>{const h=DenkmalTestHooks.getGame().hero;return Math.hypot(h.x-p.x,h.y-p.y)>2;},before.hero,{timeout:5000});}
+   try{await page.waitForFunction(p=>{const h=DenkmalTestHooks.getGame().hero;return Math.hypot(h.x-p.x,h.y-p.y)>2;},before.hero,{polling:100,timeout:5000});}
+   catch(error){const diagnostic={mobile,fail,requested,before,after:await snapshot(),errors,failed,focus:await page.evaluate(()=>({active:document.activeElement?.id,hidden:document.hidden,appInert:document.getElementById('app')?.inert,canvasInert:document.getElementById('game')?.inert,visibility:document.visibilityState}))};fs.writeFileSync(path.join(output,`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}-movement-timeout.json`),JSON.stringify(diagnostic,null,2));console.error('Cold-start movement diagnostics:',JSON.stringify(diagnostic));throw error;}
    finally{await page.keyboard.up('ArrowRight');}
    const moving=await snapshot();assert.ok(Math.hypot(moving.hero.x-before.hero.x,moving.hero.y-before.hero.y)>2,'player can move while material downloads are pending');
    const name=`${mobile?'touch':'desktop'}-${fail?'failed':'delayed'}`;
