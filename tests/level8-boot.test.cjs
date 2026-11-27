@@ -37,14 +37,17 @@ assert.equal(t.game.waveTotal,40,'wave 29 opening count from DenkmalWittenHeven'
 assert.equal(t.game.essence,360);
 for(let i=0;i<120;i++){t.update(1/60);if(i%4===0)t.draw();}
 assert.equal(t.state,'playing','update/draw pump survives level 8');
-// Drive the four campaign waves to completion.
+// Drive the four campaign waves to completion (deterministic: spawn directly,
+// clear the field, then end the wave instead of waiting for combat resolution).
 for(let w=29;w<=32;w++){
   let guard=0;
-  while(t.state==='playing'&&t.game.wave===w&&guard++<20000){
+  while(t.state==='playing'&&t.game.wave===w&&guard++<200){
     t.game.hero.hp=t.game.hero.maxHp=1e9;t.game.monument.hp=t.game.monument.maxHp=1e9;
-    t.update(1/60);if(guard%20===0)t.draw();
-    if(t.game.waveSpawned>=t.game.waveTotal){t.game.enemies.forEach(e=>{e.dead=true;});t.game.waveKilled=t.game.waveTotal;t.endWave();break;}
+    t.game.enemies.forEach(e=>{e.dead=true;});
+    if(t.game.waveSpawned<t.game.waveTotal){t.spawnEnemy();if(guard%10===0)t.update(1/60),t.draw();}
+    else{t.game.waveKilled=t.game.waveTotal;t.endWave();}
   }
+  assert.ok(guard<200,'wave '+w+' spawn drive terminates');
   if(t.state==='perk')t.selectPerk(t.getPerks()[0]);
   if(t.state==='levelcomplete')break;
 }
