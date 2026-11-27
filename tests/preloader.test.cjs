@@ -13,7 +13,7 @@ function setup({mobile=true,hero='marcel',loading=false,hold=[],reject=[]}={}){
       hasAttribute(k){return this.attrs.has(k);},removeAttribute(k){this.attrs.delete(k);},remove(){this.removed=true;}});
     return ids.get(id);
   };
-  elt('td2LoadArt').setAttribute('data-td2-asset','assets/loading/kim-marcel-loading-v5.webp');
+  elt('td2LoadArt').setAttribute('data-td2-asset','assets/loading/kim-marcel-loading-v8.webp');
   const doc={readyState:loading?'loading':'complete',getElementById(id){return loading&&this.readyState==='loading'&&id==='app'?null:elt(id);},
     addEventListener(name,fn){listeners.set(name,fn);},querySelector(q){return q.startsWith('meta')?{content:'v6-alpha'}:null;}};
   const sandbox={document:doc,window:{matchMedia:q=>({matches:q.includes('reduced-motion')||mobile}),addEventListener(){}},
@@ -46,7 +46,7 @@ async function run(){
   assert.equal(s.elt('td2LoadVersion').textContent,'v6-alpha');
 
   s=setup({mobile:false,hero:'kim',loading:true,hold:['memorial-yard-v4']});await flush();
-  assert.ok(s.elt('td2LoadArt').src.includes('kim-marcel-loading-v5'),'cover is assigned while menu scene is pending');
+  assert.ok(s.elt('td2LoadArt').src.includes('kim-marcel-loading-v8'),'cover is assigned while menu scene is pending');
   assert.ok(s.elt('td2Loading').classList['td2-art-ready']);
   assert.ok(!s.elt('td2Loading').removed);
   s.ready();await flush();

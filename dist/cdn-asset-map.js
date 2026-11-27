@@ -1,7 +1,7 @@
 /* TD2 CDN pilot map. Opt-in only: enabled with ?td2Cdn=1 during the pilot.
  * Keys are the exact logical asset paths the modules request (before any ?v= suffix).
  * Values are immutable Cloudinary delivery versions; the uploads are byte-identical
- * copies of the GitHub files (verified 2026-11-23). Never apply transformations:
+ * copies of the GitHub files (V8 loading artwork added 2026-11-27). Never apply transformations:
  * sprite atlases are pixel-anchored. On failure asset-manager.js retries the local file.
  */
 (()=>{'use strict';
@@ -9,6 +9,7 @@
   const enabled=!!params&&params.get('td2Cdn')==='1';
   const CLOUD='https://res.cloudinary.com/xs5rd7mt/image/upload';
   const MAP=Object.freeze({
+    'assets/loading/kim-marcel-loading-v8.webp':{version:'v1795795543'},
     'assets/loading/kim-marcel-loading-v5.webp':{version:'v1795466831'},
     'assets/loading/gate.webp':{version:'v1795466833'},
     'assets/menu/memorial-yard-v4.webp':{version:'v1795466835'},

@@ -10,7 +10,7 @@
   const track=document.getElementById('td2LoadTrack');
   const mobileQuery='(max-width:700px)';
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const art=image?.getAttribute('data-td2-asset') || 'assets/loading/kim-marcel-loading-v5.webp';
+  const art=image?.getAttribute('data-td2-asset') || 'assets/loading/kim-marcel-loading-v8.webp';
   const desktop='assets/menu/memorial-yard-v4.webp?v=menu-v4a1';
   const mobile='assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1';
   const crest='assets/menu/crest-v4.webp?v=menu-v4a1';

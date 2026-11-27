@@ -36,7 +36,7 @@ function create(search,mode='success'){
   return {box,requests};
 }
 async function run(){
-  const asset='assets/loading/gate.webp';
+  const asset='assets/loading/kim-marcel-loading-v8.webp';
   let env=create('');
   assert.equal(env.box.TD2CdnMap.enabled,false,'CDN disabled by default');
   assert.deepEqual({...env.box.TD2CdnMap.resolve(asset)},{url:asset,fallback:null});
@@ -47,6 +47,7 @@ async function run(){
   env=create('?td2Cdn=1');
   assert.equal(env.box.TD2CdnMap.enabled,true,'explicit query flag enables CDN');
   const expected=[
+    ['assets/loading/kim-marcel-loading-v8.webp','v1795795543','td2/runtime/loading/kim-marcel-loading-v8'],
     ['assets/loading/kim-marcel-loading-v5.webp','v1795466831','td2/runtime/loading/kim-marcel-loading-v5'],
     ['assets/loading/gate.webp','v1795466833','td2/runtime/loading/gate'],
     ['assets/menu/memorial-yard-v4.webp?v=menu-v4a1','v1795466835','td2/runtime/menu/memorial-yard-v4'],
@@ -59,7 +60,7 @@ async function run(){
     assert.equal(resolved.fallback,url,'local fallback preserves the original logical URL');
   }
   const mapped=env.box.TD2CdnMap.resolve(asset);
-  assert.match(mapped.url,/^https:\/\/res\.cloudinary\.com\/xs5rd7mt\/image\/upload\/v1795466833\/td2\/runtime\/loading\/gate\.webp$/);
+  assert.match(mapped.url,/^https:\/\/res\.cloudinary\.com\/xs5rd7mt\/image\/upload\/v1795795543\/td2\/runtime\/loading\/kim-marcel-loading-v8\.webp$/);
   assert.equal(mapped.fallback,asset);
   image=await env.box.DenkmalAssets.load(asset);
   assert.match(image.src,/^https:\/\/res\.cloudinary\.com\//,'successful CDN response is retained');
