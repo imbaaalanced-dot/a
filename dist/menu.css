@@ -203,7 +203,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
 .menu-command{display:grid;grid-template-columns:38px minmax(0,1fr) 24px;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border:1px solid #756548;border-radius:3px;background:linear-gradient(180deg,#172025f2,#0d1418f2);box-shadow:inset 0 1px #ffffff0a,0 5px 18px #0007;color:#ddd4c2;text-align:left;text-decoration:none;cursor:pointer;touch-action:manipulation}
 .menu-command:hover{border-color:#b4935b;background:linear-gradient(180deg,#202a2ef5,#11191df5)}
 .menu-command-primary{border-color:#a98a50;background:linear-gradient(100deg,#292419f5,#151a1cf5 68%);box-shadow:inset 3px 0 #c39b59,0 7px 22px #0008}
-.menu-command-assault{border-color:#557987;background:radial-gradient(circle at 8% 50%,#2d798044,transparent 34%),linear-gradient(180deg,#16242a,#0d151a)}
 .menu-command-quiet{background:linear-gradient(180deg,#141b1fef,#0c1215ef);color:#c1c6c2}
 .menu-command-mark{display:grid;place-items:center;width:34px;height:34px;border:1px solid #8f774d66;border-radius:50%;color:#d3b473;font:700 16px/1 Georgia,serif}
 .menu-command>span:nth-child(2){display:grid;gap:2px;min-width:0}
@@ -264,7 +263,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
 .menu-command-primary{border-color:#c8a366;background:linear-gradient(100deg,#2e281af5,#1a1f1ef2 68%);box-shadow:inset 3px 0 #d1ac69,0 7px 22px #0008,0 0 18px #c39a5224}
 .menu-command-primary:hover{border-color:#e8c887;box-shadow:inset 3px 0 #dcb670,0 8px 26px #0009,0 0 26px #c39a5236}
 .menu-command-primary .menu-command-mark{border-color:#c8a366;color:#e9c987;background:#3a301866}
-.menu-command-assault:hover{border-color:#7fa5b3}
 /* Map and channel cards: same lift language. */
 .map-card{transition:transform .14s ease,border-color .14s ease,background-color .14s ease}
 .map-card:hover:not(:disabled){transform:translateY(-1px)}
@@ -341,7 +339,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
   pointer-events:none;
 }
 #startScreen .menu-command-primary::before{background-image:url("assets/menu/level-gallery/level-01-einleitung.webp")}
-#startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-v4.webp?v=menu-v4a1")}
 #startScreen #menuCharacterBtn::before{background-image:url("assets/menu/v5-avatars/kim-marksman-v6.webp");background-position:88% 30%;background-size:auto 140%;background-repeat:no-repeat}
 #startScreen .menu-command-quiet::before{background-image:url("assets/menu/level-gallery/menu-background.webp")}
 #startScreen .menu-command-mark{
@@ -353,8 +350,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
 #startScreen .menu-command small{font-size:clamp(10px,1.1vw,12px);line-height:1.4;color:#cbd1cc;letter-spacing:0}
 #startScreen .menu-command-arrow{color:#ebc686;font-size:25px}
 #startScreen .menu-command-primary{border-color:#e2ba70;box-shadow:inset 3px 0 #e8c17c,0 12px 26px #0009}
-#startScreen .menu-command-assault{border-color:#67989e}
-#startScreen .menu-command-assault .menu-command-mark{border-color:#82bdc5;color:#a1e9e7}
 #startScreen #menuCharacterBtn .menu-command-mark{border-color:#a8b6aa;color:#e0e9d9}
 #startScreen .menu-command:focus-visible{outline:3px solid #9ce9ee;outline-offset:3px}
 #startScreen .menu-command:hover{transform:translateY(-2px);border-color:#f0d39c;box-shadow:0 15px 30px #000a,0 0 18px #d6ab5029}
@@ -392,7 +387,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
 }
 @media(max-width:700px){
   #startScreen .menu-content{margin:0 auto}
-  #startScreen .menu-command-assault::before{background-image:url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
   #startScreen .menu-hero-figure{height:clamp(133px,21vh,178px);background-image:linear-gradient(90deg,#090f17ee,#0a101988),url("assets/menu/memorial-yard-mobile-v4.webp?v=menu-v4a1")}
   #startScreen .menu-hero-figure .hero-menu-banner{width:54%;height:100%;max-height:none;margin-right:6%;object-fit:contain;object-position:center bottom}
   #startScreen #menuHeroCaption{max-width:46%;font-size:clamp(11px,3.4vw,14px)}
@@ -514,3 +508,6 @@ a.menu-art-button{text-decoration:none;color:inherit}
     left:auto;right:5%;bottom:3px;
   }
 }
+
+/* Three independent TD menu destinations: the campaign fills the first row. */
+#startScreen .menu-home-actions > #menuCampaignBtn{grid-column:1/-1}
