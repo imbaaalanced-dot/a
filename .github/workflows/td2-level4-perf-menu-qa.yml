@@ -39,7 +39,12 @@ jobs:
         env:
           TD2_LEVEL4_PERF_OUT: /tmp/td2-level4-perf
           TD2_LEVEL4_PERF_PHASE: ${{ hashFiles('dist/level4-options-menu-compact.css') != '' && 'compact' || 'baseline' }}
-        run: timeout 240s node tools/measure-level4-performance.cjs
+        run: |
+          set -o pipefail
+          timeout 240s node tools/measure-level4-performance.cjs 2>&1 | tee /tmp/td2-level4-measure.out
+      - name: Report level 4 measurement diagnostics
+        if: failure()
+        run: node tools/emit-annotations.cjs /tmp/td2-level4-measure.out /tmp/td2-level4-perf/partial-results.json
       - name: Validate compact options panel in desktop and touch Chromium
         env:
           TD2_LEVEL4_MENU_OUT: /tmp/td2-level4-menu
