@@ -10,7 +10,7 @@ const game = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 
 const home = html.match(/<nav id="menuHomeActions"[\s\S]*?<\/nav>/)?.[0] || '';
 assert.match(home, /id="menuCampaignBtn"/);
-assert.match(home, /id="menuAnsturmBtn"/);
+assert.doesNotMatch(home, /menuAnsturmBtn|ansturm\/index\.html/);
 assert.match(home, /id="menuCharacterBtn"/);
 assert.match(home, /id="menuOptionsBtn"/);
 assert.doesNotMatch(home, /id="menu(?:Play|Arcade)Btn"/);
@@ -28,4 +28,4 @@ assert.match(css, /@media\s*\(max-height:\s*430px\)\s*and\s*\(orientation:\s*lan
 assert.match(html, /menu\.css\?v=menu-v4base-20261122/);
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
 
-console.log('Four-destination menu hierarchy and responsive command styling passed');
+console.log('Three-destination menu hierarchy and responsive command styling passed');

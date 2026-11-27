@@ -19,7 +19,8 @@
 
 - Tower Defense mit Türmen, Helden, Gegnerwellen und Kampagnenlevels
 - Denkmal-Schauplätze wie Kirchende, Hohensyburg und Westhofen (je nach Build/Spielstand)
-- Ansturm-Spielmodus und persistente Beute-/Ausrüstungssysteme
+- Persistente Beute-/Ausrüstungssysteme
+- Ansturm ist ein eigenständiges Idle-Upgrade-Spiel: https://gitlab.com/imbaaalanced/ansturm . Der alte Laufzeitpfad bleibt vorübergehend nur für den Übergang erhalten.
 - JavaScript, HTML und CSS – ohne Installation im Browser spielbar
 - Android-/Touch-Optimierung in Arbeit (4-GB-Gerät als wichtiges Prüfziel)
 

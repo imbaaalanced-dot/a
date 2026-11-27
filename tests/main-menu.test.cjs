@@ -15,6 +15,7 @@ const section = id => {
 };
 const campaign = section('campaignMenu');
 const endless = section('endlessMenu');
+assert.doesNotMatch(html, /menuAnsturmBtn|ansturm\/index\.html/);
 
 for (const [id, label] of [
   ['startBtn', 'EINLEITUNG'],
@@ -49,7 +50,7 @@ assert.match(html, /id="menuDeveloperToast"[^>]*role="status"/, 'activation over
 assert.match(game, /developerRun:developerMode/, 'developer runs are isolated');
 assert.match(game, /const limit=game\.developerRun\?3:2/, '3x is developer-only');
 assert.match(game, /if\(!game\.developerRun\)/, 'developer runs do not save completion rewards');
-for (const [id, label] of [['menuCampaignBtn','Kampagne'],['menuAnsturmBtn','Denkmal-Ansturm'],['menuCharacterBtn','Helden &amp; Ausrüstung'],['menuOptionsBtn','Optionen']]) {
+for (const [id, label] of [['menuCampaignBtn','Kampagne'],['menuCharacterBtn','Helden &amp; Ausrüstung'],['menuOptionsBtn','Optionen']]) {
   assert.match(html, new RegExp('id="' + id + '"[^>]*>[\\s\\S]*?<strong>' + label + '<\\/strong>'), 'primary destination ' + label + ' is present');
 }
 assert.doesNotMatch(html, /<(?:strong|small|span)[^>]*>\s*Kampagne\s*(?:·|—|-)\s*Fortsetzen/i, 'campaign must not claim to resume an in-progress run');
