@@ -697,7 +697,7 @@
     return {
       impact:cannon?1.25:1,
       splash:b.splash||0,
-      splashFactor:(b.splashFactor??(cannon?.58*1.25:.58)),
+      splashFactor:(b.splashFactor??.58)*(cannon?1.25:1),
       chain:(b.chain||0)+(slowed&&b.kind==='rift'?1:0),
       chainRange:b.chainRange||108
     };
@@ -895,7 +895,7 @@ if(hitStop>0){hitStop=Math.max(0,hitStop-dt);dt*=.35;}if(lowFX()&&game.particles
     for(let i=gateSurges.length-1;i>=0;i--){gateSurges[i].age+=dt;if(gateSurges[i].age>1.4)gateSurges.splice(i,1);}
     for(const t of game.towers){
       if(t.kind==='barracks')continue;
-      if(t.tierProfile!==t.level)applyTowerTier(t);
+      if(towerTierProfiles[t.kind]&&t.tierProfile!==t.level)applyTowerTier(t);
       t.fireCd-=dt;
       const fireAnim=towerFireFx.get(t)||0;
       if(fireAnim>0)towerFireFx.set(t,Math.max(0,fireAnim-dt));
@@ -908,7 +908,9 @@ if(hitStop>0){hitStop=Math.max(0,hitStop-dt);dt*=.35;}if(lowFX()&&game.particles
           const speed=projectileSpeed(t.kind);
           const heavyCannon=(t.kind==='cannon'&&(t.level||1)>=3)||t.kind==='mortar';
           const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;
-          shoot(t,e,t.damage,speed,spec.color,{pierce:t.pierce??spec.pierce,splash:t.splash??spec.splash,splashFactor:t.splashFactor,chain:t.chain??spec.chain,chainRange:t.chainRange,slow:t.kind==='mage'?t.slow:spec.slow,slowDuration:t.slowDuration??spec.slowDuration,slowSplash:t.slowSplash||0,impactShake,hitStop:heavyCannon?.045:0});
+          // Keep the historical projectile shape for unchanged tower classes.
+          if(towerTierProfiles[t.kind])shoot(t,e,t.damage,speed,spec.color,{pierce:t.pierce??spec.pierce,splash:t.splash??spec.splash,splashFactor:t.splashFactor,chain:t.chain??spec.chain,chainRange:t.chainRange,slow:t.kind==='mage'?t.slow:spec.slow,slowDuration:t.slowDuration??spec.slowDuration,slowSplash:t.slowSplash||0,impactShake,hitStop:heavyCannon?.045:0});
+          else shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
         }
         towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*((t.x-h.x)*(t.x-h.x)+(t.y-h.y)*(t.y-h.y)<=h.r*h.r*36?1+perkStats().circle:1):1);
       }
