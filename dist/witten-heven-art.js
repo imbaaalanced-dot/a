@@ -22,6 +22,29 @@
   ['assets/witten-heven/treppe.webp?v=witten-heven-env1',0,540,230]
  ];
  let bossSprite=null,bossRequested=false;
+ // Environment cutouts placed with the Kirchende clearance rules
+ // (>=150 px from paths, >=140 px from build slots, >=320 px from the monument).
+ const TREES=['assets/witten-heven/baum1-herbst.webp?v=witten-heven-env1','assets/witten-heven/baum3-tanne.webp?v=witten-heven-env1','assets/witten-heven/baum4-tanne-klein.webp?v=witten-heven-env1','assets/witten-heven/baum5-birke.webp?v=witten-heven-env1'];
+ const BUSHES=['assets/witten-heven/busch-efeu.webp?v=witten-heven-env1','assets/witten-heven/busch-farn.webp?v=witten-heven-env1','assets/witten-heven/busch-gras.webp?v=witten-heven-env1','assets/witten-heven/busch-kugel.webp?v=witten-heven-env1','assets/witten-heven/rest-efeu.webp?v=witten-heven-env1','assets/witten-heven/rest-laub.webp?v=witten-heven-env1','assets/witten-heven/rest-busch-gruen.webp?v=witten-heven-env1'];
+ const PLATES=['assets/witten-heven/platte1.webp?v=witten-heven-env1','assets/witten-heven/platte2.webp?v=witten-heven-env1','assets/witten-heven/platte3.webp?v=witten-heven-env1','assets/witten-heven/platte4.webp?v=witten-heven-env1','assets/witten-heven/platte5.webp?v=witten-heven-env1','assets/witten-heven/platte6.webp?v=witten-heven-env1','assets/witten-heven/platte7.webp?v=witten-heven-env1','assets/witten-heven/platte8.webp?v=witten-heven-env1'];
+ const FELSEN=['assets/witten-heven/mauer-felsen.webp?v=witten-heven-env1','assets/witten-heven/rest-felsen-gross.webp?v=witten-heven-env1','assets/witten-heven/rest-felsen-klein.webp?v=witten-heven-env1'];
+ let envSpots=null;
+ function computeSpots(level){
+  const rand=randomGenerator(9182),spots=[];
+  const clear=(x,y)=>Math.hypot(x,y)>=320&&
+    level.paths.every(p=>globalThis.DenkmalLevels.pathDistance({x:C.x+x,y:C.y+y},p)>=150)&&
+    level.slots.every(s=>Math.hypot(s.x-(C.x+x),s.y-(C.y+y))>=140);
+  for(let i=0;i<14;i++){const a=rand()*Math.PI*2,r=180+rand()*440,x=Math.cos(a)*r,y=Math.sin(a)*r;
+    if(clear(x,y))spots.push({u:PLATES[i%PLATES.length],x,y,h:150+rand()*90,flat:true});}
+  for(let i=0;i<26;i++){const a=rand()*Math.PI*2,r=420+rand()*620,x=Math.cos(a)*r,y=Math.sin(a)*r;
+    if(clear(x,y))spots.push({u:BUSHES[i%BUSHES.length],x,y,h:80+rand()*80});}
+  for(let i=0;i<26;i++){const a=rand()*Math.PI*2,r=1130+rand()*300,x=Math.cos(a)*r,y=Math.sin(a)*r;
+    if(Math.abs(x)>1480||Math.abs(y)>1480||!clear(x,y))continue;
+    spots.push({u:TREES[i%TREES.length],x,y,h:250+rand()*130});}
+  for(let i=0;i<6;i++){const a=rand()*Math.PI*2,r=980+rand()*380,x=Math.cos(a)*r,y=Math.sin(a)*r;
+    if(clear(x,y))spots.push({u:FELSEN[i%FELSEN.length],x,y,h:110+rand()*90});}
+  return spots;
+ }
  function loadSprite(url){
   if(globalThis.DenkmalAssets?.ready){
     const img=globalThis.DenkmalAssets.ready(url);
@@ -126,6 +149,13 @@
   const revision=globalThis.TD2GroundV3?.revision||0;
   if(!ground||materialRevision!==revision){ground=createGround(level);materialRevision=revision;}
   ctx.drawImage(ground,0,0,SIZE,SIZE);
+  if(!envSpots)envSpots=computeSpots(level);
+  for(const spot of envSpots){
+    const img=loadSprite(spot.u);if(!img)continue;
+    const w=spot.h*img.naturalWidth/img.naturalHeight;
+    if(spot.flat)ctx.drawImage(img,C.x+spot.x-w/2,C.y+spot.y-spot.h/2,w,spot.h);
+    else ctx.drawImage(img,C.x+spot.x-w/2,C.y+spot.y-spot.h,w,spot.h);
+  }
   for(const [url,ox,oy,h] of ENV){
     const img=loadSprite(url);if(!img)continue;
     const w=h*img.naturalWidth/img.naturalHeight;
@@ -156,6 +186,6 @@
   }finally{ctx.restore();}
  }
  globalThis.DenkmalWittenHevenArt={drawGround,drawMonument,drawAirLane,drawBoss,
-  release(){ground=null;monument=null;monumentSprite=null;monumentRequested=false;bossSprite=null;bossRequested=false;},
+  release(){ground=null;monument=null;monumentSprite=null;monumentRequested=false;bossSprite=null;bossRequested=false;envSpots=null;},
   get allocations(){return allocations;}};
 })();

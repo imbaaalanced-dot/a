@@ -89,11 +89,16 @@ assert.equal(C.validEnemy({mapId:9,wave:29,enemyType:'wraith'}),false,'mapId 9 s
 
 // Generated runtime assets (WebP-Derivate der Cloudinary-Cutouts) liegen lokal.
 const path=require('node:path');
-for(const f of ['monument-heven-style2.webp','boss-pfeilerwaechter-v1.webp','gedenkwand-neutral.webp','plakette.webp','mauer-L.webp','mauer-gebogen-links.webp','mauer-gebogen-mitte.webp','mauer-efeu-bogen.webp','treppe.webp']){
-  const p=path.join('dist/assets/witten-heven',f);
-  assert.ok(fs.existsSync(p)&&fs.statSync(p).size>10000,f+' fehlt oder ist zu klein');
+const assetDir='dist/assets/witten-heven';
+const webps=fs.readdirSync(assetDir).filter(f=>f.endsWith('.webp'));
+assert.ok(webps.length>=40,'alle Cutouts als WebP lokal, got '+webps.length);
+for(const f of webps){
+  const p=path.join(assetDir,f);
+  assert.ok(fs.statSync(p).size>5000,f+' ist zu klein');
   assert.equal(fs.readFileSync(p).subarray(0,4).toString('latin1'),'RIFF',f+' ist kein WebP');
 }
+for(const f of ['monument-heven-style2.webp','boss-pfeilerwaechter-v1.webp','gedenkwand-neutral.webp','treppe.webp','baum1-herbst.webp','busch-efeu.webp','platte1.webp','rest-felsen-gross.webp'])
+  assert.ok(webps.includes(f),f+' fehlt im Asset-Ordner');
 assert.ok(fs.existsSync('dist/assets/menu/level-gallery/level-08-witten-heven.webp'),'Galerie-Karte level-08 fehlt');
 const art=fs.readFileSync('dist/witten-heven-art.js','utf8');
 assert.ok(art.includes('drawBoss'),'Boss-Sprite-Hook im Art-Modul');
