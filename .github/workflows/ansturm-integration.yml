@@ -26,7 +26,6 @@ jobs:
           git ls-files -- ansturm-alpha1-5 dist/ansturm dist/td2-ansturm-tutorial
           echo 'REMAINING_ACTIVE_REFERENCES:'
           git grep -Il -E 'ansturm-alpha1-5|dist/ansturm|ansturm/index\.html|td2-ansturm-tutorial|menuAnsturmBtn' -- .github tools tests dist/index.html dist/game.js dist/menu.css || true
-      - name: Test legacy Ansturm and TD2 regressions before full separation
+      - name: TD regression coverage after game separation
         run: |
-          npm test --prefix ansturm-alpha1-5
           for test in tests/*.test.cjs; do node "$test"; done
