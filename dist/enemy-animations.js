@@ -1,5 +1,7 @@
 /* Painted enemy movement, cosmetic only. One shared, lazily loaded atlas.
- * Cold/failed art returns false so the previous renderer stays available. */
+ * Cold/failed art returns false so the previous renderer stays available.
+ * V5 CDN art (enemy-art-v5.js) has priority; everything below is the
+ * unchanged offline fallback chain (directional → expansion → atlas). */
 (()=>{'use strict';
 const cell=160,rows=21,url='assets/enemies/walk-style2.webp?v=enemyv3-20261121';
 const variants={
@@ -22,8 +24,7 @@ function bake(img,row,filter){
  try{
   const c=document.createElement('canvas');c.width=cell*4;c.height=cell;
   const g=c.getContext('2d');
-  g.filter=filter;
-  g.drawImage(img,0,row*cell,cell*4,cell,0,0,cell*4,cell);
+  g.filter=filter;g.drawImage(img,0,row*cell,cell*4,cell,0,0,cell*4,cell);
   g.filter='none';
   if(bakeCache.size>=BAKE_CAP){const oldest=bakeCache.keys().next().value;bakeCache.delete(oldest);}
   bakeCache.set(key,c);return c;
@@ -44,13 +45,15 @@ function image(){
  if(entry?.failed&&Date.now()>=entry.retryAt)entry=null;
  if(!entry){
   const current={img:new Image(),failed:false,retryAt:0};entry=current;
-  current.img.decoding='async';current.img.onerror=()=>{current.failed=true;current.retryAt=Date.now()+5000;};
+  current.img.decoding='async';
+  current.img.onerror=()=>{current.failed=true;current.retryAt=Date.now()+5000;};
   current.img.src=url;
  }
  const img=entry.img;
  return !entry.failed&&img.complete&&img.naturalWidth===cell*4&&img.naturalHeight===cell*rows?img:null;
 }
 function draw(ctx,e,face=1,time=0,options={}){
+ if(globalThis.DenkmalEnemyArtV5?.draw(ctx,e,face,time,options))return true;
  if(globalThis.TD2DirectionalActions?.enemy(ctx,e,options))return true;
  if(globalThis.V2Expansion?.enemy(ctx,e,face,options))return true;
  const row=select(e,options.level);if(row<0)return false;
