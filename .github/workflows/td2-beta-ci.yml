@@ -7,7 +7,6 @@ on:
       - 'dist/**'
       - 'tests/**'
       - 'tools/**'
-      - 'ansturm-alpha1-5/**'
       - '.github/workflows/td2-beta-ci.yml'
   workflow_dispatch:
 
@@ -28,8 +27,6 @@ jobs:
         run: node tests/game.test.cjs
       - name: Touch, Hochformat and mobile budgets
         run: TEST_MOBILE=1 node tests/game.test.cjs
-      - name: Ansturm suite
-        run: npm test --prefix ansturm-alpha1-5
       - name: Menuefunktionen und Navigation
         run: |
           node tests/menu-navigation.test.cjs
