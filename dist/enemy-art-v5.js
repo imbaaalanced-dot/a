@@ -80,7 +80,7 @@ function warm(url){
   else return entry;
  }
  if(!entry){
-  entry={img:new Image(),failed:false,retryAt:0,started:false};cache.set(url,entry);
+  entry={img:new Image(),failed:false,retryAt:0,started:false};entry.img.crossOrigin='anonymous';cache.set(url,entry);
   queue.push(url);pump();
  }
  return entry;
