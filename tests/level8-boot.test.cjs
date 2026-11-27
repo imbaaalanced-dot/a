@@ -17,7 +17,7 @@ element('heroVoice').pause=function(){this.paused=true;};
 let serial=0;
 const document={getElementById:element,querySelectorAll:()=>[],querySelector:()=>null,createElement:()=>element('new'+serial++),addEventListener(name,fn){listeners[name]=fn;}};
 const sandbox={document,Image:class{complete=true;naturalWidth=1280;naturalHeight=1280;set src(v){this._src=v;}get src(){return this._src;}decode(){return Promise.resolve();}},Audio:class{play(){return Promise.resolve();};pause(){}},innerWidth:1280,innerHeight:800,devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame(){},matchMedia:q=>({matches:false,addEventListener(){},removeEventListener(){}}),setTimeout:()=>1,clearTimeout(){},addEventListener(name,fn){listeners[name]=fn;},localStorage:{data:new Map(),getItem(k){return this.data.get(k)||null},setItem(k,v){this.data.set(k,v)}},Math,console,navigator:{userAgent:'node',maxTouchPoints:0},history:{pushState(){},back(){},state:null},crypto:{randomUUID:()=>'test-uuid'}};
-sandbox.window=sandbox;sandbox.location={pathname:'/v4-style2/',search:'',href:'http://localhost/v4-style2/'};
+sandbox.window=sandbox;sandbox.location={pathname:process.env.TEST_PREVIEW?'/v4-style2/':'/a/',search:'',href:'http://localhost/v4-style2/'};
 sandbox.localStorage.setItem('td2-developer-mode-v2','disabled');
 vm.createContext(sandbox);
 // Boot exactly the scripts the page loads, in page order.
@@ -29,6 +29,7 @@ assert.equal(sandbox.DenkmalCampaign20.chapter(8),null,'planner has no chapter 8
 assert.ok(sandbox.DenkmalWittenHeven&&sandbox.DenkmalWittenHevenArt,'level 8 modules loaded');
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={startGame,mainMenu,update,draw,endWave,selectPerk,getPerks,spawnEnemy,launchWave,get game(){return game},get state(){return state}};})();`);
 vm.runInContext(source,sandbox);const t=sandbox.test;
+if(!process.env.TEST_PREVIEW)sandbox.DenkmalLevels.completeLevel7();
 t.startGame(8,'campaign');
 assert.equal(t.game.level,8,'level 8 starts instead of throwing');
 assert.equal(t.state,'playing');
@@ -60,3 +61,25 @@ const boss=t.game.enemies.find(e=>e.type==='boss');
 assert.ok(boss,'boss spawns on wave 32');
 assert.ok(boss.maxHp>0);
 console.log('Level 8 boot: startGame(8) works with the 20-wave planner loaded, waves 29-32 complete, boss renders');
+
+// The primary completion action must lead from Westhofen into Witten.
+if(!process.env.TEST_PREVIEW){
+ t.startGame(7,'campaign');
+ t.game.wave=sandbox.DenkmalCampaign20.chapter(7).lastWave;
+ t.endWave();
+ assert.equal(t.state,'levelcomplete');
+ assert.equal(element('nextLevelBtn').textContent,'LEVEL 8 STARTEN');
+ element('nextLevelBtn').onclick();
+ assert.equal(t.game.level,8);
+ assert.equal(t.game.mode,'campaign');
+ assert.equal(t.game.wave,29);
+}else{
+ t.startGame(7,'campaign');
+ t.game.wave=sandbox.DenkmalCampaign20.chapter(7).lastWave;
+ t.endWave();
+ assert.equal(element('nextLevelBtn').textContent,'WESTHOFEN ENDLOS');
+ element('nextLevelBtn').onclick();
+ assert.equal(t.game.level,7);
+ assert.equal(t.game.mode,'endless');
+}
+console.log('Westhofen completion routes to Witten; locked preview keeps its endless fallback');

@@ -43,6 +43,6 @@ function takeFunction(name){
   // Vergabe: nur echter Kampagnen-Abschluss
   assert.match(source,/if\(game\.mode!=='endless'&&game\.mode!=='campaign-pilot'&&game\.mode!=='portal'\)writeRestoration\(game\.level\);/,'Vergabe nur im echten Kampagnenmodus (kein Endlos/Portal/Pilot)');
   assert.match(source,/Denkmal-Restaurierung: Stufe \$\{r\}\/3 · \+\$\{r\*10\}% Denkmal-Gesundheit/,'Abschluss-Screen zeigt Stufe und Wirkung');
-  assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=witten-heven-level8-hotfix1-20261127/,'game.js cache key gebumpt');
+  assert.match(fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8'),/game\.js\?v=witten-heven-runtime2-20261127/,'game.js cache key gebumpt');
 }
 console.log('Denkmal-Restaurierung: Deckelung, Wirkung, Vergabe und UI gepinnt');

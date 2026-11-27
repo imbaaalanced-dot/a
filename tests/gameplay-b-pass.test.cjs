@@ -66,7 +66,7 @@ assert.ok(Math.abs(dmgApply-100)<1e-9,'the hit that applies slow gets no combo b
 
 // --- 3) Cache-Keys ---
 const html=fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8');
-assert.match(html,/game\.js\?v=witten-heven-level8-hotfix1-20261127/,'game.js cache key bumped for B-Pass');
+assert.match(html,/game\.js\?v=witten-heven-runtime2-20261127/,'game.js cache key bumped for B-Pass');
 assert.match(html,/hero-saga\.js\?v=voice-chronik-b-20261123/,'hero-saga.js cache key bumped for chronicle voice');
 
 console.log('B-Pass: Portal-Karten je Abschnitt, Chronik-Stimme (portal1..3/portalBoss) und Frost-Kombo (+25% auf verlangsamte Ziele) gepinnt');
