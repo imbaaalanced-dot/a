@@ -95,6 +95,8 @@ jobs:
           node tests/hohensyburg-sprite248.test.cjs
           node tests/level5-preview.test.cjs
           TEST_MOBILE=1 node tests/level5-preview.test.cjs
+          node tests/level8-boot.test.cjs
+          node tests/witten-heven.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-phase6.test.cjs
           node tests/style2-ground.test.cjs
