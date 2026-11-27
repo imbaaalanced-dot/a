@@ -15,7 +15,7 @@ assert.match(html, /id="td2-version-label"/, 'menu version labels use the canoni
 // and the expected key updated here; unchanged files keep their existing keys.
 const expectedVersions = new Map([
   ['canonical-hero-art-v5.js', 'portrait-v7-wand-20261122'],
-  ['cdn-asset-map.js', 'cdn-pilot-20261123'],
+  ['cdn-asset-map.js', 'preloader-v8-20261127'],
   ['directional-assets-v410.js','v410a2'],
   ['directional-actions-v410.js','v5-hero-canonical1'],
   ['map-polish-v410.js','building-clearance-20261114'],
@@ -33,10 +33,10 @@ const expectedVersions = new Map([
   ['level4-options-menu-compact.css','level4menu-20261114a'],
   ['portrait-avatars-v5.js', 'portrait-v7-wand-20261122'],
   ['level-gallery.js', 'menu-v4a3-witten-heven'],
-  ['preloader.css', 'td2preload1'],
+  ['preloader.css', 'preloader-v8-20261127'],
   ['portrait-patch.css', 'lesbarkeit-20261125'],
   ['asset-manager.js', 'cdn-pilot-20261123'],
-  ['preloader.js', 'cdn-pilot-display-20261123'],
+  ['preloader.js', 'preloader-v8-art-20261127'],
   ['persisted-state.js', 'save1'],
   ['campaign-20-wave-plan.js', 'campaign20-runtime1'],
   ['levels.js', 'witten-heven-level8-20261127'],
