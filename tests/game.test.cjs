@@ -28,7 +28,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),s
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,applyTowerTier,towerTierProfiles,drawMonument,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 source=source.replace('lootModel,drawMonument,drawEnemy,','lootModel,completeLevel,drawMonument,drawEnemy,');
 vm.runInContext(source,sandbox);
@@ -677,3 +677,18 @@ check('Barracks keyboard, recruitment, upgrade health and sell integration',()=>
  t.upgradeTower();t.update(.05);assert.equal(u.level,2);assert.equal(u.hp,52.5);
  t.sellTower();t.update(.05);assert.equal(t.game.militia.length,0);
 });
+
+check('Tower specializations: tier profiles, migration and distinct combat roles',()=>{
+ const expected={bow:[1,2,3],cannon:[64,78,92],mage:[.58,.50,.44],rift:[2,3,4]};
+ for(const kind of Object.keys(expected))for(let level=1;level<=3;level++){
+  const tower={kind,level};assert.equal(t.applyTowerTier(tower),true,kind+' tier '+level+' applies');
+  const value=kind==='bow'?tower.pierce:kind==='cannon'?tower.splash:kind==='mage'?tower.slow:tower.chain;
+  assert.equal(value,expected[kind][level-1],kind+' tier '+level+' has its authored specialization');
+  assert.equal(tower.tierProfile,level);
+ }
+ const old={kind:'rift',level:3};assert.equal(t.applyTowerTier(old),true,'restored legacy tower can receive tier profile');assert.equal(old.chainRange,132);
+ const barracks={kind:'barracks',level:3};assert.equal(t.applyTowerTier(barracks),false,'barracks retains its separate militia progression');
+ const retired={kind:'boomerang',level:2};assert.equal(t.applyTowerTier(retired),false,'retired boomerang remains on legacy progression');
+ const mage={kind:'mage',level:3};t.applyTowerTier(mage);assert.equal(mage.slowSplash,46);assert.equal(mage.slowDuration,2.2);
+});
+console.log('Tower specializations passed');
