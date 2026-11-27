@@ -24,7 +24,8 @@ function bake(img,row,filter){
  try{
   const c=document.createElement('canvas');c.width=cell*4;c.height=cell;
   const g=c.getContext('2d');
-  g.filter=filter;g.drawImage(img,0,row*cell,cell*4,cell,0,0,cell*4,cell);
+  g.filter=filter;
+  g.drawImage(img,0,row*cell,cell*4,cell,0,0,cell*4,cell);
   g.filter='none';
   if(bakeCache.size>=BAKE_CAP){const oldest=bakeCache.keys().next().value;bakeCache.delete(oldest);}
   bakeCache.set(key,c);return c;
@@ -45,8 +46,7 @@ function image(){
  if(entry?.failed&&Date.now()>=entry.retryAt)entry=null;
  if(!entry){
   const current={img:new Image(),failed:false,retryAt:0};entry=current;
-  current.img.decoding='async';
-  current.img.onerror=()=>{current.failed=true;current.retryAt=Date.now()+5000;};
+  current.img.decoding='async';current.img.onerror=()=>{current.failed=true;current.retryAt=Date.now()+5000;};
   current.img.src=url;
  }
  const img=entry.img;
