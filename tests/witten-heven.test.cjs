@@ -87,4 +87,16 @@ for(const id of C.bossPools[8])assert.ok(C.templates[id],'pool template exists: 
 assert.equal(C.validEnemy({mapId:8,wave:29,enemyType:'wraith'}),true,'mapId 8 accepted');
 assert.equal(C.validEnemy({mapId:9,wave:29,enemyType:'wraith'}),false,'mapId 9 still rejected');
 
-console.log('Level 8 Witten-Heven: geometry, gates, waves, progress, loot mapId 8 passed ('+level.slots.length+' slots)');
+// Generated runtime assets (WebP-Derivate der Cloudinary-Cutouts) liegen lokal.
+const path=require('node:path');
+for(const f of ['monument-heven-style2.webp','boss-pfeilerwaechter-v1.webp','gedenkwand-neutral.webp','plakette.webp','mauer-L.webp','mauer-gebogen-links.webp','mauer-gebogen-mitte.webp','mauer-efeu-bogen.webp','treppe.webp']){
+  const p=path.join('dist/assets/witten-heven',f);
+  assert.ok(fs.existsSync(p)&&fs.statSync(p).size>10000,f+' fehlt oder ist zu klein');
+  assert.equal(fs.readFileSync(p).subarray(0,4).toString('latin1'),'RIFF',f+' ist kein WebP');
+}
+assert.ok(fs.existsSync('dist/assets/menu/level-gallery/level-08-witten-heven.webp'),'Galerie-Karte level-08 fehlt');
+const art=fs.readFileSync('dist/witten-heven-art.js','utf8');
+assert.ok(art.includes('drawBoss'),'Boss-Sprite-Hook im Art-Modul');
+assert.match(fs.readFileSync('dist/game.js','utf8'),/level===8&&e\.type==='boss'&&globalThis\.DenkmalWittenHevenArt\?\.drawBoss/,'game.js zeichnet den Heven-Boss');
+
+console.log('Level 8 Witten-Heven: geometry, gates, waves, progress, loot mapId 8, assets passed ('+level.slots.length+' slots)');

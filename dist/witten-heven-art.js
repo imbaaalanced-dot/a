@@ -9,6 +9,34 @@
  let ground=null,materialRevision=-1,allocations=0,monument=null;
  let monumentSprite=null,monumentRequested=false;
  const MONUMENT_URL='assets/witten-heven/monument-heven-style2.webp?v=witten-heven-monument1';
+ const BOSS_URL='assets/witten-heven/boss-pfeilerwaechter-v1.webp?v=witten-heven-boss1';
+ // Generated cutouts (Cloudinary "Witten heven", WebP-Derivate) drawn as overlays
+ // on the baked ground: north name-plate wall, stair arch, southern stairs.
+ const ENV=[
+  ['assets/witten-heven/mauer-gebogen-links.webp?v=witten-heven-env1',-280,-320,90],
+  ['assets/witten-heven/gedenkwand-neutral.webp?v=witten-heven-env1',0,-322,110],
+  ['assets/witten-heven/plakette.webp?v=witten-heven-env1',0,-318,64],
+  ['assets/witten-heven/mauer-gebogen-mitte.webp?v=witten-heven-env1',280,-320,90],
+  ['assets/witten-heven/mauer-L.webp?v=witten-heven-env1',428,-322,90],
+  ['assets/witten-heven/mauer-efeu-bogen.webp?v=witten-heven-env1',0,552,170],
+  ['assets/witten-heven/treppe.webp?v=witten-heven-env1',0,540,230]
+ ];
+ let bossSprite=null,bossRequested=false;
+ function loadSprite(url){
+  if(globalThis.DenkmalAssets?.ready){
+    const img=globalThis.DenkmalAssets.ready(url);
+    return img&&img.naturalWidth&&img.naturalHeight?img:null;
+  }
+  return null;
+ }
+ function bossImage(){
+  const cached=loadSprite(BOSS_URL);if(cached)return cached;
+  if(!bossRequested){
+    bossRequested=true;
+    if(typeof Image==='function'){bossSprite=new Image();bossSprite.decoding='async';bossSprite.src=BOSS_URL;}
+  }
+  return bossSprite?.complete&&bossSprite.naturalWidth?bossSprite:null;
+ }
  function stroke(q,points,color,width){
   q.beginPath();points.forEach((p,i)=>i?q.lineTo(p.x,p.y):q.moveTo(p.x,p.y));
   q.strokeStyle=color;q.lineWidth=width;q.lineJoin='round';q.lineCap='round';q.stroke();
@@ -98,6 +126,17 @@
   const revision=globalThis.TD2GroundV3?.revision||0;
   if(!ground||materialRevision!==revision){ground=createGround(level);materialRevision=revision;}
   ctx.drawImage(ground,0,0,SIZE,SIZE);
+  for(const [url,ox,oy,h] of ENV){
+    const img=loadSprite(url);if(!img)continue;
+    const w=h*img.naturalWidth/img.naturalHeight;
+    ctx.drawImage(img,C.x+ox-w/2,C.y+oy-h,w,h);
+  }
+ }
+ function drawBoss(ctx,e,time=0){
+  const img=bossImage();if(!img)return false;
+  const h=300,w=h*img.naturalWidth/img.naturalHeight,bob=Math.sin(time*2)*3;
+  ctx.drawImage(img,e.x-w/2,e.y-h+bob,w,h);
+  return true;
  }
  function drawMonument(ctx,m){
   if(readyMonument()){
@@ -116,7 +155,7 @@
     ctx.fillText('LUFTANGRIFF AUS DEM NORDEN',a.x,a.y-40);
   }finally{ctx.restore();}
  }
- globalThis.DenkmalWittenHevenArt={drawGround,drawMonument,drawAirLane,
-  release(){ground=null;monument=null;monumentSprite=null;monumentRequested=false;},
+ globalThis.DenkmalWittenHevenArt={drawGround,drawMonument,drawAirLane,drawBoss,
+  release(){ground=null;monument=null;monumentSprite=null;monumentRequested=false;bossSprite=null;bossRequested=false;},
   get allocations(){return allocations;}};
 })();

@@ -15,7 +15,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   ['dist/hohensyburg-art.js',['kaiser-wilhelm-style2-qa-v2-2x.webp','kaiser-wilhelm-style2-qa-v1-2x.webp']],
   ['dist/goethestrasse-art.js',['assets/elemental/goethestrasse-memorial-style2.webp']],
   ['dist/westhofen-art.js',['assets/westhofen/westhofen-memorial-style2-v4.webp']],
-  ['dist/level-gallery.js',['level-07-westhofen.webp']]
+  ['dist/level-gallery.js',['level-07-westhofen.webp','level-08-witten-heven.webp']],
+  ['dist/witten-heven-art.js',['monument-heven-style2.webp','boss-pfeilerwaechter-v1.webp','gedenkwand-neutral.webp','mauer-gebogen-links.webp','mauer-efeu-bogen.webp','treppe.webp']]
  ];
  const files=[
   'dist/assets/monument-level1-style2.webp',
@@ -39,7 +40,17 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   'dist/assets/hohensyburg/kaiser-wilhelm-style2-qa-v1-2x.webp',
   'dist/assets/elemental/goethestrasse-memorial-style2.webp',
   'dist/assets/westhofen/westhofen-memorial-style2-v4.webp',
-  'dist/assets/menu/level-gallery/level-07-westhofen.webp'
+  'dist/assets/menu/level-gallery/level-07-westhofen.webp',
+  'dist/assets/menu/level-gallery/level-08-witten-heven.webp',
+  'dist/assets/witten-heven/monument-heven-style2.webp',
+  'dist/assets/witten-heven/boss-pfeilerwaechter-v1.webp',
+  'dist/assets/witten-heven/gedenkwand-neutral.webp',
+  'dist/assets/witten-heven/plakette.webp',
+  'dist/assets/witten-heven/mauer-L.webp',
+  'dist/assets/witten-heven/mauer-gebogen-links.webp',
+  'dist/assets/witten-heven/mauer-gebogen-mitte.webp',
+  'dist/assets/witten-heven/mauer-efeu-bogen.webp',
+  'dist/assets/witten-heven/treppe.webp'
  ];
  for(const [file,needles]of modulePins){
   const src=read(file);
