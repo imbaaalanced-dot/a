@@ -23,7 +23,7 @@
     5:[79,58],6:[46,59],7:[83,16],8:[16,46]
   });
   function worldMapEnabled(search='') {
-    return new URLSearchParams(search).get('td2WorldMap')==='1';
+    return typeof URLSearchParams==='function'&&new URLSearchParams(search).get('td2WorldMap')==='1';
   }
   function visibleLevel(id, unlocked) {
     const level = levelMeta.find(entry => entry.id === id);
