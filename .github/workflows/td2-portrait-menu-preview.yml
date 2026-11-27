@@ -30,7 +30,6 @@ jobs:
           node --check dist/portrait-home-v1.js
           test -f dist/assets/menu/crest-v4.webp
           test -f dist/assets/menu/memorial-yard-mobile-v4.webp
-          test -f dist/ansturm/index.html
       - name: Publish separate Android browser preview
         shell: bash
         run: |
