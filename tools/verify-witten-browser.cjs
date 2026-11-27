@@ -32,6 +32,7 @@ const {chromium}=require('playwright');
    await page.locator('#completeMenuBtn').click();
    assert.equal(await page.evaluate(()=>DenkmalAssets.status('assets/witten-heven/monument-heven-style2.webp?v=witten-heven-monument1')),'unrequested');
    await page.locator('#menuCampaignBtn').click();
+   await page.getByRole('button',{name:'Nächste Levelseite',exact:true}).click();
    await page.locator('#level8Btn').click();
    await page.waitForFunction(()=>DenkmalTestHooks.getGame().level===8&&DenkmalTestHooks.getState()==='playing');
    await page.waitForFunction(()=>DenkmalAssets.status('assets/witten-heven/monument-heven-style2.webp?v=witten-heven-monument1')==='ready');
