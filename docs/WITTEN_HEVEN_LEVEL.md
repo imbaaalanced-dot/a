@@ -208,7 +208,17 @@ nur Boden), `mage` (46, Slow, RW 282), `rift` (58, Kette, RW 292), `barracks`
   (300,-90) → rift (560,120) vor Welle 30 → barracks (240,420) → Upgrades.
   12 von ~14 Plätzen aktiv — die übrigen Plätze bleiben als Ausweichpositionen.
 
-## Integration (nächster Schritt, noch nicht umgesetzt)
+## Integration — umgesetzt (PR #447, Branch `vibe/witten-heven-fotoreferenz-30c8c6`)
+
+Code-Stand: `levels.js` (Level 8 + Progress `level8`/Legacy-Key), `witten-heven.js`
+(Wellenmodul), `witten-heven-art.js` (prozedurales Ground/Monument/AirLane),
+`game.js` (alle Dispatch-Punkte), `index.html` (`level8Btn`/`endless8Btn` +
+Script-Tags + Cache-Keys), `level-gallery.js` (Karte 8), `equipment-catalog.js`
+(`mapId<=8`, `bossPools[8]`), Tests inkl. `tests/witten-heven.test.cjs`.
+Offen: generierte Cutouts als WebP nach `dist/assets/witten-heven/` +
+Boss-Sprite statt prozeduralem Fallback (Asset-Patch, Cloudinary-Quellen stehen bereit).
+
+Ursprüngliche Checkliste:
 
 1. `dist/levels.js`: `levels[8]` (Name „KRIEGERDENKMAL HEVEN · WITTEN“),
    `hevenPaths/hevenSlots/hevenPlatform`,
