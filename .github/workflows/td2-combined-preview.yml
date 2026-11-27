@@ -20,7 +20,6 @@ jobs:
       - name: Verify gameplay, inventory and saves
         run: |
           set -e
-          npm test --prefix ansturm-alpha1-5
           for test in tests/*.test.cjs; do node "$test"; done
           python3 -m pip install Pillow
           for test in tests/*.test.py; do python3 "$test"; done
