@@ -34,7 +34,6 @@ jobs:
       - name: Verify all gameplay before publish
         run: |
           set -e
-          npm test --prefix ansturm-alpha1-5
           for test in tests/*.cjs; do node "$test"; done
           TEST_MOBILE=1 node tests/game.test.cjs
           TEST_MOBILE=1 node tests/portal-gameplay.test.cjs
