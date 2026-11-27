@@ -32,6 +32,15 @@ function pump(){
 }
 pump();
 
+// Draw one horizontal spritesheet frame through the same decoded-image cache.
+export function spriteFrame(ctx,key,frame,frameCount,x,y,width,height){
+  const item=entries.get(key),img=item?.img;
+  if(item?.status!=='ready'||!img?.naturalWidth||!img.naturalHeight||!Number.isInteger(frameCount)||frameCount<1||img.naturalWidth%frameCount!==0)return false;
+  const frameWidth=img.naturalWidth/frameCount;
+  const index=((Math.floor(frame)%frameCount)+frameCount)%frameCount;
+  ctx.drawImage(img,index*frameWidth,0,frameWidth,img.naturalHeight,x-width/2,y-height,width,height);
+  return true;
+}
 // Ground anchor: x/y is the foot of each standing object.
 export function sprite(ctx,key,x,y,width,height){
   const item=entries.get(key);
