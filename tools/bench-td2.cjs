@@ -2,7 +2,7 @@
 /* Benchmark harness for TD2 performance bottlenecks (CPU sim, targeting, render op counts, heap churn).
  * Uses the existing test sandbox (tests/helpers/game.cjs) so no engine file is modified.
  * Run: node --expose-gc tools/bench-td2.cjs [scenario]
- * Scenarios: l3endless (default), l1campaign, ansturm */
+ * Scenarios: l3endless (default), l1campaign */
 const makeGame = (() => {
   // The sandbox never runs the queued intro tutorial, so tutorialPending would block
   // update() forever. Patch (in-memory only) tutorialSeen() to true while loading game.js.
@@ -21,6 +21,7 @@ const {performance, PerformanceObserver} = require('perf_hooks');
 
 const args = new Set(process.argv.slice(2));
 const SCENARIO = [...args].find(a => !a.startsWith('--')) || 'l3endless';
+if (!['l3endless','l1campaign'].includes(SCENARIO)) throw Error('Unknown TD benchmark scenario: '+SCENARIO);
 const FRAMES = Number(process.argv.find(a => a.startsWith('--frames='))?.slice(9)) || 2000;
 
 function stats(list) {
@@ -148,39 +149,8 @@ function benchHeapChurn(label) {
   console.log(`  frame spikes > 1 ms: ${spikes.length} (worst ${Math.max(0, ...spikes).toFixed(1)} ms) → these are GC/compile pauses; on-device they show up as dropped frames`);
 }
 
-function benchAnsturm() {
-  const fs = require('fs'), vm = require('vm'), path = require('path');
-  const root = path.join(__dirname, '../dist/ansturm');
-  const sandbox = {console, performance: {now: () => performance.now()}, Math, localStorage: {data: new Map(), getItem() { return null; }, setItem() {}}};
-  sandbox.window = sandbox; sandbox.globalThis = sandbox;
-  vm.createContext(sandbox);
-  for (const f of ['config.js', 'model.js']) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8').replace(/^import .*$/gm, '').replace(/^export /gm, ''), sandbox);
-  const s = sandbox.createGame();
-  sandbox.startGame(s);
-  // Full combat upgrades: burns on every enemy tick plus pierce/tesla/explosion/frost
-  // are the measured O(n^2) hot paths in late-game endless runs.
-  s.upgrades = {multishot:2, tesla:2, explosion:1, frost:1, shield:1, fire:1, pierce:2};
-  s.tech = {attack:10, tempo:5, hp:10, regen:1, range:2, gold:1};
-  const step = sandbox.step;
-  // push into late game: many enemies alive at once
-  for (let i = 0; i < 200; i++) {
-    s.wave = i + 1; s.status = 'running'; s.planned = 10 + 3 * s.wave; s.spawned = 0; s.spawnClock = 1e9; s.waveElapsed = 0;
-    while (s.enemies.length < Math.min(400, s.planned)) sandbox.spawnEnemy(s);
-  }
-  s.status = 'running';
-  const perStep = [];
-  for (let i = 0; i < 2000; i++) {
-    const t0 = performance.now();
-    step(s, 1 / 30);
-    perStep.push(performance.now() - t0);
-    if (s.status !== 'running') break;
-  }
-  console.log(`\n[Ansturm] step(1/30) x2000 with ${s.enemies.length} enemies (wave ${s.wave}): ${fmt(stats(perStep))} → ${(stats(perStep).mean * 30).toFixed(2)} ms CPU per second of gameplay at 30 ticks/s`);
-}
-
 // ---- run ----
 console.log(`Denkmal TD2 benchmark · scenario=${SCENARIO} frames=${FRAMES} node=${process.version}`);
-if (SCENARIO === 'ansturm') { benchAnsturm(); process.exit(0); }
 primeLevel(cfg.level, cfg.mode, cfg.wave, cfg.towers);
 const g = benchUpdate(SCENARIO);
 benchTowerTarget(g);

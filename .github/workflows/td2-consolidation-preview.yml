@@ -19,7 +19,6 @@ jobs:
           node-version: '22'
       - name: Test model, menus and source parity
         run: |
-          npm test --prefix ansturm-alpha1-5
           for test in tests/*.test.cjs; do node "$test" || exit 1; done
           TEST_MOBILE=1 node tests/game.test.cjs
           python -m pip install Pillow

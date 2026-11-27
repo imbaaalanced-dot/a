@@ -19,8 +19,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Legacy Ansturm links remain usable
-        run: node tests/ansturm-legacy-links.test.cjs
+      - name: Witten transition and art lifecycle in Chromium
+        run: |
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8777 --directory dist > /tmp/td2-witten-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+          node tools/verify-witten-browser.cjs
       - name: Alpha 8 preview preserves campaign flags
         run: |
           node tests/loot-ui.test.cjs
@@ -96,6 +101,8 @@ jobs:
           node tests/level5-preview.test.cjs
           TEST_MOBILE=1 node tests/level5-preview.test.cjs
           node tests/level8-boot.test.cjs
+          TEST_PREVIEW=1 node tests/level8-boot.test.cjs
+          node tests/witten-art-lifecycle.test.cjs
           node tests/witten-heven.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-phase6.test.cjs
@@ -138,10 +145,8 @@ jobs:
           node tests/equipment-effects.test.cjs
       - name: Simulation work and exact baseline traces
         run: |
-          npm test --prefix ansturm-alpha1-5
           node tests/simulation-work.test.cjs
           node tests/simulation-equivalence.test.cjs
-          node tests/ansturm-source-parity.test.cjs
       - name: Gameplay regression suite
         run: |
           node tests/game.test.cjs
@@ -199,7 +204,6 @@ jobs:
           python tests/style2-enemy-boss-audit.test.py
           python tests/barracks-assets.test.py
           python tests/style2-active-atlas-pilot-v5.test.py
-          python tests/ansturm-walk-sheet-intake.test.py
 
       - name: V4.1 directional actions, maps and balance
         run: |

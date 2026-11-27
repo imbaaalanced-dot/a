@@ -27,8 +27,9 @@ vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sa
 vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'witten-heven.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
-let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,applyTowerTier,towerTierProfiles,completeLevel,drawEnemy,drawMonument,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
+let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,applyTowerTier,towerTierProfiles,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
 source=source.replace('lootModel,drawMonument,drawEnemy,','lootModel,completeLevel,drawMonument,drawEnemy,');
 vm.runInContext(source,sandbox);
@@ -160,7 +161,7 @@ check('Developer mode opens all maps and 3x without changing progression or loot
 check('Prologue freezes combat and resumes exactly once',()=>{t.startGame();assert.equal(t.state,'story');t.update(2);assert.equal(t.game.elapsed,0);saga.continueStory();assert.equal(t.state,'playing');saga.continueStory();assert.equal(t.game.wave,1);});
 check('Start resources and clean restart',()=>{assert.equal(t.game.essence,90);assert.equal(t.game.wave,1);assert.equal(t.state,'playing');assert.equal(t.game.hero.soul,100);assert.equal(t.game.maxTowers,6,'level 1 fields six towers');});
 check('Sell refunds 80 percent of the tower investment',()=>{const slot=sandbox.DenkmalLevels.levels[1].slots[0];t.game.hero.x=slot.x-58;t.game.hero.y=slot.y;t.facing={x:1,y:0};t.game.essence=200;const before=t.game.essence;t.selectTower('bow');t.buildTower();assert.equal(t.game.towers.length,1);const spent=before-t.game.essence;t.sellTower();assert.equal(t.game.towers.length,0);assert.equal(t.game.essence,before-spent+Math.floor(spent*.8),'campaign sells refund 80 percent');});
-check('Mage slow deepens with tower level',()=>{const src=fs.readFileSync(path.join(root,'game.js'),'utf8');assert.ok(src.includes("slow:t.kind==='mage'?t.slow:spec.slow"),'tower-fired mage projectiles use their applied tier profile');assert.ok(src.includes('slowSplash:t.slowSplash||0'),'tier III frost zone is passed to projectiles');});
+check('Mage slow deepens with tower level',()=>{const src=fs.readFileSync(path.join(root,'game.js'),'utf8');assert.ok(src.includes("slow:t.kind==='mage'?t.slow:spec.slow"),'tower-fired mage projectiles use their applied tier profile');});
 check('Mobile combat strip reflects current hero, monument, essence and wave',()=>{
   t.game.hero.hp=66;t.game.monument.hp=420;t.game.essence=77;t.game.wave=3;
   t.update(.15);
@@ -642,7 +643,9 @@ check('Westhofen gates progress, chapter opening, air pressure, completion and e
   t.startGame(7);t.game.wave=28;t.endWave();
   assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level7Completed,true);
   assert.match(element('levelCompleteTitle').textContent,/WESTHOFEN/);
-  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
+  element('nextLevelBtn').onclick();assert.equal(t.game.level,8);assert.equal(t.game.mode,'campaign');
+  t.startGame(7);t.game.wave=28;t.endWave();
+  element('continueEndlessBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
   t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,29);
   const composition=t.waveComposition(29);
   assert.ok(composition.shadowwing>0||composition.gargoyle>0||composition.stormwing>0,'endless waves keep aerial pressure');

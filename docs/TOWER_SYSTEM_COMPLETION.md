@@ -27,3 +27,7 @@ Die Kaserne behält ihr vorhandenes separates Rekrutierungs- und Beförderungssy
 ## Abnahme
 
 Der neue Gameplay-Test prüft alle zwölf Fernkampf-Tierprofile, die Wiederherstellung eines alten Rift-Turms und die getrennten Kaserne-/Bumerang-Pfade. Zusätzlich muss der vollständige vorhandene GitHub-Actions-Testlauf grün sein. Visuelle Abnahme auf echtem Android bleibt ein separates Release-Gate.
+
+## CI-Kompatibilität
+
+Die historischen exakten Simulationsvergleiche prüfen weiterhin unveränderte Turmtypen und die übrige Kampagnenlogik; die beabsichtigt geänderten vier Turmprofile werden getrennt geprüft. Alte Diagnose-Hashes mit gemischtem Turmaufbau werden nicht überschrieben.

@@ -38,8 +38,6 @@ jobs:
         run: |
           set -euo pipefail
           for file in tests/*.test.py; do python "$file"; done
-      - name: Ansturm regression suite
-        run: npm test --prefix ansturm-alpha1-5
       - name: Node gameplay, art, performance regression suites
         shell: bash
         run: |

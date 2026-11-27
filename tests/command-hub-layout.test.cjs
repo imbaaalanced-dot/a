@@ -7,7 +7,9 @@ const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(dir, 'menu.css'), 'utf8');
 
 const home = html.match(/<nav id="menuHomeActions"[\s\S]*?<\/nav>/)?.[0] || '';
-assert.equal((home.match(/class="menu-command(?:\s|")/g) || []).length, 4, 'exactly four native command cards');
+assert.equal((home.match(/class="menu-command(?:\s|")/g) || []).length, 3, 'exactly three native command cards');
+assert.doesNotMatch(home, /menuAnsturmBtn|ansturm\/index\.html/);
+assert.match(css, /#startScreen \.menu-home-actions > #menuCampaignBtn\{grid-column:1\/-1\}/);
 assert.doesNotMatch(html, /<script[^>]+portrait-home-v1\.js/, 'no duplicating portrait navigation script');
 assert.doesNotMatch(html, /<link[^>]+portrait-home-v1\.css/, 'no hidden portrait command cards');
 assert.match(css, /\/\* Command Hub V5 \*\//);
@@ -17,4 +19,4 @@ assert.match(css, /@media\s*\(max-width:\s*420px\)/);
 assert.match(css, /@media\s*\(max-height:\s*430px\)\s*and\s*\(orientation:\s*landscape\)/);
 assert.match(html, /id="menuVersion"[^>]*>[^<]+<\/span>/, 'visible version/build label');
 assert.match(css, /prefers-reduced-motion:\s*reduce/);
-console.log('Command Hub: four native cards, responsive grid, version and mobile accessibility passed');
+console.log('Command Hub: three native cards, responsive grid, version and mobile accessibility passed');
