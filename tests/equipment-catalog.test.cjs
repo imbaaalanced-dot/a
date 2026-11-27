@@ -6,7 +6,7 @@ const box={};vm.createContext(box);vm.runInContext(fs.readFileSync(file,'utf8'),
 const json=x=>JSON.parse(JSON.stringify(x));
 const context={mapId:1,wave:5,bossType:'boss'},sequence=values=>()=>values.shift();
 assert.equal(Object.keys(C.templates).length,21);
-assert.deepEqual(Object.keys(C.bossPools).sort(),['1','2','3','4','5','6','7']);
+assert.deepEqual(Object.keys(C.bossPools).sort(),['1','2','3','4','5','6','7','8']);
 for(const id of Object.values(C.bossPools).flat()){assert.ok(C.templates[id],'every pooled template exists: '+id);}
 assert.equal(new Set(Object.values(C.bossPools).flat()).size,Object.keys(C.templates).length,'every template is reachable through a boss pool');
 assert.ok(C.bossPools[7].includes('sight-ring'),'Westhofen finale carries the previously unpooled sight-ring');
@@ -14,7 +14,7 @@ assert.equal(new Set(Object.values(C.templates).map(t=>t.power).filter(Boolean))
 const first=C.rollBoss(context,sequence([0,0,0,0,0]));
 assert.deepEqual(json(first),{templateId:'ember-staff',slot:'weapon',name:'Abendrot',rarity:'epic',level:5,power:'ember',stats:{damage:10,health:26},baseStats:{damage:10,health:26},upgradeRank:0,source:{mapId:1,wave:5,bossType:'boss'},favorite:false});
 assert.equal(C.rollBoss(context,sequence([.6,0,.8,0,0])).rarity,'legendary');
-for(const bad of [{...context,mapId:8},{...context,bossType:'wraith'},{...context,wave:Infinity},{...context,wave:-1},{...context,bossType:'uprooted'}])assert.equal(C.rollBoss(bad,()=>0),null);
+for(const bad of [{...context,mapId:9},{...context,bossType:'wraith'},{...context,wave:Infinity},{...context,wave:-1},{...context,bossType:'uprooted'}])assert.equal(C.rollBoss(bad,()=>0),null);
 for(const value of [NaN,Infinity,-.1,1])assert.equal(C.rollBoss(context,()=>value),null);
 assert.equal(C.rollBoss({...context,wave:999},()=>.999).level,30);
 let state=123456,signature=0,legendary=0;const seen=new Set(),rng=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);

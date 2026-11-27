@@ -126,6 +126,29 @@
     if(Math.hypot(x,y)>=190&&westhofenPaths.every(path=>pathDistance(p,path)>=90)&&
       westhofenSlots.every(q=>Math.hypot(q.x-p.x,q.y-p.y)>=115))westhofenSlots.push(p);
   }
+  // Kriegerdenkmal Heven (Witten): four-pillar memorial on a raised stone
+  // platform in a forest clearing; name-plate wall to the north, small stone
+  // stairs at the southern entrance (reference: docs/WITTEN_HEVEN_PHOTO_REFERENCE_20261126.md).
+  // Rectangles and routes are GAMEPLAY approximations from the reference photos,
+  // not survey data. Offsets are relative to the monument objective at (0,0).
+  const hevenPlatform={left:-300,right:300,top:-300,bottom:300,
+    stair:{x:0,top:300,bottom:540,width:150}};
+  const hevenWall={left:-420,right:420,top:-400,bottom:-330};
+  const hevenPaths=[
+    [[-1060,-430],[-760,-330],[-520,-210],[-330,-90],[0,0]],
+    [[1040,-520],[760,-380],[520,-220],[300,-90],[0,0]],
+    [[80,1060],[40,700],[0,540],[0,0]]
+  ].map(route=>route.map(([x,y])=>point(x,y)));
+  const hevenSlots=[];
+  for(const [x,y] of [[-620,-160],[-560,120],[-420,330],[-240,420],[-700,-60],[700,-160],[560,120],[420,330],[240,420],[700,60],[0,660],[-260,660],[260,660],[-860,-240],[860,-300]]){
+    const p=point(x,y);
+    const onPlatform=x>=hevenPlatform.left-45&&x<=hevenPlatform.right+45&&y>=hevenPlatform.top-45&&y<=hevenPlatform.bottom+45;
+    const onStair=Math.abs(x-hevenPlatform.stair.x)<hevenPlatform.stair.width/2+65&&y>hevenPlatform.stair.top-65&&y<hevenPlatform.stair.bottom+65;
+    const nearWall=x>=hevenWall.left-70&&x<=hevenWall.right+70&&y>=hevenWall.top-70&&y<=hevenWall.bottom+70;
+    if(Math.hypot(x,y)>=190&&!onPlatform&&!onStair&&!nearWall&&
+      hevenPaths.every(path=>pathDistance(p,path)>=90)&&
+      hevenSlots.every(other=>Math.hypot(other.x-p.x,other.y-p.y)>115))hevenSlots.push(p);
+  }
   function getWaveGates(level,wave,mode){
     const p=mode==='campaign'?globalThis.DenkmalCampaign20?.describe(level,wave,'campaign'):null;
     if(p){
@@ -138,6 +161,7 @@
     }
     if(level===3)return [0,1,2,3].slice(0,wave===9?2:wave===10?3:4);
     if(level===7)return wave===25?[0,1]:[0,1,2];
+    if(level===8)return wave===29?[0,1]:[0,1,2];
     if(level===4)return [0,1,2,3].slice(0,wave===13?2:wave===14?3:4);
     if(level===5)return wave===17?[0,1]:[0,1,2];
     return levels[level].gates.map((_,i)=>i);
@@ -149,18 +173,20 @@
     5:{name:'HOHENSYBURG · KAISER-WILHELM-DENKMAL',gates:syburgPaths.map(path=>path[0]),paths:syburgPaths,slots:syburgSlots,syburgTerrace,airGate:point(160,1010),gateLabels:['WALDWEG WEST','PARKZUGANG OST','TERRASSENWEG'],firstWave:17,lastWave:20,startEssence:300,maxTowers:11,approximate:true},
     6:{name:'HERDECKE GOETHESTRASSE',gates:goethePaths.map(p=>p[0]),paths:goethePaths,slots:goetheSlots,airGate:point(170,950),gateLabels:['PARKWEG WEST','GOETHESTRASSE NORD','GOETHESTRASSE OST'],firstWave:21,lastWave:24,startEssence:320,maxTowers:12,approximate:true},
     7:{name:'KRIEGERDENKMAL WESTHOFEN',gates:westhofenPaths.map(p=>p[0]),paths:westhofenPaths,slots:westhofenSlots,airGate:point(60,940),gateLabels:['REICHSHOFSTRASSE WEST','REICHSHOFSTRASSE OST','GRÜNZUG NORD'],firstWave:25,lastWave:28,startEssence:340,maxTowers:12,approximate:true},
+    8:{name:'KRIEGERDENKMAL WIT-TEN-HEVEN',gates:hevenPaths.map(p=>p[0]),paths:hevenPaths,slots:hevenSlots,airGate:point(0,-1020),gateLabels:['WALDRAND WEST','WALDRAND OST','ZUGANG SÜD'],firstWave:29,lastWave:32,startEssence:360,maxTowers:12,approximate:true,hevenPlatform,hevenWall},
     4:{name:'DORFKIRCHE UND SCHLAFENDER LÖWE',gates:churchPaths.map(p=>p[0]),paths:churchPaths,slots:churchSlots,churchFootprint,gateLabels:['IN DEN EICHEN','DORFWEG OST','DORFWEG WEST','KIRCHHOF WEST'],firstWave:13,lastWave:16,startEssence:245,maxTowers:10,approximate:true}
   };
   const progressKey='denkmal-progress-v2',progressVersion=1;
-  const progressDefaults={level2:false,level4:false,level5:false,level6:false,level7:false};
-  // Level 7 is additive: saves written before Westhofen lack level7 and stay valid.
-  const validateProgress=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['level2','level4','level5','level6'].every(k=>typeof p[k]==='boolean')&&(p.level7===undefined||typeof p.level7==='boolean');
+  const progressDefaults={level2:false,level4:false,level5:false,level6:false,level7:false,level8:false};
+  // Levels 7 and 8 are additive: saves written before them lack the field and stay valid.
+  const validateProgress=p=>!!p&&typeof p==='object'&&!Array.isArray(p)&&['level2','level4','level5','level6'].every(k=>typeof p[k]==='boolean')&&(p.level7===undefined||typeof p.level7==='boolean')&&(p.level8===undefined||typeof p.level8==='boolean');
   let storage;try{storage=localStorage;}catch{}
   const progressStore=globalThis.DenkmalPersistence.create(storage);
-  const oldKeys={level2:'denkmal-level2-unlocked-v1',level4:'denkmal-level4-completed-v1',level5:'denkmal-level5-completed-v1',level6:'denkmal-level6-completed-v1',level7:'denkmal-level7-completed-v1'};
+  const oldKeys={level2:'denkmal-level2-unlocked-v1',level4:'denkmal-level4-completed-v1',level5:'denkmal-level5-completed-v1',level6:'denkmal-level6-completed-v1',level7:'denkmal-level7-completed-v1',level8:'denkmal-level8-completed-v1'};
   const progressLoaded=progressStore.load(progressKey,progressVersion,progressDefaults,validateProgress,s=>Object.fromEntries(Object.entries(oldKeys).map(([field,key])=>[field,s.getItem(key)==='true'])));
   const progress=progressLoaded.value;
   if(progress.level7===undefined)progress.level7=false;
+  if(progress.level8===undefined)progress.level8=false;
   let storageAvailable=progressLoaded.writable;
   function saveFlag(flag){progress[flag]=true;storageAvailable=progressStore.save(progressKey,progressVersion,progress,validateProgress);return storageAvailable;}
   function unlock(){return saveFlag('level2');}
@@ -168,7 +194,8 @@
   function completeLevel5(){return saveFlag('level5');}
   function completeLevel6(){return saveFlag('level6');}
   function completeLevel7(){return saveFlag('level7');}
+  function completeLevel8(){return saveFlag('level8');}
   function nearestSlot(p,level=2,radius=88){let best=null,d=Infinity;for(const slot of (levels[level]?.slots||[])){const next=Math.hypot(p.x-slot.x,p.y-slot.y);if(next<d){best=slot;d=next;}}return d<=radius?best:null;}
   function advance(enemy,dt,path=maze){if(!path.length||!Number.isFinite(dt)||dt<=0)return;let budget=Math.max(0,enemy.speed*dt);while(enemy.waypoint<path.length&&budget>0){const p=path[enemy.waypoint],dx=p.x-enemy.x,dy=p.y-enemy.y,d=Math.hypot(dx,dy);if(d<=budget){enemy.x=p.x;enemy.y=p.y;budget-=d;enemy.waypoint++;}else{enemy.x+=dx/d*budget;enemy.y+=dy/d*budget;budget=0;}}}
-  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,completeLevel7,get level5Completed(){return progress.level5;},get level6Completed(){return progress.level6;},get level7Completed(){return progress.level7;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return progress.level4;},get unlocked(){return progress.level2;},get storageAvailable(){return storageAvailable;}};
+  globalThis.DenkmalLevels={levels,center,unlock,completeLevel4,completeLevel5,completeLevel6,completeLevel7,completeLevel8,get level5Completed(){return progress.level5;},get level6Completed(){return progress.level6;},get level7Completed(){return progress.level7;},get level8Completed(){return progress.level8;},nearestSlot,advance,pathDistance,getWaveGates,get level4Completed(){return progress.level4;},get unlocked(){return progress.level2;},get storageAvailable(){return storageAvailable;}};
 })();

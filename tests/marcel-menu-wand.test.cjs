@@ -25,5 +25,5 @@ assert.ok(game.includes('const bannerUrl=kim?portraitUrl:menuMarcelPortrait;'),'
 assert.ok(game.includes("const companionUrl=otherCharacter==='marcel'?menuMarcelPortrait:"),'Kim selection shows Marcel with staff as companion');
 assert.ok(canonical.includes("portrait:'assets/menu/v5-avatars/marcel-guardian-v7.webp"),'canonical HUD/armory now projects the wand portrait v7');
 assert.ok(!canonical.includes(portrait),'menu illustration must not alter gameplay art mapping');
-assert.ok(html.includes('game.js?v=lesbarkeit-20261125'),'game JS cache key is updated');
+assert.ok(html.includes('game.js?v=witten-heven-level8-20261127'),'game JS cache key is updated');
 console.log('Menu-only Marcel wand WebP fingerprint, selection and HUD isolation passed');

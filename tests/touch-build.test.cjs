@@ -62,7 +62,7 @@ assert.match(lootCss,/#loadoutStats\{display:flex;flex-direction:column;gap:7px;
 
 // Cache keys for every changed file.
 // Current game.js cache key is audited centrally in cache-busting.test.cjs.
-assert.match(html,/levels\.js\?v=level7btouch1/);
+assert.match(html,/levels\.js\?v=witten-heven-level8-20261127/);
 assert.match(html,/loot-ui\.js\?v=setboni-20261126/);
 assert.match(html,/loot\.css\?v=setboni-20261126/);
 assert.match(html,/portrait-patch\.css\?v=lesbarkeit-20261125/);

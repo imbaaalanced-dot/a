@@ -6,9 +6,10 @@
 const assert=require('node:assert/strict'),{load,memory,json}=require('./helpers/equipment.cjs');
 const {DenkmalLoot:L,DenkmalEquipmentCatalog:C}=load();
 
-assert.deepEqual(Object.keys(C.bossPools).map(Number).sort(),[1,2,3,4,5,6,7],'every campaign map has a boss pool');
+assert.deepEqual(Object.keys(C.bossPools).map(Number).sort(),[1,2,3,4,5,6,7,8],'every campaign map has a boss pool');
 for(const pool of Object.values(C.bossPools)){assert.equal(pool.length,4,'authored pools keep four slots');for(const id of pool)assert.ok(C.templates[id],'pool templates exist: '+id);}
 assert.ok(C.bossPools[7].includes('sight-ring'),'Westhofen finale carries the previously unpooled sight-ring');
+assert.ok(C.bossPools[8].includes('bell-amulet'),'Heven (Witten) boss pool carries the bell-amulet');
 
 // Westhofen enemy drops: level mirrors the wave, sources stay attributable.
 const m=L.create({storage:memory(),rng:()=>0});
@@ -16,7 +17,8 @@ assert.equal(m.claimEnemy({mapId:7,wave:25,enemyType:'shadowwing',runId:'west',s
 const first=m.find('enemy-west-1');
 assert.equal(first.source.kind,'enemy');assert.equal(first.source.mapId,7);assert.equal(first.level,25);
 for(const type of ['gargoyle','stormwing'])assert.equal(m.claimEnemy({mapId:7,wave:42,enemyType:type,runId:'west',spawnId:type}).state,'granted',type+' drops on Westhofen');
-assert.equal(m.claimEnemy({mapId:8,wave:25,enemyType:'shadowwing',runId:'west',spawnId:'x'}).state,'rejected');
+assert.equal(m.claimEnemy({mapId:8,wave:29,enemyType:'shadowwing',runId:'heven',spawnId:'x'}).state,'granted','Heven enemy drops work');
+assert.equal(m.claimEnemy({mapId:9,wave:25,enemyType:'shadowwing',runId:'west',spawnId:'x'}).state,'rejected');
 assert.equal(m.claimEnemy({mapId:7,wave:0,enemyType:'shadowwing',runId:'west',spawnId:'y'}).state,'rejected');
 
 // Pity keeps working on Westhofen kills.
@@ -36,7 +38,10 @@ assert.equal(west.state,'granted');assert.ok(C.bossPools[7].includes(west.item.t
 assert.equal(west.item.level,30,'wave 34+ caps at item level 30');
 assert.equal(b7.claimBoss({mapId:7,wave:34,bossType:'boss',runId:'westhofen',spawnId:'1'}).state,'duplicate');
 assert.equal(b7.claimBoss({mapId:7,wave:34,bossType:'uprooted',runId:'westhofen',spawnId:'2'}).state,'rejected','uprooted only exists on Kirchende');
-assert.equal(b7.claimBoss({mapId:8,wave:34,bossType:'boss',runId:'westhofen',spawnId:'3'}).state,'rejected');
+const b8=L.create({storage:memory(),rng:()=>0});
+const heven=b8.claimBoss({mapId:8,wave:32,bossType:'boss',runId:'heven',spawnId:'1'});
+assert.equal(heven.state,'granted');assert.ok(C.bossPools[8].includes(heven.item.templateId),'Heven boss pick stays pool-bound');
+assert.equal(b7.claimBoss({mapId:9,wave:34,bossType:'boss',runId:'westhofen',spawnId:'3'}).state,'rejected');
 
 // Reload round trip: the new sources persist and revalidate.
 const reload=L.create({storage:memory({[L.KEY]:b7.exportJSON()}),rng:()=>0});

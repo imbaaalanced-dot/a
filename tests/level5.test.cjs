@@ -138,7 +138,7 @@ assert.ok(Math.abs(v2Draw[1]+v2Draw[3]/2-center.x)<.01,'V2 objective center unch
 const html=fs.readFileSync('dist/index.html','utf8'),game=fs.readFileSync('dist/game.js','utf8');
 for(const id of ['level5Btn','endless5Btn'])assert.ok(html.includes('id="'+id+'"'));
 assert.ok(html.includes('hohensyburg.js?v=syburg-balance2'));
-assert.ok(html.includes('levels.js?v=level7btouch1'));
+assert.ok(html.includes('levels.js?v=witten-heven-level8-20261127'));
 assert.ok(html.includes('hohensyburg-art.js?v=lesbarkeit-20261125'));
 assert.match(game,/campaign.completeLevel5\(\)/);
 assert.ok(game.includes('game.level===5&&game.wave===20'));
