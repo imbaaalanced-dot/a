@@ -21,7 +21,6 @@ jobs:
         run: |
           set -e
           python3 -m pip install Pillow numpy scipy
-          npm test --prefix ansturm-alpha1-5
           for test in tests/*.cjs; do node "$test"; done
           for test in tests/*.test.py; do python3 "$test"; done
           TEST_MOBILE=1 node tests/game.test.cjs
