@@ -18,14 +18,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Inventory remaining Ansturm dependencies (read-only)
+      - name: Assert standalone TD runtime and legacy save bridge
         run: |
-          echo 'BASE_TREE:'
-          git rev-parse HEAD^{tree}
-          echo 'LEGACY_TRACKED_FILES:'
-          git ls-files -- ansturm-alpha1-5 dist/ansturm dist/td2-ansturm-tutorial
-          echo 'REMAINING_ACTIVE_REFERENCES:'
-          git grep -Il -E 'ansturm-alpha1-5|dist/ansturm|ansturm/index\.html|td2-ansturm-tutorial|menuAnsturmBtn' -- .github tools tests dist/index.html dist/game.js dist/menu.css || true
+          node tests/ansturm-integration.test.cjs
+          node --test tests/ansturm-save-export.test.mjs
       - name: TD regression coverage after game separation
         run: |
           for test in tests/*.test.cjs; do node "$test"; done

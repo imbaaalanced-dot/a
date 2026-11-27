@@ -20,7 +20,7 @@
 - Tower Defense mit Türmen, Helden, Gegnerwellen und Kampagnenlevels
 - Denkmal-Schauplätze wie Kirchende, Hohensyburg und Westhofen (je nach Build/Spielstand)
 - Persistente Beute-/Ausrüstungssysteme
-- Ansturm ist ein eigenständiges Idle-Upgrade-Spiel: https://gitlab.com/imbaaalanced/ansturm . Der alte Laufzeitpfad bleibt vorübergehend nur für den Übergang erhalten.
+- Ansturm ist ein eigenständiges Idle-Upgrade-Spiel: https://gitlab.com/imbaaalanced/ansturm . Alte Spielstände können über [Spielstand sichern](https://imbaaalanced-dot.github.io/a/ansturm-save-export.html) exportiert werden. Kein Ansturm-Gameplay im TD-Build.
 - JavaScript, HTML und CSS – ohne Installation im Browser spielbar
 - Android-/Touch-Optimierung in Arbeit (4-GB-Gerät als wichtiges Prüfziel)
 
@@ -41,7 +41,6 @@ Kurze Testauswahl (Node.js 22 und Python 3):
 ```bash
 node tests/game.test.cjs
 TEST_MOBILE=1 node tests/game.test.cjs
-npm test --prefix ansturm-alpha1-5
 python3 tests/assets.test.py
 ```
 

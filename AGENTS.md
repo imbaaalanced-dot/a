@@ -20,11 +20,10 @@ Wichtig: Aktuelle Stände und offene PRs **vor jeder Arbeit auf GitHub prüfen**
 ## 2. Repo-Landkarte
 
 - `dist/` – lauffähiges Spiel und veröffentlichter Build. Der Loader erwartet Assets hier und in `dist/assets/`.
-- `dist/ansturm/`, `dist/td2-ansturm-tutorial/` – Ansturm-Modus und Tutorial.
+- Alte Ansturm-URLs enthalten nur Weiterleitungen zur Spielstand-Sicherung; Ansturm wird separat in GitLab entwickelt.
 - `tests/` – Node-Tests (`game.test.cjs`), Mobile-Suite (`TEST_MOBILE=1`), Python-Asset-Tests (`assets.test.py`).
 - `docs/` – Level-Dokumentation, Style-2-Pässe, QA- und Abnahmeprotokolle, Performance-Benchmarks. **Historische Dokumente können überholt sein.**
 - `docs/STYLE2_*.md` – verbindliche Style-2-Referenzen und Abnahmestände.
-- `ansturm-alpha1-5/` – separater npm-Testbereich.
 - `tools/`, `source-art/`, `originals/` – Werkzeuge und Original-Referenzen (Originale niemals überschreiben).
 
 Schnellstart zum lokalen Prüfen:
@@ -32,7 +31,6 @@ Schnellstart zum lokalen Prüfen:
 python3 -m http.server 8777 --directory dist
 node tests/game.test.cjs
 TEST_MOBILE=1 node tests/game.test.cjs
-npm test --prefix ansturm-alpha1-5
 python3 tests/assets.test.py
 ```
 
@@ -65,7 +63,6 @@ Bei „Weiter": die letzte sichere, offene Aufgabe fortführen.
 - Konsistenz sichern über: Perspektive, Alpha, Auflösung, Pivot, Insets, Framefolge, Atlas, Ladepfade, Speicherbedarf.
 - Nur loader-unterstützte, optimierte Runtime-Assets integrieren; doppelte oder unbenutzte Dateien nicht blind löschen.
 - Asset-Statuskette: **Generiert → Technisch geprüft → Integriert → Im Spiel geprüft.** „Integriert" erst nach nachgewiesenem Runtime-Laden und visueller Prüfung im Spiel behaupten.
-- Ansturm-Regeln: Denkmal zentral, Gegner von Kartenrändern; keine Spawnportale, keine spielbaren Helden im Ansturm.
 
 ## 6. Teststufen und Abnahme
 

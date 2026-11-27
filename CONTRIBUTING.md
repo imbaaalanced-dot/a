@@ -32,7 +32,6 @@ Danach `http://localhost:8777/` aufrufen. Für nachvollziehbare technische Meldu
 ```bash
 node tests/game.test.cjs
 TEST_MOBILE=1 node tests/game.test.cjs
-npm test --prefix ansturm-alpha1-5
 python3 tests/assets.test.py
 ```
 

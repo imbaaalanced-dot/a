@@ -6,7 +6,6 @@ Fully transparent RGB residue is reported but does not count as visible art.
 
 Examples:
     python tools/audit-enemy-boss-style2.py --grid 4x12 dist/assets/directional-v410/enemy-*.webp
-    python tools/audit-enemy-boss-style2.py dist/ansturm/assets/boss_*.webp
 """
 
 import argparse
