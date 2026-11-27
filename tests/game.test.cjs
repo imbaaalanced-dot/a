@@ -693,5 +693,13 @@ check('Tower specializations: tier profiles, migration and distinct combat roles
  const barracks={kind:'barracks',level:3};assert.equal(t.applyTowerTier(barracks),false,'barracks retains its separate militia progression');
  const retired={kind:'boomerang',level:2};assert.equal(t.applyTowerTier(retired),false,'retired boomerang remains on legacy progression');
  const mage={kind:'mage',level:3};t.applyTowerTier(mage);assert.equal(mage.slowSplash,46);assert.equal(mage.slowDuration,2.2);
+ for(const level of [1,2,3]){
+  const cannon={kind:'cannon',level};t.applyTowerTier(cannon);
+  assert.equal(t.projectileSynergy(cannon,{slow:0}).splashFactor,cannon.splashFactor);
+  assert.equal(t.projectileSynergy(cannon,{slow:1}).splashFactor,cannon.splashFactor*1.25,'tier splash retains frost synergy');
+  const rift={kind:'rift',level};t.applyTowerTier(rift);
+  assert.equal(t.projectileSynergy(rift,{slow:1}).chain,rift.chain+1);
+  assert.equal(t.projectileSynergy(rift,{slow:0}).chainRange,rift.chainRange);
+ }
 });
 console.log('Tower specializations passed');
