@@ -29,6 +29,7 @@
  const PLATES=['assets/witten-heven/platte1.webp?v=witten-heven-env1','assets/witten-heven/platte2.webp?v=witten-heven-env1','assets/witten-heven/platte3.webp?v=witten-heven-env1','assets/witten-heven/platte4.webp?v=witten-heven-env1','assets/witten-heven/platte5.webp?v=witten-heven-env1','assets/witten-heven/platte6.webp?v=witten-heven-env1','assets/witten-heven/platte7.webp?v=witten-heven-env1','assets/witten-heven/platte8.webp?v=witten-heven-env1'];
  const FELSEN=['assets/witten-heven/mauer-felsen.webp?v=witten-heven-env1','assets/witten-heven/rest-felsen-gross.webp?v=witten-heven-env1','assets/witten-heven/rest-felsen-klein.webp?v=witten-heven-env1'];
  let envSpots=null;
+ const ownedSprites=new Set();
  function computeSpots(level){
   const rand=randomGenerator(9182),spots=[];
   const clear=(x,y)=>Math.hypot(x,y)>=320&&
@@ -47,13 +48,17 @@
  }
  function loadSprite(url){
   if(globalThis.DenkmalAssets?.ready){
+    if(!ownedSprites.has(url)&&globalThis.DenkmalAssets.retain){
+      ownedSprites.add(url);
+      globalThis.DenkmalAssets.retain('witten-heven-art',[url]);
+    }
     const img=globalThis.DenkmalAssets.ready(url);
     return img&&img.naturalWidth&&img.naturalHeight?img:null;
   }
   return null;
  }
  function bossImage(){
-  const cached=loadSprite(BOSS_URL);if(cached)return cached;
+  if(globalThis.DenkmalAssets?.ready)return loadSprite(BOSS_URL);
   if(!bossRequested){
     bossRequested=true;
     if(typeof Image==='function'){bossSprite=new Image();bossSprite.decoding='async';bossSprite.src=BOSS_URL;}
@@ -136,7 +141,7 @@
  }
  function readyMonument(){
   if(globalThis.DenkmalAssets?.ready){
-    monumentSprite=globalThis.DenkmalAssets.ready(MONUMENT_URL);
+    monumentSprite=loadSprite(MONUMENT_URL);
     return !!(monumentSprite?.naturalWidth&&monumentSprite.naturalHeight);
   }
   if(!monumentRequested){
@@ -186,6 +191,6 @@
   }finally{ctx.restore();}
  }
  globalThis.DenkmalWittenHevenArt={drawGround,drawMonument,drawAirLane,drawBoss,
-  release(){ground=null;monument=null;monumentSprite=null;monumentRequested=false;bossSprite=null;bossRequested=false;envSpots=null;},
+  release(){globalThis.DenkmalAssets?.release?.('witten-heven-art');ownedSprites.clear();ground=null;monument=null;monumentSprite=null;monumentRequested=false;bossSprite=null;bossRequested=false;envSpots=null;},
   get allocations(){return allocations;}};
 })();

@@ -27,6 +27,7 @@ vm.runInContext(fs.readFileSync(path.join(root,'enemy-animations.js'),'utf8'),sa
 vm.runInContext(fs.readFileSync(path.join(root,'touch-context-hud.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'goethestrasse.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'westhofen.js'),'utf8'),sandbox);
+vm.runInContext(fs.readFileSync(path.join(root,'witten-heven.js'),'utf8'),sandbox);
 vm.runInContext(fs.readFileSync(path.join(root,'hohensyburg.js'),'utf8'),sandbox);
 let source=fs.readFileSync(path.join(root,'game.js'),'utf8');source=source.replace(/\}\)\(\);\s*$/,`globalThis.test={lootModel,drawMonument,enemySpecs,waveSize,enemyTypeForSpawn,waveComposition,wavePreview,wavePlan,applyWavePlan,targetModes,targetLabels,mainMenu,draw,drawTower,screenToWorld,towerTarget,projectileSynergy,updateEnemyPressure,bossPhaseLabel,placementPreview,threatIndicators,portraitLayout,zoomForMode,cameraLead,openingCameraBias,joystickVector,launchWave,simulationStepsPerFrame:typeof simulationStepsPerFrame==='function'?simulationStepsPerFrame:null,toggleSpeed:typeof toggleSpeed==='function'?toggleSpeed:null,startGame,update,spawnEnemy,shoot,selectTower,upgradeTower,sellTower,buildTower,towerPosition,placementError,buildContextActive,cycleTargetMode,pauseGame,resumeGame,dodge,resize,selectPerk,endWave,gameOver,hurtEnemy,nearest,segmentDistance,getPerks,openInventory,closeInventory,get zoom(){return zoom},get speedMultiplier(){return typeof speedMultiplier==='undefined'?1:speedMultiplier},get game(){return game},get state(){return state},get shake(){return shake},get hitStop(){return hitStop},set facing(v){facing=v},set moveIntent(v){moveIntent=v}};})();`);
 source=source.replace('lootModel,drawMonument,','lootModel,drawMonument,drawEnemy,');
@@ -642,7 +643,9 @@ check('Westhofen gates progress, chapter opening, air pressure, completion and e
   t.startGame(7);t.game.wave=28;t.endWave();
   assert.equal(t.state,'levelcomplete');assert.equal(sandbox.DenkmalLevels.level7Completed,true);
   assert.match(element('levelCompleteTitle').textContent,/WESTHOFEN/);
-  element('nextLevelBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
+  element('nextLevelBtn').onclick();assert.equal(t.game.level,8);assert.equal(t.game.mode,'campaign');
+  t.startGame(7);t.game.wave=28;t.endWave();
+  element('continueEndlessBtn').onclick();assert.equal(t.game.mode,'endless');assert.equal(t.state,'perk');
   t.selectPerk({name:'Test',apply(){}});assert.equal(t.game.wave,29);
   const composition=t.waveComposition(29);
   assert.ok(composition.shadowwing>0||composition.gargoyle>0||composition.stormwing>0,'endless waves keep aerial pressure');

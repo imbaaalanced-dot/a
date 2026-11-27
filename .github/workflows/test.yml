@@ -19,6 +19,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Witten transition and art lifecycle in Chromium
+        run: |
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8777 --directory dist > /tmp/td2-witten-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+          node tools/verify-witten-browser.cjs
       - name: Legacy Ansturm links remain usable
         run: node tests/ansturm-legacy-links.test.cjs
       - name: Alpha 8 preview preserves campaign flags
@@ -96,6 +103,8 @@ jobs:
           node tests/level5-preview.test.cjs
           TEST_MOBILE=1 node tests/level5-preview.test.cjs
           node tests/level8-boot.test.cjs
+          TEST_PREVIEW=1 node tests/level8-boot.test.cjs
+          node tests/witten-art-lifecycle.test.cjs
           node tests/witten-heven.test.cjs
           node tests/style2-maps.test.cjs
           node tests/style2-phase6.test.cjs
