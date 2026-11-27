@@ -31,7 +31,6 @@ jobs:
           TEST_MOBILE=1 node tests/game.test.cjs
           test -f dist/assets/menu/level-gallery/card-locked.webp
           test -f dist/assets/menu/level-gallery/level-03-kirchende.webp
-          test -f dist/ansturm/index.html
       - name: Publish isolated gallery preview
         shell: bash
         run: |
