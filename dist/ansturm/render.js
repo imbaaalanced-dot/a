@@ -1,11 +1,11 @@
-import {sprite} from './sprites.js?v=v6-style2full1';
+import {sprite,spriteFrame} from './sprites.js?v=walksheet-cache-v3';
+import {walkDirection,walkSheetKey} from './walk-sheet.js?v=walksheet-cache-v3';
 import {ENEMY} from './config.js';import {getStats} from './model.js?v=v410a1sim1';
 // Graphics pass: atmosphere + readability. Every layer below is built once and
 // cached; per frame it costs two drawImage calls plus one small drawImage per
 // enemy. Nothing allocates gradients or canvases in the render loop.
-let atmosphere=null,enemyGlows=null,walkSheets=null;
+let atmosphere=null,enemyGlows=null;
 const WALK_FRAMES=8;
-const WALK_CELL_SIZE=500;
 const FOG_BLOBS=[[-.48,.30,.9],[-.24,-.52,.75],[.46,.38,1.05],[.58,-.34,.8],[-.62,-.18,.85],[.30,.62,.95]];
 function getAtmosphere(w,h,unit,cx,cy){
  const key=Math.round(w)+'x'+Math.round(h);
@@ -40,33 +40,6 @@ function getEnemyGlows(){
  enemyGlows={warm:make('rgba(255,204,130,.38)'),frost:make('rgba(140,215,255,.38)')};
  return enemyGlows;
 }
-function getWalkSheet(key){
- if(walkSheets&&walkSheets[key])return walkSheets[key];
- if(!walkSheets)walkSheets={};
- const img=new Image();
- img.decoding='async';
- walkSheets[key]={status:'loading',img:img};
- const finish=(ok)=>{if(walkSheets[key].status==='loading'){walkSheets[key].status=ok?'ready':'failed';}};
- img.onload=()=>{if(typeof img.decode==='function')img.decode().then(()=>finish(true),()=>finish(img.naturalWidth>0));else finish(img.naturalWidth>0);};
- img.onerror=()=>finish(false);
- img.src=`assets/walk-sheets/${key}.png?v=walk-v1-20261126`;
- return walkSheets[key];
-}
-function drawWalkFrame(ctx,sheetImg,frame,x,y,width,height){
- if(!sheetImg||sheetImg.status!=='ready'||!sheetImg.img)return false;
- const srcX=frame*WALK_CELL_SIZE;
- const srcY=0;
- ctx.drawImage(sheetImg.img,srcX,srcY,WALK_CELL_SIZE,WALK_CELL_SIZE,x-width/2,y-height,width,height);
- return true;
-}
-
-function getWalkDirection(x,y){
- const angle=Math.atan2(y,x);
- const dirs=['e','n','w','s'];
- const idx=Math.floor((angle+Math.PI/4)/(Math.PI/2))%4;
- return dirs[idx];
-}
-
 export function renderArena(ctx,s,{width,height,pixelRatio=1}){const dpr=Math.min(2,pixelRatio),c=ctx.canvas;if(c.width!==Math.round(width*dpr)||c.height!==Math.round(height*dpr)){c.width=Math.round(width*dpr);c.height=Math.round(height*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);const w=width,h=height,cx=w/2,cy=h/2,unit=Math.min(w*.44,h*.44);ctx.clearRect(0,0,w,h);
 let grad=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*.75);grad.addColorStop(0,'#34403e');grad.addColorStop(1,'#111923');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
 // The floor is screen anchored: scaling it with the world unit would repeat hard seams.
@@ -82,10 +55,10 @@ if(!sprite(ctx,'monument',0,unit*.16,unit*.58,unit*.66)){ctx.fillStyle='#796b5e'
 if(s.upgrades.shield){ctx.strokeStyle='#5abcf7aa';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,unit*.17,0,Math.PI*2);ctx.stroke();}if(s.upgrades.tesla){ctx.fillStyle='#63cfff';for(let i=0;i<4;i++){let a=i*Math.PI/2;ctx.beginPath();ctx.arc(Math.cos(a)*unit*.14,Math.sin(a)*unit*.14,4+s.upgrades.tesla,0,Math.PI*2);ctx.fill();}}
 for(const [i,id] of ['multishot','tesla','explosion','frost','shield','fire','pierce'].entries()){const n=s.upgrades[id]||0;if(n){const theta=(i/7)*Math.PI*2-Math.PI/2;const k='weapon_'+id+'_'+Math.min(3,n);sprite(ctx,k,Math.cos(theta)*unit*.26,Math.sin(theta)*unit*.26,unit*.15,unit*.19);}}
 const glows=getEnemyGlows();
-for(const e of s.enemies){const x=e.x*unit,y=e.y*unit,p=ENEMY[e.type],r=e.type==='boss'?Math.max(13,unit*.095):['armored','shieldbearer','siege'].includes(e.type)?Math.max(8,unit*.05):Math.max(7,unit*.036);const chilled=e.slowUntil>s.elapsed,walkT=(chilled?.35:1)*s.elapsed,d=Math.hypot(e.x,e.y),nx=-(e.x/(d||1)),ny=-(e.y/(d||1)),attacking=d<=.1002,attackPulse=Math.sin(s.elapsed*(chilled?2.1:4.6)+e.id*1.13),eStep=attacking?attackPulse:Math.sin(walkT*(e.type==='runner'?10:7)+e.id*1.73),bob=attacking?Math.max(0,attackPulse)*r*(chilled?.03:.1):eStep*r*(chilled?.05:.16),sway=attacking?0:Math.cos(walkT*(e.type==='runner'?8:5)+e.id*1.73)*r*(chilled?.02:.05),lunge=attacking?Math.max(0,attackPulse)*r*(chilled?.08:.22):0;const walkDir=getWalkDirection(e.x,e.y),walkKey=`walk_${e.type}_${walkDir}`,frame=Math.floor(s.elapsed*8)%WALK_FRAMES,sheet=getWalkSheet(walkKey);
+for(const e of s.enemies){const x=e.x*unit,y=e.y*unit,p=ENEMY[e.type],r=e.type==='boss'?Math.max(13,unit*.095):['armored','shieldbearer','siege'].includes(e.type)?Math.max(8,unit*.05):Math.max(7,unit*.036);const chilled=e.slowUntil>s.elapsed,walkT=(chilled?.35:1)*s.elapsed,d=Math.hypot(e.x,e.y),nx=-(e.x/(d||1)),ny=-(e.y/(d||1)),attacking=d<=.1002,attackPulse=Math.sin(s.elapsed*(chilled?2.1:4.6)+e.id*1.13),eStep=attacking?attackPulse:Math.sin(walkT*(e.type==='runner'?10:7)+e.id*1.73),bob=attacking?Math.max(0,attackPulse)*r*(chilled?.03:.1):eStep*r*(chilled?.05:.16),sway=attacking?0:Math.cos(walkT*(e.type==='runner'?8:5)+e.id*1.73)*r*(chilled?.02:.05),lunge=attacking?Math.max(0,attackPulse)*r*(chilled?.08:.22):0;const walkDir=walkDirection(e.x,e.y),walkKey=walkSheetKey(e,walkDir),frame=Math.floor(s.elapsed*8)%WALK_FRAMES;
 // Readability rim: one cached glow blob per enemy, biased toward the key light so the silhouette separates from the dark floor.
 const glowImg=chilled?glows.frost:glows.warm,gw=r*3.4,gh=r*2.4;ctx.drawImage(glowImg,x-gw*.5-r*.25,y-gh*.5-r*1.2,gw,gh);
-ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(x,y+r*.6,r*1.1*(1-eStep*.06),r*.55*(1-eStep*.06),0,0,7);ctx.fill();ctx.save();ctx.translate(x+sway+nx*lunge,y+r*.8+bob+ny*lunge);ctx.rotate(attacking?attackPulse*.12:eStep*(chilled?.01:.05));if(!drawWalkFrame(ctx,sheet,frame,0,0,r*2.7,r*3.5)&&!sprite(ctx,e.spriteKey||`enemy_${e.type}`,0,0,r*2.7,r*3.5)){ctx.fillStyle=p.color;ctx.strokeStyle='#e3c9a5';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();ctx.stroke();}ctx.restore();if(attacking&&attackPulse>0){ctx.strokeStyle='#ffd28f';ctx.globalAlpha=Math.min(.75,attackPulse*.75);ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,r*1.35,Math.atan2(ny,nx)-.45,Math.atan2(ny,nx)+.45);ctx.stroke();ctx.globalAlpha=1;}if(e.type==='boss'){
+ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(x,y+r*.6,r*1.1*(1-eStep*.06),r*.55*(1-eStep*.06),0,0,7);ctx.fill();ctx.save();ctx.translate(x+sway+nx*lunge,y+r*.8+bob+ny*lunge);ctx.rotate(attacking?attackPulse*.12:eStep*(chilled?.01:.05));if(!spriteFrame(ctx,walkKey,frame,WALK_FRAMES,0,0,r*2.7,r*3.5)&&!sprite(ctx,e.spriteKey||`enemy_${e.type}`,0,0,r*2.7,r*3.5)){ctx.fillStyle=p.color;ctx.strokeStyle='#e3c9a5';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();ctx.stroke();}ctx.restore();if(attacking&&attackPulse>0){ctx.strokeStyle='#ffd28f';ctx.globalAlpha=Math.min(.75,attackPulse*.75);ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,r*1.35,Math.atan2(ny,nx)-.45,Math.atan2(ny,nx)+.45);ctx.stroke();ctx.globalAlpha=1;}if(e.type==='boss'){
 const warning=e.bossPhase==='warning',protectedPhase=e.bossPhase==='protected';ctx.strokeStyle=warning?'#ffbc55':protectedPhase?'#79d7ff':'#b3f39c';ctx.lineWidth=warning?3:2;ctx.setLineDash(warning?[5,4]:[]);ctx.beginPath();ctx.arc(x,y,r*1.5,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
 // Boss tells: all special attacks are visible before they resolve.
 if(warning){const pulse=.55+.25*Math.sin(s.elapsed*9);ctx.strokeStyle='rgba(255,188,85,'+pulse+')';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,e.spriteKey==='boss_stonebreaker'?unit*.3:r*2.1,0,Math.PI*2);ctx.stroke();}
