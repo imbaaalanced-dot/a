@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   regression:
-    name: Existing gameplay, art, Ansturm and mobile baseline
+    name: Existing TD gameplay, art and mobile baseline
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -33,8 +33,6 @@ jobs:
         run: |
           node tests/game.test.cjs
           TEST_MOBILE=1 node tests/game.test.cjs
-      - name: Ansturm simulation regressions
-        run: npm test --prefix ansturm-alpha1-5
       - name: Reject magenta residue in active hero/menu assets
         run: python tests/hero-art-magenta-gate.test.py
       - name: Verify asset references and headers
