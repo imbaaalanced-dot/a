@@ -697,8 +697,9 @@
     return {
       impact:cannon?1.25:1,
       splash:b.splash||0,
-      splashFactor:cannon?.58*1.25:.58,
-      chain:(b.chain||0)+(slowed&&b.kind==='rift'?1:0)
+      splashFactor:(b.splashFactor??.58)*(cannon?1.25:1),
+      chain:(b.chain||0)+(slowed&&b.kind==='rift'?1:0),
+      chainRange:b.chainRange||108
     };
   }
   function launchWave(){if(inPortal()){if(state!=='playing'||portalRun.phase!=='build')return;if(!portalTransition({type:'START'},portalSnapshot()))return;}if(state==='playing'&&!tutorialActive&&game.intermission>0){game.intermission=0;game.spawnTimer=.4;fx.sfx?.('waveLaunch');updateUI();}}
@@ -762,7 +763,7 @@ const request={mapId:inPortal()?1:game.level,wave:game.wave,bossType:e.type,runI
     if(!enabledTowers.has(game.selectedTower))return;
     const spec=towerSpecs[game.selectedTower];if(game.essence<spec.cost)return showToast('NOCH '+(spec.cost-game.essence)+' ESSENZ NÖTIG');if(game.towers.length>=game.maxTowers)return showToast('TURMLIMIT ERREICHT');
     const error=placementError(p);if(error)return showToast(error);
-    if(game.selectedTower==='barracks')globalThis.DenkmalBarracks?.preload();game.essence-=spec.cost;game.towers.push({...p,r:18,damage:spec.damage,fireRate:spec.rate,fireCd:.1,range:spec.range,kind:game.selectedTower,level:1,spent:spec.cost,recruitCd:0,targetMode:'first'});spark(p.x,p.y,'#d9b66b',18);showToast(spec.name.toUpperCase()+' ERRICHTET');fx.sfx?.('towerBuild');updateUI();
+    if(game.selectedTower==='barracks')globalThis.DenkmalBarracks?.preload();game.essence-=spec.cost;const tower={...p,r:18,damage:spec.damage,fireRate:spec.rate,fireCd:.1,range:spec.range,kind:game.selectedTower,level:1,spent:spec.cost,recruitCd:0,targetMode:'first'};applyTowerTier(tower);game.towers.push(tower);spark(p.x,p.y,'#d9b66b',18);showToast(spec.name.toUpperCase()+' ERRICHTET');fx.sfx?.('towerBuild');updateUI();
   }
   function buildTower(){buildTowerAt(towerPosition());}
   function nearbyTower(){let best=null,bd=8464;for(const t of game.towers){const dx=game.hero.x-t.x,dy=game.hero.y-t.y,d=dx*dx+dy*dy;if(d<bd){bd=d;best=t}}return best}
@@ -772,7 +773,20 @@ const request={mapId:inPortal()?1:game.level,wave:game.wave,bossType:e.type,runI
     const index=targetModes.indexOf(t.targetMode||'first');t.targetMode=targetModes[(index+1)%targetModes.length];
     showToast(`ZIELPRIORITÄT · ${targetLabels[t.targetMode]}`);updateUI();
   }
-  function upgradeTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;if(t.kind==='barracks'){/* Existing recruits promote without resetting health or recruitment. */}else if(t.kind==='boomerang'){const spec=towerSpecs.boomerang;t.damage=[8,11,14][t.level-1];t.range=[265,285,305][t.level-1];t.fireRate=[1.75,1.65,1.55][t.level-1];}else{t.damage*=1.32;t.fireRate*=.92;t.range+=18;}spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);fx.sfx?.('towerUpgrade')}
+  // Tier-specific mechanics are applied once per level, including towers restored from older saves.
+  const towerTierProfiles=Object.freeze({
+    bow:Object.freeze([{pierce:1},{pierce:2},{pierce:3}]),
+    cannon:Object.freeze([{splash:64,splashFactor:.58},{splash:78,splashFactor:.60},{splash:92,splashFactor:.62}]),
+    mage:Object.freeze([{slow:.58,slowDuration:1.6,slowSplash:0},{slow:.50,slowDuration:1.9,slowSplash:0},{slow:.44,slowDuration:2.2,slowSplash:46}]),
+    rift:Object.freeze([{chain:2,chainRange:108},{chain:3,chainRange:120},{chain:4,chainRange:132}])
+  });
+  function applyTowerTier(t){
+    if(!t||!Number.isFinite(t.level))return false;
+    const profile=towerTierProfiles[t.kind]?.[clamp(Math.floor(t.level),1,3)-1];
+    if(!profile)return false;
+    Object.assign(t,profile);Object.defineProperty(t,'tierProfile',{value:clamp(Math.floor(t.level),1,3),writable:true,configurable:true,enumerable:false});return true;
+  }
+  function upgradeTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');if(t.level>=3)return showToast('MAXIMALE AUSBAUSTUFE');const cost=20+t.level*15;if(game.essence<cost)return showToast('NICHT GENUG ESSENZ');game.essence-=cost;t.spent+=cost;t.level++;applyTowerTier(t);if(t.kind==='barracks'){/* Existing recruits promote without resetting health or recruitment. */}else if(t.kind==='boomerang'){const spec=towerSpecs.boomerang;t.damage=[8,11,14][t.level-1];t.range=[265,285,305][t.level-1];t.fireRate=[1.75,1.65,1.55][t.level-1];}else{t.damage*=1.32;t.fireRate*=.92;t.range+=18;}spark(t.x,t.y,t.kind==='mage'?'#69bfff':'#edc575',26);showToast(`TURM AUF STUFE ${t.level}`);fx.sfx?.('towerUpgrade')}
   function sellTower(t=nearbyTower()){if(inPortal()&&!['build','combat'].includes(portalRun.phase))return;if(state!=='playing')return;if(!t||!game.towers.includes(t))return showToast('TURM NICHT MEHR VORHANDEN');const refund=(inPortal()?t.spent*(portalRun.phase==='build'?1:.75):Math.floor(t.spent*.8));game.essence+=refund;game.towers=game.towers.filter(x=>x!==t);spark(t.x,t.y,'#7dd8c8',18);showToast(`TURM VERKAUFT · +${refund}`);fx.sfx?.('towerSell')}
   function selectTower(kind){if(!towerSpecs[kind]||!enabledTowers.has(kind))return;game.selectedTower=kind;document.querySelectorAll('.arsenal button').forEach(b=>{b.classList.toggle('selected',b.dataset.tower===kind);b.setAttribute('aria-pressed',String(b.dataset.tower===kind));});$('buildText').textContent=`${towerSpecs[kind].name} BAUEN · ${towerSpecs[kind].cost}`;updateUI()}
   const touchContextUI=mobileRender&&globalThis.DenkmalTouchContext?.create($('touchContext'),{
@@ -881,6 +895,7 @@ if(hitStop>0){hitStop=Math.max(0,hitStop-dt);dt*=.35;}if(lowFX()&&game.particles
     for(let i=gateSurges.length-1;i>=0;i--){gateSurges[i].age+=dt;if(gateSurges[i].age>1.4)gateSurges.splice(i,1);}
     for(const t of game.towers){
       if(t.kind==='barracks')continue;
+      if(towerTierProfiles[t.kind]&&t.tierProfile!==t.level)applyTowerTier(t);
       t.fireCd-=dt;
       const fireAnim=towerFireFx.get(t)||0;
       if(fireAnim>0)towerFireFx.set(t,Math.max(0,fireAnim-dt));
@@ -893,7 +908,9 @@ if(hitStop>0){hitStop=Math.max(0,hitStop-dt);dt*=.35;}if(lowFX()&&game.particles
           const speed=projectileSpeed(t.kind);
           const heavyCannon=(t.kind==='cannon'&&(t.level||1)>=3)||t.kind==='mortar';
           const impactShake=t.kind==='cannon'?(heavyCannon?3:.6):t.kind==='mortar'?3:0;
-          shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:t.kind==='mage'?[.58,.5,.44][t.level-1]:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
+          // Keep the historical projectile shape for unchanged tower classes.
+          if(towerTierProfiles[t.kind])shoot(t,e,t.damage,speed,spec.color,{pierce:t.pierce??spec.pierce,splash:t.splash??spec.splash,splashFactor:t.splashFactor,chain:t.chain??spec.chain,chainRange:t.chainRange,slow:t.kind==='mage'?t.slow:spec.slow,slowDuration:t.slowDuration??spec.slowDuration,slowSplash:t.slowSplash||0,impactShake,hitStop:heavyCannon?.045:0});
+          else shoot(t,e,t.damage,speed,spec.color,{pierce:spec.pierce,splash:spec.splash,chain:spec.chain,slow:spec.slow,slowDuration:spec.slowDuration,impactShake,hitStop:heavyCannon?.045:0});
         }
         towerFireFx.set(t,.18);t.fireCd=t.fireRate/(inPortal()?perkStats().towerRate*((t.x-h.x)*(t.x-h.x)+(t.y-h.y)*(t.y-h.y)<=h.r*h.r*36?1+perkStats().circle:1):1);
       }
@@ -915,9 +932,10 @@ if(hitStop>0){hitStop=Math.max(0,hitStop-dt);dt*=.35;}if(lowFX()&&game.particles
         const dealt=hurtEnemy(e,shotDamage*synergy.impact,{shake:b.impactShake||0,hitStop:b.hitStop||0,heroShot:b.heroShot,towerShot:!b.heroShot,fixedDamage:!!b.boomerang});
         if(b.heroShot&&h.hp>0)h.hp=Math.min(h.maxHp,h.hp+dealt*(h.gear?.leech||0));
         if(b.slow&&!e.dead){e.slow=Math.max(e.slow||0,b.slowDuration||1.4);e.slowFactor=Math.min(e.slowFactor||1,b.slow);}
+        if(b.slow&&b.slowSplash>0){const slowRadius2=b.slowSplash*b.slowSplash;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const dx=other.x-e.x,dy=other.y-e.y;if(dx*dx+dy*dy<slowRadius2){other.slow=Math.max(other.slow||0,b.slowDuration||1.4);other.slowFactor=Math.min(other.slowFactor||1,b.slow);}}}}
         fx.burst(game,{...b,x:e.x,y:e.y,heroCharacter:b.heroShot?game.hero.character:null},true,audioOn,lowFX());
         if(synergy.splash){const splash2=synergy.splash*synergy.splash;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const ox=e.x-other.x,oy=e.y-other.y;if(ox*ox+oy*oy<splash2)hurtEnemy(other,b.damage*synergy.splashFactor);}}spark(e.x,e.y,b.color,18);}
-        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const ox=e.x-other.x,oy=e.y-other.y;if(ox*ox+oy*oy<11664&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}}
+        if(synergy.chain){let chained=0;for(const other of game.enemies){if(other!==e&&!other.dead&&(!other.flying||globalThis.FlightEnemies?.canHit(b,other))){const ox=e.x-other.x,oy=e.y-other.y;if(ox*ox+oy*oy<synergy.chainRange*synergy.chainRange&&chained++<synergy.chain){hurtEnemy(other,b.damage*.62);fx.bolt?.(game,e,other,b.color,lowFX());}}}}
         if(b.boomerang){hitSet.add(e);continue;}
         if(b.pierce){(b.hitTargets||(b.hitTargets=new Set())).add(e);if(b.hitTargets.size>=b.pierce){b.life=0;break;}}
         else{b.life=0;break;}
