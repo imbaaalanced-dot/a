@@ -65,7 +65,7 @@ const expectedVersions = new Map([
   ['westhofen-art.js','lesbarkeit-20261125'],
   ['witten-heven.js','witten-heven-20261127'],
   ['witten-heven-art.js','witten-heven-20261127'],
-  ['game.js', 'witten-heven-level8-hotfix1-20261127'],
+  ['game.js', 'tower-specializations-20261127'],
   ['level-intro.js', 'levelintro2'],
   ['level-intro.css', 'levelintro1'],
 
