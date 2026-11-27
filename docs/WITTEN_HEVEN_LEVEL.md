@@ -164,6 +164,32 @@ unangetastet (`chapter()` nur bis Level 7; das Level-8-Modul liefert
   'oath-coat','soul-hood']`. Roll: 60 % thematischer Pool / 40 % alle Templates,
   episch 80 % / legendär 20 %.
 
+## Boss: DER PFEILERWÄCHTER VON HEVEN (Welle 32)
+
+Eigener, einzigartiger Boss für Level 8 — generiert am 26.11.2026 und in
+Cloudinary abgelegt:
+
+- **Asset:** Ordner `Witten heven`, public_id `Meta_AI_boss_pfeilerwaechter_20261126_v1`
+  (asset_id `e8baf281b694594bfaa6236620becdaf`), PNG 1184×896 RGBA, ~713 KB,
+  Tags `td2-asset`, `witten-heven`, `boss`, `level8`, `ai_generated=true`.
+- **Cutout:** 75 % transparent (Alpha geprüft), saubere Kanten, keine Halos.
+- **Konzept:** kolossaler Steingolem, dessen Torso/Schultern aus den vier
+  Basaltpfeilern des Heven-Denkmals geformt sind, bekrönt vom schmiedeeisernen
+  Kreuz; glühende **rote** Risse/Runen (Gegner-Farbe), moosiger dunkler Stein,
+  goldene Brusttafel mit authentischem Inschrift-Fragment („TREUE UM TREUE …
+  DIE BÜRGER VON HEVEN“ — keine erfundenen Namen; auf Runtime-Größe 64/128 px
+  unleserlich), dicke Steinäste mit Fäusten, Dreiviertelansicht, Bodenanker an
+  den Füßen. Stil: 2.5D Dark Fantasy, warmes Licht von links oben — passend zu
+  den übrigen Style-2-Assets. Generiert per Text-zu-Bild (Black Forest API);
+  Cloudinary-Gen-Credits waren zu diesem Zeitpunkt erschöpft (50/50).
+- **QA (visuell):** Silhouette, Risse, Kreuz, Material stimmen; keine
+  verschmierten Gliedmaßen. Ergebnis: als Boss-Sprite für W32 brauchbar.
+- **Runtime-Plan:** Standalone-Sprite über `DenkmalAssets` (Muster
+  Westhofen-Monument), gezeichnet für `e.type==='boss'` auf Level 8;
+  Fallback Atlas-Zeile 18 (Default-Boss). Später WebP nach
+  `dist/assets/witten-heven/` + Budget-Tests. Boss-Specs bleiben die
+  vorhandenen (`boss`: 1040 HP / 35 Speed / 52 Schaden / Bounty 35).
+
 ## Turmplatzierungen (Empfehlung)
 
 Freigeschaltete Türme: `bow` (25, RW 300, auch Luft), `cannon` (35, Splash 64,
