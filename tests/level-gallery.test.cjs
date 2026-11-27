@@ -22,3 +22,18 @@ test('gallery CSS and script load after existing menu and game', () => {
   assert.ok(html.indexOf('game.js?') < html.indexOf('level-gallery.js?'));
   assert.ok(fs.existsSync(path.join(root, 'level-gallery.css')));
 });
+
+test('world map is opt-in and covers all eight original chapter slots', () => {
+  const {worldMapEnabled, worldMapPositions, levelMeta, visibleLevel}=require(path.join(root,'level-gallery.js'));
+  assert.equal(worldMapEnabled(''),false);
+  assert.equal(worldMapEnabled('?td2WorldMap=0'),false);
+  assert.equal(worldMapEnabled('?td2WorldMap=1'),true);
+  assert.equal(worldMapEnabled('?td2Cdn=1&td2WorldMap=1'),true);
+  assert.deepEqual(Object.keys(worldMapPositions).map(Number),levelMeta.map(x=>x.id));
+  const points=Object.values(worldMapPositions);
+  assert.equal(new Set(points.map(x=>x.join(','))).size,8);
+  assert.ok(points.every(([x,y])=>x>=12.5&&x<=87.5&&y>=10&&y<=90));
+  assert.equal(visibleLevel(8,false).locked,true);
+  assert.equal(visibleLevel(8,false).image,undefined);
+  assert.equal(visibleLevel(8,true).name,'Heven');
+});
