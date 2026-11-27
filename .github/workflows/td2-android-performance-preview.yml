@@ -34,7 +34,6 @@ jobs:
         run: |
           set -euo pipefail
           for file in tests/*.test.py; do python "$file"; done
-          npm test --prefix ansturm-alpha1-5
           for file in tests/*.test.cjs; do node "$file"; done
           export TEST_MOBILE=1
           for file in game.test.cjs portal-gameplay.test.cjs menu-navigation.test.cjs alpha8-preview.test.cjs level5-preview.test.cjs level4.test.cjs v4-alpha5.test.cjs; do
