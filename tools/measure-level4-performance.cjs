@@ -51,25 +51,7 @@ const pctl=(values,p)=>{
         document.getElementById('hudMenu').open=menuOpen;
         DenkmalTestHooks.launchWave();
       },{cssProfile,menuOpen,graphics:t.graphics});
-      /* TEMPORARY V5-PR DEBUG: report the real state when the wait fails. */
-      try{
-        await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing'&&DenkmalTestHooks.getGame()?.level===4,null,{timeout:15000});
-      }catch(error){
-        const diagnostic=await page.evaluate(()=>({
-          state:globalThis.DenkmalTestHooks?.getState?.(),
-          level:globalThis.DenkmalTestHooks?.getGame?.()?.level,
-          wave:globalThis.DenkmalTestHooks?.getGame?.()?.wave,
-          enemies:globalThis.DenkmalTestHooks?.getGame?.()?.enemies?.length,
-          monumentHp:globalThis.DenkmalTestHooks?.getGame?.()?.monument?.hp,
-          storyVisible:!document.getElementById('storyScreen')?.classList.contains('hidden'),
-          pauseVisible:!document.getElementById('pauseScreen')?.classList.contains('hidden'),
-          introVisible:!document.getElementById('levelIntroScreen')?.classList.contains('hidden'),
-          gameoverVisible:!document.getElementById('gameover')?.classList.contains('hidden'),
-          loadingVisible:!!document.getElementById('td2Loading'),
-          v5:globalThis.DenkmalEnemyArtV5?.stats?.()
-        })).catch(()=>null);
-        throw new Error('Level 4 never reached playing: '+JSON.stringify({diagnostic,jsErrors:errors})+'; '+error.message);
-      }
+      await page.waitForFunction(()=>DenkmalTestHooks.getState()==='playing'&&DenkmalTestHooks.getGame()?.level===4,null,{timeout:15000});
       await page.bringToFront();
       await page.waitForTimeout(1250);
       const measurement=await page.evaluate(async()=>{
