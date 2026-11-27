@@ -1,0 +1,3 @@
+# Ansturm runtime separation
+
+Removed the old source and deployed game directories from the TD runtime based on 8f3e0959a2d9c51860279ddd136d1b26f0e15c18. The 270 tracked legacy files were replaced by three small non-game migration pages, with the original history retained. Existing export page remains on the original origin. TD-only endless mode stays. Historical gh-pages previews are not rewritten. Standalone project: https://gitlab.com/imbaaalanced/ansturm . Current art tooling archival MR: https://gitlab.com/imbaaalanced/ansturm/-/merge_requests/8 . Physical Android, old-origin save transfer and full offline fallback remain separate checks.
