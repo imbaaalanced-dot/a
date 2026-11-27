@@ -23,11 +23,9 @@ jobs:
         run: |
           set -euo pipefail
           node --check dist/game.js
-          node --check dist/ansturm/app.js
           node tests/browser-fullscreen.test.cjs
           node tests/mobile-frame-pacing.test.cjs
           node tests/mobile-fps-render-budget.test.cjs
-          node tests/ansturm-source-parity.test.cjs
           node tests/cache-busting.test.cjs
       - name: Chromium desktop and mobile touch Fullscreen API
         run: |

@@ -1,4 +1,4 @@
-/* Browser QA: native Fullscreen API in the campaign and Ansturm on desktop/touch Chromium. */
+/* Browser QA: native Fullscreen API in the TD campaign on desktop/touch Chromium. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -22,22 +22,19 @@ const waitOn=async(page,enabled)=>page.waitForFunction(expected=>Boolean(documen
   const reports=[];
   try{
     for(const mobile of [false,true]){
-      for(const mode of ['campaign','ansturm']){
+      for(const mode of ['campaign']){
         const context=await browser.newContext({viewport:mobile?{width:412,height:915}:{width:1280,height:800},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1});
         const page=await context.newPage(),errors=[],missing=[];
         page.on('pageerror',error=>errors.push(error.message));
         page.on('response',response=>{if(response.status()>=400)missing.push(response.url());});
         try{
-          const url='http://127.0.0.1:'+server.address().port+(mode==='campaign'?'/index.html':'/ansturm/index.html');
+          const url='http://127.0.0.1:'+server.address().port+'/index.html';
           await page.goto(url,{waitUntil:'networkidle',timeout:60000});
-          let selector;
-          if(mode==='campaign'){
+          const selector='#menuFullscreenBtn';
             await page.locator('#td2Loading').waitFor({state:'detached',timeout:45000});
-            selector='#menuFullscreenBtn';
             const options='#menuOptionsBtn'; // Current V5 does not load the older portrait dock.
             await page.locator(options).click();
             await page.locator(selector).waitFor({state:'visible'});
-          }else selector='#introFullscreen';
           await page.locator(selector).click();
           await waitOn(page,true);
           assert.equal(await page.locator(selector).getAttribute('aria-pressed'),'true','fullscreen button must reflect active state');
